@@ -406,7 +406,10 @@ export function buildProject() {
     fs.mkdirSync(dlCardsDir, { recursive: true });
     if (fs.existsSync(CARDS_DIR)) {
       for (const f of fs.readdirSync(CARDS_DIR)) {
-        fs.copyFileSync(path.join(CARDS_DIR, f), path.join(dlCardsDir, f));
+        const fullPath = path.join(CARDS_DIR, f);
+        if (fs.statSync(fullPath).isFile()) {
+          fs.copyFileSync(fullPath, path.join(dlCardsDir, f));
+        }
       }
     }
   } catch (e) {
