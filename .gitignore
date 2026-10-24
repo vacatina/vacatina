@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build Outputs
+dist/
+dist-site/
+
+# Vercel & Deployment
+.vercel/
+
+# Environment Variables & Credentials
+.env*
+!.env.example
+
+# Test & Debug Artifacts
+.chrome-test-profile/
+tmp/
+*.log
+
+# OS Metadata
+.DS_Store
+Thumbs.db

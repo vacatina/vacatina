@@ -1,0 +1,555 @@
+{
+  "total": 68,
+  "summary": {
+    "WORKING": 11,
+    "PROTOTYPE_ROUTE": 57,
+    "PLANNED": 0,
+    "BLOCKED": 0
+  },
+  "links": [
+    {
+      "text": "Skip to main content",
+      "href": "#main-content",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Vacatina Homepage",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "Vacatina Homepage",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Home",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Flights",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Hotels",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Visa Assistance",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Holiday Packages",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Cars &amp; Transfers",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Activities",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Sightseeing Tours",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Rails",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Cruises",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Travel Insurance",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Blog",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "About Us",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "FAQ",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Contact Us",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Sign In",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "+94113606200",
+      "href": "tel:+94113606200",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "info@vacatina.com",
+      "href": "mailto:info@vacatina.com",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Vacatina on Facebook",
+      "href": "https://www.facebook.com/vacatinaglobal",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "Vacatina on Facebook",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Vacatina on Instagram",
+      "href": "https://www.instagram.com/vacatinaglobal",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "Vacatina on Instagram",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Vacatina on LinkedIn",
+      "href": "https://www.linkedin.com/company/vacatinaglobal",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "Vacatina on LinkedIn",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Flights",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Hotels",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Visa Assistance",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Holiday Packages",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Cars &amp; Transfers",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Rails",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Cruises",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Activities",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Sightseeing Tours",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Travel Insurance",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "About Vacatina",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Careers",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Corporate Travel",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Sustainability &amp; Care",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Press &amp; Media",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Customer Support",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Manage Bookings",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Visa Help Desk",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "FAQ",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Cancellation Policies",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Travel Notes &amp; Blog",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Seasonal Destination Guide",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Disruption Protocol",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Trip Bucket Guidelines",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "#",
+      "id": "",
+      "dataModal": "privacy",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "#",
+      "id": "",
+      "dataModal": "terms",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Cookie Preferences",
+      "href": "#",
+      "id": "",
+      "dataModal": "cookies",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Accessibility Statement",
+      "href": "#",
+      "id": "",
+      "dataModal": "accessibility",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Security &amp; Trust",
+      "href": "#",
+      "id": "",
+      "dataModal": "security",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Home",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Flights",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Hotels",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Visa Assistance",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Holiday Packages",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Cars &amp; Transfers",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Activities",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Sightseeing Tours",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Rails",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Cruises",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Travel Insurance",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Blog",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "About Us",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "FAQ",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Contact Us",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    },
+    {
+      "text": "Sign In",
+      "href": "#",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "PROTOTYPE ROUTE"
+    }
+  ]
+}

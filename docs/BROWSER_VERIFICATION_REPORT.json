@@ -1,0 +1,1313 @@
+{
+  "timestamp": "2026-10-24T20:51:10.237Z",
+  "version": "4.2.0-ultra-reconstructed-locked",
+  "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "viewportsTested": [
+    {
+      "width": 360,
+      "height": 800,
+      "expectDesktopNav": false,
+      "screenshot": "vacatina_360px_mobile.png",
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": false,
+      "mobBarVisible": true,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 306,
+        "right": 350,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-visa",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 451.171875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-packages",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 593.9375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cars",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 729.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-rails",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 790.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cruises",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 870.078125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-activities",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 959.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-sightseeing",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1103.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1238.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 378.375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 474
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 431.28125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 385.671875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 393.265625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 451.453125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 369.0625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 455.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 400.421875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 476.0625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 391.421875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 478.140625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 379.375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.25
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "expectDesktopNav": false,
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": false,
+      "mobBarVisible": true,
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 321,
+        "right": 365,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-visa",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 451.171875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-packages",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 593.9375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cars",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 729.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-rails",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 790.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cruises",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 870.078125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-activities",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 959.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-sightseeing",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1103.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1238.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 378.375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 474
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 431.28125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 385.671875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 393.265625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 451.453125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 455.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 400.421875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 476.0625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 391.421875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 478.140625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 379.375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.25
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "expectDesktopNav": false,
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": false,
+      "mobBarVisible": true,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 336,
+        "right": 380,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-visa",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 451.171875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-packages",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 593.9375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cars",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 729.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-rails",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 790.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cruises",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 870.078125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-activities",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 959.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-sightseeing",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1103.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1238.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 474
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 431.28125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 393.265625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 451.453125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 455.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 400.421875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 476.0625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 391.421875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 478.140625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.25
+        }
+      ]
+    },
+    {
+      "width": 393,
+      "height": 852,
+      "expectDesktopNav": false,
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": false,
+      "mobBarVisible": true,
+      "scrollWidth": 393,
+      "clientWidth": 393,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 339,
+        "right": 383,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-visa",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 451.171875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-packages",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 593.9375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cars",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 729.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-rails",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 790.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cruises",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 870.078125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-activities",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 959.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-sightseeing",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1103.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1238.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 474
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 431.28125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 451.453125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 455.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 400.421875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 476.0625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 478.140625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.25
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "expectDesktopNav": false,
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": false,
+      "mobBarVisible": true,
+      "scrollWidth": 430,
+      "clientWidth": 430,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 376,
+        "right": 420,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-visa",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 451.171875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-packages",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 593.9375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cars",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 729.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-rails",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 790.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cruises",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 870.078125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-activities",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 959.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-sightseeing",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1103.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1238.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 474
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 431.28125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 451.453125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 455.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 476.0625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 478.140625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "filter-pill text-brand-muted hover:bg-white hover:",
+          "right": 473.25
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "expectDesktopNav": false,
+      "screenshot": "vacatina_768px_tablet.png",
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": true,
+      "mobBarVisible": false,
+      "scrollWidth": 753,
+      "clientWidth": 753,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 685,
+        "right": 729,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-rails",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 814.78125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-cruises",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 894.078125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-activities",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 983.484375
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-sightseeing",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1127.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1262.40625
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 894.015625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 894.015625
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 868.015625
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 890.015625
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 886.6823120117188
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 841.171875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 841.171875
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 815.171875
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 837.171875
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 833.8385620117188
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 820.703125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 820.703125
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 794.703125
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 816.703125
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 813.3698120117188
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 922.890625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 922.890625
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 896.890625
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 918.890625
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 915.5573120117188
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 938.3125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 938.3125
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 912.3125
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 934.3125
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 930.9791870117188
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 813.703125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 813.703125
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 787.703125
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 809.703125
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 806.3698120117188
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 856.203125
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 856.203125
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 830.203125
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 852.203125
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 848.8698120117188
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
+          "right": 916.96875
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "text-brand-primary font-semibold text-[13px] sm:te",
+          "right": 916.96875
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "class": "",
+          "right": 890.96875
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "class": "",
+          "right": 912.96875
+        },
+        {
+          "tag": "path",
+          "id": "",
+          "class": "",
+          "right": 909.6354370117188
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "expectDesktopNav": false,
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": true,
+      "mobBarVisible": false,
+      "scrollWidth": 1009,
+      "clientWidth": 1009,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 941,
+        "right": 985,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-sightseeing",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1127.40625
+        },
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1262.40625
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 800,
+      "expectDesktopNav": false,
+      "screenshot": "vacatina_1280px_laptop.png",
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": true,
+      "mobBarVisible": false,
+      "scrollWidth": 1265,
+      "clientWidth": 1265,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 1205,
+        "right": 1249,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "id": "tab-insurance",
+          "class": "search-tab px-3.5 py-2 rounded-xl text-[13px] font",
+          "right": 1270.40625
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "expectDesktopNav": false,
+      "navVisible": false,
+      "mobVisible": true,
+      "dockVisible": true,
+      "mobBarVisible": false,
+      "scrollWidth": 1351,
+      "clientWidth": 1351,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 1291,
+        "right": 1335,
+        "width": 44,
+        "height": 44,
+        "insideViewport": true,
+        "hasMinimumTarget": true
+      },
+      "overflowing": []
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "expectDesktopNav": true,
+      "screenshot": "vacatina_1440px_desktop.png",
+      "navVisible": true,
+      "mobVisible": false,
+      "dockVisible": true,
+      "mobBarVisible": false,
+      "scrollWidth": 1425,
+      "clientWidth": 1425,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 0,
+        "right": 0,
+        "width": 0,
+        "height": 0,
+        "insideViewport": true,
+        "hasMinimumTarget": false
+      },
+      "overflowing": []
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "expectDesktopNav": true,
+      "navVisible": true,
+      "mobVisible": false,
+      "dockVisible": true,
+      "mobBarVisible": false,
+      "scrollWidth": 1905,
+      "clientWidth": 1905,
+      "noHorizontalOverflow": true,
+      "hamburgerBounds": {
+        "left": 0,
+        "right": 0,
+        "width": 0,
+        "height": 0,
+        "insideViewport": true,
+        "hasMinimumTarget": false
+      },
+      "overflowing": []
+    }
+  ],
+  "journeysVerified": [
+    "Journey A — First-Time Visitor Brand & Value Understanding",
+    "Journey B — Flight Search & Multi-City / Traveller Validation",
+    "Journey C — Visa Discovery to Visa Check",
+    "Journey E — Multi-Product Bundle & 01 · Draft Staging",
+    "Journey F — Discovery Card to Search Prefill & Dual-Mode Cars",
+    "Journey G — Save to Favorites Isolation",
+    "Journey D — Holiday Package Exploration Modal",
+    "Journey H — Trip Bucket Review, Change Room, Undo Remove & 8-State Engine",
+    "Journey I — Language & Currency Switching",
+    "Journey J — Mobile Navigation, Mobile Sticky Bar & Auth State Switching",
+    "Journey K — Keyboard-Only Navigation & Escape Focus Restoration",
+    "Journey L — Reduced Motion & Zero Runtime Errors"
+  ],
+  "assertions": [
+    {
+      "name": "Viewport 360x800 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=false, mobileBar=true, scrollWidth=360/360, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-visa\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":451.171875},{\"tag\":\"BUTTON\",\"id\":\"tab-packages\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":593.9375},{\"tag\":\"BUTTON\",\"id\":\"tab-cars\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":729.484375},{\"tag\":\"BUTTON\",\"id\":\"tab-rails\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":790.78125},{\"tag\":\"BUTTON\",\"id\":\"tab-cruises\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":870.078125}]"
+    },
+    {
+      "name": "Viewport 360px — Mobile Hamburger Visible & Within Bounds (P0 #2)",
+      "passed": true,
+      "details": "bounds=[left:306.0, right:350.0, w:44.0, h:44.0]"
+    },
+    {
+      "name": "Viewport 375x812 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=false, mobileBar=true, scrollWidth=375/375, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-visa\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":451.171875},{\"tag\":\"BUTTON\",\"id\":\"tab-packages\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":593.9375},{\"tag\":\"BUTTON\",\"id\":\"tab-cars\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":729.484375},{\"tag\":\"BUTTON\",\"id\":\"tab-rails\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":790.78125},{\"tag\":\"BUTTON\",\"id\":\"tab-cruises\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":870.078125}]"
+    },
+    {
+      "name": "Viewport 375px — Mobile Hamburger Visible & Within Bounds (P0 #2)",
+      "passed": true,
+      "details": "bounds=[left:321.0, right:365.0, w:44.0, h:44.0]"
+    },
+    {
+      "name": "Viewport 390x844 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=false, mobileBar=true, scrollWidth=390/390, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-visa\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":451.171875},{\"tag\":\"BUTTON\",\"id\":\"tab-packages\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":593.9375},{\"tag\":\"BUTTON\",\"id\":\"tab-cars\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":729.484375},{\"tag\":\"BUTTON\",\"id\":\"tab-rails\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":790.78125},{\"tag\":\"BUTTON\",\"id\":\"tab-cruises\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":870.078125}]"
+    },
+    {
+      "name": "Viewport 390px — Mobile Hamburger Visible & Within Bounds (P0 #2)",
+      "passed": true,
+      "details": "bounds=[left:336.0, right:380.0, w:44.0, h:44.0]"
+    },
+    {
+      "name": "Viewport 393x852 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=false, mobileBar=true, scrollWidth=393/393, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-visa\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":451.171875},{\"tag\":\"BUTTON\",\"id\":\"tab-packages\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":593.9375},{\"tag\":\"BUTTON\",\"id\":\"tab-cars\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":729.484375},{\"tag\":\"BUTTON\",\"id\":\"tab-rails\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":790.78125},{\"tag\":\"BUTTON\",\"id\":\"tab-cruises\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":870.078125}]"
+    },
+    {
+      "name": "Viewport 393px — Mobile Hamburger Visible & Within Bounds (P0 #2)",
+      "passed": true,
+      "details": "bounds=[left:339.0, right:383.0, w:44.0, h:44.0]"
+    },
+    {
+      "name": "Viewport 430x932 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=false, mobileBar=true, scrollWidth=430/430, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-visa\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":451.171875},{\"tag\":\"BUTTON\",\"id\":\"tab-packages\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":593.9375},{\"tag\":\"BUTTON\",\"id\":\"tab-cars\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":729.484375},{\"tag\":\"BUTTON\",\"id\":\"tab-rails\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":790.78125},{\"tag\":\"BUTTON\",\"id\":\"tab-cruises\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":870.078125}]"
+    },
+    {
+      "name": "Viewport 430px — Mobile Hamburger Visible & Within Bounds (P0 #2)",
+      "passed": true,
+      "details": "bounds=[left:376.0, right:420.0, w:44.0, h:44.0]"
+    },
+    {
+      "name": "Viewport 768x1024 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=true, mobileBar=false, scrollWidth=753/753, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-rails\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":814.78125},{\"tag\":\"BUTTON\",\"id\":\"tab-cruises\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":894.078125},{\"tag\":\"BUTTON\",\"id\":\"tab-activities\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":983.484375},{\"tag\":\"BUTTON\",\"id\":\"tab-sightseeing\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":1127.40625},{\"tag\":\"BUTTON\",\"id\":\"tab-insurance\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":1262.40625}]"
+    },
+    {
+      "name": "Viewport 1024x768 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=true, mobileBar=false, scrollWidth=1009/1009, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-sightseeing\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":1127.40625},{\"tag\":\"BUTTON\",\"id\":\"tab-insurance\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":1262.40625}]"
+    },
+    {
+      "name": "Viewport 1280x800 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=true, mobileBar=false, scrollWidth=1265/1265, overflowing=[{\"tag\":\"BUTTON\",\"id\":\"tab-insurance\",\"class\":\"search-tab px-3.5 py-2 rounded-xl text-[13px] font\",\"right\":1270.40625}]"
+    },
+    {
+      "name": "Viewport 1366x768 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=false, hamburger=true, dock=true, mobileBar=false, scrollWidth=1351/1351, overflowing=[]"
+    },
+    {
+      "name": "Viewport 1440x900 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=true, hamburger=false, dock=true, mobileBar=false, scrollWidth=1425/1425, overflowing=[]"
+    },
+    {
+      "name": "Viewport 1920x1080 — 1440px Nav Rule & Zero Overflow",
+      "passed": true,
+      "details": "desktopNav=true, hamburger=false, dock=true, mobileBar=false, scrollWidth=1905/1905, overflowing=[]"
+    },
+    {
+      "name": "P0 #3 — Exact 1440px Desktop Header Controls All Inside Viewport Bounds",
+      "passed": true,
+      "details": "tested=21 controls, bounds=[{\"name\":\"header\",\"left\":0,\"right\":1425,\"width\":1425,\"inside\":true},{\"name\":\"nav-item-0\",\"left\":198.859375,\"right\":251.875,\"width\":53.015625,\"inside\":true},{\"name\":\"nav-item-1\",\"left\":255.875,\"right\":313.28125,\"width\":57.40625,\"inside\":true},{\"name\":\"nav-item-2\",\"left\":317.28125,\"right\":373.03125,\"width\":55.75,\"inside\":true},{\"name\":\"nav-item-3\",\"left\":377.03125,\"right\":491.65625,\"width\":114.625,\"inside\":true},{\"name\":\"nav-item-4\",\"left\":495.65625,\"right\":622.421875,\"width\":126.765625,\"inside\":true},{\"name\":\"nav-item-5\",\"left\":626.421875,\"right\":745.96875,\"width\":119.546875,\"inside\":true},{\"name\":\"nav-item-6\",\"left\":749.96875,\"right\":818.109375,\"width\":68.140625,\"inside\":true},{\"name\":\"nav-item-7\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-8\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-9\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-10\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-11\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-12\",\"left\":822.109375,\"right\":923.59375,\"width\":101.484375,\"inside\":true},{\"name\":\"nav-item-13\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-14\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-15\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-16\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"locale-btn\",\"left\":956.453125,\"right\":1068.15625,\"width\":111.703125,\"inside\":true},{\"name\":\"trip-bucket-btn\",\"left\":1120.15625,\"right\":1263.84375,\"width\":143.6875,\"inside\":true},{\"name\":\"auth-group\",\"left\":1282.84375,\"right\":1409,\"width\":126.15625,\"inside\":true}]"
+    },
+    {
+      "name": "Journey A — Brand DNA (#1B1464), Official Logo Pack v2 Tagline & 11 Tabs",
+      "passed": true,
+      "details": "heroBg=rgb(27, 20, 100), headerOneColor=true, footerReverse=true, tabs=11"
+    },
+    {
+      "name": "Journey B — Flight Multi-City Leg Builder, Route Swap & Traveller/Room Rules",
+      "passed": true,
+      "details": "mcLegs=2->3, adults=1, infants=1, rooms=2"
+    },
+    {
+      "name": "Journeys C, E, F, G — Visa Check, 01 · Draft Staging, Cars Dual-Mode, Rail/Insurance Filters & Favorites Isolation",
+      "passed": true,
+      "details": "draftCount=1, carMode=\"Self-Drive Car Hire (Driver Age 30+)\", railOvernight=1"
+    },
+    {
+      "name": "Journey D — Holiday Package Details Modal Opens with Itinerary & Inert Background",
+      "passed": true,
+      "details": "title=\"Maldives Escape\""
+    },
+    {
+      "name": "Journey H — Trip Bucket Drawer: LKR 505,000 Baseline, Change Room (LKR 508,500) & Undo Remove",
+      "passed": true,
+      "details": "baseline=505000, roomUpgrade=508500, undoCount=2->3"
+    },
+    {
+      "name": "Journey I — Independent Language (SI/TA/EN) & Currency (USD/LKR) Switching with Real Message Catalog",
+      "passed": true,
+      "details": "switched=\"SI · USD\", samplePrice=\"$308*\", restored=\"EN · LKR\""
+    },
+    {
+      "name": "Journey J — Real Mobile Navigation Drawer: Open, Inert Trap, Escape Closure, Focus Return & Auth State",
+      "passed": true,
+      "details": "drawerOpen=true, focusTrapped=true, escapeClose=true, focusReturn=true"
+    },
+    {
+      "name": "Journey K — Real Keyboard-Only SCC Roving Tabindex & Navigation Flow",
+      "passed": true,
+      "details": "flightsFocused=true, hotelsSelected=true, flightsRestored=true"
+    },
+    {
+      "name": "Journey L — Real Scroll Hide/Show, Drawer Coordination & Zero False Claims / Diagnostic Leaks",
+      "passed": true,
+      "details": "visibleAtTop=true, hiddenDown=true, restoredUp=true, falseClaims=[], diagnostics=[]"
+    },
+    {
+      "name": "Delta Audit — Legal Disclosures & Granular Cookie Preferences Modal (Actionable, Inert Trap, Draft Status & Storage)",
+      "passed": true,
+      "details": "modalOpen=true, inertTrap=true, consentSaved=true, draftPill=true"
+    },
+    {
+      "name": "Delta Audit — Unverified Legal & Compliance Claims Removed (Neutral Prototype Framework Language & Targets)",
+      "passed": true,
+      "details": "noComplianceVerified=true, noStrictWcag=true, no11to1=true, targetWcag=true, noLogoCompact=true"
+    },
+    {
+      "name": "Delta Audit — Verified Social Presence (Facebook, Instagram, LinkedIn Locked URLs, Labels & Circles)",
+      "passed": true,
+      "details": "socialLinksVerified=3, orderAndLabelsMatched=true"
+    },
+    {
+      "name": "Delta Audit — Open Graph Public HTTPS Image, Canonical SEO, Favicons & Organization JSON-LD",
+      "passed": true,
+      "details": "canonical=true, ogTitle=true, ogImage=true, orgJsonLd=true, manifest=true"
+    },
+    {
+      "name": "Delta Audit — Search Command Center Horizontal Tab Rail Visual Affordance & Mask",
+      "passed": true,
+      "details": "hasRailAffordance=true"
+    },
+    {
+      "name": "Image Relevance Pass — Zero Duplicate Images Across 40 Product Cards & Contextually Relevant Alt Text",
+      "passed": true,
+      "details": "totalCards=40, uniqueImages=40, allHaveAlt=true"
+    },
+    {
+      "name": "Journey L — Zero Runtime Console Errors & Zero Uncaught Page Exceptions",
+      "passed": true,
+      "details": "consoleErrors=0, pageExceptions=0"
+    }
+  ],
+  "screenshots": [
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_360px_mobile.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_768px_tablet.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_1280px_laptop.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_1440px_desktop.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_footer_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_holiday_package_modal.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_trip_bucket_drawer.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_screen04_8states_inspector.png"
+  ],
+  "consoleErrors": [],
+  "pageExceptions": []
+}

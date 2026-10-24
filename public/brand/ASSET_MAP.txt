@@ -1,0 +1,39 @@
+VACATINA OFFICIAL LOGO PACK v2 — CANONICAL ASSET MAP
+
+FULL LOGOS — TAGLINE MUST REMAIN
+--------------------------------
+Primary Corporate / Full Color
+  full-logo/Vacatina_Logo_Primary_FullColor.png
+  Colors: #1B1464 + #0071BC + #FFFFFF
+
+One Color / Space Cadet
+  full-logo/Vacatina_Logo_OneColor_SpaceCadet.png
+  Color: #1B1464 + #FFFFFF aircraft details
+
+Reverse / Space Cadet Mark
+  full-logo/Vacatina_Logo_Reverse_SpaceCadet.png
+  Intended for suitable dark/navy use
+
+Monochrome Reverse
+  full-logo/Vacatina_Logo_Monochrome_Reverse.png
+  Monochrome utility use
+
+STANDALONE MARKS
+----------------
+Primary Digital Mark
+  marks/Vacatina_Mark_SpaceCadet.png
+  #1B1464 + #FFFFFF
+
+Secondary Mark
+  marks/Vacatina_Mark_FrenchBlue.png
+  #0071BC + #FFFFFF
+
+Monochrome Mark
+  marks/Vacatina_Mark_Black.png
+  #000000 + #FFFFFF
+
+MANDATORY RULE
+--------------
+Never remove the tagline from a supplied full-logo lockup.
+If the full logo cannot remain legible in constrained space, switch to an official standalone mark.
+Do not create a wordmark-only/no-tagline derivative unless an officially approved asset is later supplied by Vacatina.

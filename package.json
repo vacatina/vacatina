@@ -1,0 +1,20 @@
+{
+  "name": "vacatina-travel-os",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vacatina B2C Travel Operating System — Modular TypeScript & Tailwind Implementation (DESIGN v4 Locked)",
+  "type": "module",
+  "scripts": {
+    "build": "node --no-warnings scripts/build.mjs",
+    "dev": "node --no-warnings scripts/dev-server.mjs",
+    "preview": "node --no-warnings scripts/dev-server.mjs",
+    "test": "node --experimental-strip-types --no-warnings --test tests/unit.test.ts",
+    "test:e2e": "node --no-warnings scripts/browser-verify.mjs"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}

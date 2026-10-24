@@ -1,0 +1,18 @@
+VACATINA CANONICAL LOGO IMPLEMENTATION RULE
+
+Use ONLY the official assets in this pack.
+
+1. Never redraw, regenerate, approximate, trace, recolor, crop through, stretch, mirror or reconstruct the Vacatina logo.
+2. Never remove the tagline from any supplied full-logo asset. The tagline “we treasure your holidays” remains part of the supplied official full-logo lockup.
+3. Do not create a wordmark-only or no-tagline full logo unless Vacatina supplies that derivative as an officially approved asset.
+4. When space is constrained, switch to the supplied standalone official Vacatina mark instead of altering the full logo.
+5. Default corporate full logo: Vacatina_Logo_Primary_FullColor.png.
+6. Default compact digital mark: Vacatina_Mark_SpaceCadet.png.
+7. Use approved reverse artwork on dark backgrounds; never manufacture inverse variants with CSS filters.
+8. Preserve official colors exactly:
+   Space Cadet #1B1464 / RGB 27,20,100
+   French Blue #0071BC / RGB 0,113,188
+   White #FFFFFF / RGB 255,255,255
+   Black #000000 / RGB 0,0,0
+9. Maintain official clear space and original proportions.
+10. Audit desktop header, mobile header, mobile navigation, footer, favicon, PWA/app icons, social profile/share assets, auth surfaces, loading/error states, and remove every generic or synthetic Vacatina logo implementation.

@@ -1,0 +1,492 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>04 — Vacatina — Trip Bucket Component States v1.2 — REVIEW</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            primary: '#1B1464',
+            surface: '#FAFAFA',
+            dim: '#F5F5F5',
+            border: '#E5E5E5',
+            muted: '#525252',
+            success: '#15803D',
+            warning: '#B45309',
+            error: '#B91C1C',
+            info: '#1D4ED8'
+          }
+        },
+        fontFamily: {
+          headline: ['"Plus Jakarta Sans"', 'sans-serif'],
+          interface: ['Inter', 'sans-serif']
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #FAFAFA;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+  }
+  .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .font-interface { font-family: 'Inter', sans-serif; }
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="bg-brand-surface text-black min-h-screen p-4 sm:p-8 lg:p-12">
+<div class="max-w-7xl mx-auto space-y-12">
+
+  <!-- ================= TOP REFERENCE HEADER ================= -->
+  <header class="bg-white border border-brand-border rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
+    <div>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wider uppercase bg-brand-primary text-white">VACATINA SPECIFICATION</span>
+        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wider uppercase bg-amber-50 text-brand-warning border border-amber-200">REVIEW</span>
+      </div>
+      <h1 class="font-headline font-bold text-2xl sm:text-3xl text-black tracking-tight">Trip Bucket Component States</h1>
+      <p class="text-sm text-brand-muted mt-1">Internal Vacatina design and engineering reference · 04 — Vacatina — Trip Bucket Component States v1.2</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="bg-brand-surface border border-brand-border rounded-xl px-4 py-2.5 text-right">
+        <span class="block text-[10px] font-semibold uppercase text-brand-muted tracking-wider">Foundation Baseline</span>
+        <span class="font-bold text-xs text-brand-primary">v1.1 Interaction Locked</span>
+      </div>
+      <div class="bg-brand-surface border border-brand-border rounded-xl px-4 py-2.5 text-right">
+        <span class="block text-[10px] font-semibold uppercase text-brand-muted tracking-wider">State Model</span>
+        <span class="font-bold text-xs text-brand-success">8 Canonical States</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SECTION 1: 8 CANONICAL COMPONENT STATES ================= -->
+  <section aria-labelledby="section-states-title" class="space-y-6">
+    <div class="flex items-baseline justify-between border-b border-brand-border pb-3">
+      <div>
+        <h2 id="section-states-title" class="font-headline font-bold text-xl text-black">Section 1: 8 Canonical Travel Component States</h2>
+        <p class="text-xs text-brand-muted mt-0.5">Strict sequential execution order (01–08) defining presentation, actions, and Ready subtotal inclusion.</p>
+      </div>
+      <span class="text-xs font-semibold text-brand-muted">Provider-Agnostic Semantics</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- 01 — Draft / Choose Option -->
+      <article class="bg-white border border-brand-border rounded-2xl p-5 flex flex-col justify-between hover:border-brand-primary/40 transition">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-muted">01 · Draft</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-brand-dim text-brand-muted border border-brand-border">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-muted"></span> Draft
+            </span>
+          </div>
+          <h3 class="font-headline font-bold text-base text-black">Hotel — Dubai</h3>
+          <p class="text-xs text-brand-muted mt-1">Dates / room not selected</p>
+          <div class="mt-4 p-3 bg-brand-surface rounded-xl border border-brand-border space-y-1">
+            <span class="block text-[10px] font-semibold text-brand-muted uppercase">Financial Allocation</span>
+            <span class="block text-xs font-semibold text-brand-muted">Excluded from Ready subtotal</span>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" class="w-full bg-brand-primary text-white text-xs font-semibold py-2.5 px-4 rounded-xl hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Choose option
+          </button>
+        </div>
+      </article>
+
+      <!-- 02 — Ready -->
+      <article class="bg-white border-2 border-brand-success/40 rounded-2xl p-5 flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-success">02 · Ready</span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-brand-success border border-emerald-200">
+              <svg class="w-3 h-3 text-brand-success" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Ready
+            </span>
+          </div>
+          
+          <div class="space-y-3">
+            <!-- Compact Example 1: Flight Ready -->
+            <div class="p-3 bg-brand-surface rounded-xl border border-brand-border">
+              <div class="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Flight Ready</div>
+              <div class="text-xs font-bold text-black mt-0.5">Colombo (CMB) → London (LHR)</div>
+              <div class="font-headline font-bold text-sm text-brand-primary mt-1 tabular-nums">LKR 248,500</div>
+            </div>
+            
+            <!-- Compact Example 2: Hotel Ready -->
+            <div class="p-3 bg-brand-surface rounded-xl border border-brand-border">
+              <div class="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Hotel Ready</div>
+              <div class="text-xs font-bold text-black mt-0.5">Example London Hotel · Deluxe King Room</div>
+              <div class="font-headline font-bold text-sm text-brand-primary mt-1 tabular-nums">LKR 256,500</div>
+            </div>
+          </div>
+
+          <div class="mt-3 p-2.5 bg-emerald-50/60 rounded-xl border border-emerald-100">
+            <span class="block text-[11px] font-semibold text-brand-success">Included in Ready subtotal</span>
+            <span class="block text-[10px] text-brand-muted mt-0.5">Price and availability may change until booking is confirmed.</span>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" class="w-full bg-brand-primary text-white text-xs font-semibold py-2.5 px-4 rounded-xl hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Review Component
+          </button>
+        </div>
+      </article>
+
+      <!-- 03 — Needs Action -->
+      <article class="bg-white border border-amber-300 rounded-2xl p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-warning">03 · NEEDS ACTION</span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-brand-warning border border-amber-200">
+              <svg class="w-3 h-3 text-brand-warning" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Needs Action
+            </span>
+          </div>
+          <h3 class="font-headline font-bold text-base text-black">Visa Assistance — United Kingdom</h3>
+          <p class="text-xs text-brand-muted mt-1">1 Traveller</p>
+          <div class="font-headline font-bold text-sm text-black mt-2 tabular-nums">LKR 45,000</div>
+          
+          <div class="mt-3 p-3 bg-amber-50/70 border border-amber-200 rounded-xl space-y-1">
+            <p class="text-xs text-brand-warning font-semibold leading-snug">Complete applicant details before continuing.</p>
+            <span class="block text-[10px] text-brand-muted font-medium">Excluded from Ready subtotal</span>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" class="w-full bg-brand-primary text-white text-xs font-semibold py-2.5 px-4 rounded-xl hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Complete details
+          </button>
+        </div>
+      </article>
+
+      <!-- 04 — Refreshing Price -->
+      <article class="bg-white border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-info">04 · Refreshing</span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-brand-info border border-blue-200">
+              <svg class="w-3 h-3 animate-spin text-brand-info" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+              Refreshing Price
+            </span>
+          </div>
+          <h3 class="font-headline font-bold text-base text-black">Checking latest price and availability…</h3>
+          <p class="text-xs text-brand-muted mt-1">Checking the latest option details.</p>
+          
+          <div class="mt-4 p-3 bg-brand-surface rounded-xl border border-brand-border space-y-2">
+            <div class="w-full bg-brand-dim h-2 rounded-full overflow-hidden">
+              <div class="bg-brand-info h-2 rounded-full w-2/3 animate-pulse"></div>
+            </div>
+            <span class="block text-[11px] text-brand-muted">Actions are temporarily unavailable while this check completes.</span>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" disabled="" class="w-full bg-brand-dim text-brand-muted text-xs font-semibold py-2.5 px-4 rounded-xl cursor-not-allowed">
+            Checking latest price…
+          </button>
+        </div>
+      </article>
+
+      <!-- 05 — Price Changed -->
+      <article class="bg-white border border-amber-300 rounded-2xl p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-warning">05 · Price Changed</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-brand-warning border border-amber-200">
+              Price Changed
+            </span>
+          </div>
+          <h3 class="font-headline font-bold text-base text-black">Example London Hotel</h3>
+          <p class="text-xs text-brand-muted mt-0.5">Deluxe King Room</p>
+          
+          <div class="mt-3 p-3 bg-brand-surface rounded-xl border border-brand-border space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-brand-muted">Previous price:</span>
+              <span class="line-through text-brand-muted tabular-nums">LKR 256,500</span>
+            </div>
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span class="text-black">Updated price:</span>
+              <span class="text-brand-primary tabular-nums">LKR 260,000</span>
+            </div>
+            <div class="flex justify-between items-center text-[11px] font-semibold text-brand-warning pt-1 border-t border-brand-border">
+              <span class="">Difference:</span>
+              <span class="tabular-nums">+LKR 3,500</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-brand-muted mt-2">Requires explicit review before continuing.</p>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" class="w-full bg-brand-primary text-white text-xs font-semibold py-2.5 px-4 rounded-xl hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Review updated price
+          </button>
+        </div>
+      </article>
+
+      <!-- 06 — Recheck Required -->
+      <article class="bg-white border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-info">06 · Recheck</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-brand-info border border-blue-200">
+              Recheck Required
+            </span>
+          </div>
+          <h3 class="font-headline font-bold text-base text-black">Airport Transfer</h3>
+          <p class="text-xs text-brand-muted mt-1">Heathrow Executive Sedan</p>
+          
+          <div class="mt-4 p-3 bg-brand-surface rounded-xl border border-brand-border space-y-1">
+            <p class="text-xs text-black font-medium leading-relaxed">Price or availability needs to be checked again.</p>
+            <span class="block text-[11px] text-brand-muted">This item needs a fresh price or availability check.</span>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" class="w-full bg-brand-primary text-white text-xs font-semibold py-2.5 px-4 rounded-xl hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Recheck availability
+          </button>
+        </div>
+      </article>
+
+      <!-- 07 — Offer Expired -->
+      <article class="bg-white border border-brand-error/40 rounded-2xl p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-error">07 · Expired</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-brand-error border border-red-200">
+              Offer Expired
+            </span>
+          </div>
+          <h3 class="font-headline font-bold text-base text-black">Flight — Promotional Colombo → Bangkok</h3>
+          <p class="text-xs text-brand-muted mt-1">Previously available option expired</p>
+          
+          <div class="mt-4 p-3 bg-red-50/70 border border-red-100 rounded-xl space-y-1">
+            <p class="text-xs text-brand-error font-medium leading-relaxed">The previously available offer can no longer be used.</p>
+            <span class="block text-[10px] text-brand-muted">This offer is no longer available.</span>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" class="w-full bg-white border border-brand-border text-black hover:bg-brand-surface text-xs font-semibold py-2.5 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Find replacement
+          </button>
+        </div>
+      </article>
+
+      <!-- 08 — Unavailable -->
+      <article class="bg-white border border-brand-error/40 rounded-2xl p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[10px] font-bold tracking-wider uppercase text-brand-error">08 · Unavailable</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-brand-error border border-red-200">
+              Unavailable
+            </span>
+          </div>
+          <h3 class="font-headline font-bold text-base text-black">Hotel — Maldives Overwater Bungalow</h3>
+          <p class="text-xs text-brand-muted mt-1">0 Rooms available</p>
+          
+          <div class="mt-4 p-3 bg-red-50/70 border border-red-100 rounded-xl space-y-1">
+            <p class="text-xs text-brand-error font-medium leading-relaxed">The selected option is no longer available.</p>
+            <span class="block text-[10px] text-brand-muted">No rooms are currently available for this option.</span>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-brand-border">
+          <button type="button" class="w-full bg-white border border-brand-border text-black hover:bg-brand-surface text-xs font-semibold py-2.5 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Find alternatives
+          </button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= SECTION 2: TRIP SUMMARY REFERENCE ================= -->
+  <section aria-labelledby="section-summary-title" class="space-y-6">
+    <div class="flex items-baseline justify-between border-b border-brand-border pb-3">
+      <div>
+        <h2 id="section-summary-title" class="font-headline font-bold text-xl text-black">Section 2: Trip Summary Reference &amp; Calculation Rules</h2>
+        <p class="text-xs text-brand-muted mt-0.5">Strict financial containment: Only Ready items factor into the Ready items estimate.</p>
+      </div>
+      <span class="text-xs font-semibold text-brand-muted">Active Subtotal Contract</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Summary Card Pattern -->
+      <div class="lg:col-span-7 bg-white border border-brand-border rounded-2xl p-6 shadow-sm space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-brand-border">
+          <h3 class="font-headline font-bold text-lg text-black">Trip Summary</h3>
+          <span class="text-xs text-brand-muted font-medium">Active Bucket: 3 Items</span>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Item 1: Flight Ready -->
+          <div class="flex items-center justify-between p-3.5 bg-brand-surface rounded-xl border border-brand-border">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-brand-success border border-emerald-200">Ready</span>
+              <span class="text-sm font-semibold text-black">Flight — Ready</span>
+            </div>
+            <span class="font-headline font-bold text-sm text-black tabular-nums">LKR 248,500</span>
+          </div>
+
+          <!-- Item 2: Hotel Ready -->
+          <div class="flex items-center justify-between p-3.5 bg-brand-surface rounded-xl border border-brand-border">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-brand-success border border-emerald-200">Ready</span>
+              <span class="text-sm font-semibold text-black">Hotel — Ready</span>
+            </div>
+            <span class="font-headline font-bold text-sm text-black tabular-nums">LKR 256,500</span>
+          </div>
+
+          <!-- Item 3: Visa Assistance Needs Action -->
+          <div class="flex items-center justify-between p-3.5 bg-brand-surface rounded-xl border border-brand-border">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-brand-warning border border-amber-200">Needs Action</span>
+              <div>
+                <span class="text-sm font-semibold text-black">Visa Assistance — Needs Action</span>
+                <span class="block text-[11px] text-brand-warning">Excluded from Ready subtotal</span>
+              </div>
+            </div>
+            <span class="font-headline font-bold text-sm text-brand-muted tabular-nums">LKR 45,000</span>
+          </div>
+        </div>
+
+        <!-- Subtotal Readout -->
+        <div class="pt-4 border-t border-brand-border flex items-baseline justify-between">
+          <div>
+            <span class="text-xs font-semibold uppercase text-brand-muted tracking-wider block">Ready items estimate</span>
+            <span class="text-xs text-brand-muted">Calculated subtotal of ready states (248,500 + 256,500)</span>
+          </div>
+          <div class="font-headline font-extrabold text-2xl text-brand-primary tabular-nums">
+            LKR 505,000
+          </div>
+        </div>
+
+        <!-- Explanation Callout -->
+        <div class="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-brand-warning flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <p class="text-xs text-brand-warning leading-relaxed font-medium">
+            Visa Assistance is excluded from the Ready subtotal until required details are completed.
+          </p>
+        </div>
+
+        <div class="pt-2">
+          <button type="button" class="w-full bg-brand-primary text-white font-semibold text-sm py-3.5 rounded-xl hover:opacity-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-brand-primary">
+            Review Trip
+          </button>
+        </div>
+      </div>
+
+      <!-- Engineering Rules & Invariants Card -->
+      <div class="lg:col-span-5 bg-white border border-brand-border rounded-2xl p-6 shadow-sm space-y-4">
+        <h3 class="font-headline font-bold text-base text-black">Architectural Rules &amp; Constraints</h3>
+        <ul class="space-y-3 text-xs text-brand-muted">
+          <li class="p-3 bg-brand-surface rounded-xl border border-brand-border">
+            <strong class="text-black block mb-0.5">State Subtotal Separation</strong>
+            No item in Draft, Needs Action, Unavailable, or Offer Expired may ever be summed into the customer total readout.
+          </li>
+          <li class="p-3 bg-brand-surface rounded-xl border border-brand-border">
+            <strong class="text-black block mb-0.5">Strict Button Naming</strong>
+            The primary action for bucket transition is strictly <code class="text-brand-primary font-bold">Review Trip</code>. "Proceed to Checkout" is forbidden at this step.
+          </li>
+          <li class="p-3 bg-brand-surface rounded-xl border border-brand-border"><strong class="text-black block mb-0.5">Price Change Re-evaluation</strong>
+            If a checked price changes, require explicit customer review before continuing.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 3: DESIGN TOKEN REFERENCE ================= -->
+  <section aria-labelledby="section-tokens-title" class="space-y-6">
+    <div class="flex items-baseline justify-between border-b border-brand-border pb-3">
+      <div>
+        <h2 id="section-tokens-title" class="font-headline font-bold text-xl text-black">Section 3: Design Token Reference</h2>
+        <p class="text-xs text-brand-muted mt-0.5">Approved core color tokens and neutrals for engineering implementation.</p>
+      </div>
+      <span class="text-xs font-semibold text-brand-muted">WCAG 2.2 AA Compliant</span>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <!-- Primary Brand / Primary CTA -->
+      <div class="bg-white border border-brand-border rounded-2xl p-4 space-y-3">
+        <div class="h-16 rounded-xl bg-[#1B1464] border border-black/10 flex items-center justify-center text-white text-xs font-bold">
+          AAA Contrast
+        </div>
+        <div>
+          <span class="text-xs font-bold text-black block">Primary Brand / CTA</span>
+          <span class="text-xs text-brand-muted tabular-nums">#1B1464 (Space Cadet)</span>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div class="bg-white border border-brand-border rounded-2xl p-4 space-y-3">
+        <div class="h-16 rounded-xl bg-[#15803D] border border-black/10"></div>
+        <div>
+          <span class="text-xs font-bold text-black block">Success</span>
+          <span class="text-xs text-brand-muted tabular-nums">#15803D</span>
+        </div>
+      </div>
+
+      <!-- Warning -->
+      <div class="bg-white border border-brand-border rounded-2xl p-4 space-y-3">
+        <div class="h-16 rounded-xl bg-[#B45309] border border-black/10"></div>
+        <div>
+          <span class="text-xs font-bold text-black block">Warning</span>
+          <span class="text-xs text-brand-muted tabular-nums">#B45309</span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="bg-white border border-brand-border rounded-2xl p-4 space-y-3">
+        <div class="h-16 rounded-xl bg-[#B91C1C] border border-black/10"></div>
+        <div>
+          <span class="text-xs font-bold text-black block">Error</span>
+          <span class="text-xs text-brand-muted tabular-nums">#B91C1C</span>
+        </div>
+      </div>
+
+      <!-- Information -->
+      <div class="bg-white border border-brand-border rounded-2xl p-4 space-y-3">
+        <div class="h-16 rounded-xl bg-[#1D4ED8] border border-black/10"></div>
+        <div>
+          <span class="text-xs font-bold text-black block">Information</span>
+          <span class="text-xs text-brand-muted tabular-nums">#1D4ED8</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approved Neutrals -->
+    <div class="bg-white border border-brand-border rounded-2xl p-5 space-y-3">
+      <span class="text-xs font-bold uppercase tracking-wider text-brand-muted block">Approved Neutrals</span>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="p-3 bg-[#FAFAFA] border border-brand-border rounded-xl">
+          <span class="font-semibold text-black block">Surface Neutral</span>
+          <span class="text-brand-muted tabular-nums">#FAFAFA</span>
+        </div>
+        <div class="p-3 bg-[#F5F5F5] border border-brand-border rounded-xl">
+          <span class="font-semibold text-black block">Muted Neutral</span>
+          <span class="text-brand-muted tabular-nums">#F5F5F5</span>
+        </div>
+        <div class="p-3 bg-white border border-[#E5E5E5] rounded-xl">
+          <span class="font-semibold text-black block">Border Solid</span>
+          <span class="text-brand-muted tabular-nums">#E5E5E5</span>
+        </div>
+        <div class="p-3 bg-[#525252] text-white rounded-xl">
+          <span class="font-semibold block">Text Tertiary</span>
+          <span class="text-gray-300 tabular-nums">#525252</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+
+
+
+</body></html>
