@@ -107,7 +107,9 @@ async function main() {
 
   // Push to remote main
   console.log('\n▶ [CD Step] Pushing commits to GitHub (vacatina/vacatina main)');
-  const pushRes = spawnSync('git', ['push', 'origin', 'main'], { cwd: ROOT_DIR, stdio: 'inherit', shell: true });
+  const ghToken = process.env.GH_TOKEN;
+  const pushTarget = ghToken ? `https://${ghToken}@github.com/vacatina/vacatina.git` : 'origin';
+  const pushRes = spawnSync('git', ['push', pushTarget, 'main'], { cwd: ROOT_DIR, stdio: 'inherit', shell: true });
   if (pushRes.status !== 0) {
     console.warn('[CD Warning] Direct git push exited with non-zero code. Checking if already up to date.');
   }
