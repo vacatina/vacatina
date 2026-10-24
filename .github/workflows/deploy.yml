@@ -1,0 +1,60 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  verify-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Clean Build Pipeline
+        run: npm run build
+
+      - name: Run Domain & Validation Unit Tests
+        run: npm test
+
+      - name: Pull Vercel Environment (Production)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts for Vercel
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Prebuilt Artifacts to Vercel Production
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Verify Live Production Health
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          echo "Verifying live production URL..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://vacatina-nu.vercel.app)
+          echo "HTTP Status: $STATUS"
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Error: Deployed production site did not return HTTP 200"
+            exit 1
+          fi
+          echo "Live URL is healthy and serving production traffic: https://vacatina-nu.vercel.app"

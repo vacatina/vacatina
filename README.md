@@ -124,3 +124,44 @@ vacatina/
 └── tests/
     └── unit.test.ts                            # Node native TypeScript unit tests
 ```
+
+
+---
+
+## 4. Continuous Deployment & GitHub Integration
+
+Vacatina is configured for automated continuous deployment connecting a dedicated private GitHub repository to the production Vercel project:
+
+- **Private GitHub Repository**: [`vacatina/vacatina`](https://github.com/vacatina/vacatina)
+- **Vercel Project**: `vacatina` (Team: `vacatinas-projects`)
+- **Live Production URL**: [`https://vacatina-nu.vercel.app`](https://vacatina-nu.vercel.app)
+- **Production Branch**: `main`
+- **Build Settings**: `node scripts/build.mjs` $\rightarrow$ Output: `dist-site`
+- **GitHub Secrets Configured**: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+
+### Automated Update Cycle
+After each completed update, execute:
+```powershell
+# Run checks, commit & push to GitHub, build & deploy to Vercel, and verify live URL
+npm run cd
+```
+
+Or step-by-step:
+1. **Run relevant checks**:
+   ```powershell
+   npm run build
+   npm test
+   npm run test:e2e
+   node scripts/verify-image-relevance.mjs
+   node scripts/scan-truthful-copy.mjs
+   ```
+2. **Commit and push tested changes**:
+   ```powershell
+   git add .
+   git commit -m "feat/fix: <description>"
+   git push origin main
+   ```
+3. **Wait for Vercel deployment to succeed**:
+   GitHub Actions workflow (`.github/workflows/deploy.yml`) automatically pulls, builds, and deploys to Vercel production upon push to `main`.
+4. **Verify updated site at live URL**:
+   Inspect `https://vacatina-nu.vercel.app` (HTTP 200, 0 console errors, approved UI intact).
