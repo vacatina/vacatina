@@ -86,16 +86,16 @@ export class BookingSagaService {
       throw new Error(`Cannot initiate booking: Trip Bucket '${params.tripBucketId}' is empty`);
     }
 
-    // 3. Strict Readiness & Seed Protection Invariant
+    // 3. Strict Seed Protection & Readiness Invariant
+    const seedItems = bucketItems.filter(i => i.sourceType === 'SEED');
+    if (seedItems.length > 0) {
+      throw new Error(`Commercial violation: Seed / demonstration content cannot enter checkout`);
+    }
+
     const unreadyItems = bucketItems.filter(i => i.state !== 'READY');
     if (unreadyItems.length > 0) {
       const reasons = unreadyItems.map(i => `${i.canonicalOfferId} is in '${i.state}' state`);
       throw new Error(`Cannot checkout unready items: ${reasons.join(', ')}`);
-    }
-
-    const seedItems = bucketItems.filter(i => i.sourceType === 'SEED');
-    if (seedItems.length > 0) {
-      throw new Error(`Commercial violation: Seed / demonstration content cannot enter checkout`);
     }
 
     // 4. Calculate Final Settlement Math in Integer Minor Units

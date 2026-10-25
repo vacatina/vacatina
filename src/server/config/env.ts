@@ -24,8 +24,17 @@ export interface VacatinaServerEnv {
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
   
+  DUFFEL_ENV?: 'test' | 'live';
   DUFFEL_API_TOKEN?: string;
+  AMADEUS_ENV?: 'test' | 'production';
+  AMADEUS_CLIENT_ID?: string;
+  AMADEUS_CLIENT_SECRET?: string;
+  LITEAPI_ENV?: 'sandbox' | 'production';
   LITEAPI_API_KEY?: string;
+  VIATOR_ENV?: 'sandbox' | 'production';
+  VIATOR_API_KEY?: string;
+  TRAINLINE_ENV?: 'sandbox' | 'production';
+  TRAINLINE_API_KEY?: string;
   
   LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
   OTEL_SERVICE_NAME: string;
@@ -67,8 +76,17 @@ export function validateServerEnv(envSource: Record<string, string | undefined> 
     STRIPE_SECRET_KEY: envSource.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: envSource.STRIPE_WEBHOOK_SECRET,
     
+    DUFFEL_ENV: (envSource.DUFFEL_ENV || 'test') as any,
     DUFFEL_API_TOKEN: envSource.DUFFEL_API_TOKEN,
+    AMADEUS_ENV: (envSource.AMADEUS_ENV || 'test') as any,
+    AMADEUS_CLIENT_ID: envSource.AMADEUS_CLIENT_ID,
+    AMADEUS_CLIENT_SECRET: envSource.AMADEUS_CLIENT_SECRET,
+    LITEAPI_ENV: (envSource.LITEAPI_ENV || 'sandbox') as any,
     LITEAPI_API_KEY: envSource.LITEAPI_API_KEY,
+    VIATOR_ENV: (envSource.VIATOR_ENV || 'sandbox') as any,
+    VIATOR_API_KEY: envSource.VIATOR_API_KEY,
+    TRAINLINE_ENV: (envSource.TRAINLINE_ENV || 'sandbox') as any,
+    TRAINLINE_API_KEY: envSource.TRAINLINE_API_KEY,
     
     LOG_LEVEL: (envSource.LOG_LEVEL || 'info') as VacatinaServerEnv['LOG_LEVEL'],
     OTEL_SERVICE_NAME: envSource.OTEL_SERVICE_NAME || 'vacatina-travel-os'

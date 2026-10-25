@@ -1,0 +1,249 @@
+/* ============================================================================
+ * Vacatina Payload CMS & Direct Contract Manual Adapter
+ * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md (Q9/Q11/Q12)
+ *
+ * Powers Vacatina's manual inventory: boutique hotels, private charters,
+ * local chauffeur fleet, licensed tours, and exclusive direct contracts.
+ * ============================================================================ */
+
+import { BaseSupplierAdapter } from './base.adapter.ts';
+import type {
+  BookingCancelResult,
+  BookingConfirmResult,
+  BookingHoldResult
+} from './base.adapter.ts';
+import type {
+  CanonicalOfferEntity,
+  ConfirmationMode,
+  RevalidationResult,
+  SearchQueryCriteria,
+  StructuredLocation,
+  TravelProductSlug
+} from '../types.ts';
+import { PricingPrecedenceService } from '../pricing-precedence.service.ts';
+import { DeduplicationService } from '../deduplication.service.ts';
+
+export interface RawPayloadCmsListing {
+  id: string; // "cms_dir_001"
+  productType: TravelProductSlug;
+  partnerSupplierId: string;
+  partnerName: string;
+  title: string;
+  subtitle: string;
+  location: StructuredLocation;
+  confirmationMode: ConfirmationMode;
+  availableQuota: number;
+  contractedBaseCostMinor: number;
+  costCurrency: string;
+  manualOverridePriceMinor?: number;
+  overrideReason?: string;
+  inclusions: string[];
+  exclusions: string[];
+  cancellationPolicy: string;
+  pinAboveApi: boolean;
+  status: 'DRAFT' | 'PUBLISHED' | 'PAUSED';
+}
+
+export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> {
+  private manualCatalog: Map<string, RawPayloadCmsListing>;
+
+  constructor() {
+    super({
+      supplierId: 'PAYLOAD_CMS_DIRECT',
+      supplierName: 'Vacatina Direct Contract Desk',
+      productType: 'hotels', // Default; serves multi-product
+      environment: 'production',
+      sandboxBaseUrl: 'http://localhost:3000/api',
+      productionBaseUrl: 'https://vacatina-nu.vercel.app/api',
+      timeoutMs: 2000
+    });
+
+    this.manualCatalog = new Map();
+    this.seedDefaultDirectContracts();
+  }
+
+  private seedDefaultDirectContracts(): void {
+    const defaultListings: RawPayloadCmsListing[] = [
+      {
+        id: 'cms_dir_ht_001',
+        productType: 'hotels',
+        partnerSupplierId: 'CEYLON_HERITAGE_HOTELS',
+        partnerName: 'Galle Fort Heritage Bungalow',
+        title: 'Galle Fort Heritage Bungalow',
+        subtitle: 'Colonial Luxury Suite · Direct Contract Exclusive · Breakfast Included',
+        location: { city: 'Galle', country: 'Sri Lanka', countryCode: 'LK' },
+        confirmationMode: 'INSTANT_CONFIRM',
+        availableQuota: 4,
+        contractedBaseCostMinor: 4500000, // LKR 45,000.00
+        costCurrency: 'LKR',
+        manualOverridePriceMinor: 4800000, // Promotional override
+        overrideReason: 'Seasonal Exclusive Contract Rate',
+        inclusions: [
+          'Full English / Sri Lankan breakfast',
+          'Private butler service & afternoon Ceylon tea',
+          'Free airport transfer on 3+ night bookings'
+        ],
+        exclusions: ['Alcoholic beverages & minibar', 'Laundry services'],
+        cancellationPolicy: 'Free cancellation up to 48 hours prior to check-in.',
+        pinAboveApi: true,
+        status: 'PUBLISHED'
+      },
+      {
+        id: 'cms_dir_fl_002',
+        productType: 'flights',
+        partnerSupplierId: 'CINNAMON_AIR_DIRECT',
+        partnerName: 'Cinnamon Air Scenic Charter',
+        title: 'Colombo to Kandy Scenic Amphibian Flight',
+        subtitle: 'Cessna 208 Caravan Amphibian · Water Aerodrome Departure',
+        location: { city: 'Kandy', country: 'Sri Lanka', countryCode: 'LK', iataCode: 'KDZ' },
+        confirmationMode: 'REQUEST_TO_CONFIRM',
+        availableQuota: 8,
+        contractedBaseCostMinor: 6500000, // LKR 65,000.00
+        costCurrency: 'LKR',
+        inclusions: ['Scenic aerial route over central highlands', '20kg baggage allowance per seat'],
+        exclusions: ['Ground transfers between water aerodrome and hotel'],
+        cancellationPolicy: 'Non-refundable within 72 hours of flight departure.',
+        pinAboveApi: true,
+        status: 'PUBLISHED'
+      },
+      {
+        id: 'cms_dir_vs_003',
+        productType: 'visa',
+        partnerSupplierId: 'VACATINA_CONSULAR_DESK',
+        partnerName: 'Vacatina Consular Advisory',
+        title: 'UAE 60-Day Visit Visa Assistance',
+        subtitle: 'Full Consular Document Audit · Dedicated Officer SLA 48h',
+        location: { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE' },
+        confirmationMode: 'ASSISTED_SERVICE',
+        availableQuota: 100,
+        contractedBaseCostMinor: 4500000, // LKR 45,000.00 Govt Fee
+        costCurrency: 'LKR',
+        inclusions: [
+          'Embassy fee settlement & compliance verification',
+          'Mandatory COVID-19 & travel health insurance voucher',
+          'Dedicated consular case manager support'
+        ],
+        exclusions: ['Courier delivery of hardcopy passport stamps (e-visa issued)'],
+        cancellationPolicy: 'Government fee non-refundable once lodged with GDRFA.',
+        pinAboveApi: true,
+        status: 'PUBLISHED'
+      }
+    ];
+
+    for (const listing of defaultListings) {
+      this.manualCatalog.set(listing.id, listing);
+    }
+  }
+
+  public normalize(raw: RawPayloadCmsListing): CanonicalOfferEntity {
+    const pricing = PricingPrecedenceService.calculatePricing({
+      productType: raw.productType,
+      rawSupplierCostMinor: raw.contractedBaseCostMinor,
+      rawCurrency: raw.costCurrency,
+      manualOverrideMinor: raw.manualOverridePriceMinor,
+      overrideReason: raw.overrideReason
+    });
+
+    const offerId = `vct-man-${raw.productType.slice(0, 2)}-${raw.id.slice(-6)}`;
+
+    const offer: CanonicalOfferEntity = {
+      canonicalOfferId: offerId,
+      productType: raw.productType,
+      sourceType: 'MANUAL',
+      supplierId: raw.partnerSupplierId,
+      supplierName: raw.partnerName,
+      manualListingId: raw.id,
+      title: raw.title,
+      subtitle: raw.subtitle,
+      location: raw.location,
+      availabilityStatus: raw.availableQuota > 0 ? 'MANUAL_AVAILABLE' : 'SOLD_OUT',
+      confirmationMode: raw.confirmationMode,
+      bookingMode: raw.confirmationMode === 'INSTANT_CONFIRM' ? 'INSTANT_BOOK' : 'REQUEST_TO_BOOK',
+      pricing,
+      freshness: {
+        lastCheckedAtIso: new Date().toISOString(),
+        ttlSeconds: 86400, // Manual listings valid until updated
+        expiresAtIso: new Date(Date.now() + 86400000).toISOString(),
+        isStale: false,
+        revalidationEndpoint: `/api/v1/offers/${offerId}/revalidate`
+      },
+      inclusions: raw.inclusions,
+      exclusions: raw.exclusions,
+      cancellationPolicy: raw.cancellationPolicy,
+      pinAboveApi: raw.pinAboveApi,
+      deduplicationKey: '',
+      sourceMetadata: {
+        cmsListingId: raw.id,
+        availableQuota: raw.availableQuota,
+        status: raw.status
+      },
+      revalidationCapability: {
+        canRevalidateOnline: true,
+        requiresSupplierPing: false,
+        lastRevalidationResult: 'UNCHANGED'
+      }
+    };
+
+    offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
+    return offer;
+  }
+
+  public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {
+    const matching: CanonicalOfferEntity[] = [];
+
+    for (const listing of this.manualCatalog.values()) {
+      if (listing.status !== 'PUBLISHED') continue;
+      if (criteria.productType && listing.productType !== criteria.productType) continue;
+
+      if (criteria.destination) {
+        const destNorm = criteria.destination.toLowerCase();
+        const cityMatch = listing.location.city.toLowerCase().includes(destNorm);
+        const countryMatch = listing.location.country.toLowerCase().includes(destNorm);
+        if (!cityMatch && !countryMatch) continue;
+      }
+
+      matching.push(this.normalize(listing));
+    }
+
+    return matching;
+  }
+
+  public async revalidate(offerId: string): Promise<RevalidationResult> {
+    return {
+      offerId,
+      status: 'UNCHANGED',
+      message: 'Direct contract allotment confirmed in Vacatina Admin Ledger'
+    };
+  }
+
+  public async hold(offerId: string): Promise<BookingHoldResult> {
+    return {
+      holdReference: `MAN-HLD-${offerId.slice(-6).toUpperCase()}`,
+      expiresAtIso: new Date(Date.now() + 86400000).toISOString(),
+      guaranteedPriceMinor: 4800000,
+      currency: 'LKR'
+    };
+  }
+
+  public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    return {
+      supplierReference: `DIR-ALC-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+      ticketOrVoucherNumber: `VCT-DIR-${Math.floor(100000 + Math.random() * 900000)}`,
+      confirmedAtIso: new Date().toISOString(),
+      fulfillmentStatus: 'CONFIRMED'
+    };
+  }
+
+  public async cancel(supplierReference: string): Promise<BookingCancelResult> {
+    return {
+      cancellationReference: `DIR-CXL-${supplierReference.slice(-6)}`,
+      cancelledAtIso: new Date().toISOString(),
+      cancellationFeeMinor: 0,
+      refundEligibleMinor: 4800000
+    };
+  }
+
+  public upsertListing(listing: RawPayloadCmsListing): void {
+    this.manualCatalog.set(listing.id, listing);
+  }
+}

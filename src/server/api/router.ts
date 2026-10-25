@@ -10,6 +10,7 @@ import { globalBookingSagaService, type BookingSagaService } from '../services/b
 import { globalPaymentGatewayService, type PaymentGatewayService } from '../services/payment-gateway.service.ts';
 import { searchAggregatorService } from '../../lib/services/search-aggregator.service.ts';
 import { manualInventoryService } from '../../lib/services/manual-inventory.service.ts';
+import { globalUnifiedInventory } from '../inventory/unified-inventory.service.ts';
 
 export interface ApiProblemDetails {
   type: string;
@@ -85,22 +86,55 @@ export class VacatinaApiRouter {
       }
 
       // ----------------------------------------------------------------------
+      // 1b. Supplier Inventory Health: GET /api/v1/inventory/health
+      // ----------------------------------------------------------------------
+      if (path === '/api/v1/inventory/health' && method === 'GET') {
+        return createJsonResponse({
+          status: 'OK',
+          suppliers: globalUnifiedInventory.getSupplierHealth(),
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // ----------------------------------------------------------------------
       // 2. Search & Aggregation: POST /api/v1/search/:product
       // ----------------------------------------------------------------------
       if (path.startsWith('/api/v1/search/') && method === 'POST') {
         const productType = path.replace('/api/v1/search/', '') as any;
         const body = await request.json().catch(() => ({}));
-        const results = searchAggregatorService.search({
+        
+        // Execute search across Unified Inventory Engine
+        const unifiedOffers = await globalUnifiedInventory.search({
+          productType,
+          destination: body.destination || 'Dubai',
+          origin: body.origin,
+          departureDate: body.departureDate,
+          cabinClass: body.cabinClass,
+          currency: body.currency
+        });
+
+        // If unified inventory yields offers, return canonical offers
+        if (unifiedOffers.length > 0) {
+          return createJsonResponse({
+            productType,
+            totalResults: unifiedOffers.length,
+            offers: unifiedOffers
+          });
+        }
+
+        // Fallback to in-memory aggregator if no external adapter responded
+        const fallbackResults = searchAggregatorService.search({
           productType,
           destination: body.destination,
           origin: body.origin,
           dates: body.dates,
           passengers: body.passengers
         });
+
         return createJsonResponse({
           productType,
-          totalResults: results.length,
-          offers: results
+          totalResults: fallbackResults.length,
+          offers: fallbackResults
         });
       }
 
@@ -109,14 +143,14 @@ export class VacatinaApiRouter {
       // ----------------------------------------------------------------------
       if (path.startsWith('/api/v1/offers/') && path.endsWith('/revalidate') && method === 'POST') {
         const offerId = path.split('/')[4];
-        // Execute revalidation check against aggregator
-        const reval = searchAggregatorService.revalidateOffer(offerId);
+        const reval = await globalUnifiedInventory.revalidateOffer(offerId);
         return createJsonResponse({
           offerId,
           status: reval.status,
-          priceChanged: reval.priceChanged,
-          currentPrice: reval.currentPrice,
-          previousPrice: reval.previousPrice,
+          priceChanged: reval.status === 'PRICE_CHANGED',
+          currentPrice: reval.newPriceMinor,
+          previousPrice: reval.previousPriceMinor,
+          message: reval.message,
           checkedAt: new Date().toISOString()
         });
       }

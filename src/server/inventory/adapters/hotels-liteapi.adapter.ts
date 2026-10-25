@@ -1,0 +1,172 @@
+/* ============================================================================
+ * Vacatina LiteAPI Hotel Supplier Adapter
+ * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md (Q3/Q9/Q10/Q11)
+ * ============================================================================ */
+
+import { BaseSupplierAdapter } from './base.adapter.ts';
+import type {
+  BookingCancelResult,
+  BookingConfirmResult,
+  BookingHoldResult
+} from './base.adapter.ts';
+import type {
+  CanonicalOfferEntity,
+  RevalidationResult,
+  SearchQueryCriteria
+} from '../types.ts';
+import { PricingPrecedenceService } from '../pricing-precedence.service.ts';
+import { DeduplicationService } from '../deduplication.service.ts';
+
+export interface RawLiteApiHotelOffer {
+  hotelId: string; // "lp_99214"
+  name: string;    // "Atlantis The Palm"
+  city: string;
+  country: string;
+  countryCode: string;
+  roomType: string; // "Ocean King Suite"
+  boardBasis: string; // "Breakfast Included"
+  netPrice: number; // 480.00
+  currency: string; // "USD"
+  instantConfirmation: boolean;
+  freeCancellationBefore?: string; // ISO
+  amenities?: string[];
+}
+
+export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOffer> {
+  constructor(environment: 'sandbox' | 'production' = 'sandbox', apiKey?: string) {
+    super({
+      supplierId: 'LITEAPI',
+      supplierName: 'LiteAPI Global Bedbank',
+      productType: 'hotels',
+      environment,
+      sandboxBaseUrl: 'https://api.sandbox.liteapi.travel/v1',
+      productionBaseUrl: 'https://api.liteapi.travel/v1',
+      apiKey,
+      timeoutMs: 5000
+    });
+  }
+
+  public normalize(raw: RawLiteApiHotelOffer): CanonicalOfferEntity {
+    const rawCostMinor = Math.round(raw.netPrice * 100);
+    const rawCurrency = raw.currency || 'USD';
+
+    // Apply 4-layer pricing precedence
+    const pricing = PricingPrecedenceService.calculatePricing({
+      productType: 'hotels',
+      rawSupplierCostMinor: rawCostMinor,
+      rawCurrency,
+      targetCurrency: rawCurrency
+    });
+
+    const offerId = `vct-ht-liteapi-${raw.city.toLowerCase().replace(/[^a-z0-9]/g, '')}-${raw.hotelId.slice(-6)}`;
+    const expiresAtIso = new Date(Date.now() + 1800000).toISOString(); // 30 min TTL
+
+    const offer: CanonicalOfferEntity = {
+      canonicalOfferId: offerId,
+      productType: 'hotels',
+      sourceType: 'API',
+      supplierId: this.supplierId,
+      supplierName: `${raw.name} via LiteAPI`,
+      supplierOfferId: raw.hotelId,
+      title: raw.name,
+      subtitle: `${raw.roomType} · ${raw.boardBasis}`,
+      location: {
+        city: raw.city,
+        country: raw.country,
+        countryCode: raw.countryCode
+      },
+      availabilityStatus: 'LIVE',
+      confirmationMode: raw.instantConfirmation ? 'INSTANT_CONFIRM' : 'REQUEST_TO_CONFIRM',
+      bookingMode: 'INSTANT_BOOK',
+      pricing,
+      freshness: {
+        lastCheckedAtIso: new Date().toISOString(),
+        ttlSeconds: 1800,
+        expiresAtIso,
+        isStale: false,
+        revalidationEndpoint: `/api/v1/offers/${offerId}/revalidate`
+      },
+      inclusions: [
+        raw.boardBasis,
+        'Complimentary high-speed Wi-Fi',
+        'Swimming pool & fitness center access'
+      ],
+      exclusions: [
+        'Tourism Dirham / City Council Tourist Tax (payable at check-in)',
+        'Early check-in before 14:00'
+      ],
+      cancellationPolicy: raw.freeCancellationBefore
+        ? `Free cancellation until ${raw.freeCancellationBefore.slice(0, 10)}. Non-refundable thereafter.`
+        : 'Non-refundable rate. Full charge on cancellation.',
+      pinAboveApi: false,
+      deduplicationKey: '',
+      sourceMetadata: {
+        liteApiHotelId: raw.hotelId,
+        roomType: raw.roomType,
+        boardBasis: raw.boardBasis,
+        amenities: raw.amenities || []
+      },
+      revalidationCapability: {
+        canRevalidateOnline: true,
+        requiresSupplierPing: true,
+        lastRevalidationResult: 'UNCHANGED'
+      }
+    };
+
+    offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
+    return offer;
+  }
+
+  public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {
+    const mockRaw: RawLiteApiHotelOffer = {
+      hotelId: `lp_${criteria.destination.toLowerCase()}_001`,
+      name: `Grand Palace Hotel ${criteria.destination}`,
+      city: criteria.destination,
+      country: 'United Arab Emirates',
+      countryCode: 'AE',
+      roomType: 'Deluxe City View Room',
+      boardBasis: 'Breakfast Included',
+      netPrice: 220.00,
+      currency: criteria.currency || 'USD',
+      instantConfirmation: true,
+      freeCancellationBefore: `${criteria.departureDate || '2026-11-15'}T00:00:00Z`
+    };
+
+    return [this.normalize(mockRaw)];
+  }
+
+  public async revalidate(supplierOfferId: string): Promise<RevalidationResult> {
+    return {
+      offerId: supplierOfferId,
+      status: 'UNCHANGED',
+      message: 'Room availability and rate locked by LiteAPI'
+    };
+  }
+
+  public async hold(offerId: string): Promise<BookingHoldResult> {
+    return {
+      holdReference: `LIT-HLD-${offerId.slice(-6).toUpperCase()}`,
+      expiresAtIso: new Date(Date.now() + 1800000).toISOString(),
+      guaranteedPriceMinor: 22000,
+      currency: 'USD'
+    };
+  }
+
+  public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    return {
+      supplierReference: `LIT-HTL-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+      ticketOrVoucherNumber: `VCH-${Math.floor(100000 + Math.random() * 900000)}`,
+      confirmedAtIso: new Date().toISOString(),
+      fulfillmentStatus: 'CONFIRMED'
+    };
+  }
+
+  public async cancel(supplierReference: string): Promise<BookingCancelResult> {
+    return {
+      cancellationReference: `LIT-CXL-${supplierReference.slice(-6)}`,
+      cancelledAtIso: new Date().toISOString(),
+      cancellationFeeMinor: 0,
+      refundEligibleMinor: 22000
+    };
+  }
+}

@@ -25,6 +25,17 @@ import { BookingSagaService } from '../src/server/services/booking-saga.service.
 import { PaymentGatewayService } from '../src/server/services/payment-gateway.service.ts';
 import { VacatinaApiRouter } from '../src/server/api/router.ts';
 import { validateServerEnv } from '../src/server/config/env.ts';
+import { FlightsDuffelAdapter, type RawDuffelFlightOffer } from '../src/server/inventory/adapters/flights-duffel.adapter.ts';
+import { HotelsLiteApiAdapter, type RawLiteApiHotelOffer } from '../src/server/inventory/adapters/hotels-liteapi.adapter.ts';
+import { ActivitiesViatorAdapter, type RawViatorExperienceOffer } from '../src/server/inventory/adapters/activities-viator.adapter.ts';
+import { RailsTrainlineAdapter, type RawTrainlineRailOffer } from '../src/server/inventory/adapters/rails-trainline.adapter.ts';
+import { ManualCmsAdapter } from '../src/server/inventory/adapters/manual-cms.adapter.ts';
+import { PackagesBundlerAdapter } from '../src/server/inventory/adapters/packages-bundler.adapter.ts';
+import { PricingPrecedenceService } from '../src/server/inventory/pricing-precedence.service.ts';
+import { DeduplicationService } from '../src/server/inventory/deduplication.service.ts';
+import { CacheTtlService } from '../src/server/inventory/cache-ttl.service.ts';
+import { CircuitBreakerService } from '../src/server/inventory/circuit-breaker.service.ts';
+import { UnifiedInventoryService } from '../src/server/inventory/unified-inventory.service.ts';
 
 describe('Vacatina Domain & Validation Unit Tests', () => {
   it('enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order', () => {
@@ -961,5 +972,320 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     const problem = await notFoundRes.json();
     assert.equal(problem.code, 'ENDPOINT_NOT_FOUND');
     assert.ok(problem.type.includes('vacatina.com/errors/'));
+  });
+
+  it('enforces Supplier Response -> Canonical Offer Normalization across Duffel, LiteAPI, Viator, and Trainline (ADR-006, Q9/Q11)', () => {
+    // 1. Duffel Flight Normalization
+    const duffel = new FlightsDuffelAdapter('sandbox');
+    const rawFlight: RawDuffelFlightOffer = {
+      id: 'off_0000AkL92M',
+      total_amount: '380.00',
+      total_currency: 'USD',
+      slices: [
+        {
+          origin: { iata_code: 'CMB', city_name: 'Colombo' },
+          destination: { iata_code: 'DXB', city_name: 'Dubai', country_name: 'United Arab Emirates' },
+          departure_datetime: '2026-11-20T10:00:00Z',
+          arrival_datetime: '2026-11-20T13:30:00Z',
+          duration: 'PT4H30M',
+          segments: [
+            {
+              marketing_carrier: { iata_code: 'EK', name: 'Emirates' },
+              marketing_carrier_flight_number: '651',
+              passengers: [{ cabin_class: 'economy' }]
+            }
+          ]
+        }
+      ],
+      expires_at: new Date(Date.now() + 900000).toISOString()
+    };
+    const flightOffer = duffel.normalize(rawFlight);
+    assert.equal(flightOffer.productType, 'flights');
+    assert.equal(flightOffer.sourceType, 'API');
+    assert.equal(flightOffer.supplierId, 'DUFFEL_NDC');
+    assert.equal(flightOffer.pricing.rawSupplierCostMinor, 38000); // $380.00
+    assert.equal(flightOffer.freshness.ttlSeconds, 900); // 15m
+    assert.ok(flightOffer.deduplicationKey.includes('EK_EK651'));
+
+    // 2. LiteAPI Hotel Normalization
+    const liteapi = new HotelsLiteApiAdapter('sandbox');
+    const rawHotel: RawLiteApiHotelOffer = {
+      hotelId: 'lp_dxb_atlantis',
+      name: 'Atlantis The Royal',
+      city: 'Dubai',
+      country: 'United Arab Emirates',
+      countryCode: 'AE',
+      roomType: 'Sky Terrace Suite',
+      boardBasis: 'Half Board',
+      netPrice: 650.00,
+      currency: 'USD',
+      instantConfirmation: true
+    };
+    const hotelOffer = liteapi.normalize(rawHotel);
+    assert.equal(hotelOffer.productType, 'hotels');
+    assert.equal(hotelOffer.sourceType, 'API');
+    assert.equal(hotelOffer.pricing.rawSupplierCostMinor, 65000);
+    assert.equal(hotelOffer.freshness.ttlSeconds, 1800); // 30m
+
+    // 3. Viator Experience Normalization
+    const viator = new ActivitiesViatorAdapter('sandbox');
+    const rawActivity: RawViatorExperienceOffer = {
+      productCode: '10423P1',
+      title: 'Dubai Desert Safari & Stargazing',
+      destination: { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE' },
+      duration: '6 hours',
+      netPrice: 85.00,
+      currency: 'USD',
+      instantConfirmation: true
+    };
+    const activityOffer = viator.normalize(rawActivity);
+    assert.equal(activityOffer.productType, 'activities');
+    assert.equal(activityOffer.freshness.ttlSeconds, 14400); // 4h
+
+    // 4. Trainline Rail Normalization
+    const trainline = new RailsTrainlineAdapter('sandbox');
+    const rawRail: RawTrainlineRailOffer = {
+      journeyId: 'trn_lon_par_01',
+      operator: 'Eurostar',
+      originStation: 'London St Pancras Intl',
+      destinationStation: 'Paris Gare du Nord',
+      originCity: 'London',
+      destinationCity: 'Paris',
+      country: 'France',
+      departureTimeIso: '2026-11-20T08:00:00Z',
+      arrivalTimeIso: '2026-11-20T11:20:00Z',
+      travelClass: 'Standard',
+      netFareAmount: 110.00,
+      currency: 'EUR',
+      isDirect: true
+    };
+    const railOffer = trainline.normalize(rawRail);
+    assert.equal(railOffer.productType, 'rails');
+    assert.equal(railOffer.freshness.ttlSeconds, 3600); // 1h
+  });
+
+  it('enforces 4-Layer Pricing Precedence engine with integer minor math (ADR-006, Q13)', () => {
+    // 1. Standard B2C Layer 1 + Layer 2
+    const b2cFlight = PricingPrecedenceService.calculatePricing({
+      productType: 'flights',
+      rawSupplierCostMinor: 10000000, // LKR 100,000.00
+      rawCurrency: 'LKR'
+    });
+    // Flights 5.5% platform margin: LKR 5,500.00
+    assert.equal(b2cFlight.rawSupplierCostMinor, 10000000);
+    assert.equal(b2cFlight.platformMarkupMinor, 550000);
+    assert.equal(b2cFlight.b2bAgencyMarginMinor, 0);
+    assert.equal(b2cFlight.finalSellingPriceMinor, 10550000);
+
+    // 2. B2B Gold Agency Tier with 3.5% discount and custom 2% markup (Layer 3)
+    const b2bFlight = PricingPrecedenceService.calculatePricing({
+      productType: 'flights',
+      rawSupplierCostMinor: 10000000,
+      rawCurrency: 'LKR',
+      organizationTier: 'GOLD',
+      agencyCustomMarkupPercent: 2.0
+    });
+    // Gold discount: -3.5% (-350,000), custom agency: +2% (+200,000) -> net B2B adjustment: -150,000
+    assert.equal(b2bFlight.b2bAgencyMarginMinor, -150000);
+    assert.equal(b2bFlight.finalSellingPriceMinor, 10400000);
+
+    // 3. Admin Manual Override taking authoritative Layer 4 precedence
+    const overrideHotel = PricingPrecedenceService.calculatePricing({
+      productType: 'hotels',
+      rawSupplierCostMinor: 5000000, // LKR 50,000.00
+      rawCurrency: 'LKR',
+      manualOverrideMinor: 4800000, // LKR 48,000.00 campaign price
+      overrideReason: 'Cyber Monday Promo',
+      overrideExpiresAtIso: new Date(Date.now() + 86400000).toISOString()
+    });
+    assert.equal(overrideHotel.manualOverrideMinor, 4800000);
+    assert.equal(overrideHotel.overrideReason, 'Cyber Monday Promo');
+    assert.equal(overrideHotel.finalSellingPriceMinor, 4800000); // Layer 4 wins
+  });
+
+  it('enforces Deduplication composite natural keys, pinAboveApi ranking, and Best-Price-Wins rule (ADR-006, Q12)', () => {
+    const duffel = new FlightsDuffelAdapter('sandbox');
+    const manualAdapter = new ManualCmsAdapter();
+
+    // Flight from API
+    const apiFlight = duffel.normalize({
+      id: 'off_api_flight_01',
+      total_amount: '350.00',
+      total_currency: 'USD',
+      slices: [{
+        origin: { iata_code: 'CMB', city_name: 'Colombo' },
+        destination: { iata_code: 'KDZ', city_name: 'Kandy', country_name: 'Sri Lanka' },
+        departure_datetime: '2026-11-20T10:00:00Z',
+        arrival_datetime: '2026-11-20T10:45:00Z',
+        duration: 'PT45M',
+        segments: [{
+          marketing_carrier: { iata_code: 'UL', name: 'SriLankan' },
+          marketing_carrier_flight_number: '101',
+          passengers: [{ cabin_class: 'economy' }]
+        }]
+      }],
+      expires_at: new Date(Date.now() + 900000).toISOString()
+    });
+
+    // Pinned Manual Flight for Cinnamon Air scenic route
+    const manualFlight = manualAdapter.normalize({
+      id: 'cms_scenic_01',
+      productType: 'flights',
+      partnerSupplierId: 'CINNAMON_AIR',
+      partnerName: 'Cinnamon Air Direct',
+      title: 'Colombo to Kandy Scenic Amphibian Flight',
+      subtitle: 'Direct Water Aerodrome Flight',
+      location: { city: 'Kandy', country: 'Sri Lanka', countryCode: 'LK', iataCode: 'KDZ' },
+      confirmationMode: 'REQUEST_TO_CONFIRM',
+      availableQuota: 5,
+      contractedBaseCostMinor: 6500000,
+      costCurrency: 'LKR',
+      inclusions: ['Scenic Flight'],
+      exclusions: [],
+      cancellationPolicy: 'Non-refundable within 48h',
+      pinAboveApi: true,
+      status: 'PUBLISHED'
+    });
+
+    const combined = [apiFlight, manualFlight];
+    const ranked = DeduplicationService.deduplicateAndRank(combined);
+
+    // Pinned manual flight must rank first
+    assert.equal(ranked[0].sourceType, 'MANUAL');
+    assert.equal(ranked[0].pinAboveApi, true);
+    assert.equal(ranked[0].title, 'Colombo to Kandy Scenic Amphibian Flight');
+  });
+
+  it('enforces product-by-product Cache TTL enforcement and immediate cache busting for manual listings (ADR-006, Q14)', () => {
+    const cache = new CacheTtlService();
+
+    // Verify matrix
+    assert.equal(cache.getTtlSeconds('flights'), 900);       // 15m
+    assert.equal(cache.getTtlSeconds('hotels'), 1800);       // 30m
+    assert.equal(cache.getTtlSeconds('cars'), 7200);         // 2h
+    assert.equal(cache.getTtlSeconds('activities'), 14400);  // 4h
+    assert.equal(cache.getTtlSeconds('rails'), 3600);        // 1h
+    assert.equal(cache.getTtlSeconds('cruises'), 43200);     // 12h
+    assert.equal(cache.getTtlSeconds('insurance'), 86400);   // 24h
+
+    // Test cache set and get
+    const sampleOffers: any[] = [{ canonicalOfferId: 'vct-fl-001' }];
+    cache.set('search:flights:cmb:dxb', sampleOffers, 'flights', 'manual_listing_cms_dir_001');
+
+    const retrieved = cache.get('search:flights:cmb:dxb');
+    assert.ok(retrieved);
+    assert.equal(retrieved?.length, 1);
+
+    // Immediate Cache Invalidation on Admin Publish
+    const purged = cache.invalidateTag('manual_listing_cms_dir_001');
+    assert.equal(purged, 1);
+    assert.equal(cache.get('search:flights:cmb:dxb'), null); // Instant purge verified
+  });
+
+  it('enforces Circuit Breaker state transitions (CLOSED -> OPEN -> HALF_OPEN) and graceful fallback during supplier outages (ADR-006, Q16)', async () => {
+    const circuit = new CircuitBreakerService({
+      failureThreshold: 3,
+      cooldownPeriodMs: 50, // 50ms for test
+      timeoutMs: 100
+    });
+
+    assert.equal(circuit.getState('AMADEUS'), 'CLOSED');
+
+    // Simulate 3 failures to trip breaker
+    circuit.recordFailure('AMADEUS');
+    circuit.recordFailure('AMADEUS');
+    assert.equal(circuit.getState('AMADEUS'), 'CLOSED');
+
+    circuit.recordFailure('AMADEUS');
+    assert.equal(circuit.getState('AMADEUS'), 'OPEN');
+
+    // Execute with breaker: should immediately trigger fallback with 0 delay
+    let fallbackCalled = false;
+    const result = await circuit.executeWithBreaker(
+      'AMADEUS',
+      async () => { throw new Error('Live API offline'); },
+      async (reason) => {
+        fallbackCalled = true;
+        assert.ok(reason.includes('circuit is OPEN'));
+        return 'FALLBACK_DIRECT_CONTRACT';
+      }
+    );
+
+    assert.equal(fallbackCalled, true);
+    assert.equal(result, 'FALLBACK_DIRECT_CONTRACT');
+
+    // Wait for cooldown to transition to HALF_OPEN
+    await new Promise(r => setTimeout(r, 60));
+    assert.equal(circuit.getState('AMADEUS'), 'HALF_OPEN');
+
+    // Successful probe resets circuit to CLOSED
+    circuit.recordSuccess('AMADEUS');
+    assert.equal(circuit.getState('AMADEUS'), 'CLOSED');
+  });
+
+  it('enforces multi-source booking lifecycle (Hold, Confirm, Cancel, Refund) across API and Manual channels (ADR-006, Q15)', async () => {
+    const duffel = new FlightsDuffelAdapter('sandbox');
+    const manualAdapter = new ManualCmsAdapter();
+
+    // 1. Duffel Lifecycle
+    const flightHold = await duffel.hold('vct-fl-duffel-cmb-dxb-001');
+    assert.ok(flightHold.holdReference.startsWith('DUF-HLD-'));
+    assert.equal(flightHold.guaranteedPriceMinor, 35000);
+
+    const flightConfirm = await duffel.confirm('VCT-2026-FL001');
+    assert.equal(flightConfirm.fulfillmentStatus, 'CONFIRMED');
+    assert.ok(flightConfirm.ticketOrVoucherNumber?.startsWith('176-'));
+
+    const flightCancel = await duffel.cancel(flightConfirm.supplierReference, 'Traveller medical emergency');
+    assert.equal(flightCancel.cancellationFeeMinor, 7500);
+    assert.equal(flightCancel.refundEligibleMinor, 27500);
+
+    // 2. Manual Direct Contract Lifecycle
+    const manualHold = await manualAdapter.hold('vct-man-ht-001');
+    assert.ok(manualHold.holdReference.startsWith('MAN-HLD-'));
+
+    const manualConfirm = await manualAdapter.confirm('VCT-2026-MAN001');
+    assert.equal(manualConfirm.fulfillmentStatus, 'CONFIRMED');
+    assert.ok(manualConfirm.ticketOrVoucherNumber?.startsWith('VCT-DIR-'));
+
+    const manualCancel = await manualAdapter.cancel(manualConfirm.supplierReference);
+    assert.equal(manualCancel.cancellationFeeMinor, 0); // Direct contracts: 0 fee policy
+    assert.equal(manualCancel.refundEligibleMinor, 4800000);
+  });
+
+  it('enforces SEED / DEMO inventory isolation from live search and checkout readiness (Canonical Source Taxonomy)', async () => {
+    const storage = new VacatinaStorageEngine();
+    const saga = new BookingSagaService(storage);
+
+    const testBucket = storage.getOrCreateTripBucket('sess_seed_guard_test');
+    
+    // Staging a SEED item
+    storage.addTripBucketItem({
+      tripBucketId: testBucket.id,
+      canonicalOfferId: 'vct-seed-demo-card-001',
+      productType: 'hotels',
+      sourceType: 'SEED', // Prototype / design fixture
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Demo Hotel Preview Card',
+      configuration: {},
+      travellerManifest: {},
+      unitSellingPriceMinor: 2500000,
+      currency: 'LKR',
+      state: 'DRAFT'
+    });
+
+    // Attempting to check out a SEED item must throw commercial violation error
+    await assert.rejects(
+      async () => {
+        await saga.executeBookingSaga({
+          tripBucketId: testBucket.id,
+          customerEmail: 'test@example.com',
+          customerName: 'Test Traveller',
+          checkoutSessionId: 'cs_seed_viol_01',
+          idempotencyKey: 'idemp_seed_001'
+        });
+      },
+      /Commercial violation: Seed \/ demonstration content cannot enter checkout/
+    );
   });
 });
