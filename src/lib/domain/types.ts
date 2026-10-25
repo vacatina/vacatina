@@ -40,6 +40,40 @@ export type TripBucketItemState =
   | 'unavailable';
 
 /**
+ * Canonical Trip Bucket Item Readiness States (Architecture v2.4):
+ * Decoupled from transactional booking states.
+ */
+export type TripItemReadinessState =
+  | 'DRAFT'
+  | 'NEEDS_ACTION'
+  | 'READY'
+  | 'REFRESHING_PRICE'
+  | 'PRICE_CHANGED'
+  | 'RECHECK_REQUIRED'
+  | 'OFFER_EXPIRED'
+  | 'UNAVAILABLE';
+
+/**
+ * Canonical Booking & Checkout Lifecycle States (Architecture v2.4):
+ * Evaluates the transactional saga of an order.
+ */
+export type BookingLifecycleState =
+  | 'STAGED'
+  | 'HELD'
+  | 'BOOKING_IN_PROGRESS'
+  | 'CONFIRMED'
+  | 'FAILED'
+  | 'CANCELLED';
+
+/**
+ * Canonical Trip Bucket Aggregate View States:
+ */
+export type TripBucketAggregateState =
+  | 'EMPTY'
+  | 'STAGED'
+  | 'READY_FOR_REVIEW';
+
+/**
  * Integration classification per 02_API_RESPONSIBILITY_MAP.md & 06_ANTIGRAVITY_MASTER_INSTRUCTION.md.
  */
 export type IntegrationClassification = 'LIVE' | 'VERIFY-LIVE' | 'ADAPTER-READY' | 'MOCK';

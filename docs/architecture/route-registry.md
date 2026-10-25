@@ -107,3 +107,22 @@ Any unrecognized path displays the branded Vacatina 404 Experience with:
 69. `/policies/cancellations` (Transparent Cancellation & Refund Policy)
 70. `/admin` (Platform Control & Operations Center; also `/admin/inventory`)
 71. `/b2b/portal` (B2B Partner Agency Portal & Dashboard)
+
+---
+
+## 3. Route vs Backend Service Reality Separation Matrix
+
+To ensure backend teams are never confused by a working client-side UI shell, every operational route explicitly distinguishes between client shell dispatch, backend API readiness, and production commercial status:
+
+| Canonical Route Path | UI / Route Shell Status | Backend Service Status | Production Capability Status | Operational Responsibility & Notes |
+| :--- | :---: | :---: | :---: | :--- |
+| `/` (Homepage) | `COMPLETE (PASS)` | `LIVE (Static Shell)` | `PRODUCTION_LIVE` | 11 SCC tabs, 40 discovery seed cards. Zero direct checkout jump. |
+| `/flights/search` | `COMPLETE (PASS)` | `PENDING (CAP-01)` | `PROTOTYPE` | Dispatches search; requires real upstream NDC aggregator service. |
+| `/flights/offer/:offerId` | `COMPLETE (PASS)` | `PENDING (CAP-02)` | `PROTOTYPE` | Fare family modal; requires backend offer details dossier. |
+| `/hotels/search` | `COMPLETE (PASS)` | `PENDING (CAP-01)` | `PROTOTYPE` | Curated hotel grid; connects to scaffolded LiteAPI & direct contract models. |
+| `/hotels/property/:id` | `COMPLETE (PASS)` | `PENDING (CAP-02)` | `PROTOTYPE` | Property amenity & room configurator. |
+| `/admin`, `/admin/inventory`| `COMPLETE (PASS)` | `PENDING (CAP-06)` | `NOT_READY` | **UI Shell is complete; Manual CMS CRUD & DB storage remain pending backend work.** |
+| `/trip-bucket` | `COMPLETE (PASS)` | `PENDING (CAP-09)` | `PROTOTYPE` | Screen 04 8-state model active client-side; session sync service pending. |
+| `/trip/review`, `/checkout` | `COMPLETE (PASS)` | `PENDING (CAP-12)` | `NOT_READY` | Review dossier shell active; multi-source booking saga pending backend. |
+| `/manage-booking` | `COMPLETE (PASS)` | `PENDING (CAP-13)` | `NOT_READY` | Passenger lookup shell active; backend dossier retrieval pending. |
+| `/visa-assistance/apply` | `COMPLETE (PASS)` | `PENDING (CAP-14)` | `NOT_READY` | Consular application form active; encrypted document ingest pending. |

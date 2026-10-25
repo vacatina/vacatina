@@ -105,18 +105,58 @@ export type StorageLifecycle =
   | 'PERSISTENT_DATABASE';
 
 /**
- * 4-Tier Integration & Backend Capability Implementation Status (Architecture v2.3):
+ * 5-Tier Integration & Backend Capability Implementation Status (Architecture v2.4):
  * Governs both external provider integrations and backend capabilities.
- * - PLANNED: Requirements, schemas, and contracts defined; no service endpoints or credentials active.
- * - SANDBOX: Adapter/shell connected to sandbox mock or test credentials; UAT in progress.
- * - INTEGRATED: Code and contracts complete; passing automated unit/certification tests in local/CI environment.
+ * - PLANNED: Requirements, schemas, and contracts defined; no adapter or service code exists.
+ * - ADAPTER_SCAFFOLDED: Adapter code boundary, contracts, and fallback mocks implemented; live credentials pending.
+ * - SANDBOX_VERIFIED: Real authenticated sandbox request and response tests passing with live sandbox credentials.
+ * - INTEGRATED: Code, contracts, and end-to-end integration sagas passing automated tests in local/CI environment.
  * - PRODUCTION_VERIFIED: Production credentials active, live settlement verified, production signed-off.
  */
 export type ImplementationStatus =
   | 'PLANNED'
-  | 'SANDBOX'
+  | 'ADAPTER_SCAFFOLDED'
+  | 'SANDBOX_VERIFIED'
   | 'INTEGRATED'
-  | 'PRODUCTION_VERIFIED';
+  | 'PRODUCTION_VERIFIED'
+  // Backward-compatibility alias
+  | 'SANDBOX';
+
+/**
+ * Canonical Trip Bucket Item Readiness States (Screen 04 v1.2 / Architecture v2.4):
+ * Evaluates the readiness of an individual item staged in the Trip Bucket.
+ * Only items with state 'READY' contribute to the checkout subtotal.
+ */
+export type TripItemReadinessState =
+  | 'DRAFT'
+  | 'NEEDS_ACTION'
+  | 'READY'
+  | 'REFRESHING_PRICE'
+  | 'PRICE_CHANGED'
+  | 'RECHECK_REQUIRED'
+  | 'OFFER_EXPIRED'
+  | 'UNAVAILABLE';
+
+/**
+ * Canonical Booking & Checkout Lifecycle States (Architecture v2.4):
+ * Evaluates the transactional saga of an order through pre-checkout hold to confirmed issuance.
+ */
+export type BookingLifecycleState =
+  | 'STAGED'
+  | 'HELD'
+  | 'BOOKING_IN_PROGRESS'
+  | 'CONFIRMED'
+  | 'FAILED'
+  | 'CANCELLED';
+
+/**
+ * Canonical Trip Bucket Aggregate View States:
+ * Governs the aggregate container/drawer experience.
+ */
+export type TripBucketAggregateState =
+  | 'EMPTY'
+  | 'STAGED'
+  | 'READY_FOR_REVIEW';
 
 // ----------------------------------------------------------------------------
 // Canonical Inventory Source Model & Verification Invariants (Architecture v2.0)
