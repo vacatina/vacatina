@@ -2951,4 +2951,51 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     service.toggleStopSale(charter.id, adminUser, 'Weather cleared: resume flights');
     assert.equal(service.getListingById(charter.id)!.isStopSaleActive, false, 'Stop-sell lifted');
   });
+
+  it('enforces Complete Provider Registry Endpoints, Webhooks, SLAs, and Fallback Plans (docs/20 Matrix)', async () => {
+    assert.equal(CANONICAL_PROVIDER_REGISTRY.length, 11, 'All 11 providers registered');
+
+    for (const provider of CANONICAL_PROVIDER_REGISTRY) {
+      // 1. Endpoint contract
+      assert.ok(provider.endpoints, `Provider ${provider.providerId} has endpoints defined`);
+      assert.ok(provider.endpoints.searchEndpoint, `Provider ${provider.providerId} has searchEndpoint`);
+      assert.ok(provider.endpoints.detailsEndpoint, `Provider ${provider.providerId} has detailsEndpoint`);
+      assert.ok(provider.endpoints.revalidateEndpoint, `Provider ${provider.providerId} has revalidateEndpoint`);
+      assert.ok(provider.endpoints.bookingEndpoint, `Provider ${provider.providerId} has bookingEndpoint`);
+      assert.ok(provider.endpoints.cancellationEndpoint, `Provider ${provider.providerId} has cancellationEndpoint`);
+
+      // 2. Webhook contract
+      assert.ok(provider.webhooks, `Provider ${provider.providerId} has webhooks defined`);
+      assert.ok(Array.isArray(provider.webhooks.supportedEvents) && provider.webhooks.supportedEvents.length > 0, `Provider ${provider.providerId} has webhook events`);
+      assert.ok(provider.webhooks.signatureHeader, `Provider ${provider.providerId} has signature header`);
+      assert.ok(provider.webhooks.callbackUrlPath.startsWith('/api/v1/webhooks/'), `Provider ${provider.providerId} callback path valid`);
+
+      // 3. SLA Profile
+      assert.ok(provider.slaProfile, `Provider ${provider.providerId} has SLA profile`);
+      assert.ok(provider.slaProfile.timeoutMs > 0 && provider.slaProfile.timeoutMs <= 10000, `Provider ${provider.providerId} timeoutMs valid`);
+      assert.ok(provider.slaProfile.circuitBreakerThreshold >= 3, `Provider ${provider.providerId} breaker threshold >= 3`);
+      assert.ok(provider.slaProfile.cooldownPeriodMs >= 15000, `Provider ${provider.providerId} cooldown >= 15s`);
+      assert.ok(provider.slaProfile.maxRetries >= 1, `Provider ${provider.providerId} retries >= 1`);
+
+      // 4. Fallback Plan
+      assert.ok(provider.fallbackPlan, `Provider ${provider.providerId} has fallback plan`);
+      assert.ok(['MANUAL_CONTRACT_ALLOTMENT', 'INTERNAL_CONSULAR_DESK', 'BACKOFFICE_ON_REQUEST_TRIAGE', 'DEGRADED_INFORMATIONAL'].includes(provider.fallbackPlan.fallbackStrategy), `Provider ${provider.providerId} valid fallback strategy`);
+      assert.ok(provider.fallbackPlan.fallbackProviderId, `Provider ${provider.providerId} has fallback provider ID`);
+      assert.ok(provider.fallbackPlan.description.length > 10, `Provider ${provider.providerId} has descriptive fallback description`);
+
+      // 5. Error Mapping
+      assert.ok(provider.errorMapping, `Provider ${provider.providerId} has error mapping`);
+      assert.equal(provider.errorMapping.errorStandard, 'RFC_7807', `Provider ${provider.providerId} adheres to RFC 7807`);
+      assert.ok(Array.isArray(provider.errorMapping.retryableErrorCodes) && provider.errorMapping.retryableErrorCodes.length > 0, `Provider ${provider.providerId} has retryable codes`);
+      assert.ok(Array.isArray(provider.errorMapping.nonRetryableErrorCodes) && provider.errorMapping.nonRetryableErrorCodes.length > 0, `Provider ${provider.providerId} has non-retryable codes`);
+      assert.ok(Object.keys(provider.errorMapping.codeMapping).length > 0, `Provider ${provider.providerId} has code mapping`);
+    }
+
+    // Verify product vertical coverage across providers
+    const allProducts = CANONICAL_PROVIDER_REGISTRY.flatMap(p => p.targetProducts);
+    const expectedProducts = ['flights', 'hotels', 'activities', 'cars', 'rails', 'cruises', 'insurance', 'visa', 'packages'];
+    for (const prod of expectedProducts) {
+      assert.ok(allProducts.includes(prod as any), `Provider registry covers product: ${prod}`);
+    }
+  });
 });

@@ -30,6 +30,41 @@ export type CertificationComplianceStatus =
   | 'CERTIFIED'
   | 'NOT_APPLICABLE';
 
+export interface ProviderEndpointMap {
+  searchEndpoint: string;
+  detailsEndpoint: string;
+  revalidateEndpoint: string;
+  holdEndpoint?: string;
+  bookingEndpoint: string;
+  cancellationEndpoint: string;
+}
+
+export interface ProviderWebhookConfig {
+  supportedEvents: string[];
+  signatureHeader: string;
+  callbackUrlPath: string;
+}
+
+export interface ProviderSlaProfile {
+  timeoutMs: number;
+  circuitBreakerThreshold: number;
+  cooldownPeriodMs: number;
+  maxRetries: number;
+}
+
+export interface ProviderFallbackPlan {
+  fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT' | 'INTERNAL_CONSULAR_DESK' | 'BACKOFFICE_ON_REQUEST_TRIAGE' | 'DEGRADED_INFORMATIONAL';
+  fallbackProviderId: string;
+  description: string;
+}
+
+export interface ProviderErrorMappingConfig {
+  errorStandard: 'RFC_7807';
+  retryableErrorCodes: string[];
+  nonRetryableErrorCodes: string[];
+  codeMapping: Record<string, string>;
+}
+
 /**
  * The 12 Mandatory Certification Gates for Provider Production Readiness (Rule 7)
  */
@@ -60,6 +95,11 @@ export interface ProviderRegistryRecord {
   certificationGates: ProviderCertificationChecklist;
   bookingExecutionSupported: boolean;
   revalidationSupported: boolean;
+  endpoints?: ProviderEndpointMap;
+  webhooks?: ProviderWebhookConfig;
+  slaProfile?: ProviderSlaProfile;
+  fallbackPlan?: ProviderFallbackPlan;
+  errorMapping?: ProviderErrorMappingConfig;
   notes: string;
 }
 
@@ -106,6 +146,40 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
     bookingExecutionSupported: false,
     revalidationSupported: false,
+    endpoints: {
+      searchEndpoint: 'https://test.api.amadeus.com/v2/shopping/flight-offers',
+      detailsEndpoint: 'https://test.api.amadeus.com/v2/shopping/flight-offers/{id}',
+      revalidateEndpoint: 'https://test.api.amadeus.com/v1/shopping/flight-offers/pricing',
+      holdEndpoint: 'https://test.api.amadeus.com/v1/booking/flight-orders?mode=HOLD',
+      bookingEndpoint: 'https://test.api.amadeus.com/v1/booking/flight-orders',
+      cancellationEndpoint: 'https://test.api.amadeus.com/v1/booking/flight-orders/{id}'
+    },
+    webhooks: {
+      supportedEvents: ['flight.schedule_change', 'ticket.issued', 'order.cancelled'],
+      signatureHeader: 'X-Amadeus-Signature',
+      callbackUrlPath: '/api/v1/webhooks/amadeus'
+    },
+    slaProfile: {
+      timeoutMs: 7000,
+      circuitBreakerThreshold: 4,
+      cooldownPeriodMs: 45000,
+      maxRetries: 2
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to direct contracted charter blocks or backoffice airline ticketing triage'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['38100', '38102', '500_GATEWAY_TIMEOUT'],
+      nonRetryableErrorCodes: ['32101', '400_BAD_REQUEST', 'PRICE_MISMATCH'],
+      codeMapping: {
+        '38100': 'PROVIDER_TIMEOUT',
+        '38102': 'SYSTEM_ERROR',
+        '32101': 'INVALID_SEGMENT'
+      }
+    },
     notes: 'Target global distribution system for scheduled flights and enterprise hotels. Under commercial evaluation.'
   },
   {
@@ -125,6 +199,39 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: 'https://api.duffel.com/air/offer_requests',
+      detailsEndpoint: 'https://api.duffel.com/air/offers/{id}',
+      revalidateEndpoint: 'https://api.duffel.com/air/offers/{id}',
+      holdEndpoint: 'https://api.duffel.com/air/orders?type=hold',
+      bookingEndpoint: 'https://api.duffel.com/air/orders',
+      cancellationEndpoint: 'https://api.duffel.com/air/order_cancellations'
+    },
+    webhooks: {
+      supportedEvents: ['order.created', 'order.airline_initiated_change', 'order.cancelled'],
+      signatureHeader: 'X-Duffel-Signature',
+      callbackUrlPath: '/api/v1/webhooks/duffel'
+    },
+    slaProfile: {
+      timeoutMs: 6000,
+      circuitBreakerThreshold: 3,
+      cooldownPeriodMs: 30000,
+      maxRetries: 2
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to SriLankan AirTaxi seaplanes or contracted seasonal charter flights'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['airline_timeout', 'rate_limit_exceeded', 'temporary_carrier_offline'],
+      nonRetryableErrorCodes: ['seat_unavailable', 'invalid_passport', 'booking_window_expired'],
+      codeMapping: {
+        'airline_timeout': 'UPSTREAM_GATEWAY_TIMEOUT',
+        'seat_unavailable': 'INVENTORY_ALLOCATION_EXHAUSTED'
+      }
+    },
     notes: 'Candidate NDC gateway for direct carrier booking. Adapter scaffolded with strict sandbox validation.'
   },
   {
@@ -144,6 +251,39 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: 'https://api.liteapi.travel/v3.0/hotels/rates',
+      detailsEndpoint: 'https://api.liteapi.travel/v3.0/hotels/details',
+      revalidateEndpoint: 'https://api.liteapi.travel/v3.0/rates/prebook',
+      holdEndpoint: 'https://api.liteapi.travel/v3.0/rates/prebook',
+      bookingEndpoint: 'https://api.liteapi.travel/v3.0/rates/book',
+      cancellationEndpoint: 'https://api.liteapi.travel/v3.0/bookings/{id}/cancel'
+    },
+    webhooks: {
+      supportedEvents: ['booking.confirmed', 'booking.amended', 'booking.cancelled'],
+      signatureHeader: 'X-LiteAPI-Signature',
+      callbackUrlPath: '/api/v1/webhooks/liteapi'
+    },
+    slaProfile: {
+      timeoutMs: 8000,
+      circuitBreakerThreshold: 5,
+      cooldownPeriodMs: 60000,
+      maxRetries: 2
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to Aitken Spence, Heritance Kandalama, and direct contracted luxury allotments'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['rate_expired', 'supplier_network_error', 'rate_limit'],
+      nonRetryableErrorCodes: ['room_sold_out', 'invalid_guest_name', 'card_declined'],
+      codeMapping: {
+        'rate_expired': 'PRICE_REVALIDATION_REQUIRED',
+        'room_sold_out': 'INVENTORY_SOLD_OUT'
+      }
+    },
     notes: 'Candidate hotel consolidator bedbank. Scaffolding verified with 30m TTL cache.'
   },
   {
@@ -158,6 +298,39 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: 'https://secure.rentalcars.com/api/v1/vehicles/search',
+      detailsEndpoint: 'https://secure.rentalcars.com/api/v1/vehicles/{id}',
+      revalidateEndpoint: 'https://secure.rentalcars.com/api/v1/vehicles/{id}/rate',
+      bookingEndpoint: 'https://secure.rentalcars.com/api/v1/vehicles/book',
+      cancellationEndpoint: 'https://secure.rentalcars.com/api/v1/vehicles/bookings/{id}/cancel'
+    },
+    webhooks: {
+      supportedEvents: ['reservation.confirmed', 'reservation.cancelled'],
+      signatureHeader: 'X-Rentalcars-Signature',
+      callbackUrlPath: '/api/v1/webhooks/rentalcars'
+    },
+    slaProfile: {
+      timeoutMs: 8000,
+      circuitBreakerThreshold: 4,
+      cooldownPeriodMs: 45000,
+      maxRetries: 1
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to Careem Dubai premium chauffeur fleet and local transport operators'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['RC_TIMEOUT', 'RC_NETWORK_ERROR', '503_SERVICE_UNAVAILABLE'],
+      nonRetryableErrorCodes: ['RC_VEHICLE_UNAVAILABLE', 'RC_INVALID_LOCATION', 'RC_CARD_DECLINED'],
+      codeMapping: {
+        'RC_VEHICLE_UNAVAILABLE': 'INVENTORY_EXHAUSTED',
+        'RC_RATE_EXPIRED': 'RATE_RECHECK_FAILED',
+        'RC_TIMEOUT': 'PROVIDER_TIMEOUT'
+      }
+    },
     notes: 'Target rental car consolidator for airport pick-up and self-drive.'
   },
   {
@@ -172,6 +345,40 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: 'https://api.traveltek.net/cruises/search',
+      detailsEndpoint: 'https://api.traveltek.net/cruises/{id}',
+      revalidateEndpoint: 'https://api.traveltek.net/cruises/{id}/pricing',
+      holdEndpoint: 'https://api.traveltek.net/cruises/cabins/hold',
+      bookingEndpoint: 'https://api.traveltek.net/cruises/book',
+      cancellationEndpoint: 'https://api.traveltek.net/cruises/cancel'
+    },
+    webhooks: {
+      supportedEvents: ['berth.confirmed', 'cabin.upgraded', 'voyage.cancelled'],
+      signatureHeader: 'X-Traveltek-Signature',
+      callbackUrlPath: '/api/v1/webhooks/traveltek'
+    },
+    slaProfile: {
+      timeoutMs: 10000,
+      circuitBreakerThreshold: 4,
+      cooldownPeriodMs: 45000,
+      maxRetries: 1
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'BACKOFFICE_ON_REQUEST_TRIAGE',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to private yacht charters and specialized Maldivian liveaboard desks'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['TT_GATEWAY_TIMEOUT', 'TT_NETWORK_ERROR'],
+      nonRetryableErrorCodes: ['TT_CABIN_UNAVAILABLE', 'TT_INVALID_SAILING_DATE'],
+      codeMapping: {
+        'TT_CABIN_UNAVAILABLE': 'INVENTORY_EXHAUSTED',
+        'TT_RATE_EXPIRED': 'RATE_RECHECK_FAILED',
+        'TT_GATEWAY_TIMEOUT': 'PROVIDER_TIMEOUT'
+      }
+    },
     notes: 'Target cruise aggregator. Scaffolding verified with 12h TTL cache.'
   },
   {
@@ -190,6 +397,39 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: 'https://api.viator.com/partner/products/search',
+      detailsEndpoint: 'https://api.viator.com/partner/products/{id}',
+      revalidateEndpoint: 'https://api.viator.com/partner/availability/check',
+      holdEndpoint: 'https://api.viator.com/partner/bookings/hold',
+      bookingEndpoint: 'https://api.viator.com/partner/bookings/book',
+      cancellationEndpoint: 'https://api.viator.com/partner/bookings/cancel'
+    },
+    webhooks: {
+      supportedEvents: ['booking.status_change', 'ticket.barcode_ready'],
+      signatureHeader: 'X-Viator-Signature',
+      callbackUrlPath: '/api/v1/webhooks/viator'
+    },
+    slaProfile: {
+      timeoutMs: 9000,
+      circuitBreakerThreshold: 4,
+      cooldownPeriodMs: 45000,
+      maxRetries: 2
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to local DMC contracted safari, snorkeling, and sightseeing guides'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['EXPERIENCE_API_TIMEOUT', 'GATEWAY_BUSY'],
+      nonRetryableErrorCodes: ['TIME_SLOT_SOLD_OUT', 'AGE_RESTRICTION_NOT_MET'],
+      codeMapping: {
+        'EXPERIENCE_API_TIMEOUT': 'PROVIDER_TIMEOUT',
+        'TIME_SLOT_SOLD_OUT': 'INVENTORY_ALLOCATION_EXHAUSTED'
+      }
+    },
     notes: 'Candidate activities and tours consolidator. Adapter scaffolded with 4h TTL cache.'
   },
   {
@@ -204,6 +444,39 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: 'https://api.trainline.com/v1/journeys',
+      detailsEndpoint: 'https://api.trainline.com/v1/journeys/{id}',
+      revalidateEndpoint: 'https://api.trainline.com/v1/fares/revalidate',
+      bookingEndpoint: 'https://api.trainline.com/v1/orders',
+      cancellationEndpoint: 'https://api.trainline.com/v1/orders/{id}/refund'
+    },
+    webhooks: {
+      supportedEvents: ['booking.refund_confirmed', 'journey.delayed'],
+      signatureHeader: 'X-Trainline-Signature',
+      callbackUrlPath: '/api/v1/webhooks/trainline'
+    },
+    slaProfile: {
+      timeoutMs: 8000,
+      circuitBreakerThreshold: 4,
+      cooldownPeriodMs: 45000,
+      maxRetries: 2
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to Sri Lankan Viceroy luxury scenic charters and station concierge'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['TL_TIMEOUT', 'TL_TEMPORARY_UNAVAILABLE'],
+      nonRetryableErrorCodes: ['TL_TRAIN_FULL', 'TL_INVALID_STATION'],
+      codeMapping: {
+        'TL_TRAIN_FULL': 'INVENTORY_EXHAUSTED',
+        'TL_PRICE_CHANGED': 'RATE_RECHECK_FAILED',
+        'TL_TIMEOUT': 'PROVIDER_TIMEOUT'
+      }
+    },
     notes: 'Candidate European & UK rail gateway.'
   },
   {
@@ -218,6 +491,39 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: 'https://api.allianz-assistance.com/v1/quotes',
+      detailsEndpoint: 'https://api.allianz-assistance.com/v1/plans/{id}',
+      revalidateEndpoint: 'https://api.allianz-assistance.com/v1/quotes/refresh',
+      bookingEndpoint: 'https://api.allianz-assistance.com/v1/policies/issue',
+      cancellationEndpoint: 'https://api.allianz-assistance.com/v1/policies/{id}/cancel'
+    },
+    webhooks: {
+      supportedEvents: ['policy.issued', 'policy.cancelled'],
+      signatureHeader: 'X-Allianz-Signature',
+      callbackUrlPath: '/api/v1/webhooks/allianz'
+    },
+    slaProfile: {
+      timeoutMs: 6000,
+      circuitBreakerThreshold: 3,
+      cooldownPeriodMs: 30000,
+      maxRetries: 1
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'BACKOFFICE_ON_REQUEST_TRIAGE',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to Sri Lanka Insurance / Takaful direct backoffice policy issuance'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['AL_TIMEOUT', 'AL_CONNECTION_RESET'],
+      nonRetryableErrorCodes: ['AL_AGE_EXCEEDED', 'AL_DESTINATION_SANCTIONED'],
+      codeMapping: {
+        'AL_AGE_EXCEEDED': 'INSURANCE_AGE_RESTRICTION',
+        'AL_RATE_CHANGED': 'RATE_RECHECK_FAILED',
+        'AL_TIMEOUT': 'PROVIDER_TIMEOUT'
+      }
+    },
     notes: 'Target underwriter for Vacatina travel insurance policies.'
   },
   {
@@ -232,6 +538,38 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     certificationGates: { ...OPERATIONAL_INTERNAL_GATES },
     bookingExecutionSupported: true,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: '/api/v1/visa/catalog',
+      detailsEndpoint: '/api/v1/visa/requirements/{country}',
+      revalidateEndpoint: '/api/v1/visa/check',
+      bookingEndpoint: '/api/v1/visa/dossier/create',
+      cancellationEndpoint: '/api/v1/visa/dossier/{id}/withdraw'
+    },
+    webhooks: {
+      supportedEvents: ['dossier.reviewed', 'consular.appointment_scheduled', 'visa.decision_ready'],
+      signatureHeader: 'X-Vacatina-Internal-Key',
+      callbackUrlPath: '/api/v1/webhooks/consular'
+    },
+    slaProfile: {
+      timeoutMs: 3000,
+      circuitBreakerThreshold: 10,
+      cooldownPeriodMs: 15000,
+      maxRetries: 3
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'INTERNAL_CONSULAR_DESK',
+      fallbackProviderId: 'VACATINA_CONSULAR_CONCIERGE',
+      description: 'Direct operational handling by dedicated Vacatina consular officer (SLA: 24-48h)'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['INTERNAL_SERVICE_BUSY'],
+      nonRetryableErrorCodes: ['INSUFFICIENT_PASSPORT_VALIDITY', 'INVALID_CITIZENSHIP'],
+      codeMapping: {
+        'INSUFFICIENT_PASSPORT_VALIDITY': 'CONSULAR_VALIDITY_REJECTED',
+        'INTERNAL_SERVICE_BUSY': 'PROVIDER_TIMEOUT'
+      }
+    },
     notes: 'Vacatina in-house operational consular advisory service. Operationally live manual workflow.'
   },
   {
@@ -246,6 +584,40 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     certificationGates: { ...OPERATIONAL_INTERNAL_GATES },
     bookingExecutionSupported: true,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: '/api/v1/cms/inventory/query',
+      detailsEndpoint: '/api/v1/cms/inventory/{id}',
+      revalidateEndpoint: '/api/v1/cms/allotment/check',
+      holdEndpoint: '/api/v1/cms/allotment/hold',
+      bookingEndpoint: '/api/v1/cms/allotment/decrement',
+      cancellationEndpoint: '/api/v1/cms/allotment/reinstate'
+    },
+    webhooks: {
+      supportedEvents: ['listing.allotment_low', 'listing.stop_sale_activated'],
+      signatureHeader: 'X-Vacatina-CMS-HMAC',
+      callbackUrlPath: '/api/v1/webhooks/cms'
+    },
+    slaProfile: {
+      timeoutMs: 2000,
+      circuitBreakerThreshold: 10,
+      cooldownPeriodMs: 15000,
+      maxRetries: 3
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'BACKOFFICE_ON_REQUEST_TRIAGE',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Operational triage queue ticket auto-generation for administrator resolution'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['DB_LOCK_TIMEOUT', 'READ_REPLICA_LAG'],
+      nonRetryableErrorCodes: ['STOP_SALE_TRIGGERED', 'ALLOTMENT_DEPLETED'],
+      codeMapping: {
+        'ALLOTMENT_DEPLETED': 'INVENTORY_EXHAUSTED',
+        'STOP_SALE_TRIGGERED': 'OFFER_STOP_SALE',
+        'DB_LOCK_TIMEOUT': 'PROVIDER_TIMEOUT'
+      }
+    },
     notes: 'Internal Payload CMS/Postgres repository for boutique direct contracts.'
   },
   {
@@ -265,6 +637,39 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     },
     bookingExecutionSupported: false,
     revalidationSupported: true,
+    endpoints: {
+      searchEndpoint: '/api/v1/packages/search',
+      detailsEndpoint: '/api/v1/packages/{id}',
+      revalidateEndpoint: '/api/v1/packages/{id}/recheck',
+      bookingEndpoint: '/api/v1/packages/order',
+      cancellationEndpoint: '/api/v1/packages/cancel'
+    },
+    webhooks: {
+      supportedEvents: ['bundle.component_failed', 'bundle.reprice_required'],
+      signatureHeader: 'X-Vacatina-Bundler-HMAC',
+      callbackUrlPath: '/api/v1/webhooks/bundler'
+    },
+    slaProfile: {
+      timeoutMs: 5000,
+      circuitBreakerThreshold: 4,
+      cooldownPeriodMs: 30000,
+      maxRetries: 2
+    },
+    fallbackPlan: {
+      fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
+      fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
+      description: 'Fallback to curated fixed itinerary packages with guaranteed local contracts'
+    },
+    errorMapping: {
+      errorStandard: 'RFC_7807',
+      retryableErrorCodes: ['COMPONENT_FETCH_TIMEOUT', 'TRANSIENT_REPRICE_FAILURE'],
+      nonRetryableErrorCodes: ['MANDATORY_COMPONENT_FAILED', 'BUNDLE_INCOMPATIBLE'],
+      codeMapping: {
+        'MANDATORY_COMPONENT_FAILED': 'INVENTORY_EXHAUSTED',
+        'TRANSIENT_REPRICE_FAILURE': 'RATE_RECHECK_FAILED',
+        'COMPONENT_FETCH_TIMEOUT': 'PROVIDER_TIMEOUT'
+      }
+    },
     notes: 'Dynamic multi-component bundle assembler combining API and Direct contract components.'
   }
 ];
