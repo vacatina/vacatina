@@ -105,6 +105,41 @@ export type BookingCapability =
   | 'REQUEST_TO_BOOK'
   | 'INQUIRY_ONLY';
 
+export type AvailabilityMode =
+  | 'INSTANT'       // Guaranteed real-time stock / instant decrement
+  | 'ON_REQUEST'    // Request to confirm with supplier / partner SLA
+  | 'ALLOTMENT'     // Dedicated block allotment with fixed allocation counts
+  | 'SCHEDULED'     // Fixed date departures (charters, cruises, curated packages)
+  | 'UNAVAILABLE';  // Stop sale / blacked out
+
+export type PricingMode =
+  | 'FIXED'         // Stable fixed price
+  | 'FROM_PRICE'    // Starting price indicator for custom itineraries
+  | 'DYNAMIC'       // Live real-time pricing from GDS/API
+  | 'PER_PERSON'    // Per passenger / applicant basis
+  | 'PER_ROOM'      // Per room per night basis
+  | 'PER_VEHICLE'   // Per transfer vehicle basis
+  | 'PER_PACKAGE'   // Flat whole-package price
+  | 'QUOTE_REQUIRED';// Complex custom quote required
+
+export type {
+  ProductExtension,
+  FlightProductExtension,
+  FlightSegmentEntity,
+  HotelProductExtension,
+  CarTransferProductExtension,
+  CruiseProductExtension,
+  CruisePortCallEntity,
+  RailProductExtension,
+  ActivityProductExtension,
+  SightseeingProductExtension,
+  InsuranceProductExtension,
+  VisaProductExtension,
+  PackageProductExtension,
+  PackageDayItineraryEntity
+} from './product-extensions.ts';
+import type { ProductExtension } from './product-extensions.ts';
+
 // Backward-compatible aliases for existing codebase and tests
 export type InventorySourceType =
   | 'API'
@@ -258,11 +293,14 @@ export interface CanonicalOfferEntity {
   subtitle: string;
   location: StructuredLocation;
   availabilityStatus: AvailabilityState;
+  availabilityMode?: AvailabilityMode;
+  pricingMode?: PricingMode;
   confirmationMode: ConfirmationMode;
   bookingMode: BookingMode;
   pricing: PricingLayersEntity;
   taxesAndFees: TaxesAndFeesEntity;
   b2bPricing?: B2BDistributionPricingEntity;
+  productExtension?: ProductExtension;
   freshness: PriceFreshnessEntity;
   validFrom: string;
   validUntil: string;

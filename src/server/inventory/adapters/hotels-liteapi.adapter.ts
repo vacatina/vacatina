@@ -120,6 +120,25 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'hotels',
+        hotel: {
+          starRating: 5,
+          roomType: raw.roomType,
+          bedConfiguration: '1 King Bed',
+          boardBasis: raw.boardBasis.toLowerCase().includes('breakfast') ? 'BB' : 'RO',
+          maxOccupancy: {
+            maxAdults: 2,
+            maxChildren: 1,
+            maxGuests: 3
+          },
+          ratePlanCode: `RATE_${raw.hotelId}`,
+          checkInTime: '14:00',
+          checkOutTime: '12:00',
+          cancellationDeadlineIso: raw.freeCancellationBefore,
+          amenities: raw.amenities || ['Wi-Fi', 'Pool', 'Fitness Center']
+        }
       }
     };
 

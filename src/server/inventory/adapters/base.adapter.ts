@@ -105,6 +105,12 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
     if (!offer.providerOfferId) offer.providerOfferId = offer.supplierOfferId;
     if (!offer.publicationStatus) offer.publicationStatus = 'PUBLISHED';
     if (!offer.distributionScope) offer.distributionScope = 'BOTH';
+    if (!offer.availabilityMode) {
+      offer.availabilityMode = offer.fulfillmentMode === 'INSTANT' ? 'INSTANT' : 'ON_REQUEST';
+    }
+    if (!offer.pricingMode) {
+      offer.pricingMode = offer.inventorySource === 'API' ? 'DYNAMIC' : 'FIXED';
+    }
     if (!offer.bookingCapability) {
       offer.bookingCapability = offer.confirmationMode === 'INSTANT_CONFIRM' ? 'INSTANT_RESERVATION' : 'REQUEST_TO_BOOK';
     }

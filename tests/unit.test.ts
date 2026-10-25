@@ -1867,4 +1867,119 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.equal(consularAudit.isProductionReady, true);
     assert.equal(consularAudit.clearedCount, 12);
   });
+
+  it('enforces ProductExtension Discriminated Union Schemas across all 10 Travel Products (Contract v1.0)', async () => {
+    // 1. Flights
+    const duffel = new FlightsDuffelAdapter();
+    const flightOffers = await duffel.search({ origin: 'CMB', destination: 'DXB', departureDate: '2026-11-10' });
+    assert.ok(flightOffers.length > 0);
+    const flight = flightOffers[0];
+    assert.equal(flight.productType, 'flights');
+    assert.ok(flight.productExtension);
+    assert.equal(flight.productExtension.productType, 'flights');
+    assert.ok(flight.productExtension.flight.segments.length > 0);
+    assert.equal(flight.productExtension.flight.cabinClass, 'ECONOMY');
+    assert.equal(typeof flight.productExtension.flight.baggageAllowance.cabinBaggageKg, 'number');
+
+    // 2. Hotels
+    const liteApi = new HotelsLiteApiAdapter();
+    const hotelOffers = await liteApi.search({ destination: 'Dubai' });
+    assert.ok(hotelOffers.length > 0);
+    const hotel = hotelOffers[0];
+    assert.equal(hotel.productType, 'hotels');
+    assert.ok(hotel.productExtension);
+    assert.equal(hotel.productExtension.productType, 'hotels');
+    assert.equal(hotel.productExtension.hotel.starRating, 5);
+    assert.ok(hotel.productExtension.hotel.amenities.length > 0);
+
+    // 3. Cars
+    const cars = new CarsRentalAdapter();
+    const carOffers = await cars.search({ destination: 'Colombo' });
+    assert.ok(carOffers.length > 0);
+    const car = carOffers[0];
+    assert.equal(car.productType, 'cars');
+    assert.ok(car.productExtension);
+    assert.equal(car.productExtension.productType, 'cars');
+    assert.equal(car.productExtension.car.driverType, 'CHAUFFEUR');
+    assert.equal(car.productExtension.car.pickupLocation.code, 'CMB');
+
+    // 4. Cruises
+    const cruises = new CruisesTraveltekAdapter();
+    const cruiseOffers = await cruises.search({ destination: 'Miami' });
+    assert.ok(cruiseOffers.length > 0);
+    const cruise = cruiseOffers[0];
+    assert.equal(cruise.productType, 'cruises');
+    assert.ok(cruise.productExtension);
+    assert.equal(cruise.productExtension.productType, 'cruises');
+    assert.equal(cruise.productExtension.cruise.cruiseLine, 'Royal Caribbean');
+    assert.ok(cruise.productExtension.cruise.portsOfCall.length > 0);
+
+    // 5. Rails
+    const rails = new RailsTrainlineAdapter();
+    const railOffers = await rails.search({ origin: 'London', destination: 'Paris' });
+    assert.ok(railOffers.length > 0);
+    const rail = railOffers[0];
+    assert.equal(rail.productType, 'rails');
+    assert.ok(rail.productExtension);
+    assert.equal(rail.productExtension.productType, 'rails');
+    assert.equal(rail.productExtension.rail.trainOperator, 'Eurostar High-Speed');
+    assert.equal(rail.productExtension.rail.originStation, 'London Central');
+
+    // 6. Activities
+    const activities = new ActivitiesViatorAdapter();
+    const actOffers = await activities.search({ destination: 'Dubai' });
+    assert.ok(actOffers.length > 0);
+    const act = actOffers[0];
+    assert.equal(act.productType, 'activities');
+    assert.ok(act.productExtension);
+    assert.equal(act.productExtension.productType, 'activities');
+    assert.equal(act.productExtension.activity.physicalFitnessLevel, 'EASY');
+    assert.ok(act.productExtension.activity.languageOptions.includes('English'));
+
+    // 7. Sightseeing
+    const sightseeing = new SightseeingViatorAdapter();
+    const sightOffers = await sightseeing.search({ destination: 'Dubai' });
+    assert.ok(sightOffers.length > 0);
+    const sight = sightOffers[0];
+    assert.equal(sight.productType, 'sightseeing');
+    assert.ok(sight.productExtension);
+    assert.equal(sight.productExtension.productType, 'sightseeing');
+    assert.equal(sight.productExtension.sightseeing.tourType, 'SHARED_GROUP');
+    assert.ok(sight.productExtension.sightseeing.itineraryHighlights.length > 0);
+
+    // 8. Insurance
+    const insurance = new InsuranceAllianzAdapter();
+    const insOffers = await insurance.search({ destination: 'Worldwide' });
+    assert.ok(insOffers.length > 0);
+    const ins = insOffers[0];
+    assert.equal(ins.productType, 'insurance');
+    assert.ok(ins.productExtension);
+    assert.equal(ins.productExtension.productType, 'insurance');
+    assert.equal(ins.productExtension.insurance.underwriterName, 'Allianz Partners');
+    assert.equal(ins.productExtension.insurance.planTier, 'GOLD');
+
+    // 9. Visa
+    const visa = new VisaConsularAdapter();
+    const visaOffers = await visa.search({ destination: 'United Arab Emirates' });
+    assert.ok(visaOffers.length > 0);
+    const v = visaOffers[0];
+    assert.equal(v.productType, 'visa');
+    assert.ok(v.productExtension);
+    assert.equal(v.productExtension.productType, 'visa');
+    assert.equal(v.productExtension.visa.destinationCountry, 'United Arab Emirates');
+    assert.ok(v.productExtension.visa.documentChecklist.length > 0);
+
+    // 10. Packages
+    const bundler = new PackagesBundlerAdapter();
+    const pkgOffers = await bundler.search({ destination: 'Dubai' });
+    assert.ok(pkgOffers.length > 0);
+    const pkg = pkgOffers[0];
+    assert.equal(pkg.productType, 'packages');
+    assert.ok(pkg.productExtension);
+    assert.equal(pkg.productExtension.productType, 'packages');
+    assert.equal(pkg.productExtension.package.itineraryDays, 5);
+    assert.equal(pkg.productExtension.package.dayByDayItinerary.length, 5);
+    assert.ok(pkg.productExtension.package.includedComponents.includes('FLIGHT'));
+    assert.ok(pkg.productExtension.package.includedComponents.includes('HOTEL'));
+  });
 });

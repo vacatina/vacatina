@@ -111,6 +111,29 @@ export class CarsRentalAdapter extends BaseSupplierAdapter<RawRentalCarOffer> {
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'cars',
+        car: {
+          vehicleCategory: 'SUV',
+          vehicleModel: raw.vehicleModel,
+          driverType: raw.isChauffeurDriven ? 'CHAUFFEUR' : 'SELF_DRIVE',
+          transmission: 'AUTOMATIC',
+          passengerCapacity: 5,
+          luggageCapacity: 4,
+          pickupLocation: {
+            type: 'AIRPORT',
+            name: `${raw.pickupCity} Bandaranaike International Airport (CMB)`,
+            code: 'CMB'
+          },
+          dropoffLocation: {
+            type: 'CITY_CENTER',
+            name: `${raw.dropoffCity} Downtown District`
+          },
+          mileagePolicy: raw.unlimitedMileage ? 'UNLIMITED' : 'LIMITED',
+          hasMeetAndGreet: true,
+          includesFuelAndTolls: false
+        }
       }
     };
 

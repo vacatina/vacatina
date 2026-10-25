@@ -116,6 +116,22 @@ export class RailsTrainlineAdapter extends BaseSupplierAdapter<RawTrainlineRailO
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'rails',
+        rail: {
+          trainOperator: raw.operator,
+          trainNumber: `TRN-${raw.journeyId.slice(-4).toUpperCase()}`,
+          originStation: raw.originStation,
+          destinationStation: raw.destinationStation,
+          departureTimeIso: raw.departureTimeIso,
+          arrivalTimeIso: raw.arrivalTimeIso,
+          travelClass: raw.travelClass.toLowerCase().includes('first') ? 'FIRST' : 'STANDARD',
+          hasSeatReservation: true,
+          assignedCarriage: 'Coach 04',
+          assignedSeat: 'Seat 42 (Window)',
+          isFlexibleFare: true
+        }
       }
     };
 

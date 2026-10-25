@@ -105,6 +105,20 @@ export class InsuranceAllianzAdapter extends BaseSupplierAdapter<RawInsurancePla
         canRevalidateOnline: true,
         requiresSupplierPing: false,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'insurance',
+        insurance: {
+          underwriterName: 'Allianz Partners',
+          planTier: 'GOLD',
+          coverageRegion: 'WORLDWIDE',
+          emergencyMedicalLimitMinor: raw.medicalEmergencyCoverageMinor,
+          tripCancellationLimitMinor: raw.tripCancellationCoverageMinor,
+          baggageDelayLimitMinor: raw.baggageLossCoverageMinor,
+          preExistingConditionsCovered: false,
+          policyWordingUrl: 'https://vacatina.com/docs/insurance/allianz-gold-wording.pdf',
+          coolingOffPeriodDays: 14
+        }
       }
     };
 

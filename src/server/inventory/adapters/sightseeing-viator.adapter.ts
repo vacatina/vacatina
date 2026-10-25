@@ -107,6 +107,22 @@ export class SightseeingViatorAdapter extends BaseSupplierAdapter<RawSightseeing
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'sightseeing',
+        sightseeing: {
+          tourCode: raw.tourCode,
+          tourType: 'SHARED_GROUP',
+          guideLanguage: raw.guideLanguage,
+          hasSkipTheLine: raw.isSkipTheLine,
+          includesMonumentAdmissions: true,
+          transportType: 'AIR_CONDITIONED_COACH',
+          itineraryHighlights: [
+            `${raw.city} Historical District & Heritage Museum`,
+            'Panoramic Skyline Photo Stop',
+            'Traditional Gold & Spice Souk Walking Tour'
+          ]
+        }
       }
     };
 

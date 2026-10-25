@@ -109,6 +109,20 @@ export class ActivitiesViatorAdapter extends BaseSupplierAdapter<RawViatorExperi
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'activities',
+        activity: {
+          activityCode: raw.productCode,
+          durationHours: 6,
+          scheduledDateTimeIso: new Date(Date.now() + 86400000 * 3).toISOString(),
+          timeSlot: '15:00 - 21:00',
+          meetingPointAddress: 'Hotel lobby pickup in Dubai Central',
+          maxGroupSize: 15,
+          languageOptions: ['English', 'Arabic'],
+          minimumAgeYears: 5,
+          physicalFitnessLevel: 'EASY'
+        }
       }
     };
 

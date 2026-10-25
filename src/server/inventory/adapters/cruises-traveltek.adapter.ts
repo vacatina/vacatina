@@ -112,6 +112,24 @@ export class CruisesTraveltekAdapter extends BaseSupplierAdapter<RawCruiseSailin
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'cruises',
+        cruise: {
+          cruiseLine: raw.cruiseLine,
+          shipName: raw.shipName,
+          sailingDurationNights: raw.durationNights,
+          cabinGrade: 'BALCONY',
+          embarkationPort: raw.embarkationPort,
+          disembarkationPort: raw.disembarkationPort,
+          portsOfCall: (raw.itineraryPorts || ['Miami', 'Nassau', 'Cozumel']).map((port, idx) => ({
+            dayNumber: idx + 1,
+            portName: port,
+            country: 'Caribbean Region'
+          })),
+          diningSeating: 'OPEN',
+          includesPortChargesAndGratuities: true
+        }
       }
     };
 

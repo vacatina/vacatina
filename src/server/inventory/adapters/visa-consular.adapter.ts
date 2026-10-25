@@ -105,6 +105,24 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
         canRevalidateOnline: true,
         requiresSupplierPing: false,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'visa',
+        visa: {
+          destinationCountry: raw.countryName,
+          visaType: 'TOURIST_EVISA',
+          eligibleNationality: 'Sri Lankan (LKA)',
+          residenceCountry: 'Sri Lanka',
+          processingSlaBusinessDays: raw.processingSlaDays,
+          embassyFeeMinor: Math.round(raw.consularBaseCostMinor * 0.6),
+          vacatinaServiceFeeMinor: Math.round(raw.consularBaseCostMinor * 0.4),
+          documentChecklist: [
+            'Passport copy valid for 6+ months with 2 blank pages',
+            'Passport-sized digital photograph with white background',
+            'Return flight itinerary and confirmed accommodation proof'
+          ],
+          submissionMethod: 'ONLINE_PORTAL'
+        }
       }
     };
 

@@ -172,6 +172,54 @@ export class PackagesBundlerAdapter extends BaseSupplierAdapter<RawHybridPackage
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'packages',
+        package: {
+          itineraryDays: raw.durationDays,
+          itineraryNights: raw.durationDays - 1,
+          packageTheme: 'Luxury City & Beach Discovery',
+          includedComponents: ['FLIGHT', 'HOTEL', 'TRANSFERS', 'VISA'],
+          dayByDayItinerary: [
+            {
+              dayNumber: 1,
+              title: 'Arrival in Dubai & VIP Hotel Check-In',
+              description: 'Chauffeur airport transfer, check-in to Atlantis The Royal, evening leisure.',
+              mealsIncluded: ['Dinner'],
+              activityHighlights: ['Private Chauffeur Meet & Greet', 'Resort Welcome Reception']
+            },
+            {
+              dayNumber: 2,
+              title: 'Downtown Dubai & Burj Khalifa Observation',
+              description: 'Private morning tour, observation deck access, fountain show viewing.',
+              mealsIncluded: ['Breakfast'],
+              activityHighlights: ['Burj Khalifa Level 148', 'Dubai Mall Personal Shopping Guide']
+            },
+            {
+              dayNumber: 3,
+              title: 'Desert Dunes & Arabian Evening Feast',
+              description: 'Afternoon 4x4 desert adventure, sunset photo-stop, traditional dinner banquet.',
+              mealsIncluded: ['Breakfast', 'Dinner'],
+              activityHighlights: ['Desert Dune Bashing', 'Bedouin Starlit Camp']
+            },
+            {
+              dayNumber: 4,
+              title: 'Leisure Day & Luxury Yacht Cruise',
+              description: 'Private 3-hour sunset cruise along Dubai Marina and Palm Jumeirah.',
+              mealsIncluded: ['Breakfast'],
+              activityHighlights: ['Private Yacht Charter', 'Palm Lagoon Swimming']
+            },
+            {
+              dayNumber: 5,
+              title: 'Departure & Flight Return',
+              description: 'Breakfast, check-out, and private airport transfer for return flight to Colombo.',
+              mealsIncluded: ['Breakfast'],
+              activityHighlights: ['Airport Departure Transfer']
+            }
+          ],
+          singleSupplementMinor: 4500000,
+          minGroupSize: 2
+        }
       }
     };
 

@@ -270,11 +270,72 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
         canRevalidateOnline: true,
         requiresSupplierPing: false,
         lastRevalidationResult: 'UNCHANGED'
-      }
+      },
+      productExtension: (raw as any).productExtension || this.buildFallbackProductExtension(raw)
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
     return this.applyCanonicalContractDefaults(offer);
+  }
+
+  private buildFallbackProductExtension(raw: RawPayloadCmsListing): any {
+    switch (raw.productType) {
+      case 'hotels':
+        return {
+          productType: 'hotels',
+          hotel: {
+            starRating: 5,
+            roomType: raw.subtitle || 'Direct Contract Deluxe Suite',
+            bedConfiguration: '1 King Bed',
+            boardBasis: 'BB',
+            maxOccupancy: { maxAdults: 2, maxChildren: 1, maxGuests: 3 },
+            ratePlanCode: `RATE_MAN_${raw.id}`,
+            checkInTime: '14:00',
+            checkOutTime: '12:00',
+            amenities: ['Wi-Fi', 'Pool', 'Breakfast Included']
+          }
+        };
+      case 'flights':
+        return {
+          productType: 'flights',
+          flight: {
+            fareFamily: 'Direct Chartered Contract',
+            cabinClass: 'ECONOMY',
+            ticketingDeadlineIso: new Date(Date.now() + 86400000 * 7).toISOString(),
+            isRefundable: false,
+            isChangeable: true,
+            baggageAllowance: { cabinBaggageKg: 7, checkedBaggageKg: 20, pieceCount: 1 },
+            segments: [{
+              segmentId: `seg_${raw.id}_0`,
+              carrierCode: 'CIN',
+              carrierName: raw.partnerName || 'Cinnamon Air',
+              flightNumber: 'CIN-801',
+              originIata: 'CMB',
+              destinationIata: 'KDW',
+              departureTimeIso: new Date().toISOString(),
+              arrivalTimeIso: new Date(Date.now() + 3600000).toISOString(),
+              durationMinutes: 60
+            }]
+          }
+        };
+      case 'visa':
+        return {
+          productType: 'visa',
+          visa: {
+            destinationCountry: raw.location?.country || 'United Arab Emirates',
+            visaType: 'TOURIST_EVISA',
+            eligibleNationality: 'Sri Lankan (LKA)',
+            residenceCountry: 'Sri Lanka',
+            processingSlaBusinessDays: 2,
+            embassyFeeMinor: Math.round(raw.contractedBaseCostMinor * 0.7),
+            vacatinaServiceFeeMinor: Math.round(raw.contractedBaseCostMinor * 0.3),
+            documentChecklist: ['Passport bio page copy', 'Passport digital photo'],
+            submissionMethod: 'ONLINE_PORTAL'
+          }
+        };
+      default:
+        return undefined;
+    }
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {

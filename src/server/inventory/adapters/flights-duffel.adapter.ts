@@ -144,6 +144,35 @@ export class FlightsDuffelAdapter extends BaseSupplierAdapter<RawDuffelFlightOff
         canRevalidateOnline: true,
         requiresSupplierPing: true,
         lastRevalidationResult: 'UNCHANGED'
+      },
+      productExtension: {
+        productType: 'flights',
+        flight: {
+          fareFamily: 'Standard Economy',
+          cabinClass: 'ECONOMY',
+          ticketingDeadlineIso: expiresAtIso,
+          isRefundable: false,
+          isChangeable: true,
+          baggageAllowance: {
+            cabinBaggageKg: 7,
+            checkedBaggageKg: 23,
+            pieceCount: 1
+          },
+          segments: [{
+            segmentId: `seg_${raw.id}_0`,
+            carrierCode: carrier?.iata_code || 'UL',
+            carrierName: carrier?.name || 'Airline',
+            flightNumber,
+            aircraftModel: segment?.aircraft?.name || 'Airbus A330',
+            originIata,
+            originTerminal: '1',
+            destinationIata: destIata,
+            destinationTerminal: '3',
+            departureTimeIso: slice?.departure_datetime || new Date().toISOString(),
+            arrivalTimeIso: slice?.arrival_datetime || new Date().toISOString(),
+            durationMinutes: 270
+          }]
+        }
       }
     };
 
