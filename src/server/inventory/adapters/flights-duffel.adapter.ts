@@ -145,7 +145,7 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
         arrivalTime: slice?.arrival_datetime,
         cabinClass: cabin,
         isSandboxSimulated: !this.isProduction || !apiKey,
-        managedContentEnabled: true // Duffel acts as Merchant of Record
+        managedContentEnabled: true // Duffel Managed Content allows Vacatina to access flight content using Duffel or its partner's agency accreditation and ticketing authority, subject to the applicable Duffel commercial/payment arrangement.
       },
       revalidationCapability: {
         canRevalidateOnline: true,
@@ -326,9 +326,9 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
     const apiKey = this.config.apiKey || (typeof process !== 'undefined' ? process.env?.DUFFEL_TOKEN : undefined);
     const isLive = Boolean(this.isProduction && apiKey);
 
-    // Duffel Managed Content:
-    // Duffel acts as the Merchant of Record and issues tickets under Duffel's own IATA/ARC
-    // accreditation. Vacatina does not require universal IATA accreditation for Managed Content.
+    // Duffel Managed Content allows Vacatina to access flight content using Duffel or its partner's agency
+    // accreditation and ticketing authority, subject to the applicable Duffel commercial/payment arrangement.
+    // Integration status: SANDBOX (proposed integration target under technical evaluation).
     return {
       supplierReference: isLive
         ? `DUF-ORD-${Math.random().toString(36).slice(2, 8).toUpperCase()}`

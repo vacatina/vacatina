@@ -15,27 +15,27 @@ Frontend routes (e.g. `/flights`, `/trip/review`, `/admin/inventory`) are client
 
 ---
 
-## 2. The 15 Mandatory Backend Capabilities
+## 2. The 15 Mandatory Backend Capabilities (Pending Backend Service Implementation)
 
-The backend engineering team must provide implementation for these 15 explicit capabilities:
+The frontend route shells, canonical normalization contracts, and adapter boundaries are complete. However, the backend commerce services are **NOT complete**. The backend engineering team must implement and certify these 15 mandatory capabilities:
 
-| # | Capability Domain | HTTP Method & Path | Primary Responsibility |
-| :---: | :--- | :--- | :--- |
-| **1** | **Multi-Product Search** | `POST /api/v1/search` | Dispatches criteria across manual repository and supplier adapters; returns normalized `UnifiedCustomerOffer[]`. |
-| **2** | **Offer Details** | `GET /api/v1/offers/:id` | Returns complete offer dossier (carrier rules, room amenities, itinerary, inclusions). |
-| **3** | **Pre-Booking Revalidation**| `POST /api/v1/offers/:id/revalidate` | Live availability and price freshness verification against upstream supplier API. |
-| **4** | **Allotment Hold (Atomic)**| `POST /api/v1/inventory/hold` | Reserves 1 allotment unit for 15 minutes (`COMMITTED_HELD`) to prevent double-booking. |
-| **5** | **Allotment Release** | `POST /api/v1/inventory/release` | Releases expired or cancelled allotment reservation back to available inventory. |
-| **6** | **Manual Listing CMS** | `GET, POST /api/v1/admin/listings` | Admin backoffice CRUD for 18-attribute direct contracts and services. |
-| **7** | **4-Eyes Governance** | `POST /api/v1/admin/listings/:id/lifecycle`| Enforces transition approvals: `DRAFT` $\rightarrow$ `COMMERCIAL_REVIEW` $\rightarrow$ `FINANCE_APPROVED` $\rightarrow$ `PUBLISHED`. |
-| **8** | **Commercial Pricing Rules**| `GET, PUT /api/v1/admin/pricing-rules` | Dynamic markup percentages and consular fee schedules (never hardcoded). |
-| **9** | **Trip Bucket Sync** | `POST /api/v1/trip-bucket/sync` | Persists multi-product customer trip dockets across guest/authenticated sessions. |
-| **10**| **Saved Favorites** | `GET, POST, DELETE /api/v1/favorites` | Manages customer wishlists strictly isolated from Trip Bucket totals. |
-| **11**| **Authentication & RBAC** | `Bearer <Clerk_JWT>` | RS256 JWT cryptographic verification using Clerk JWKS endpoints. |
-| **12**| **Booking Saga Initiation**| `POST /api/v1/booking/checkout` | Orchestrates multi-source payment capture, PNR issuance, and voucher generation. |
-| **13**| **Manage Booking Dossier** | `GET /api/v1/bookings/:ref` | Customer self-service booking retrieval, flight schedule updates, and voucher download. |
-| **14**| **Consular Visa Desk** | `POST /api/v1/visa/applications` | Ingests applicant passport details and document uploads for consular vetting. |
-| **15**| **Support & Exceptions** | `POST /api/v1/support/tickets` | Operational triage for flight cancellations, schedule changes, and manual refunds. |
+| # | Capability Domain | HTTP Method & Path | Implementation Status | UI Shell Status | Service Implementation | Primary Responsibility |
+| :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **1** | **Multi-Product Search** | `POST /api/v1/search` | `PLANNED` | `COMPLETE` | `PENDING` | Dispatches criteria across manual repository and supplier adapters; returns normalized `UnifiedCustomerOffer[]`. |
+| **2** | **Offer Details** | `GET /api/v1/offers/:id` | `PLANNED` | `COMPLETE` | `PENDING` | Returns complete offer dossier (carrier rules, room amenities, itinerary, inclusions). |
+| **3** | **Pre-Booking Revalidation**| `POST /api/v1/offers/:id/revalidate` | `SANDBOX` | `COMPLETE` | `PENDING` | Live availability and price freshness verification against upstream supplier API. |
+| **4** | **Allotment Hold (Atomic)**| `POST /api/v1/inventory/hold` | `PLANNED` | `COMPLETE` | `PENDING` | Reserves 1 allotment unit for 15 minutes (`COMMITTED_HELD`) to prevent double-booking. |
+| **5** | **Allotment Release** | `POST /api/v1/inventory/release` | `PLANNED` | `COMPLETE` | `PENDING` | Releases expired or cancelled allotment reservation back to available inventory. |
+| **6** | **Manual Listing CMS** | `GET, POST /api/v1/admin/listings` | `PLANNED` | `COMPLETE` | `PENDING` | Admin backoffice CRUD for 18-attribute direct contracts and services. |
+| **7** | **4-Eyes Governance** | `POST /api/v1/admin/listings/:id/lifecycle`| `PLANNED` | `COMPLETE` | `PENDING` | Enforces transition approvals: `DRAFT` $\rightarrow$ `COMMERCIAL_REVIEW` $\rightarrow$ `FINANCE_APPROVED` $\rightarrow$ `PUBLISHED`. |
+| **8** | **Commercial Pricing Rules**| `GET, PUT /api/v1/admin/pricing-rules` | `PLANNED` | `COMPLETE` | `PENDING` | Dynamic markup percentages and consular fee schedules (never hardcoded). |
+| **9** | **Trip Bucket Sync** | `POST /api/v1/trip-bucket/sync` | `PLANNED` | `COMPLETE` | `PENDING` | Persists multi-product customer trip dockets across guest/authenticated sessions. |
+| **10**| **Saved Favorites** | `GET, POST, DELETE /api/v1/favorites` | `PLANNED` | `COMPLETE` | `PENDING` | Manages customer wishlists strictly isolated from Trip Bucket totals. |
+| **11**| **Authentication & RBAC** | `Bearer <Clerk_JWT>` | `SANDBOX` | `COMPLETE` | `PENDING` | RS256 JWT cryptographic verification using Clerk JWKS endpoints. |
+| **12**| **Booking Saga Initiation**| `POST /api/v1/booking/checkout` | `PLANNED` | `COMPLETE` | `PENDING` | Orchestrates multi-source payment capture, PNR issuance, and voucher generation. |
+| **13**| **Manage Booking Dossier** | `GET /api/v1/bookings/:ref` | `PLANNED` | `COMPLETE` | `PENDING` | Customer self-service booking retrieval, flight schedule updates, and voucher download. |
+| **14**| **Consular Visa Desk** | `POST /api/v1/visa/applications` | `PLANNED` | `COMPLETE` | `PENDING` | Ingests applicant passport details and document uploads for consular vetting. |
+| **15**| **Support & Exceptions** | `POST /api/v1/support/tickets` | `PLANNED` | `COMPLETE` | `PENDING` | Operational triage for flight cancellations, schedule changes, and manual refunds. |
 
 ---
 

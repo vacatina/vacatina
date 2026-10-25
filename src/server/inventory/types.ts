@@ -104,6 +104,20 @@ export type StorageLifecycle =
   | 'FILE_BACKED_PROTOTYPE'
   | 'PERSISTENT_DATABASE';
 
+/**
+ * 4-Tier Integration & Backend Capability Implementation Status (Architecture v2.3):
+ * Governs both external provider integrations and backend capabilities.
+ * - PLANNED: Requirements, schemas, and contracts defined; no service endpoints or credentials active.
+ * - SANDBOX: Adapter/shell connected to sandbox mock or test credentials; UAT in progress.
+ * - INTEGRATED: Code and contracts complete; passing automated unit/certification tests in local/CI environment.
+ * - PRODUCTION_VERIFIED: Production credentials active, live settlement verified, production signed-off.
+ */
+export type ImplementationStatus =
+  | 'PLANNED'
+  | 'SANDBOX'
+  | 'INTEGRATED'
+  | 'PRODUCTION_VERIFIED';
+
 // ----------------------------------------------------------------------------
 // Canonical Inventory Source Model & Verification Invariants (Architecture v2.0)
 // ----------------------------------------------------------------------------

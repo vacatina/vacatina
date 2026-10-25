@@ -15,7 +15,8 @@ import type {
   ProviderOperationalState,
   TravelProductSlug,
   CommercialEntityAuditRecord,
-  OperationalReadinessTier
+  OperationalReadinessTier,
+  ImplementationStatus
 } from './types.ts';
 
 export type ProviderRole =
@@ -95,6 +96,7 @@ export interface ProviderRegistryRecord {
   role: ProviderRole;
   targetProducts: TravelProductSlug[];
   lifecycle: ProviderLifecycle;
+  implementationStatus?: ImplementationStatus;
   commercialStatus: CommercialContractStatus;
   credentialsConfigured: boolean;
   certificationStatus: CertificationComplianceStatus;
@@ -996,5 +998,189 @@ export const CANONICAL_COMMERCIAL_ENTITY_REGISTRY: CommercialEntityAuditRecord[]
     sandboxApproved: false,
     canEnterProductionSellable: false,
     auditNotes: 'Example entity only. Replaced in code with architecture-safe generic descriptor "Licensed Underwriter Direct Desk".'
+  }
+];
+
+/**
+ * The 15 Mandatory Backend Capabilities & Implementation Governance Matrix (Master Contract v2.3)
+ * Distinguishes UI shell / contract completion from required live backend service implementation.
+ */
+export interface BackendCapabilityContract {
+  capabilityId: string;
+  name: string;
+  httpMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  endpointPath: string;
+  implementationStatus: ImplementationStatus;
+  uiShellStatus: 'COMPLETE' | 'PENDING';
+  serviceImplementationStatus: 'PENDING' | 'IN_DEVELOPMENT' | 'VERIFIED';
+  requiredInvariants: string[];
+  description: string;
+}
+
+export const MANDATORY_BACKEND_CAPABILITIES: BackendCapabilityContract[] = [
+  {
+    capabilityId: 'CAP-01',
+    name: 'Multi-Product Search Aggregator',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/search',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Parallel dispatch across manual store and supplier adapters', 'Integer minor pricing', 'Zero API/MANUAL leaks to client'],
+    description: 'Dispatches search criteria across manual repository and supplier adapters; returns normalized UnifiedCustomerOffer[].'
+  },
+  {
+    capabilityId: 'CAP-02',
+    name: 'Offer Details Dossier',
+    httpMethod: 'GET',
+    endpointPath: '/api/v1/offers/:id',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['CanonicalOffer normalization', 'Amenity specs and baggage inclusions', 'No dead ends'],
+    description: 'Returns complete offer dossier (carrier rules, room amenities, itinerary, inclusions).'
+  },
+  {
+    capabilityId: 'CAP-03',
+    name: 'Pre-Booking Revalidation',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/offers/:id/revalidate',
+    implementationStatus: 'SANDBOX',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Live availability ping to upstream supplier', 'Price change detection within 20m TTL', 'RFC 7807 problem details'],
+    description: 'Live availability and price freshness verification against upstream supplier API.'
+  },
+  {
+    capabilityId: 'CAP-04',
+    name: 'Atomic Allotment Hold',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/inventory/hold',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['15-minute reservation TTL hold', 'Concurrency allotment decrement saga', 'COMMITTED_HELD token'],
+    description: 'Reserves 1 allotment unit for 15 minutes (COMMITTED_HELD) to prevent double-booking.'
+  },
+  {
+    capabilityId: 'CAP-05',
+    name: 'Allotment Release',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/inventory/release',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Automatic release upon checkout expiration or cancellation', 'Idempotent release'],
+    description: 'Releases expired or cancelled allotment reservation back to available inventory.'
+  },
+  {
+    capabilityId: 'CAP-06',
+    name: 'Manual Listing CMS CRUD',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/admin/listings',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['18 mandatory attributes', 'Never hardcoded in HTML', 'Commercial evidence dossier validation'],
+    description: 'Admin backoffice CRUD for 18-attribute direct contracts and services.'
+  },
+  {
+    capabilityId: 'CAP-07',
+    name: '4-Eyes Lifecycle Governance',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/admin/listings/:id/lifecycle',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Maker-checker separation of duties', 'Finance Officer approval required for commercial publish', 'Anti-tamper demotion'],
+    description: 'Enforces maker-checker state transitions between Product Admin and Finance Officer.'
+  },
+  {
+    capabilityId: 'CAP-08',
+    name: 'Dynamic Commercial Pricing Engine',
+    httpMethod: 'PUT',
+    endpointPath: '/api/v1/admin/pricing-rules',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Dynamic markup percentages and consular fee schedules', 'Never hardcoded', 'B2C/B2B channel overrides'],
+    description: 'Dynamic markup percentages and consular fee schedules (never hardcoded).'
+  },
+  {
+    capabilityId: 'CAP-09',
+    name: 'Trip Bucket Session Sync',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/trip-bucket/sync',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Cross-device session synchronization', 'Preserves original component provenance', 'Excludes non-ready items from checkout'],
+    description: 'Persists multi-product customer trip dockets across guest/authenticated sessions.'
+  },
+  {
+    capabilityId: 'CAP-10',
+    name: 'Saved Favorites Persistence',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/favorites',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Strict isolation from Trip Bucket financial math', 'Local/remote synchronization'],
+    description: 'Manages customer wishlists strictly isolated from Trip Bucket totals.'
+  },
+  {
+    capabilityId: 'CAP-11',
+    name: 'Clerk JWT Claims Verification & RBAC',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/auth/verify',
+    implementationStatus: 'SANDBOX',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['RS256 JWT cryptographic verification with Clerk JWKS', 'RBAC role enforcement (SUPER_ADMIN, B2B_AGENT, FINANCE_OFFICER)'],
+    description: 'RS256 JWT cryptographic verification using Clerk JWKS endpoints.'
+  },
+  {
+    capabilityId: 'CAP-12',
+    name: 'Booking Saga Initiation & Orchestration',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/booking/checkout',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Multi-source payment capture', 'Automated PNR issuance or on-request ticket queuing', 'Quarantine guard blocks SEED'],
+    description: 'Orchestrates multi-source payment capture, PNR issuance, and voucher generation.'
+  },
+  {
+    capabilityId: 'CAP-13',
+    name: 'Manage Booking Dossier & Self-Service',
+    httpMethod: 'GET',
+    endpointPath: '/api/v1/bookings/:ref',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Lookup by reference and surname', 'Downloadable verified PDF voucher', 'Disruption notifications'],
+    description: 'Customer self-service booking retrieval, flight schedule updates, and voucher download.'
+  },
+  {
+    capabilityId: 'CAP-14',
+    name: 'Consular Visa Desk Application Queue',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/visa/applications',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Encrypted passport document ingest', 'Specialist review SLA assignment', 'Status tracker'],
+    description: 'Ingests applicant passport details and document uploads for consular vetting.'
+  },
+  {
+    capabilityId: 'CAP-15',
+    name: 'Support & Operational Exceptions Triage',
+    httpMethod: 'POST',
+    endpointPath: '/api/v1/support/tickets',
+    implementationStatus: 'PLANNED',
+    uiShellStatus: 'COMPLETE',
+    serviceImplementationStatus: 'PENDING',
+    requiredInvariants: ['Flight schedule change re-accommodation', 'Manual refund request queue', 'Audit log'],
+    description: 'Operational triage for flight cancellations, schedule changes, and manual refunds.'
   }
 ];
