@@ -76,7 +76,7 @@ export class RailsTrainlineAdapter extends BaseSupplierAdapter<RawTrainlineRailO
         countryCode: raw.country.slice(0, 2).toUpperCase(),
         stationCode: raw.destinationStation.slice(0, 4).toUpperCase()
       },
-      availabilityStatus: 'LIVE',
+      availabilityStatus: this.isProduction && this.config.apiKey ? 'LIVE' : 'CACHED',
       confirmationMode: 'INSTANT_CONFIRM',
       bookingMode: 'INSTANT_BOOK',
       pricing,
@@ -96,11 +96,14 @@ export class RailsTrainlineAdapter extends BaseSupplierAdapter<RawTrainlineRailO
       cancellationPolicy: 'Refundable up to 7 days before departure with 15% operator fee.',
       pinAboveApi: false,
       deduplicationKey: '',
+      isSandboxSimulated: !this.isProduction || !this.config.apiKey,
+      integrationLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceMetadata: {
         trainlineJourneyId: raw.journeyId,
         originStation: raw.originStation,
         destinationStation: raw.destinationStation,
-        departureTime: raw.departureTimeIso
+        departureTime: raw.departureTimeIso,
+        isSandboxSimulated: !this.isProduction || !this.config.apiKey
       },
       revalidationCapability: {
         canRevalidateOnline: true,
@@ -133,10 +136,13 @@ export class RailsTrainlineAdapter extends BaseSupplierAdapter<RawTrainlineRailO
   }
 
   public async revalidate(supplierOfferId: string): Promise<RevalidationResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       offerId: supplierOfferId,
       status: 'UNCHANGED',
-      message: 'Rail timetable & seat availability verified by Trainline'
+      message: isLive
+        ? 'Rail timetable and seat availability revalidated via Trainline Partner API'
+        : '[SANDBOX / MOCK MODE] Simulated rail timetable check. Live Trainline key not configured.'
     };
   }
 
@@ -150,11 +156,14 @@ export class RailsTrainlineAdapter extends BaseSupplierAdapter<RawTrainlineRailO
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
-      supplierReference: `TRN-TKT-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-      ticketOrVoucherNumber: `ETKT-${Math.floor(10000000 + Math.random() * 90000000)}`,
+      supplierReference: isLive
+        ? `TRN-TKT-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+        : `TRN-SBOX-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+      ticketOrVoucherNumber: isLive ? `ETKT-${Math.floor(10000000 + Math.random() * 90000000)}` : undefined,
       confirmedAtIso: new Date().toISOString(),
-      fulfillmentStatus: 'CONFIRMED'
+      fulfillmentStatus: isLive ? 'CONFIRMED' : 'PENDING'
     };
   }
 

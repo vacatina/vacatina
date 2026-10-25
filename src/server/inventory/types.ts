@@ -87,6 +87,8 @@ export interface CanonicalOfferEntity {
   cancellationPolicy: string;
   pinAboveApi: boolean;             // Administrative priority ranking
   deduplicationKey: string;         // Composite natural deduplication key
+  isSandboxSimulated: boolean;      // Truthful flag: true if rendered by mock/sandbox adapter
+  integrationLifecycle: 'PLANNED' | 'SCAFFOLD' | 'SANDBOX_ACTIVE' | 'CERTIFIED' | 'PRODUCTION_LIVE';
   sourceMetadata: Record<string, unknown>;
   revalidationCapability: {
     canRevalidateOnline: boolean;

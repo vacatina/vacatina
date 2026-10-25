@@ -99,7 +99,7 @@ export class FlightsDuffelAdapter extends BaseSupplierAdapter<RawDuffelFlightOff
         countryCode: destIata.slice(0, 2),
         iataCode: destIata
       },
-      availabilityStatus: 'LIVE',
+      availabilityStatus: this.isProduction && this.config.apiKey ? 'LIVE' : 'CACHED',
       confirmationMode: 'INSTANT_CONFIRM',
       bookingMode: 'INSTANT_BOOK',
       pricing,
@@ -122,13 +122,16 @@ export class FlightsDuffelAdapter extends BaseSupplierAdapter<RawDuffelFlightOff
       cancellationPolicy: 'Airline fare rules apply. Non-refundable standard fare, changes subject to carrier penalty.',
       pinAboveApi: false,
       deduplicationKey: '',
+      isSandboxSimulated: !this.isProduction || !this.config.apiKey,
+      integrationLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceMetadata: {
         duffelOfferId: raw.id,
         airlineCode: carrier?.iata_code,
         flightNumber,
         departureTime: slice?.departure_datetime,
         arrivalTime: slice?.arrival_datetime,
-        cabinClass: cabin
+        cabinClass: cabin,
+        isSandboxSimulated: !this.isProduction || !this.config.apiKey
       },
       revalidationCapability: {
         canRevalidateOnline: true,
@@ -175,10 +178,13 @@ export class FlightsDuffelAdapter extends BaseSupplierAdapter<RawDuffelFlightOff
   }
 
   public async revalidate(supplierOfferId: string): Promise<RevalidationResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       offerId: supplierOfferId,
       status: 'UNCHANGED',
-      message: 'Airline fare and seat availability confirmed by Duffel NDC'
+      message: isLive
+        ? 'Airline fare and seat availability revalidated via Duffel NDC API'
+        : '[SANDBOX / MOCK MODE] Simulated fare verification. Live Duffel NDC credentials not configured.'
     };
   }
 
@@ -192,11 +198,14 @@ export class FlightsDuffelAdapter extends BaseSupplierAdapter<RawDuffelFlightOff
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
-      supplierReference: `DUF-ORD-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-      ticketOrVoucherNumber: `176-${Math.floor(1000000000 + Math.random() * 9000000000)}`,
+      supplierReference: isLive
+        ? `DUF-ORD-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+        : `DUF-SBOX-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+      ticketOrVoucherNumber: isLive ? `176-${Math.floor(1000000000 + Math.random() * 9000000000)}` : undefined,
       confirmedAtIso: new Date().toISOString(),
-      fulfillmentStatus: 'CONFIRMED'
+      fulfillmentStatus: isLive ? 'CONFIRMED' : 'PENDING'
     };
   }
 

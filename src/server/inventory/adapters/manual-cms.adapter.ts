@@ -119,12 +119,12 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
         contractedBaseCostMinor: 4500000, // LKR 45,000.00 Govt Fee
         costCurrency: 'LKR',
         inclusions: [
-          'Embassy fee settlement & compliance verification',
-          'Mandatory COVID-19 & travel health insurance voucher',
-          'Dedicated consular case manager support'
+          'Comprehensive visa application document audit and checklist review',
+          'Dedicated consular case manager liaison and submission tracking',
+          'Assistance with embassy portal filing requirements'
         ],
-        exclusions: ['Courier delivery of hardcopy passport stamps (e-visa issued)'],
-        cancellationPolicy: 'Government fee non-refundable once lodged with GDRFA.',
+        exclusions: ['Courier delivery of physical documents if required by embassy'],
+        cancellationPolicy: 'Advisory fee non-refundable once consular document audit has commenced.',
         pinAboveApi: true,
         status: 'PUBLISHED'
       }
@@ -172,10 +172,13 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
       cancellationPolicy: raw.cancellationPolicy,
       pinAboveApi: raw.pinAboveApi,
       deduplicationKey: '',
+      isSandboxSimulated: false,
+      integrationLifecycle: 'SANDBOX_ACTIVE',
       sourceMetadata: {
         cmsListingId: raw.id,
         availableQuota: raw.availableQuota,
-        status: raw.status
+        status: raw.status,
+        isDirectContract: true
       },
       revalidationCapability: {
         canRevalidateOnline: true,

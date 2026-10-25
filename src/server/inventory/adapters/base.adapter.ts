@@ -20,6 +20,7 @@ export interface SupplierAdapterConfig {
   apiKey?: string;
   apiSecret?: string;
   timeoutMs: number;
+  integrationLifecycle?: 'PLANNED' | 'SCAFFOLD' | 'SANDBOX_ACTIVE' | 'CERTIFIED' | 'PRODUCTION_LIVE';
 }
 
 export interface BookingHoldResult {
@@ -70,6 +71,10 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
 
   public get isProduction(): boolean {
     return this.config.environment === 'production';
+  }
+
+  public get integrationLifecycle(): 'PLANNED' | 'SCAFFOLD' | 'SANDBOX_ACTIVE' | 'CERTIFIED' | 'PRODUCTION_LIVE' {
+    return this.config.integrationLifecycle || 'SCAFFOLD';
   }
 
   /**

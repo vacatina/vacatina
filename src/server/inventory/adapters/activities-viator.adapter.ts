@@ -71,7 +71,7 @@ export class ActivitiesViatorAdapter extends BaseSupplierAdapter<RawViatorExperi
         country: raw.destination.country,
         countryCode: raw.destination.countryCode
       },
-      availabilityStatus: 'LIVE',
+      availabilityStatus: this.isProduction && this.config.apiKey ? 'LIVE' : 'CACHED',
       confirmationMode: raw.instantConfirmation ? 'INSTANT_CONFIRM' : 'REQUEST_TO_CONFIRM',
       bookingMode: 'INSTANT_BOOK',
       pricing,
@@ -91,9 +91,12 @@ export class ActivitiesViatorAdapter extends BaseSupplierAdapter<RawViatorExperi
       cancellationPolicy: raw.cancellationPolicyDescription || 'Free cancellation up to 24 hours before activity start.',
       pinAboveApi: false,
       deduplicationKey: '',
+      isSandboxSimulated: !this.isProduction || !this.config.apiKey,
+      integrationLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceMetadata: {
         viatorProductCode: raw.productCode,
-        duration: raw.duration
+        duration: raw.duration,
+        isSandboxSimulated: !this.isProduction || !this.config.apiKey
       },
       revalidationCapability: {
         canRevalidateOnline: true,
@@ -120,10 +123,13 @@ export class ActivitiesViatorAdapter extends BaseSupplierAdapter<RawViatorExperi
   }
 
   public async revalidate(supplierOfferId: string): Promise<RevalidationResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       offerId: supplierOfferId,
       status: 'UNCHANGED',
-      message: 'Experience schedule & slots verified by Viator'
+      message: isLive
+        ? 'Experience schedule and slots revalidated via Viator API'
+        : '[SANDBOX / MOCK MODE] Simulated experience slot check. Live Viator key not configured.'
     };
   }
 
@@ -137,11 +143,14 @@ export class ActivitiesViatorAdapter extends BaseSupplierAdapter<RawViatorExperi
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
-      supplierReference: `VIA-BK-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-      ticketOrVoucherNumber: `BARCODE-${Math.floor(10000000 + Math.random() * 90000000)}`,
+      supplierReference: isLive
+        ? `VIA-BK-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+        : `VIA-SBOX-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+      ticketOrVoucherNumber: isLive ? `BARCODE-${Math.floor(10000000 + Math.random() * 90000000)}` : undefined,
       confirmedAtIso: new Date().toISOString(),
-      fulfillmentStatus: 'CONFIRMED'
+      fulfillmentStatus: isLive ? 'CONFIRMED' : 'PENDING'
     };
   }
 

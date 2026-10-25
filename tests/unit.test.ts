@@ -27,8 +27,13 @@ import { VacatinaApiRouter } from '../src/server/api/router.ts';
 import { validateServerEnv } from '../src/server/config/env.ts';
 import { FlightsDuffelAdapter, type RawDuffelFlightOffer } from '../src/server/inventory/adapters/flights-duffel.adapter.ts';
 import { HotelsLiteApiAdapter, type RawLiteApiHotelOffer } from '../src/server/inventory/adapters/hotels-liteapi.adapter.ts';
+import { CarsRentalAdapter } from '../src/server/inventory/adapters/cars-rental.adapter.ts';
+import { CruisesTraveltekAdapter } from '../src/server/inventory/adapters/cruises-traveltek.adapter.ts';
 import { ActivitiesViatorAdapter, type RawViatorExperienceOffer } from '../src/server/inventory/adapters/activities-viator.adapter.ts';
+import { SightseeingViatorAdapter } from '../src/server/inventory/adapters/sightseeing-viator.adapter.ts';
 import { RailsTrainlineAdapter, type RawTrainlineRailOffer } from '../src/server/inventory/adapters/rails-trainline.adapter.ts';
+import { InsuranceAllianzAdapter } from '../src/server/inventory/adapters/insurance-allianz.adapter.ts';
+import { VisaConsularAdapter } from '../src/server/inventory/adapters/visa-consular.adapter.ts';
 import { ManualCmsAdapter } from '../src/server/inventory/adapters/manual-cms.adapter.ts';
 import { PackagesBundlerAdapter } from '../src/server/inventory/adapters/packages-bundler.adapter.ts';
 import { PricingPrecedenceService } from '../src/server/inventory/pricing-precedence.service.ts';
@@ -1005,6 +1010,8 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.equal(flightOffer.supplierId, 'DUFFEL_NDC');
     assert.equal(flightOffer.pricing.rawSupplierCostMinor, 38000); // $380.00
     assert.equal(flightOffer.freshness.ttlSeconds, 900); // 15m
+    assert.equal(flightOffer.isSandboxSimulated, true);
+    assert.equal(flightOffer.integrationLifecycle, 'SCAFFOLD');
     assert.ok(flightOffer.deduplicationKey.includes('EK_EK651'));
 
     // 2. LiteAPI Hotel Normalization
@@ -1026,6 +1033,8 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.equal(hotelOffer.sourceType, 'API');
     assert.equal(hotelOffer.pricing.rawSupplierCostMinor, 65000);
     assert.equal(hotelOffer.freshness.ttlSeconds, 1800); // 30m
+    assert.equal(hotelOffer.isSandboxSimulated, true);
+    assert.equal(hotelOffer.integrationLifecycle, 'SCAFFOLD');
 
     // 3. Viator Experience Normalization
     const viator = new ActivitiesViatorAdapter('sandbox');
@@ -1041,6 +1050,7 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     const activityOffer = viator.normalize(rawActivity);
     assert.equal(activityOffer.productType, 'activities');
     assert.equal(activityOffer.freshness.ttlSeconds, 14400); // 4h
+    assert.equal(activityOffer.isSandboxSimulated, true);
 
     // 4. Trainline Rail Normalization
     const trainline = new RailsTrainlineAdapter('sandbox');
@@ -1062,6 +1072,7 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     const railOffer = trainline.normalize(rawRail);
     assert.equal(railOffer.productType, 'rails');
     assert.equal(railOffer.freshness.ttlSeconds, 3600); // 1h
+    assert.equal(railOffer.isSandboxSimulated, true);
   });
 
   it('enforces 4-Layer Pricing Precedence engine with integer minor math (ADR-006, Q13)', () => {
@@ -1233,8 +1244,9 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.equal(flightHold.guaranteedPriceMinor, 35000);
 
     const flightConfirm = await duffel.confirm('VCT-2026-FL001');
-    assert.equal(flightConfirm.fulfillmentStatus, 'CONFIRMED');
-    assert.ok(flightConfirm.ticketOrVoucherNumber?.startsWith('176-'));
+    assert.equal(flightConfirm.fulfillmentStatus, 'PENDING');
+    assert.equal(flightConfirm.ticketOrVoucherNumber, undefined); // Truthful: no fake ticket issued in sandbox
+    assert.ok(flightConfirm.supplierReference.startsWith('DUF-SBOX-'));
 
     const flightCancel = await duffel.cancel(flightConfirm.supplierReference, 'Traveller medical emergency');
     assert.equal(flightCancel.cancellationFeeMinor, 7500);
@@ -1287,5 +1299,38 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
       },
       /Commercial violation: Seed \/ demonstration content cannot enter checkout/
     );
+  });
+
+  it('enforces that all 10 canonical products are registered as typed adapters in UnifiedInventoryService (ADR-006, Q9)', async () => {
+    const unified = new UnifiedInventoryService();
+    const expectedProducts = [
+      'flights',
+      'hotels',
+      'cars',
+      'cruises',
+      'activities',
+      'sightseeing',
+      'rails',
+      'insurance',
+      'visa',
+      'packages'
+    ] as const;
+
+    for (const p of expectedProducts) {
+      const results = await unified.search({
+        productType: p,
+        destination: 'Dubai'
+      });
+      assert.ok(Array.isArray(results), `Results for ${p} must be an array`);
+      assert.ok(results.length > 0, `Search for ${p} must return at least 1 canonical offer`);
+      
+      const offer = results[0];
+      assert.equal(offer.productType, p);
+      assert.ok(offer.canonicalOfferId.startsWith('vct-'));
+      assert.ok(['API', 'MANUAL', 'HYBRID'].includes(offer.sourceType));
+      assert.ok(typeof offer.isSandboxSimulated === 'boolean');
+      assert.ok(['SCAFFOLD', 'SANDBOX_ACTIVE', 'PRODUCTION_LIVE'].includes(offer.integrationLifecycle));
+      assert.ok(offer.pricing.finalSellingPriceMinor > 0);
+    }
   });
 });

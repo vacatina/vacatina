@@ -96,9 +96,12 @@ export class PackagesBundlerAdapter extends BaseSupplierAdapter<RawHybridPackage
       cancellationPolicy: 'Component-specific cancellation rules apply. Consult itinerary terms.',
       pinAboveApi: true,
       deduplicationKey: '',
+      isSandboxSimulated: false,
+      integrationLifecycle: 'SANDBOX_ACTIVE',
       sourceMetadata: {
         bundleId: raw.bundleId,
-        components: raw.components
+        components: raw.components,
+        isMultiComponentHybrid: true
       },
       revalidationCapability: {
         canRevalidateOnline: true,
@@ -157,9 +160,9 @@ export class PackagesBundlerAdapter extends BaseSupplierAdapter<RawHybridPackage
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
     return {
       supplierReference: `HYB-CONF-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-      ticketOrVoucherNumber: `PKG-DOSSIER-${Math.floor(100000 + Math.random() * 900000)}`,
+      ticketOrVoucherNumber: undefined, // Final travel dossier dispatched once all 4 components are fulfilled
       confirmedAtIso: new Date().toISOString(),
-      fulfillmentStatus: 'CONFIRMED'
+      fulfillmentStatus: 'PENDING'
     };
   }
 

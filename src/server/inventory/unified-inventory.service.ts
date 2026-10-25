@@ -17,8 +17,13 @@ import type {
 import { BaseSupplierAdapter } from './adapters/base.adapter.ts';
 import { FlightsDuffelAdapter } from './adapters/flights-duffel.adapter.ts';
 import { HotelsLiteApiAdapter } from './adapters/hotels-liteapi.adapter.ts';
+import { CarsRentalAdapter } from './adapters/cars-rental.adapter.ts';
+import { CruisesTraveltekAdapter } from './adapters/cruises-traveltek.adapter.ts';
 import { ActivitiesViatorAdapter } from './adapters/activities-viator.adapter.ts';
+import { SightseeingViatorAdapter } from './adapters/sightseeing-viator.adapter.ts';
 import { RailsTrainlineAdapter } from './adapters/rails-trainline.adapter.ts';
+import { InsuranceAllianzAdapter } from './adapters/insurance-allianz.adapter.ts';
+import { VisaConsularAdapter } from './adapters/visa-consular.adapter.ts';
 import { ManualCmsAdapter } from './adapters/manual-cms.adapter.ts';
 import { PackagesBundlerAdapter } from './adapters/packages-bundler.adapter.ts';
 import { DeduplicationService } from './deduplication.service.ts';
@@ -39,12 +44,17 @@ export class UnifiedInventoryService {
     this.circuitBreaker = circuitBreaker;
     this.adapters = new Map();
 
-    // Register active domain adapters
+    // Register all 10 canonical domain adapters + Manual & Hybrid
     this.manualAdapter = new ManualCmsAdapter();
     this.registerAdapter(new FlightsDuffelAdapter());
     this.registerAdapter(new HotelsLiteApiAdapter());
+    this.registerAdapter(new CarsRentalAdapter());
+    this.registerAdapter(new CruisesTraveltekAdapter());
     this.registerAdapter(new ActivitiesViatorAdapter());
+    this.registerAdapter(new SightseeingViatorAdapter());
     this.registerAdapter(new RailsTrainlineAdapter());
+    this.registerAdapter(new InsuranceAllianzAdapter());
+    this.registerAdapter(new VisaConsularAdapter());
     this.registerAdapter(new PackagesBundlerAdapter());
     this.registerAdapter(this.manualAdapter);
   }

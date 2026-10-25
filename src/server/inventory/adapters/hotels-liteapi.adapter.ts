@@ -75,7 +75,7 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
         country: raw.country,
         countryCode: raw.countryCode
       },
-      availabilityStatus: 'LIVE',
+      availabilityStatus: this.isProduction && this.config.apiKey ? 'LIVE' : 'CACHED',
       confirmationMode: raw.instantConfirmation ? 'INSTANT_CONFIRM' : 'REQUEST_TO_CONFIRM',
       bookingMode: 'INSTANT_BOOK',
       pricing,
@@ -100,11 +100,14 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
         : 'Non-refundable rate. Full charge on cancellation.',
       pinAboveApi: false,
       deduplicationKey: '',
+      isSandboxSimulated: !this.isProduction || !this.config.apiKey,
+      integrationLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceMetadata: {
         liteApiHotelId: raw.hotelId,
         roomType: raw.roomType,
         boardBasis: raw.boardBasis,
-        amenities: raw.amenities || []
+        amenities: raw.amenities || [],
+        isSandboxSimulated: !this.isProduction || !this.config.apiKey
       },
       revalidationCapability: {
         canRevalidateOnline: true,
@@ -136,10 +139,13 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
   }
 
   public async revalidate(supplierOfferId: string): Promise<RevalidationResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       offerId: supplierOfferId,
       status: 'UNCHANGED',
-      message: 'Room availability and rate locked by LiteAPI'
+      message: isLive
+        ? 'Room availability and rate revalidated via LiteAPI Bedbank'
+        : '[SANDBOX / MOCK MODE] Simulated hotel rate check. Live LiteAPI key not configured.'
     };
   }
 
@@ -153,11 +159,14 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
-      supplierReference: `LIT-HTL-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-      ticketOrVoucherNumber: `VCH-${Math.floor(100000 + Math.random() * 900000)}`,
+      supplierReference: isLive
+        ? `LIT-HTL-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+        : `LIT-SBOX-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+      ticketOrVoucherNumber: isLive ? `VCH-${Math.floor(100000 + Math.random() * 900000)}` : undefined,
       confirmedAtIso: new Date().toISOString(),
-      fulfillmentStatus: 'CONFIRMED'
+      fulfillmentStatus: isLive ? 'CONFIRMED' : 'PENDING'
     };
   }
 
