@@ -1427,6 +1427,16 @@ export function openFlightOfferModal(
                 </div>
                 <span class="font-bold text-brand-primary">+${formatCurrencyAmount(14500, state.currency)}</span>
               </label>
+              <label class="flex items-start justify-between gap-3 p-3 rounded-xl border border-brand-border bg-white hover:border-brand-primary cursor-pointer">
+                <div class="flex items-start gap-2.5">
+                  <input type="radio" name="fl-fare-radio" value="185000" data-label="Business Class" class="mt-1 text-brand-primary">
+                  <div>
+                    <div class="font-bold text-brand-black">Business Class</div>
+                    <div class="text-[11px] text-brand-muted">Lie-flat sleeper seat, 2x32kg checked bags, lounge access &amp; priority boarding</div>
+                  </div>
+                </div>
+                <span class="font-bold text-brand-primary">+${formatCurrencyAmount(185000, state.currency)}</span>
+              </label>
             </div>
           </div>
 
@@ -1541,13 +1551,12 @@ export function openFlightOfferModal(
       closeActiveDialog(false);
 
       const headerBucketBtn = document.getElementById('header-trip-bucket-btn');
+      if (headerBucketBtn) {
+        headerBucketBtn.click();
+      }
       showToast(
         `Staged "${candidate.title}" to Trip Bucket (${candidate.state === 'ready' ? 'Ready' : 'Needs Action'}).`,
-        'success',
-        'Open Trip Bucket',
-        () => {
-          if (headerBucketBtn) headerBucketBtn.click();
-        }
+        'success'
       );
     });
   }

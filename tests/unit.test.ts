@@ -2330,4 +2330,131 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     const bestOffer = selectBestSourceOffer([mockApiSafariOffer, directSafariOffer]);
     assert.equal(bestOffer?.canonicalOfferId, 'vct-act-safari-direct-001', 'Multi-criteria engine must select verified direct deal over unverified candidate');
   });
+
+  it('enforces Flights End-to-End Real Product Flow (Search Aggregation, Fare Family Selection, Trip Bucket Staging, Pre-Booking Revalidation, and Saga Hold/Confirm)', async () => {
+    // 1. Search Aggregation & Dynamic Route Filtering
+    const searchAggregator = new SearchAggregatorService(CANONICAL_HYBRID_CATALOG);
+    
+    // Query flights Colombo to Dubai
+    const cmbToDxb = searchAggregator.search({ productType: 'flights', originQuery: 'Colombo', destinationQuery: 'Dubai' });
+    assert.ok(cmbToDxb.length >= 1, 'Search for Colombo -> Dubai must return flights');
+    assert.equal(cmbToDxb[0].productType, 'flights');
+    assert.equal(cmbToDxb[0].pricing.customerSellingPriceLkr, 92495);
+    assert.equal(cmbToDxb[0].confirmationMode, 'INSTANT_CONFIRM');
+
+    // Query seaplane charter to Maldives
+    const cmbToMle = searchAggregator.search({ productType: 'flights', destinationQuery: 'Maldives' });
+    assert.ok(cmbToMle.length >= 1, 'Search for flights to Maldives must return charter option');
+    assert.equal(cmbToMle[0].sourceType, 'MANUAL');
+
+    // 2. Unified Inventory Multi-Source Querying & Product Extension
+    const unifiedInventory = new UnifiedInventoryService();
+    const unifiedFlights = await unifiedInventory.search({ productType: 'flights', origin: 'CMB', destination: 'DXB' });
+    assert.ok(unifiedFlights.length >= 1, 'Unified search must return canonical flight offers');
+    
+    const primaryFlight = unifiedFlights[0];
+    assert.equal(primaryFlight.productType, 'flights');
+    assert.ok(primaryFlight.productExtension, 'Flight must have rich ProductExtension');
+    assert.equal(primaryFlight.productExtension.productType, 'flights');
+    
+    const flightExt = primaryFlight.productExtension.flight;
+    assert.equal(flightExt.cabinClass, 'ECONOMY');
+    assert.equal(flightExt.fareFamily, 'Standard Economy');
+    assert.ok(flightExt.segments.length >= 1);
+    assert.equal(flightExt.segments[0].originIata, 'CMB');
+    assert.equal(flightExt.segments[0].destinationIata, 'DXB');
+    assert.equal(flightExt.baggageAllowance.cabinBaggageKg, 7);
+    assert.equal(flightExt.baggageAllowance.checkedBaggageKg, 23);
+
+    // 3. Dynamic Fare Family Price Calculations
+    const basePrice = cmbToDxb[0].pricing.customerSellingPriceLkr; // 92,495 LKR
+    const flexDelta = 14500;
+    const businessDelta = 185000;
+    const baggageDelta = 12000;
+
+    assert.equal(basePrice, 92495, 'Baseline Economy Standard price for CMB->DXB is 92,495 LKR');
+    assert.equal(basePrice + flexDelta, 106995, 'Economy Flex upgrades total to 106,995 LKR');
+    assert.equal(basePrice + businessDelta, 277495, 'Business Class upgrades total to 277,495 LKR');
+    assert.equal(basePrice + flexDelta + baggageDelta, 118995, 'Flex + Extra Baggage upgrades total to 118,995 LKR');
+
+    // 4. Staging into Trip Bucket & Financial Math Isolation
+    const tripBucket = new TripBucketService();
+    tripBucket.stageCandidate({
+      id: 'fl-staged-ek651-001',
+      productType: 'flights',
+      productLabel: 'Flight',
+      title: 'Colombo to Dubai (EK 651)',
+      subtitle: 'Economy Standard · Emirates',
+      dateSummary: '15 Nov – 22 Nov 2026',
+      travellerSummary: '2 Adults · Economy',
+      state: 'ready',
+      priceLkr: basePrice,
+      offerId: primaryFlight.canonicalOfferId,
+      sourceType: 'API',
+      confirmationMode: 'INSTANT_CONFIRM',
+      supplierName: 'DUFFEL_NDC',
+      integrationMode: 'ADAPTER-READY'
+    });
+
+    const summary = tripBucket.getSummary();
+    assert.equal(summary.totalItems, 4, 'Trip Bucket has 4 total items (3 baseline + 1 staged flight)');
+    assert.equal(summary.readyCount, 3, 'Trip Bucket has 3 Ready items (2 baseline ready + 1 staged flight)');
+    assert.equal(summary.readySubtotalLkr, 505000 + 92495, 'Ready subtotal correctly includes staged flight (597,495 LKR)');
+    assert.equal(summary.needsActionCount, 1, 'Needs Action item (Visa) remains isolated from Ready subtotal');
+
+    // 5. Pre-Booking Revalidation Ping
+    const reval = await unifiedInventory.revalidateOffer(primaryFlight.canonicalOfferId);
+    assert.equal(reval.status, 'UNCHANGED', 'Revalidation must confirm UNCHANGED fare');
+    assert.ok(reval.message?.includes('SANDBOX') || reval.message?.includes('revalidated') || reval.message?.includes('Unified Inventory'));
+
+    // 6. Distributed Booking Saga Orchestration (Hold, Pre-Auth, Confirm & Idempotency)
+    const storage = new VacatinaStorageEngine();
+    const testBucket = storage.getOrCreateTripBucket('sess_flight_flow_test');
+    storage.addTripBucketItem({
+      tripBucketId: testBucket.id,
+      canonicalOfferId: primaryFlight.canonicalOfferId,
+      productType: 'flights',
+      sourceType: 'API',
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Colombo to Dubai (EK 651)',
+      configuration: {
+        fareFamily: 'Economy Standard',
+        baggageAllowance: '30kg Checked',
+        seatPreference: 'Standard Allocation'
+      },
+      travellerManifest: {
+        adults: 2,
+        leadName: 'Perera / Kasun Mr'
+      },
+      unitSellingPriceMinor: primaryFlight.pricing.finalSellingPriceMinor,
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    const saga = new BookingSagaService(storage);
+    const sagaResult = await saga.executeBookingSaga({
+      tripBucketId: testBucket.id,
+      customerEmail: 'kasun.perera@example.com',
+      customerName: 'Kasun Perera',
+      idempotencyKey: 'idemp_flight_flow_998',
+      checkoutSessionId: 'chk_sess_fl_001'
+    });
+
+    assert.ok(/^VCT-2026-[A-Z0-9]{6}$/.test(sagaResult.bookingReference), 'Booking reference must follow canonical VCT-2026-XXXXXX format');
+    assert.equal(sagaResult.totalSellingPriceMinor, primaryFlight.pricing.finalSellingPriceMinor);
+    assert.equal(sagaResult.items.length, 1);
+    assert.equal(sagaResult.items[0].canonicalOfferId, primaryFlight.canonicalOfferId);
+    assert.equal(sagaResult.items[0].productType, 'flights');
+
+    // Idempotent replay must return exact same reference and body
+    const replayResult = await saga.executeBookingSaga({
+      tripBucketId: testBucket.id,
+      customerEmail: 'kasun.perera@example.com',
+      customerName: 'Kasun Perera',
+      idempotencyKey: 'idemp_flight_flow_998',
+      checkoutSessionId: 'chk_sess_fl_001'
+    });
+    assert.equal(replayResult.bookingReference, sagaResult.bookingReference);
+    assert.equal(replayResult.bookingGroupId, sagaResult.bookingGroupId);
+  });
 });

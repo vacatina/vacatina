@@ -862,8 +862,29 @@ function initSearchSubmitButtons(): void {
         insurance: '/travel-insurance/compare'
       };
 
-      const destRoute = canonicalSearchRoutes[tabMeta.id];
+      let destRoute = canonicalSearchRoutes[tabMeta.id];
       if (destRoute) {
+        if (tabMeta.id === 'flights') {
+          destRoute += `?from=${encodeURIComponent(state.flights.from)}&to=${encodeURIComponent(state.flights.to)}`;
+        } else if (tabMeta.id === 'hotels') {
+          destRoute += `?destination=${encodeURIComponent(state.hotels.destination)}`;
+        } else if (tabMeta.id === 'visa') {
+          destRoute += `?country=${encodeURIComponent(state.visa.country)}`;
+        } else if (tabMeta.id === 'packages') {
+          destRoute += `?destination=${encodeURIComponent(state.packages.destination)}`;
+        } else if (tabMeta.id === 'cars') {
+          destRoute += `?pickup=${encodeURIComponent(state.cars.pickup)}&service=${encodeURIComponent(state.cars.serviceType)}`;
+        } else if (tabMeta.id === 'rails') {
+          destRoute += `?from=${encodeURIComponent(state.rails.fromStation)}&to=${encodeURIComponent(state.rails.toStation)}`;
+        } else if (tabMeta.id === 'cruises') {
+          destRoute += `?region=${encodeURIComponent(state.cruises.region)}`;
+        } else if (tabMeta.id === 'activities') {
+          destRoute += `?destination=${encodeURIComponent(state.activities.destination)}`;
+        } else if (tabMeta.id === 'sightseeing') {
+          destRoute += `?destination=${encodeURIComponent(state.sightseeing.destination)}`;
+        } else if (tabMeta.id === 'insurance') {
+          destRoute += `?region=${encodeURIComponent(state.insurance.region)}`;
+        }
         routerService.navigateTo(destRoute);
       }
     });
