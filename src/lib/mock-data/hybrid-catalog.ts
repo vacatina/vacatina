@@ -42,8 +42,8 @@ export const CANONICAL_HYBRID_CATALOG: VacatinaNormalizedOffer[] = [
     cmsCollection: 'manual-charter-flights',
     cmsListingId: 'charter-cmb-mle-airtaxi',
     productType: 'flights',
-    partnerSupplierId: 'SRILANKAN_AIRTAXI',
-    partnerName: 'SriLankan AirTaxi Charter Operations',
+    partnerSupplierId: 'DIRECT_CHARTER_DESK',
+    partnerName: 'Verified Direct Contract Flight Operations',
     title: 'Colombo to Maldives Seaplane Charter',
     subtitle: 'Twin Otter Floatplane · Private Lagoon Transfer · On-Demand Departure',
     location: {
@@ -88,8 +88,8 @@ export const CANONICAL_HYBRID_CATALOG: VacatinaNormalizedOffer[] = [
     cmsCollection: 'contracted-boutique-hotels',
     cmsListingId: 'heritance-kandalama-signature',
     productType: 'hotels',
-    partnerSupplierId: 'AITKEN_SPENCE_DIRECT',
-    partnerName: 'Heritance Kandalama Direct Contract',
+    partnerSupplierId: 'DIRECT_HOTEL_DESK',
+    partnerName: 'Direct Hotel Allotment Partner',
     title: 'Heritance Kandalama Eco-Luxury Resort',
     subtitle: 'Deluxe Lake View Wing · Geoffrey Bawa Architectural Masterpiece',
     location: {
@@ -275,8 +275,8 @@ export const CANONICAL_HYBRID_CATALOG: VacatinaNormalizedOffer[] = [
     cmsCollection: 'local-cars-transfers',
     cmsListingId: 'dubai-airport-mercedes-transfer',
     productType: 'cars',
-    partnerSupplierId: 'CAREEM_FLEET_DXB',
-    partnerName: 'Dubai Premium Ground Transport',
+    partnerSupplierId: 'DIRECT_TRANSFER_DESK',
+    partnerName: 'Manual Transfer Contract Inventory',
     title: 'Dubai Airport (DXB) to Downtown Luxury Chauffeur',
     subtitle: 'Mercedes-Benz E-Class · Flight Tracked Meet & Greet · Highway Tolls Included',
     location: {

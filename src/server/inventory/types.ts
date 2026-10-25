@@ -1064,3 +1064,65 @@ export function selectBestSourceOffer(candidates: CanonicalOfferEntity[]): Canon
 
   return scored.length > 0 ? scored[0].offer : candidates[0];
 }
+
+// ----------------------------------------------------------------------------
+// 15. Commercial Entity Classification & Production Sellability Guards (Rule 5 & 13)
+// ----------------------------------------------------------------------------
+
+export type CommercialEntityClassification =
+  | 'VERIFIED_CONTRACT'
+  | 'PRODUCTION_CREDENTIALS_VERIFIED'
+  | 'SANDBOX_APPROVED'
+  | 'CANDIDATE'
+  | 'TARGET_ONLY'
+  | 'EXAMPLE_ONLY'
+  | 'REMOVE_UNVERIFIED';
+
+export interface CommercialEntityAuditRecord {
+  entityId: string;
+  commercialEntityName: string;
+  category: TravelProductSlug | 'MULTI_PRODUCT' | 'PLATFORM';
+  classification: CommercialEntityClassification;
+  legalContractVerified: boolean;
+  productionCredentialsVerified: boolean;
+  sandboxApproved: boolean;
+  canEnterProductionSellable: boolean;
+  auditNotes: string;
+}
+
+export function assertCommercialEntitySellable(
+  entityName: string,
+  classification: CommercialEntityClassification
+): void {
+  if (
+    classification === 'CANDIDATE' ||
+    classification === 'TARGET_ONLY' ||
+    classification === 'EXAMPLE_ONLY' ||
+    classification === 'REMOVE_UNVERIFIED'
+  ) {
+    throw new ArchitecturalInvariantViolationError(
+      'UNVERIFIED_COMMERCIAL_ENTITY',
+      `Commercial Safety Invariant: Entity '${entityName}' is classified as '${classification}'. Unverified or candidate entities are strictly blocked from entering production sellable inventory.`
+    );
+  }
+}
+
+export function assertProviderCanExecuteLiveBooking(provider: {
+  providerId: string;
+  lifecycle: ProviderLifecycle;
+  bookingExecutionSupported: boolean;
+  role: string;
+}): void {
+  if (provider.lifecycle !== 'PRODUCTION_LIVE' || !provider.bookingExecutionSupported) {
+    throw new ArchitecturalInvariantViolationError(
+      'PROVIDER_NOT_PRODUCTION_LIVE',
+      `Provider Certification Invariant: Provider '${provider.providerId}' (lifecycle: ${provider.lifecycle}, role: ${provider.role}) cannot execute live bookings. Live bookings require lifecycle 'PRODUCTION_LIVE' and bookingExecutionSupported = true.`
+    );
+  }
+  if (provider.role === 'CANDIDATE' || provider.role === 'TARGET') {
+    throw new ArchitecturalInvariantViolationError(
+      'CANDIDATE_PROVIDER_BLOCKED_FROM_LIVE',
+      `Provider Certification Invariant: Provider '${provider.providerId}' has role '${provider.role}'. Live production bookings are forbidden until contract and operational certification are complete.`
+    );
+  }
+}

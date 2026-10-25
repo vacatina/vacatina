@@ -10,7 +10,7 @@
  * - Architecture is truthful: 'Production-ready supplier integration architecture'.
  * ============================================================================ */
 
-import type { ProviderLifecycle, TravelProductSlug } from './types.ts';
+import type { ProviderLifecycle, TravelProductSlug, CommercialEntityAuditRecord } from './types.ts';
 
 export type ProviderRole =
   | 'CANDIDATE'          // Under active technical and sandbox evaluation
@@ -221,7 +221,7 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     fallbackPlan: {
       fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
       fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
-      description: 'Fallback to SriLankan AirTaxi seaplanes or contracted seasonal charter flights'
+      description: 'Fallback to Verified Direct Contract Inventory charter flights and backoffice ticketing triage'
     },
     errorMapping: {
       errorStandard: 'RFC_7807',
@@ -273,7 +273,7 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     fallbackPlan: {
       fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
       fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
-      description: 'Fallback to Aitken Spence, Heritance Kandalama, and direct contracted luxury allotments'
+      description: 'Fallback to Direct Hotel Allotment direct contracted luxury resort inventory'
     },
     errorMapping: {
       errorStandard: 'RFC_7807',
@@ -319,7 +319,7 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     fallbackPlan: {
       fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
       fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
-      description: 'Fallback to Careem Dubai premium chauffeur fleet and local transport operators'
+      description: 'Fallback to Manual Transfer Contract Inventory and licensed local transport operators'
     },
     errorMapping: {
       errorStandard: 'RFC_7807',
@@ -465,7 +465,7 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     fallbackPlan: {
       fallbackStrategy: 'MANUAL_CONTRACT_ALLOTMENT',
       fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
-      description: 'Fallback to Sri Lankan Viceroy luxury scenic charters and station concierge'
+      description: 'Fallback to Local Scenic Rail Contract Inventory and station concierge'
     },
     errorMapping: {
       errorStandard: 'RFC_7807',
@@ -512,7 +512,7 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     fallbackPlan: {
       fallbackStrategy: 'BACKOFFICE_ON_REQUEST_TRIAGE',
       fallbackProviderId: 'PAYLOAD_CMS_DIRECT',
-      description: 'Fallback to Sri Lanka Insurance / Takaful direct backoffice policy issuance'
+      description: 'Fallback to Licensed Underwriter Direct Desk and backoffice policy issuance'
     },
     errorMapping: {
       errorStandard: 'RFC_7807',
@@ -735,3 +735,187 @@ export class ProviderRegistryService {
     };
   }
 }
+
+/**
+ * Authoritative Commercial Entity Audit Registry (Requirements 5 & 6)
+ * Classifies every named provider, partner, and fallback entity into exactly one of:
+ * VERIFIED_CONTRACT | PRODUCTION_CREDENTIALS_VERIFIED | SANDBOX_APPROVED | CANDIDATE | TARGET_ONLY | EXAMPLE_ONLY | REMOVE_UNVERIFIED
+ */
+export const CANONICAL_COMMERCIAL_ENTITY_REGISTRY: CommercialEntityAuditRecord[] = [
+  {
+    entityId: 'DUFFEL_NDC',
+    commercialEntityName: 'Duffel Technology Ltd (NDC Airline Gateway)',
+    category: 'flights',
+    classification: 'CANDIDATE',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: true,
+    canEnterProductionSellable: false,
+    auditNotes: 'Candidate NDC gateway. Evaluated in sandbox with 6/12 gates cleared. Production live credentials not verified.'
+  },
+  {
+    entityId: 'AMADEUS_GDS',
+    commercialEntityName: 'Amadeus IT Group (GDS Platform)',
+    category: 'flights',
+    classification: 'TARGET_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Target GDS platform under commercial review. 0/12 gates cleared.'
+  },
+  {
+    entityId: 'LITEAPI',
+    commercialEntityName: 'LiteAPI Travel Ltd (Wholesale Bedbank)',
+    category: 'hotels',
+    classification: 'CANDIDATE',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: true,
+    canEnterProductionSellable: false,
+    auditNotes: 'Candidate hotel consolidator. Evaluated in sandbox with 6/12 gates cleared. Production credentials not verified.'
+  },
+  {
+    entityId: 'VIATOR',
+    commercialEntityName: 'Viator Inc. / TripAdvisor Experiences',
+    category: 'activities',
+    classification: 'CANDIDATE',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Candidate activities consolidator. Scaffolding evaluated with 2/12 gates cleared. Production credentials not verified.'
+  },
+  {
+    entityId: 'RENTALCARS',
+    commercialEntityName: 'Rentalcars / Booking Transport Limited',
+    category: 'cars',
+    classification: 'TARGET_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Target rental car engine under commercial discussion. 0/12 gates cleared.'
+  },
+  {
+    entityId: 'TRAINLINE',
+    commercialEntityName: 'Trainline Partner Solutions Ltd',
+    category: 'rails',
+    classification: 'CANDIDATE',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Candidate European and UK rail gateway. 0/12 gates cleared.'
+  },
+  {
+    entityId: 'TRAVELTEK',
+    commercialEntityName: 'Traveltek Group Ltd (iSell Cruise Engine)',
+    category: 'cruises',
+    classification: 'TARGET_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Target cruise engine under commercial discussion. 0/12 gates cleared.'
+  },
+  {
+    entityId: 'ALLIANZ',
+    commercialEntityName: 'Allianz Partners / AWP Health & Life SA',
+    category: 'insurance',
+    classification: 'TARGET_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Target insurance underwriter under commercial evaluation. 0/12 gates cleared.'
+  },
+  {
+    entityId: 'VACATINA_CONSULAR_CONCIERGE',
+    commercialEntityName: 'Vacatina Consular Advisory & Visa Desk',
+    category: 'visa',
+    classification: 'VERIFIED_CONTRACT',
+    legalContractVerified: true,
+    productionCredentialsVerified: true,
+    sandboxApproved: true,
+    canEnterProductionSellable: true,
+    auditNotes: 'Internal Vacatina operational advisory team. Production live manual review workflow with 24-48h SLA.'
+  },
+  {
+    entityId: 'PAYLOAD_CMS_DIRECT',
+    commercialEntityName: 'Vacatina Direct Contract Management Desk',
+    category: 'MULTI_PRODUCT',
+    classification: 'VERIFIED_CONTRACT',
+    legalContractVerified: true,
+    productionCredentialsVerified: true,
+    sandboxApproved: true,
+    canEnterProductionSellable: true,
+    auditNotes: 'Internal Payload CMS repository managing 18-attribute verified direct contracts and instant stop-sell.'
+  },
+  {
+    entityId: 'VACATINA_HYBRID_BUNDLER',
+    commercialEntityName: 'Vacatina Hybrid Dynamic Packaging Engine',
+    category: 'packages',
+    classification: 'SANDBOX_APPROVED',
+    legalContractVerified: true,
+    productionCredentialsVerified: false,
+    sandboxApproved: true,
+    canEnterProductionSellable: false,
+    auditNotes: 'Internal multi-component dynamic package engine. Sandbox active, clears provenance integrity rules.'
+  },
+  {
+    entityId: 'SRILANKAN_AIRTAXI',
+    commercialEntityName: 'SriLankan Airlines Limited / AirTaxi',
+    category: 'flights',
+    classification: 'EXAMPLE_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Example entity only. Replaced in code with architecture-safe generic descriptor "Verified Direct Contract Flight Operations".'
+  },
+  {
+    entityId: 'AITKEN_SPENCE_DIRECT',
+    commercialEntityName: 'Aitken Spence Hotel Holdings PLC / Heritance',
+    category: 'hotels',
+    classification: 'EXAMPLE_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Example entity only. Replaced in code with architecture-safe generic descriptor "Direct Hotel Allotment Partner".'
+  },
+  {
+    entityId: 'CAREEM_FLEET_DXB',
+    commercialEntityName: 'Careem Networks FZ LLC',
+    category: 'cars',
+    classification: 'EXAMPLE_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Example entity only. Replaced in code with architecture-safe generic descriptor "Manual Transfer Contract Inventory".'
+  },
+  {
+    entityId: 'VICEROY_RAIL',
+    commercialEntityName: 'Viceroy Special Luxury Scenic Train',
+    category: 'rails',
+    classification: 'EXAMPLE_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Example entity only. Replaced in code with architecture-safe generic descriptor "Local Scenic Rail Contract Inventory".'
+  },
+  {
+    entityId: 'SRI_LANKA_INSURANCE_TAKAFUL',
+    commercialEntityName: 'Sri Lanka Insurance Corporation / Takaful Desk',
+    category: 'insurance',
+    classification: 'EXAMPLE_ONLY',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
+    sandboxApproved: false,
+    canEnterProductionSellable: false,
+    auditNotes: 'Example entity only. Replaced in code with architecture-safe generic descriptor "Licensed Underwriter Direct Desk".'
+  }
+];

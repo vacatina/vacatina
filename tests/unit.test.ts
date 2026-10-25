@@ -62,9 +62,12 @@ import {
   assertProductionSearchExcludesDemoSeed,
   assertCandidateCannotBeProductionReady,
   assertNoFabricatedUpstreamReferences,
+  assertCommercialEntitySellable,
+  assertProviderCanExecuteLiveBooking,
   type CanonicalInventorySourceType,
   type CanonicalSourceEnvironment,
   type CanonicalBookingMode,
+  type CommercialEntityClassification,
   ArchitecturalInvariantViolationError
 } from '../src/server/inventory/types.ts';
 import {
@@ -73,7 +76,8 @@ import {
 } from '../src/server/inventory/discovery-content.ts';
 import {
   ProviderRegistryService,
-  CANONICAL_PROVIDER_REGISTRY
+  CANONICAL_PROVIDER_REGISTRY,
+  CANONICAL_COMMERCIAL_ENTITY_REGISTRY
 } from '../src/server/inventory/provider-registry.ts';
 
 describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
@@ -608,8 +612,8 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       id: 'test-charter-001',
       collection: 'manual-charter-flights',
       productType: 'flights',
-      partnerSupplierId: 'SRILANKAN_AIRTAXI',
-      partnerName: 'AirTaxi Direct',
+      partnerSupplierId: 'DIRECT_CHARTER_DESK',
+      partnerName: 'Verified Direct Contract Flight Operations',
       title: 'Private Lagoon Seaplane',
       subtitle: 'Exclusive charter',
       slug: 'private-lagoon-seaplane',
@@ -2997,5 +3001,297 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     for (const prod of expectedProducts) {
       assert.ok(allProducts.includes(prod as any), `Provider registry covers product: ${prod}`);
     }
+  });
+
+  it('enforces Commercial Entity Audit Classifications (Requirements 5, 6, 7 & 13)', async () => {
+    assert.equal(CANONICAL_COMMERCIAL_ENTITY_REGISTRY.length, 16, 'All 16 commercial entities audited');
+
+    // 1. External suppliers MUST be CANDIDATE or TARGET_ONLY
+    const candidates = CANONICAL_COMMERCIAL_ENTITY_REGISTRY.filter(e => e.classification === 'CANDIDATE');
+    assert.ok(candidates.some(e => e.entityId === 'DUFFEL_NDC'), 'Duffel is CANDIDATE');
+    assert.ok(candidates.some(e => e.entityId === 'LITEAPI'), 'LiteAPI is CANDIDATE');
+    assert.ok(candidates.some(e => e.entityId === 'VIATOR'), 'Viator is CANDIDATE');
+    assert.ok(candidates.some(e => e.entityId === 'TRAINLINE'), 'Trainline is CANDIDATE');
+
+    const targets = CANONICAL_COMMERCIAL_ENTITY_REGISTRY.filter(e => e.classification === 'TARGET_ONLY');
+    assert.ok(targets.some(e => e.entityId === 'AMADEUS_GDS'), 'Amadeus is TARGET_ONLY');
+    assert.ok(targets.some(e => e.entityId === 'RENTALCARS'), 'Rentalcars is TARGET_ONLY');
+    assert.ok(targets.some(e => e.entityId === 'TRAVELTEK'), 'Traveltek is TARGET_ONLY');
+    assert.ok(targets.some(e => e.entityId === 'ALLIANZ'), 'Allianz is TARGET_ONLY');
+
+    // 2. Examples must be EXAMPLE_ONLY and CANNOT enter sellable inventory
+    const examples = CANONICAL_COMMERCIAL_ENTITY_REGISTRY.filter(e => e.classification === 'EXAMPLE_ONLY');
+    assert.ok(examples.some(e => e.entityId === 'SRILANKAN_AIRTAXI'), 'AirTaxi is EXAMPLE_ONLY');
+    assert.ok(examples.some(e => e.entityId === 'AITKEN_SPENCE_DIRECT'), 'Aitken Spence is EXAMPLE_ONLY');
+    assert.ok(examples.some(e => e.entityId === 'CAREEM_FLEET_DXB'), 'Careem is EXAMPLE_ONLY');
+    for (const ex of examples) {
+      assert.equal(ex.canEnterProductionSellable, false, `Example ${ex.entityId} cannot enter production sellable`);
+    }
+
+    // 3. Operational internal services
+    const verifiedContracts = CANONICAL_COMMERCIAL_ENTITY_REGISTRY.filter(e => e.classification === 'VERIFIED_CONTRACT');
+    assert.ok(verifiedContracts.some(e => e.entityId === 'VACATINA_CONSULAR_CONCIERGE'), 'Consular Concierge is VERIFIED_CONTRACT');
+    assert.ok(verifiedContracts.some(e => e.entityId === 'PAYLOAD_CMS_DIRECT'), 'Payload CMS is VERIFIED_CONTRACT');
+
+    // 4. Test assertCommercialEntitySellable guard
+    assert.throws(() => {
+      assertCommercialEntitySellable('Duffel Technology Ltd', 'CANDIDATE');
+    }, /Commercial Safety Invariant: Entity 'Duffel Technology Ltd' is classified as 'CANDIDATE'/, 'Candidate cannot sell in production');
+
+    assert.throws(() => {
+      assertCommercialEntitySellable('Amadeus IT Group', 'TARGET_ONLY');
+    }, /Commercial Safety Invariant: Entity 'Amadeus IT Group' is classified as 'TARGET_ONLY'/, 'Target cannot sell in production');
+
+    assert.throws(() => {
+      assertCommercialEntitySellable('Careem Networks FZ LLC', 'EXAMPLE_ONLY');
+    }, /Commercial Safety Invariant: Entity 'Careem Networks FZ LLC' is classified as 'EXAMPLE_ONLY'/, 'Example cannot sell in production');
+
+    assert.doesNotThrow(() => {
+      assertCommercialEntitySellable('Vacatina Direct Contract Desk', 'VERIFIED_CONTRACT');
+    }, 'Verified contract can enter production inventory');
+  });
+
+  it('enforces End-to-End 18-Attribute Manual Contract Lifecycle & 9 Operational Edge Cases (Requirements 9 & 10)', async () => {
+    const service = new ManualInventoryService();
+    const adminUser = { id: 'usr_ops_lead', name: 'Ops Director' };
+
+    // 1. Create listing in DRAFT status
+    const created = service.createListing({
+      id: 'test-mirissa-whale-expedition',
+      collection: 'manual-dmc-activities',
+      productType: 'activities',
+      canonicalEntityId: 'ent_ac_mirissa_whale_expedition',
+      partnerSupplierId: 'DIRECT_DMC_DESK',
+      partnerName: 'Local DMC Contract Inventory',
+      supplierLegalName: 'South Coast Maritime Excursions Pvt Ltd',
+      supplierTaxId: 'TIN-LK-DMC-0912',
+      supplierContactEmail: 'operations@dmc-mirissa.vacatina.com',
+      contractReference: 'CNT-DMC-MIRISSA-2026',
+      effectiveFromIso: '2026-10-01T00:00:00Z',
+      effectiveToIso: '2026-12-31T23:59:59Z',
+      title: 'Mirissa Blue Whale Private Catamaran Expedition',
+      subtitle: 'Marine Biologist Escort · Breakfast on Board · Guaranteed Dolphin Sighting',
+      slug: 'mirissa-blue-whale-catamaran-expedition',
+      location: { city: 'Mirissa', country: 'Sri Lanka', countryCode: 'LK' },
+      confirmationMode: 'INSTANT_CONFIRM',
+      bookingMode: 'INSTANT_BOOK',
+      availableQuota: 10,
+      allotmentTotal: 10,
+      contractedBaseCost: 45000,
+      costCurrency: 'LKR',
+      sellingCurrency: 'LKR',
+      markupPercent: 22.2,
+      standardSellingPriceLkr: 55000,
+      isTaxInclusive: true,
+      validFromIso: '2026-10-01T00:00:00Z',
+      validUntilIso: '2026-12-31T23:59:59Z',
+      salesValidFromIso: '2026-10-01T00:00:00Z',
+      salesValidUntilIso: '2026-12-31T23:59:59Z',
+      travelValidFromIso: '2026-10-01T00:00:00Z',
+      travelValidUntilIso: '2026-12-31T23:59:59Z',
+      blackoutDates: ['2026-12-25'],
+      isStopSaleActive: false,
+      partnerSlaHours: 2,
+      freeCancellationDeadlineHours: 24,
+      maxOccupancy: 12,
+      inclusions: ['Private chartered catamaran', 'Whale research specialist guide', 'Safety life vests'],
+      exclusions: ['Hotel pick-up beyond Mirissa harbour zone'],
+      cancellationPolicy: 'Free cancellation up to 24 hours prior to departure.'
+    }, adminUser);
+
+    assert.equal(created.status, 'DRAFT', 'Initial status is DRAFT');
+
+    // Rule 1: DRAFT listing CANNOT be sold in active customer search
+    let activeSearch = service.queryListings({ productType: 'activities', onlyActive: true });
+    assert.equal(activeSearch.some(l => l.id === created.id), false, 'DRAFT listing excluded from customer search');
+
+    // 2. Lifecycle Transition: DRAFT -> IN_REVIEW -> PUBLISHED
+    service.updateStatus(created.id, 'IN_REVIEW', adminUser, 'Submitted for operations review');
+    assert.equal(service.queryListings({ productType: 'activities', onlyActive: true }).some(l => l.id === created.id), false, 'IN_REVIEW excluded from customer search');
+
+    service.updateStatus(created.id, 'PUBLISHED', adminUser, 'Approved by contracting lead');
+    assert.equal(service.queryListings({ productType: 'activities', onlyActive: true }).some(l => l.id === created.id), true, 'PUBLISHED listing appears in customer search');
+
+    // Rule 2: Operational Stop-Sell Toggle immediately removes inventory
+    service.toggleStopSale(created.id, adminUser, 'Monsoon storm alert issued');
+    assert.equal(service.queryListings({ productType: 'activities', onlyActive: true }).some(l => l.id === created.id), false, 'Stopped-sale immediately excluded from customer search');
+
+    service.toggleStopSale(created.id, adminUser, 'Storm passed');
+    assert.equal(service.queryListings({ productType: 'activities', onlyActive: true }).some(l => l.id === created.id), true, 'Stop-sell lifted: reappears in customer search');
+
+    // Rule 3: Exhausted Allotment (0 quota) cannot sell
+    service.updateAllotment(created.id, 0, adminUser, 'Sold out all catamaran slots');
+    assert.equal(service.queryListings({ productType: 'activities', onlyActive: true }).some(l => l.id === created.id), false, 'Zero quota allotment excluded from customer search');
+
+    service.updateAllotment(created.id, 5, adminUser, 'Additional private catamaran chartered');
+    assert.equal(service.queryListings({ productType: 'activities', onlyActive: true }).some(l => l.id === created.id), true, 'Restocked quota appears in search');
+
+    // Rule 4: Blackout Dates exclusion
+    const blackoutChristmas = service.queryListings({ productType: 'activities', travelDate: '2026-12-25', onlyActive: true });
+    assert.equal(blackoutChristmas.some(l => l.id === created.id), false, 'Christmas blackout date excluded from search');
+
+    const normalDay = service.queryListings({ productType: 'activities', travelDate: '2026-12-20', onlyActive: true });
+    assert.equal(normalDay.some(l => l.id === created.id), true, 'Normal non-blackout date included in search');
+
+    // Rule 5: Archive listing
+    service.archiveListing(created.id, adminUser, 'End of seasonal contract');
+    assert.equal(service.getListingById(created.id)!.status, 'ARCHIVED', 'Listing archived');
+    assert.equal(service.queryListings({ productType: 'activities', onlyActive: true }).some(l => l.id === created.id), false, 'Archived listing cannot sell');
+
+    // Rule 6: Audit trail immutability
+    const audit = service.getListingById(created.id)!.auditTrail;
+    assert.ok(audit.length >= 7, 'Audit trail logs create, status transitions, stop-sells, allotments, and archive');
+    assert.equal(audit[0].action, 'LISTING_CREATED');
+    assert.equal(audit[audit.length - 1].action, 'STATUS_CHANGE: PUBLISHED -> ARCHIVED');
+  });
+
+  it('enforces Multi-Provider Canonical Entity Resolution, Dynamic Winner Shift, and Recoverable Alternatives (Requirements 8, 10 & 11)', () => {
+    // Hotel property: Grand Palace Hotel Dubai quoted by 2 sources
+    const entityId = 'ent_ht_dubai_grandpalacehotelduba';
+
+    // Quote 1: LiteAPI (Candidate Wholesale Bedbank)
+    const liteApiOffer: any = {
+      canonicalOfferId: 'off_api_liteapi_grandpalace_001',
+      canonicalEntityId: entityId,
+      productType: 'hotels',
+      title: 'Grand Palace Hotel Dubai',
+      sourceType: 'SUPPLIER_API',
+      supplierId: 'LITEAPI',
+      sourceEnvironment: 'CANDIDATE',
+      environmentClass: 'SANDBOX',
+      verificationStatus: 'UNVERIFIED',
+      availabilityStatus: 'LIVE',
+      confirmationMode: 'INSTANT_CONFIRM',
+      canonicalBookingMode: 'INSTANT_API',
+      location: { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE' },
+      pricing: {
+        rawSupplierCostMinor: 4800000,
+        markupPercent: 10,
+        finalSellingPriceMinor: 5280000,
+        currency: 'LKR'
+      },
+      freshness: { isStale: false, cacheAgeMs: 5000 },
+      cancellationPolicy: 'Non-refundable booking',
+      pinAboveApi: false
+    };
+
+    // Quote 2: Direct Contract Desk (Direct Hotel Allotment Desk)
+    const directContractOffer: any = {
+      canonicalOfferId: 'off_dir_payload_grandpalace_002',
+      canonicalEntityId: entityId,
+      productType: 'hotels',
+      title: 'Grand Palace Hotel Dubai',
+      sourceType: 'MANUAL_CONTRACT',
+      inventorySource: 'DIRECT_CONTRACT',
+      publicationStatus: 'PUBLISHED',
+      isExclusiveDeal: true,
+      validUntil: '2026-12-31T23:59:59Z',
+      supplierId: 'PAYLOAD_CMS_DIRECT',
+      sourceEnvironment: 'LIVE_MANUAL_VERIFIED',
+      environmentClass: 'PRODUCTION',
+      verificationStatus: 'VERIFIED_CONTRACT',
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      availabilityMode: 'ALLOTMENT',
+      confirmationMode: 'INSTANT_CONFIRM',
+      canonicalBookingMode: 'MANUAL_ALLOTMENT',
+      location: { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE' },
+      pricing: {
+        rawSupplierCostMinor: 4200000,
+        markupPercent: 12,
+        finalSellingPriceMinor: 4704000,
+        currency: 'LKR'
+      },
+      freshness: { isStale: false, cacheAgeMs: 1000 },
+      cancellationPolicy: 'Free cancellation up to 48 hours prior to arrival',
+      pinAboveApi: true
+    };
+
+    // Run Deduplication and Resolution
+    const result = DeduplicationService.deduplicateAndRank([liteApiOffer, directContractOffer]);
+
+    // Proves: Consolidated into exactly 1 winning entity card
+    assert.equal(result.length, 1, 'Duplicate supplier quotes consolidated into single card');
+    const winner = result[0];
+
+    // Proves: Direct Contract wins on lower price, verified contract, and free cancellation
+    assert.equal(winner.canonicalOfferId, directContractOffer.canonicalOfferId, 'Direct contract wins on price and verification');
+    assert.equal(winner.canonicalEntityId, entityId, 'Canonical entity ID preserved');
+
+    // Proves: Alternative source (LiteAPI) retained in alternateSourceOfferIds for internal agent review
+    assert.deepEqual(winner.alternateSourceOfferIds, [liteApiOffer.canonicalOfferId], 'Alternative LiteAPI quote retained internally');
+
+    // Proves: Zero customer leakage of technical enums
+    const badges = deriveCustomerBadges(winner);
+    validateNoTechnicalLeakInCustomerBadges(badges);
+    assert.ok(badges.includes('Exclusive Direct Deal') || badges.includes('Direct Rate'), 'Customer sees professional deal badge');
+
+    // Dynamic Winner Shift: If LiteAPI drops price and offers free cancellation, it can win
+    const discountedLiteApi = {
+      ...liteApiOffer,
+      sourceEnvironment: 'LIVE_CERTIFIED',
+      verificationStatus: 'VERIFIED_CONTRACT',
+      availabilityMode: 'ALLOTMENT',
+      fulfillmentMode: 'INSTANT',
+      bookingCapability: 'INSTANT_RESERVATION',
+      pricing: {
+        rawSupplierCostMinor: 3000000,
+        markupPercent: 10,
+        finalSellingPriceMinor: 3300000,
+        currency: 'LKR'
+      },
+      cancellationPolicy: 'Free cancellation up to 72 hours prior'
+    };
+    const shiftResult = DeduplicationService.deduplicateAndRank([discountedLiteApi, { ...directContractOffer, pinAboveApi: false }]);
+    assert.equal(shiftResult[0].canonicalOfferId, discountedLiteApi.canonicalOfferId, 'Price drop shifts winning source dynamically');
+    assert.deepEqual(shiftResult[0].alternateSourceOfferIds, [directContractOffer.canonicalOfferId], 'Direct contract quote retained in alternatives');
+  });
+
+  it('enforces Provider Production Live Booking Guard & Truthful Reference Isolation (Requirements 12, 13 & 14)', () => {
+    // 1. Guard blocks uncertified candidates from live bookings
+    const duffel = ProviderRegistryService.getProvider('DUFFEL_NDC')!;
+    assert.throws(() => {
+      assertProviderCanExecuteLiveBooking(duffel);
+    }, /Provider Certification Invariant: Provider 'DUFFEL_NDC'/, 'Duffel candidate blocked from live booking');
+
+    const amadeus = ProviderRegistryService.getProvider('AMADEUS_GDS')!;
+    assert.throws(() => {
+      assertProviderCanExecuteLiveBooking(amadeus);
+    }, /Provider Certification Invariant: Provider 'AMADEUS_GDS'/, 'Amadeus target blocked from live booking');
+
+    const liteapi = ProviderRegistryService.getProvider('LITEAPI')!;
+    assert.throws(() => {
+      assertProviderCanExecuteLiveBooking(liteapi);
+    }, /Provider Certification Invariant: Provider 'LITEAPI'/, 'LiteAPI candidate blocked from live booking');
+
+    // 2. Operational In-house providers ARE permitted
+    const consular = ProviderRegistryService.getProvider('VACATINA_CONSULAR_CONCIERGE')!;
+    assert.doesNotThrow(() => {
+      assertProviderCanExecuteLiveBooking(consular);
+    }, 'Consular concierge permitted for live operational execution');
+
+    const payloadCms = ProviderRegistryService.getProvider('PAYLOAD_CMS_DIRECT')!;
+    assert.doesNotThrow(() => {
+      assertProviderCanExecuteLiveBooking(payloadCms);
+    }, 'Payload CMS direct desk permitted for live operational execution');
+
+    // 3. Truthful Booking Reference Semantics
+    // Case A: Valid unconfirmed sandbox booking
+    assert.doesNotThrow(() => {
+      assertNoFabricatedUpstreamReferences({
+        isUpstreamConfirmed: false,
+        vacatinaBookingReference: 'VCT-2026-AB12CD',
+        supplierPnr: undefined,
+        supplierConfirmationNumber: undefined
+      });
+    }, 'Valid truthful booking reference with undefined upstream PNR');
+
+    // Case B: Fabricated PNR in sandbox booking throws
+    assert.throws(() => {
+      assertNoFabricatedUpstreamReferences({
+        isUpstreamConfirmed: false,
+        vacatinaBookingReference: 'VCT-2026-AB12CD',
+        supplierPnr: 'EK-PNR-FAKE-992'
+      });
+    }, /Integrity Guard: supplierPnr cannot be set for uncertified \/ sandbox booking item/, 'Fabricated PNR blocked');
   });
 });

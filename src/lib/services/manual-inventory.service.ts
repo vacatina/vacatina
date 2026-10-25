@@ -133,6 +133,7 @@ export class ManualInventoryService {
   public queryListings(filter: {
     productType?: TravelProductSlug;
     destination?: string;
+    travelDate?: string;
     status?: ManualListingStatus;
     onlyActive?: boolean;
   } = {}): ManualListingRecord[] {
@@ -159,9 +160,20 @@ export class ManualInventoryService {
       );
     }
 
-    // Filter out expired items or stopped sales for active queries
+    // Filter out expired items, zero quotas, or stopped sales for active queries
     if (filter.onlyActive !== false) {
       list = list.filter(l => l.validUntilIso >= nowIso && l.availableQuota > 0 && !l.isStopSaleActive);
+    }
+
+    // Filter out blacked out dates and out-of-travel-window dates
+    if (filter.travelDate) {
+      const tDate = filter.travelDate;
+      list = list.filter(l => {
+        if (l.blackoutDates && l.blackoutDates.includes(tDate)) return false;
+        if (l.travelValidFromIso && tDate < l.travelValidFromIso.split('T')[0]) return false;
+        if (l.travelValidUntilIso && tDate > l.travelValidUntilIso.split('T')[0]) return false;
+        return true;
+      });
     }
 
     return list;
@@ -321,6 +333,44 @@ export class ManualInventoryService {
   public registerListing(listing: ManualListingRecord): void {
     this.listings.set(listing.id, listing);
   }
+
+  /**
+   * Creates a new manual listing in DRAFT status with initial audit trail.
+   */
+  public createListing(
+    listingData: Omit<ManualListingRecord, 'status' | 'auditTrail' | 'createdAtIso' | 'updatedAtIso'>,
+    adminUser: { id: string; name: string }
+  ): ManualListingRecord {
+    const nowIso = new Date().toISOString();
+    const newListing: ManualListingRecord = {
+      ...listingData,
+      status: 'DRAFT',
+      createdBy: `${adminUser.name} (${adminUser.id})`,
+      createdAtIso: nowIso,
+      updatedAtIso: nowIso,
+      auditTrail: [
+        {
+          action: 'LISTING_CREATED',
+          changedBy: `${adminUser.name} (${adminUser.id})`,
+          timestampIso: nowIso,
+          note: 'Created listing in DRAFT status'
+        }
+      ]
+    };
+    this.listings.set(newListing.id, newListing);
+    return newListing;
+  }
+
+  /**
+   * Transitions listing to ARCHIVED status.
+   */
+  public archiveListing(
+    id: string,
+    adminUser: { id: string; name: string },
+    reason?: string
+  ): boolean {
+    return this.updateStatus(id, 'ARCHIVED', adminUser, reason || 'Archived listing');
+  }
 }
 
 // Canonical manual listings seed database
@@ -330,12 +380,12 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     collection: 'manual-charter-flights',
     productType: 'flights',
     canonicalEntityId: 'ent_fl_cmb_mle_airtaxi',
-    partnerSupplierId: 'SRILANKAN_AIRTAXI',
-    partnerName: 'SriLankan AirTaxi Charter Operations',
-    supplierLegalName: 'SriLankan Airlines Limited',
-    supplierTaxId: 'TIN-LK-9021481',
-    supplierContactEmail: 'charters@srilankan.com',
-    contractReference: 'CNT-AIRTAXI-2026-Q4',
+    partnerSupplierId: 'DIRECT_CHARTER_DESK',
+    partnerName: 'Verified Direct Contract Flight Operations',
+    supplierLegalName: 'Vacatina Aviation & Seaplane Operations Desk',
+    supplierTaxId: 'TIN-LK-DIR-CHARTER',
+    supplierContactEmail: 'charters@direct-desk.vacatina.com',
+    contractReference: 'CNT-DIR-CHARTER-2026-Q4',
     effectiveFromIso: '2026-10-01T00:00:00Z',
     effectiveToIso: '2026-12-31T23:59:59Z',
     title: 'Colombo to Maldives Seaplane Charter',
@@ -384,12 +434,12 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     collection: 'contracted-boutique-hotels',
     productType: 'hotels',
     canonicalEntityId: 'ent_ht_kandalama_direct',
-    partnerSupplierId: 'AITKEN_SPENCE_DIRECT',
-    partnerName: 'Heritance Kandalama Direct Contract',
-    supplierLegalName: 'Aitken Spence Hotel Holdings PLC',
-    supplierTaxId: 'TIN-LK-8830114',
-    supplierContactEmail: 'contracts@heritancehotels.com',
-    contractReference: 'CNT-KANDALAMA-2026-A',
+    partnerSupplierId: 'DIRECT_HOTEL_DESK',
+    partnerName: 'Direct Hotel Allotment Partner',
+    supplierLegalName: 'Boutique Eco-Luxury Resort Operations',
+    supplierTaxId: 'TIN-LK-DIR-HOTEL',
+    supplierContactEmail: 'contracts@direct-desk.vacatina.com',
+    contractReference: 'CNT-DIR-HOTEL-2026-A',
     effectiveFromIso: '2026-10-01T00:00:00Z',
     effectiveToIso: '2026-12-31T23:59:59Z',
     title: 'Heritance Kandalama Eco-Luxury Resort',
@@ -437,12 +487,12 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     collection: 'manual-ground-mobility',
     productType: 'cars',
     canonicalEntityId: 'ent_cr_careem_dxb_transfer',
-    partnerSupplierId: 'CAREEM_FLEET_DXB',
-    partnerName: 'Dubai Premium Chauffeur Logistics',
-    supplierLegalName: 'Careem Networks FZ LLC',
-    supplierTaxId: 'TRN-AE-100294812300003',
-    supplierContactEmail: 'fleet-b2b@careem.com',
-    contractReference: 'CNT-CAREEM-DXB-2026',
+    partnerSupplierId: 'DIRECT_TRANSFER_DESK',
+    partnerName: 'Manual Transfer Contract Inventory',
+    supplierLegalName: 'Executive Chauffeur Logistics Desk',
+    supplierTaxId: 'TRN-AE-DIR-TRANSFER',
+    supplierContactEmail: 'transfers@direct-desk.vacatina.com',
+    contractReference: 'CNT-DIR-TRANSFER-2026',
     effectiveFromIso: '2026-10-01T00:00:00Z',
     effectiveToIso: '2026-12-31T23:59:59Z',
     title: 'Dubai Airport (DXB) to Downtown Luxury Chauffeur',
@@ -481,7 +531,7 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     createdAtIso: '2026-10-24T00:00:00Z',
     updatedAtIso: '2026-10-24T00:00:00Z',
     auditTrail: [
-      { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z' }
+      { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z', note: 'Direct ground transport contract' }
     ]
   }
 ];
