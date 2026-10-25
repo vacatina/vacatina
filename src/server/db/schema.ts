@@ -245,14 +245,35 @@ export interface ManualListingEntity {
   approverUserId?: UUID;
   effectiveFrom?: ISODateString;
   effectiveTo?: ISODateString;
+  bookingWindow?: {
+    minAdvanceDays?: number;
+    maxAdvanceDays?: number;
+    minimumNoticeHours?: number;
+  };
+  stopSale?: boolean;
   allottedQuota?: number;
   heldQuota?: number;
   bookedQuota?: number;
+  remainingQuota?: number;
   canAtomicallyReserve?: boolean;
   isExclusiveDeal?: boolean;
   pinReason?: string;
   pinValidFrom?: ISODateString;
   pinValidUntil?: ISODateString;
+  contractReference?: string;
+  sourceOwner?: {
+    partnerId: string;
+    partnerName: string;
+    contactEmail: string;
+  };
+  revisionNumber?: number;
+  refundEligibilityDescription?: string;
+  createdBy?: UUID;
+  reviewedBy?: UUID;
+  approvedBy?: UUID;
+  publishedAt?: ISODateString;
+  pausedAt?: ISODateString;
+  archivedAt?: ISODateString;
   taxesAndFees?: {
     totalTaxMinor: number;
     isTaxInclusive: boolean;
@@ -272,7 +293,6 @@ export interface ManualListingEntity {
   };
   status: ManualListingStatus;
   publishedByUserId?: UUID;
-  publishedAt?: ISODateString;
   createdAt: ISODateString;
   updatedAt: ISODateString;
 }

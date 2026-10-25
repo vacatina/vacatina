@@ -48,17 +48,24 @@ import {
   assertManualOfferPublishedForBooking,
   assertUnavailableOfferCannotBeReady,
   assertDistributionScopeIntegrity,
+  assertDiscoveryContentCannotBeSold,
+  isPackageReadyForCheckout,
+  assertProductionResponseSafety,
   isOfferEligibleForPinOverride,
   deriveCustomerBadges,
   validateNoTechnicalLeakInCustomerBadges,
   ArchitecturalInvariantViolationError
 } from '../src/server/inventory/types.ts';
 import {
+  DiscoveryContentService,
+  CANONICAL_DISCOVERY_CATALOG
+} from '../src/server/inventory/discovery-content.ts';
+import {
   ProviderRegistryService,
   CANONICAL_PROVIDER_REGISTRY
 } from '../src/server/inventory/provider-registry.ts';
 
-describe('Vacatina Domain & Validation Unit Tests', () => {
+describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
   it('enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order', () => {
     assert.equal(ALL_10_TRAVEL_PRODUCTS.length, 10);
     assert.equal(LOCKED_11_TAB_ORDER.length, 11);
@@ -1981,5 +1988,269 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.equal(pkg.productExtension.package.dayByDayItinerary.length, 5);
     assert.ok(pkg.productExtension.package.includedComponents.includes('FLIGHT'));
     assert.ok(pkg.productExtension.package.includedComponents.includes('HOTEL'));
+  });
+
+  it('enforces DiscoveryContent vs CanonicalOffer separation (Discovery Content is never sellable inventory)', () => {
+    const discoveryItems = DiscoveryContentService.getAllDiscoveryContent();
+    assert.ok(discoveryItems.length >= 4);
+
+    for (const item of discoveryItems) {
+      assert.equal(item.isLiveInventoryOffer, false, 'Discovery content must never be marked as a live inventory offer');
+      assert.equal(item.sellability, 'DISCOVERY_ONLY', 'Discovery content must have sellability = DISCOVERY_ONLY');
+      assert.ok(item.priceIndication?.priceDisclaimer.includes('Indicative'), 'Discovery cards must include indicative disclaimer');
+      assert.doesNotThrow(() => assertDiscoveryContentCannotBeSold(item));
+
+      // Verify search prefill generation
+      const prefillUrl = DiscoveryContentService.generateSearchPrefillUrl(item);
+      assert.ok(prefillUrl.startsWith(item.targetRoute));
+    }
+
+    // Violation attempt: trying to sell discovery content throws an invariant error
+    assert.throws(
+      () => {
+        assertDiscoveryContentCannotBeSold({
+          ...discoveryItems[0],
+          isLiveInventoryOffer: true as any,
+          sellability: 'BOOKABLE'
+        });
+      },
+      (err: any) => {
+        return err instanceof ArchitecturalInvariantViolationError &&
+               err.message.includes('DISCOVERY_CONTENT_CANNOT_BE_SOLD');
+      }
+    );
+  });
+
+  it('enforces SEED Quarantine, Production Response Safety, and Package Component Provenance Invariants', () => {
+    const validOffer = {
+      canonicalOfferId: 'vct-ht-valid-001',
+      productType: 'hotels' as const,
+      inventorySource: 'DIRECT_CONTRACT' as const,
+      listingKind: 'SELLABLE_INVENTORY' as const,
+      compositionType: 'SINGLE' as const,
+      fulfillmentMode: 'INSTANT' as const,
+      environmentClass: 'PRODUCTION' as const,
+      sellability: 'BOOKABLE' as const,
+      providerLifecycle: 'PRODUCTION_LIVE' as const,
+      publicationStatus: 'PUBLISHED' as const,
+      distributionScope: 'BOTH' as const,
+      bookingCapability: 'INSTANT_RESERVATION' as const,
+      sourceType: 'DIRECT_CONTRACT' as const,
+      supplierId: 'HERITAGE_HOTEL',
+      supplierName: 'Heritage Villa',
+      title: 'Heritage Villa Suite',
+      subtitle: 'Luxury Suite',
+      location: { city: 'Galle', country: 'Sri Lanka', countryCode: 'LK' },
+      availabilityStatus: 'LIVE' as const,
+      confirmationMode: 'INSTANT_CONFIRM' as const,
+      bookingMode: 'INSTANT_BOOK' as const,
+      pricing: {
+        rawSupplierCostMinor: 4000000,
+        rawCurrency: 'LKR',
+        platformMarkupMinor: 500000,
+        b2bAgencyMarginMinor: 0,
+        finalSellingPriceMinor: 4500000,
+        currency: 'LKR'
+      },
+      taxesAndFees: { totalTaxMinor: 0, isTaxInclusive: true },
+      freshness: {
+        lastCheckedAtIso: new Date().toISOString(),
+        ttlSeconds: 3600,
+        expiresAtIso: new Date(Date.now() + 3600000).toISOString(),
+        isStale: false,
+        revalidationEndpoint: '/api/v1/offers/vct-ht-valid-001/revalidate'
+      },
+      validFrom: new Date().toISOString(),
+      validUntil: new Date(Date.now() + 86400000).toISOString(),
+      expiresAt: new Date(Date.now() + 86400000).toISOString(),
+      lastCheckedAt: new Date().toISOString(),
+      requiresRevalidation: false,
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation 24h',
+      pinAboveApi: false,
+      deduplicationKey: 'ht:galle:heritage',
+      isSandboxSimulated: false,
+      integrationLifecycle: 'PRODUCTION_LIVE' as const,
+      sourceMetadata: {},
+      revalidationCapability: { canRevalidateOnline: true, requiresSupplierPing: false }
+    };
+
+    // 1. Valid production response passes safety assertion
+    assert.doesNotThrow(() => {
+      assertProductionResponseSafety([validOffer], { channel: 'B2C', environment: 'PRODUCTION' });
+    });
+
+    // 2. SEED offer in production triggers safety invariant violation
+    const seedOffer = { ...validOffer, canonicalOfferId: 'vct-seed-001', environmentClass: 'SEED' as const };
+    assert.throws(
+      () => assertProductionResponseSafety([seedOffer], { channel: 'B2C', environment: 'PRODUCTION' }),
+      /PRODUCTION_SEED_LEAK/
+    );
+
+    // 3. B2B_ONLY offer in B2C triggers distribution leak violation
+    const b2bOnlyOffer = { ...validOffer, canonicalOfferId: 'vct-b2b-001', distributionScope: 'B2B_ONLY' as const };
+    assert.throws(
+      () => assertProductionResponseSafety([b2bOnlyOffer], { channel: 'B2C', environment: 'PRODUCTION' }),
+      /B2C_DISTRIBUTION_LEAK/
+    );
+
+    // 4. Unpublished manual offer in search response triggers safety violation
+    const draftOffer = { ...validOffer, canonicalOfferId: 'vct-draft-001', publicationStatus: 'DRAFT' as const };
+    assert.throws(
+      () => assertProductionResponseSafety([draftOffer], { channel: 'B2C', environment: 'PRODUCTION' }),
+      /UNPUBLISHED_OFFER_IN_SEARCH/
+    );
+
+    // 5. Package Component Provenance: package cannot be Ready if child component is expired or unavailable
+    const holidayPackageOffer = {
+      ...validOffer,
+      productType: 'packages' as const,
+      components: [
+        {
+          componentId: 'cmp_flight_01',
+          productType: 'flights' as const,
+          inventorySource: 'API' as const,
+          listingKind: 'SELLABLE_INVENTORY' as const,
+          compositionType: 'SINGLE' as const,
+          fulfillmentMode: 'INSTANT' as const,
+          environmentClass: 'PRODUCTION' as const,
+          sellability: 'BOOKABLE' as const,
+          supplierId: 'DUFFEL_NDC',
+          supplierName: 'Duffel',
+          isSandboxSimulated: false,
+          revalidationRequired: true,
+          componentStatus: 'VALID' as const
+        },
+        {
+          componentId: 'cmp_hotel_01',
+          productType: 'hotels' as const,
+          inventorySource: 'DIRECT_CONTRACT' as const,
+          listingKind: 'SELLABLE_INVENTORY' as const,
+          compositionType: 'SINGLE' as const,
+          fulfillmentMode: 'INSTANT' as const,
+          environmentClass: 'PRODUCTION' as const,
+          sellability: 'BOOKABLE' as const,
+          supplierId: 'HERITAGE',
+          supplierName: 'Heritage Villa',
+          isSandboxSimulated: false,
+          revalidationRequired: false,
+          componentStatus: 'EXPIRED' as const // Component is expired!
+        }
+      ]
+    };
+
+    assert.equal(isPackageReadyForCheckout(holidayPackageOffer), false, 'Package with expired hotel component must NOT be ready for checkout');
+
+    // When child component is fixed to VALID, package becomes ready
+    holidayPackageOffer.components[1].componentStatus = 'VALID';
+    assert.equal(isPackageReadyForCheckout(holidayPackageOffer), true, 'Package with all VALID components is ready for checkout');
+  });
+
+  it('enforces Complete Manual Listing Governance (Allotment, Blackouts, Revisions, Stop-Sale, and Approver Audit)', () => {
+    const storage = new VacatinaStorageEngine();
+
+    // 1. Create Direct Contract listing with full operational parameters
+    const listing = storage.createManualListing({
+      productType: 'hotels',
+      sourceType: 'DIRECT_CONTRACT',
+      partnerSupplierId: 'MIRISSA_RESORT',
+      partnerName: 'Mirissa Ocean Resort',
+      title: 'Mirissa Oceanfront Villa Allotment',
+      subtitle: 'Private Beach Villa with Plunge Pool',
+      destinationCity: 'Mirissa',
+      destinationCountry: 'Sri Lanka',
+      contractedNetCostMinor: 6500000, // LKR 65,000.00
+      costCurrency: 'LKR',
+      platformMarkupPercent: 12.0,
+      sellingPriceMinor: 7280000,      // LKR 72,800.00
+      sellingCurrency: 'LKR',
+      availableQuota: 10,
+      allottedQuota: 10,
+      heldQuota: 0,
+      bookedQuota: 0,
+      isUnlimitedQuota: false,
+      blackoutDates: ['2026-12-24', '2026-12-25', '2026-12-31'],
+      minimumNoticeHours: 24,
+      bookingWindow: { minAdvanceDays: 1, maxAdvanceDays: 90, minimumNoticeHours: 24 },
+      validFrom: '2026-11-01T00:00:00Z',
+      validUntil: '2027-04-30T00:00:00Z',
+      effectiveFrom: '2026-11-01T00:00:00Z',
+      effectiveTo: '2027-04-30T00:00:00Z',
+      confirmationMode: 'REQUEST_TO_CONFIRM',
+      canAtomicallyReserve: false,
+      contractReference: 'AGR-2026-MIRISSA-008',
+      sourceOwner: {
+        partnerId: 'PTR_MIRISSA_01',
+        partnerName: 'Mirissa Hospitality Ltd',
+        contactEmail: 'contracts@mirissaresort.lk'
+      },
+      inclusions: ['Breakfast', 'Welcome King Coconut', 'Airport Shuttle Assistance'],
+      exclusions: ['Minibar premium alcohol', 'Water sports equipment rental'],
+      cancellationPolicy: 'Free cancellation up to 72 hours before check-in. 1 night fee thereafter.',
+      termsReference: 'TERMS-MIRISSA-VILLA-2026',
+      heroImageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef',
+      galleryImageUrls: [],
+      isFeatured: true,
+      pinAboveApi: true,
+      isB2BVisible: true,
+      isB2CVisible: true,
+      status: 'DRAFT',
+      publicationStatus: 'DRAFT'
+    }, 'usr_creator_01');
+
+    assert.ok(listing.id);
+    assert.equal(listing.status, 'DRAFT');
+
+    // 2. State Machine: Submit for review (DRAFT -> IN_REVIEW)
+    const inReview = storage.transitionManualListingStatus(listing.id, 'IN_REVIEW', 'usr_creator_01', undefined, 'Submitted for operations review');
+    assert.equal(inReview.status, 'IN_REVIEW');
+
+    // 3. Approver rejects listing back to DRAFT (IN_REVIEW -> DRAFT) with comments
+    const rejectedDraft = storage.transitionManualListingStatus(listing.id, 'DRAFT', 'usr_approver_01', undefined, 'Need updated High-Season cancellation terms');
+    assert.equal(rejectedDraft.status, 'DRAFT');
+
+    // 4. Creator updates listing with revised cancellation terms and increments revision
+    const updated = storage.updateManualListing(listing.id, {
+      cancellationPolicy: 'Revised: Free cancellation up to 7 days before check-in during festive period.',
+      heldQuota: 2 // 2 units currently held
+    }, 'usr_creator_01', 'Updated festive season cancellation policy');
+    assert.equal(updated.revisionNumber, 4, 'Revision increments across submit, reject, and update');
+    assert.equal(updated.remainingQuota, 8, 'Remaining quota must be allottedQuota (10) - heldQuota (2) = 8');
+
+    // 5. Creator re-submits (DRAFT -> IN_REVIEW)
+    storage.transitionManualListingStatus(listing.id, 'IN_REVIEW', 'usr_creator_01', undefined, 'Re-submitted with festive cancellation terms');
+
+    // 6. Stop-Sale Guard: cannot publish if stopSale is true
+    storage.updateManualListing(listing.id, { stopSale: true }, 'usr_creator_01', 'Set temporary stop-sale');
+    assert.throws(
+      () => storage.transitionManualListingStatus(listing.id, 'PUBLISHED', 'usr_creator_01', 'usr_approver_01'),
+      /while stopSale flag is active/
+    );
+
+    // Clear stopSale and approve (IN_REVIEW -> PUBLISHED)
+    storage.updateManualListing(listing.id, { stopSale: false }, 'usr_creator_01', 'Clear stop sale');
+    const published = storage.transitionManualListingStatus(listing.id, 'PUBLISHED', 'usr_creator_01', 'usr_approver_01', 'Verified rates and allotments');
+    assert.equal(published.status, 'PUBLISHED');
+    assert.ok(published.publishedAt);
+    assert.equal(published.approvedBy, 'usr_approver_01');
+
+    // 7. Operations pauses listing for maintenance (PUBLISHED -> PAUSED)
+    const paused = storage.transitionManualListingStatus(listing.id, 'PAUSED', 'usr_ops_01', undefined, 'Plunge pool maintenance');
+    assert.equal(paused.status, 'PAUSED');
+    assert.ok(paused.pausedAt);
+
+    // 8. Operations reactivates listing (PAUSED -> PUBLISHED)
+    const reactivated = storage.transitionManualListingStatus(listing.id, 'PUBLISHED', 'usr_ops_01', 'usr_approver_01', 'Maintenance complete');
+    assert.equal(reactivated.status, 'PUBLISHED');
+
+    // 9. Season concludes (PUBLISHED -> ARCHIVED)
+    const archived = storage.transitionManualListingStatus(listing.id, 'ARCHIVED', 'usr_ops_01', undefined, 'Season contract concluded');
+    assert.equal(archived.status, 'ARCHIVED');
+    assert.ok(archived.archivedAt);
+
+    // 10. Audit History contains all logged transitions
+    const audits = storage.getManualListingAudits(listing.id);
+    assert.ok(audits.length >= 6);
   });
 });

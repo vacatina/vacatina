@@ -78,6 +78,7 @@ export type Sellability =
 export type ProviderLifecycle =
   | 'PLANNED'         // Target provider identified, API documentation evaluated
   | 'SCAFFOLD'        // Typed adapter scaffolded with mock/simulated contracts
+  | 'INTEGRATION_CANDIDATE' // Candidate integration undergoing technical and sandbox audit
   | 'SANDBOX_ACTIVE'  // Live test API credentials connected and verified
   | 'CERTIFIED'       // Upstream provider compliance & certification testing passed
   | 'PRODUCTION_LIVE';// Commercial contract signed, live credentials active, financial settlement enabled
@@ -235,12 +236,54 @@ export interface PriceFreshnessEntity {
   revalidationEndpoint: string;
 }
 
+// ----------------------------------------------------------------------------
+// Discovery Content vs Sellable Inventory Separation (Directive 1)
+// ----------------------------------------------------------------------------
+
+export interface DiscoveryContentEntity {
+  contentId: string;               // e.g. "dsc_dxb_winter_escape"
+  slug: string;                    // e.g. "dubai-winter-escape"
+  title: string;                   // e.g. "Dubai Winter Sun & Skyline"
+  subtitle: string;                // e.g. "Experience futuristic architecture and desert adventures"
+  category: 'DESTINATION_INSPIRATION' | 'SEASONAL_GUIDE' | 'EDITORIAL_FEATURE' | 'ROUTE_SUGGESTION';
+  heroImageUrl: string;
+  targetProductType: TravelProductSlug;
+  targetRoute: string;             // Canonical frontend route, e.g. "/flights" or "/packages"
+  prefillSearchParams: {
+    origin?: string;
+    destination: string;
+    departureDate?: string;
+    returnDate?: string;
+    cabinClass?: string;
+  };
+  editorialBadge?: string;         // e.g. "Staff Pick", "Trending Destination", "Seasonal Special"
+  priceIndication?: {
+    indicativeFromPriceMinor: number;
+    indicativeCurrency: string;
+    priceDisclaimer: string;       // e.g. "*Indicative starting fare based on historical searches; live search required"
+  };
+  isLiveInventoryOffer: false;     // STRICT INVARIANT: Always false. Never an inventory offer.
+  sellability: 'DISCOVERY_ONLY';   // Never directly bookable
+  authorOrCurator: string;
+  publishedAtIso: string;
+}
+
+export interface SourceProvenanceEntity {
+  originAdapter: string;           // e.g. "FlightsDuffelAdapter"
+  fetchTimestampIso: string;
+  providerEndpoint?: string;
+  rawPayloadHash?: string;
+  providerResponseTimeMs?: number;
+  ratePlanCode?: string;
+}
+
 /**
- * Identity of an individual sub-component within a DYNAMIC_BUNDLE
+ * Identity of an individual sub-component within a DYNAMIC_BUNDLE or Holiday Package
  */
 export interface ComponentOfferIdentity {
   componentId: string;
   productType: TravelProductSlug;
+  sourceOfferId?: string;          // Upstream offer ID or CMS listing ID
   inventorySource: InventorySource;
   listingKind: ListingKind;
   compositionType: CompositionType;
@@ -251,16 +294,21 @@ export interface ComponentOfferIdentity {
   supplierName: string;
   isSandboxSimulated: boolean;
   revalidationRequired: boolean;
+  lastRevalidationResult?: 'UNCHANGED' | 'PRICE_CHANGED' | 'UNAVAILABLE';
+  componentStatus?: 'VALID' | 'PRICE_CHANGED' | 'EXPIRED' | 'UNAVAILABLE' | 'NEEDS_ACTION';
+  costMinor?: number;
+  currency?: string;
 }
 
 /**
  * Universal Canonical Offer Model (v2.0)
- * Authority: ADR-008
+ * Authority: ADR-008 & Core Architecture Master Contract
  */
 export interface CanonicalOfferEntity {
   // Stable universal identifiers
   canonicalOfferId: string;         // Universal stable identifier, e.g. "vct-fl-duffel-cmb-dxb-98a7c2"
   offerId?: string;                 // Explicit alias for canonicalOfferId
+  sourceOfferId?: string;           // Original upstream provider offer ID / CMS listing ID
   productType: TravelProductSlug;
   providerId?: string;              // Explicit alias for supplierId
   providerOfferId?: string;         // Explicit alias for supplierOfferId
@@ -317,6 +365,7 @@ export interface CanonicalOfferEntity {
   isSandboxSimulated: boolean;      // Truthful flag: true if rendered by mock/sandbox adapter
   integrationLifecycle: IntegrationLifecycleStatus;
   sourceMetadata: Record<string, unknown>;
+  sourceProvenance?: SourceProvenanceEntity;
   revalidationCapability: {
     canRevalidateOnline: boolean;
     requiresSupplierPing: boolean;
@@ -579,4 +628,89 @@ export function isOfferEligibleForPinOverride(offer: CanonicalOfferEntity): bool
   if (offer.pinAudit?.pinValidFrom && new Date(offer.pinAudit.pinValidFrom).getTime() > now) return false;
   if (offer.pinAudit?.pinValidUntil && new Date(offer.pinAudit.pinValidUntil).getTime() < now) return false;
   return true;
+}
+
+/**
+ * Invariant 8: Discovery Content is Never Sellable Inventory (Directive 1)
+ */
+export function assertDiscoveryContentCannotBeSold(content: DiscoveryContentEntity): void {
+  if (content.isLiveInventoryOffer !== false || content.sellability !== 'DISCOVERY_ONLY') {
+    throw new ArchitecturalInvariantViolationError(
+      'DISCOVERY_CONTENT_CANNOT_BE_SOLD',
+      `Discovery content '${content.contentId}' must have isLiveInventoryOffer = false and sellability = 'DISCOVERY_ONLY'. It cannot be sold as an inventory offer.`
+    );
+  }
+}
+
+/**
+ * Invariant 9: Package Component Provenance & Checkout Readiness (Directive 7)
+ */
+export function isPackageReadyForCheckout(pkgOffer: CanonicalOfferEntity): boolean {
+  if (pkgOffer.productType !== 'packages') return true;
+  if (!pkgOffer.components || pkgOffer.components.length === 0) return true;
+  return !pkgOffer.components.some(c =>
+    c.componentStatus === 'EXPIRED' ||
+    c.componentStatus === 'UNAVAILABLE' ||
+    c.componentStatus === 'NEEDS_ACTION' ||
+    c.lastRevalidationResult === 'UNAVAILABLE'
+  );
+}
+
+/**
+ * Invariant 10: Production Response Environment Safety Guard (Directive 9)
+ * Guarantees zero SEED, zero SANDBOX-bookable, zero B2B/INTERNAL leaks into B2C,
+ * zero unpublished manual offers, and zero expired bookables in production responses.
+ */
+export function assertProductionResponseSafety(
+  offers: CanonicalOfferEntity[],
+  context: { channel?: 'B2C' | 'B2B'; environment?: 'PRODUCTION' | 'SANDBOX' | 'DEVELOPMENT' } = {}
+): void {
+  const isProd = context.environment !== 'SANDBOX' && context.environment !== 'DEVELOPMENT';
+  const isB2C = context.channel !== 'B2B';
+
+  for (const offer of offers) {
+    if (isProd) {
+      if (offer.environmentClass === 'SEED') {
+        throw new ArchitecturalInvariantViolationError(
+          'PRODUCTION_SEED_LEAK',
+          `Environment Safety Violation: SEED offer '${offer.canonicalOfferId}' leaked into PRODUCTION response`
+        );
+      }
+      if (offer.environmentClass === 'SANDBOX' && offer.sellability === 'BOOKABLE') {
+        throw new ArchitecturalInvariantViolationError(
+          'PRODUCTION_SANDBOX_LEAK',
+          `Environment Safety Violation: SANDBOX simulated offer '${offer.canonicalOfferId}' marked BOOKABLE in PRODUCTION response`
+        );
+      }
+    }
+
+    if (isB2C) {
+      if (offer.distributionScope === 'B2B_ONLY') {
+        throw new ArchitecturalInvariantViolationError(
+          'B2C_DISTRIBUTION_LEAK',
+          `Distribution Isolation Violation: B2B_ONLY offer '${offer.canonicalOfferId}' leaked into B2C response`
+        );
+      }
+      if (offer.distributionScope === 'INTERNAL_ONLY') {
+        throw new ArchitecturalInvariantViolationError(
+          'INTERNAL_DISTRIBUTION_LEAK',
+          `Distribution Isolation Violation: INTERNAL_ONLY offer '${offer.canonicalOfferId}' leaked into B2C response`
+        );
+      }
+    }
+
+    if (offer.publicationStatus && offer.publicationStatus !== 'PUBLISHED') {
+      throw new ArchitecturalInvariantViolationError(
+        'UNPUBLISHED_OFFER_IN_SEARCH',
+        `Publication Safety Violation: Non-published offer '${offer.canonicalOfferId}' (status: ${offer.publicationStatus}) presented in search response`
+      );
+    }
+
+    if (offer.sellability === 'BOOKABLE' && offer.availabilityStatus === 'EXPIRED') {
+      throw new ArchitecturalInvariantViolationError(
+        'EXPIRED_OFFER_BOOKABLE',
+        `Freshness Safety Violation: EXPIRED offer '${offer.canonicalOfferId}' presented as BOOKABLE`
+      );
+    }
+  }
 }

@@ -430,9 +430,21 @@ export class VacatinaStorageEngine {
   public updateManualListing(id: UUID, updates: Partial<ManualListingEntity>, actorUserId: UUID, changeReason: string): ManualListingEntity {
     const existing = this.manualListings.get(id);
     if (!existing) throw new Error(`ManualListing ${id} not found`);
+    const nextRevision = (existing.revisionNumber || 1) + 1;
+    const allotted = updates.allottedQuota ?? existing.allottedQuota ?? existing.availableQuota ?? 0;
+    const held = updates.heldQuota ?? existing.heldQuota ?? 0;
+    const booked = updates.bookedQuota ?? existing.bookedQuota ?? 0;
+    const remainingQuota = Math.max(0, allotted - held - booked);
+
     const updated: ManualListingEntity = {
       ...existing,
       ...updates,
+      revisionNumber: nextRevision,
+      allottedQuota: allotted,
+      heldQuota: held,
+      bookedQuota: booked,
+      remainingQuota,
+      availableQuota: remainingQuota,
       updatedAt: new Date().toISOString()
     };
     this.manualListings.set(id, updated);
@@ -476,15 +488,24 @@ export class VacatinaStorageEngine {
       if (!existing.cancellationPolicy) {
         throw new Error(`Listing '${existing.title}' requires a cancellation policy to publish`);
       }
+      if (existing.stopSale === true) {
+        throw new Error(`Cannot publish listing '${existing.title}' while stopSale flag is active`);
+      }
     }
 
     const now = new Date().toISOString();
+    const nextRevision = (existing.revisionNumber || 1) + 1;
     const updated: ManualListingEntity = {
       ...existing,
       status: nextStatus,
       publicationStatus: nextStatus,
+      revisionNumber: nextRevision,
+      reviewedBy: nextStatus === 'IN_REVIEW' ? actorUserId : existing.reviewedBy,
+      approvedBy: nextStatus === 'PUBLISHED' ? approverUserId : existing.approvedBy,
       publishedByUserId: nextStatus === 'PUBLISHED' ? approverUserId : existing.publishedByUserId,
       publishedAt: nextStatus === 'PUBLISHED' ? now : existing.publishedAt,
+      pausedAt: nextStatus === 'PAUSED' ? now : existing.pausedAt,
+      archivedAt: nextStatus === 'ARCHIVED' ? now : existing.archivedAt,
       updatedAt: now
     };
 

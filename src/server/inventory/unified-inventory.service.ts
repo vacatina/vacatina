@@ -14,6 +14,7 @@ import type {
   SearchQueryCriteria,
   TravelProductSlug
 } from './types.ts';
+import { assertProductionResponseSafety } from './types.ts';
 import { BaseSupplierAdapter } from './adapters/base.adapter.ts';
 import { FlightsDuffelAdapter } from './adapters/flights-duffel.adapter.ts';
 import { HotelsLiteApiAdapter } from './adapters/hotels-liteapi.adapter.ts';
@@ -130,7 +131,13 @@ export class UnifiedInventoryService {
     // 5. Deduplicate and Apply Pin-Above-API / Best-Price Ranking
     const rankedOffers = DeduplicationService.deduplicateAndRank(eligibleOffers);
 
-    // 5. Store in Product-by-Product TTL Cache
+    // 6. Guarantee Production Response Safety & Channel Integrity (Directive 9)
+    assertProductionResponseSafety(rankedOffers, {
+      channel,
+      environment: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'DEVELOPMENT'
+    });
+
+    // 7. Store in Product-by-Product TTL Cache
     if (rankedOffers.length > 0) {
       this.cache.set(cacheKey, rankedOffers, criteria.productType);
     }
