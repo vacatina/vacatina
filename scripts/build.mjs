@@ -103,8 +103,10 @@ function walkTsFiles(dir) {
 function stripImportsAndExportsForBundle(jsCode) {
   return jsCode
     .replace(/^\s*import\s+[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
+    .replace(/^\s*export\s+[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
     .replace(/^\s*export\s+(async\s+function|function|const|let|var|class)\b/gm, '$1')
-    .replace(/^\s*export\s+\{[\s\S]*?\};?\s*$/gm, '');
+    .replace(/^\s*export\s+\{[\s\S]*?\};?\s*$/gm, '')
+    .replace(/^\s*export\s+default\s+/gm, '');
 }
 
 export function buildProject() {
@@ -165,7 +167,14 @@ export function buildProject() {
   }
   bundleChunks.push('\n})();\n');
   const bundleJs = bundleChunks.join('');
-  fs.writeFileSync(path.join(DIST_DIR, 'vacatina.bundle.js'), bundleJs, 'utf8');
+  const bundleOutPath = path.join(DIST_DIR, 'vacatina.bundle.js');
+  fs.writeFileSync(bundleOutPath, bundleJs, 'utf8');
+
+  // Verify bundle syntax before proceeding
+  const syntaxCheck = spawnSync(process.execPath, ['--check', bundleOutPath], { encoding: 'utf8' });
+  if (syntaxCheck.status !== 0) {
+    throw new Error(`[Vacatina Build] vacatina.bundle.js syntax check failed:\n${syntaxCheck.stderr || syntaxCheck.stdout}`);
+  }
 
   // 4. Brand assets for clean HTML insertion & standalone portable bundle
   const oneColorSpaceCadetBase64 = 'data:image/png;base64,' + fs.readFileSync(path.join(WEB_BRAND_DIR, 'Vacatina_Logo_OneColor_SpaceCadet.web.png')).toString('base64');
