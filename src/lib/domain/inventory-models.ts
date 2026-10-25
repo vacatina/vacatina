@@ -204,12 +204,19 @@ export interface VacatinaNormalizedOffer {
   offerId: string; // Stable canonical ID, e.g. 'vct-fl-amadeus-cmb-dxb-001'
   productType: TravelProductSlug;
   sourceType: InventorySourceType;
+  inventorySourceType?: 'MANUAL_DIRECT' | 'API_SUPPLIER' | 'INTERNAL_SERVICE' | 'DYNAMIC_PACKAGE' | 'SAMPLE_INVENTORY' | InventorySourceType;
+  providerId?: string;             // Upstream platform provider ID alias
   supplierId: string;              // e.g. 'AMADEUS', 'DUFFEL', 'PAYLOAD_CMS', 'LOCAL_CHAUFFEUR_LK'
   supplierName: string;
   supplierOfferId?: string;        // Upstream GDS/API identifier
   manualListingId?: string;        // Payload CMS document/listing ID
   title: string;
   subtitle: string;
+  price?: number;                  // Customer unit display price (e.g. 89000)
+  currency?: string;               // Customer currency (e.g. 'LKR')
+  commercialStatus?: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED';
+  sellable?: boolean;              // True only if passes Commercial Truth Gate
+  lastCheckedAt?: string;          // ISO timestamp alias for freshness.lastCheckedAtIso
   slug?: string;
   bookingMode?: BookingMode;
   location: StructuredLocation;

@@ -88,13 +88,20 @@ export type ProviderLifecycle =
 // ----------------------------------------------------------------------------
 
 /**
- * Exactly 4 Canonical Source Types:
- * - SUPPLIER_API: Live/sandbox external supplier (Duffel, Amadeus, LiteAPI, Viator, etc.)
- * - MANUAL_CONTRACT: Directly contracted allotment/charter managed in Backoffice
- * - MANUAL_SERVICE: Operational human service handled by Vacatina (Visa concierge, escort)
- * - ACCELERATOR_SEED: Prototype demo fixtures strictly quarantined from production
+ * Authoritative 5 Canonical Inventory Source Types (Audit v2.4):
+ * - MANUAL_DIRECT: Vacatina staff/admin manually creates contracted inventory (Direct hotel, villa, transfer, package). Sellable only after Commercial Truth Gate.
+ * - API_SUPPLIER: External supplier/API returns inventory (Duffel, LiteAPI, Viator etc.). Sellable only after LIVE_API_CERTIFIED.
+ * - INTERNAL_SERVICE: Vacatina itself delivers service (Visa Assistance). Sellable if operationally certified.
+ * - DYNAMIC_PACKAGE: Vacatina combines multiple underlying inventory sources. Sellable only when every component is sellable.
+ * - SAMPLE_INVENTORY: UI/test/demo content (demo hotel/card/sample offer). Strictly quarantined from production checkout.
  */
 export type CanonicalInventorySourceType =
+  | 'MANUAL_DIRECT'
+  | 'API_SUPPLIER'
+  | 'INTERNAL_SERVICE'
+  | 'DYNAMIC_PACKAGE'
+  | 'SAMPLE_INVENTORY'
+  // Backward-compatibility aliases for existing subtests and adapters
   | 'SUPPLIER_API'
   | 'MANUAL_CONTRACT'
   | 'MANUAL_SERVICE'
@@ -419,8 +426,12 @@ export interface CanonicalOfferEntity {
   distributionScope: DistributionScope;
   bookingCapability: BookingCapability;
 
-  // --- Canonical 4-Source Model & Verification (GPT Audit v2.1) ---
+  // --- Canonical Unified Source Model & Verification (Audit v2.4) ---
+  inventorySourceType?: CanonicalInventorySourceType;
   canonicalSourceType?: CanonicalInventorySourceType;
+  commercialStatus?: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED';
+  sellable?: boolean;
+  price?: number;                   // Customer facing price unit alias (e.g. LKR 89,000)
   sourceEnvironment?: CanonicalSourceEnvironment;
   canonicalBookingMode?: CanonicalBookingMode;
 
@@ -863,6 +874,8 @@ export function assertProductionResponseSafety(
 export function assertProductionSearchExcludesDemoSeed(offers: CanonicalOfferEntity[]): void {
   for (const offer of offers) {
     if (
+      offer.canonicalSourceType === 'SAMPLE_INVENTORY' ||
+      offer.inventorySourceType === 'SAMPLE_INVENTORY' ||
       offer.canonicalSourceType === 'ACCELERATOR_SEED' ||
       offer.environmentClass === 'SEED' ||
       offer.sourceEnvironment === 'DEMO_ONLY' ||
@@ -1185,4 +1198,58 @@ export function assertProviderIsProductionSellable(provider: {
       `Commercial Truth Guard: Provider '${provider.providerId}' is not PRODUCTION_SELLABLE.`
     );
   }
+}
+
+// ----------------------------------------------------------------------------
+// 17. Unified Customer Offer Pattern (Audit v2.4 Final)
+// ----------------------------------------------------------------------------
+
+export interface UnifiedCustomerOffer {
+  offerId: string;
+  productType: TravelProductSlug;
+  inventorySourceType: CanonicalInventorySourceType;
+  providerId: string;
+  supplierId: string;
+  title: string;
+  price: number;
+  currency: string;
+  availabilityStatus: AvailabilityState;
+  lastCheckedAt: string;
+  commercialStatus: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED';
+  sellable: boolean;
+}
+
+export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCustomerOffer {
+  const isProdSellable =
+    offer.sellability === 'BOOKABLE' &&
+    offer.environmentClass === 'PRODUCTION' &&
+    (offer.providerLifecycle === 'PRODUCTION_LIVE' || offer.providerLifecycle === 'CERTIFIED');
+
+  let source: CanonicalInventorySourceType = offer.inventorySourceType || offer.canonicalSourceType || 'API_SUPPLIER';
+  if (source === 'SUPPLIER_API') source = 'API_SUPPLIER';
+  if (source === 'MANUAL_CONTRACT') source = 'MANUAL_DIRECT';
+  if (source === 'MANUAL_SERVICE') source = 'INTERNAL_SERVICE';
+  if (source === 'ACCELERATOR_SEED') source = 'SAMPLE_INVENTORY';
+
+  let commStatus: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED' = 'COMMERCIALLY_VERIFIED';
+  if (offer.environmentClass === 'SEED' || source === 'SAMPLE_INVENTORY') {
+    commStatus = 'SAMPLE_DEMO';
+  } else if (offer.environmentClass === 'SANDBOX' || offer.sourceEnvironment === 'CANDIDATE') {
+    commStatus = 'CANDIDATE_UNVERIFIED';
+  }
+
+  return {
+    offerId: offer.canonicalOfferId || offer.offerId || '',
+    productType: offer.productType,
+    inventorySourceType: source,
+    providerId: offer.providerId || offer.supplierId,
+    supplierId: offer.supplierId,
+    title: offer.title,
+    price: offer.pricing?.finalSellingPriceMinor ? Math.round(offer.pricing.finalSellingPriceMinor / 100) : (offer.price || 0),
+    currency: offer.pricing?.currency || offer.currency || 'LKR',
+    availabilityStatus: offer.availabilityStatus,
+    lastCheckedAt: offer.freshness?.lastCheckedAtIso || offer.lastCheckedAt || new Date().toISOString(),
+    commercialStatus: offer.commercialStatus || commStatus,
+    sellable: offer.sellable !== undefined ? offer.sellable : isProdSellable
+  };
 }

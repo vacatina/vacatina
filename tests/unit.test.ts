@@ -70,6 +70,7 @@ import {
   assertCommercialEntitySellable,
   assertProviderCanExecuteLiveBooking,
   assertProviderIsProductionSellable,
+  toUnifiedCustomerOffer,
   type CanonicalInventorySourceType,
   type CanonicalSourceEnvironment,
   type CanonicalBookingMode,
@@ -3356,7 +3357,7 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
   });
 
   it('enforces Commercial Evidence Dossier Validation on Manual Listings & Blocks Sample Inventory (Commercial Truth Gate 2)', () => {
-    // 1. Sample Listings in canonical catalog MUST be blocked from production selling
+    // 1. All Sample Listings in canonical catalog MUST be blocked from production selling (Audit Truth Gate)
     const sampleCharter = CANONICAL_MANUAL_LISTINGS.find(l => l.id === 'charter-cmb-mle-airtaxi')!;
     assert.equal(sampleCharter.inventoryClass, 'SAMPLE_INVENTORY', 'Demo charter is classified as SAMPLE_INVENTORY');
     assert.equal(sampleCharter.readinessTier.productionSellable, false, 'Demo charter cannot be sold in production');
@@ -3371,25 +3372,53 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       assertListingIsProductionSellable(sampleHotel);
     }, /SAMPLE_INVENTORY_CANNOT_SELL/);
 
+    const sampleVilla = CANONICAL_MANUAL_LISTINGS.find(l => l.id === 'verified-boutique-villa-mirissa')!;
+    assert.equal(sampleVilla.inventoryClass, 'SAMPLE_INVENTORY', 'Uncounter-signed villa is classified as SAMPLE_INVENTORY');
+    assert.equal(sampleVilla.readinessTier.productionSellable, false);
+    assert.throws(() => {
+      assertListingIsProductionSellable(sampleVilla);
+    }, /SAMPLE_INVENTORY_CANNOT_SELL/, 'Uncounter-signed villa strictly blocked from production selling');
+
     // 2. Verified Real Contracted Listing MUST pass production sellability guard
-    const verifiedVilla = CANONICAL_MANUAL_LISTINGS.find(l => l.id === 'verified-boutique-villa-mirissa')!;
-    assert.equal(verifiedVilla.inventoryClass, 'REAL_CONTRACTED', 'Verified villa is REAL_CONTRACTED');
-    assert.equal(verifiedVilla.readinessTier.commercialReady, true);
-    assert.equal(verifiedVilla.readinessTier.productionSellable, true);
-    assert.ok(verifiedVilla.commercialEvidence, 'Verified villa has commercialEvidence');
-    assert.equal(verifiedVilla.commercialEvidence!.isEvidenceVerified, true);
-    assert.equal(verifiedVilla.commercialEvidence!.documentProofReference, 'DOC-VAULT-LK-2026-0881');
+    const verifiedContractFixture = {
+      ...sampleVilla,
+      id: 'contracted-villa-mirissa-verified',
+      inventoryClass: 'REAL_CONTRACTED' as const,
+      readinessTier: {
+        systemReady: true,
+        sandboxReady: true,
+        commercialReady: true,
+        productionSellable: true
+      },
+      commercialEvidence: {
+        contractReference: 'CNT-DIR-HOTEL-2026-MIRISSA',
+        supplierLegalName: 'Mirissa Ocean Horizon Private Limited',
+        commercialOwner: 'Lead Contracting Officer (emp_ops_08)',
+        signedDateIso: '2026-09-15T00:00:00Z',
+        effectiveFromIso: '2026-10-01T00:00:00Z',
+        effectiveToIso: '2026-12-31T23:59:59Z',
+        rateSource: 'DIRECT_BILATERAL_RATE_SHEET_2026_Q4',
+        settlementTerms: 'NET_30_DAYS_BANK_TRANSFER',
+        cancellationTerms: 'Free cancellation up to 48 hours prior to check-in',
+        allotmentRule: 'DAILY_COMMITTED_ALLOTMENT_8_KEYS',
+        operationalContact: 'contracts@oceanhorizon.vacatina.com',
+        documentProofReference: 'DOC-VAULT-LK-2026-0881',
+        approvedBy: 'Dir. Commercial Partnerships',
+        approvalTimestampIso: '2026-09-16T10:00:00Z',
+        isEvidenceVerified: true
+      }
+    };
 
     assert.doesNotThrow(() => {
-      assertListingIsProductionSellable(verifiedVilla);
-    }, 'Verified villa with evidence dossier passes production sellability check');
+      assertListingIsProductionSellable(verifiedContractFixture as any);
+    }, 'Verified villa with genuine evidence dossier passes production sellability check');
 
     // 3. Unverified Dossier Invariant: Missing or unverified evidence blocks production selling
     const unverifiedListing = {
-      ...verifiedVilla,
+      ...verifiedContractFixture,
       id: 'unverified-hotel-test',
       commercialEvidence: {
-        ...verifiedVilla.commercialEvidence!,
+        ...verifiedContractFixture.commercialEvidence!,
         isEvidenceVerified: false
       }
     };
@@ -3398,15 +3427,112 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     }, /UNVERIFIED_EVIDENCE_DOSSIER/, 'Unverified dossier strictly blocked');
 
     // 4. Status Transition Lifecycle Guard: PAUSED immediately disables productionSellable
-    const service = new ManualInventoryService(CANONICAL_MANUAL_LISTINGS);
+    const service = new ManualInventoryService([verifiedContractFixture as any]);
     const admin = { id: 'admin-ops-01', name: 'Contracting Lead' };
 
-    service.updateStatus('verified-boutique-villa-mirissa', 'PAUSED', admin, 'Temporary renovation');
-    const pausedVilla = service.getListingById('verified-boutique-villa-mirissa')!;
+    service.updateStatus('contracted-villa-mirissa-verified', 'PAUSED', admin, 'Temporary renovation');
+    const pausedVilla = service.getListingById('contracted-villa-mirissa-verified')!;
     assert.equal(pausedVilla.readinessTier.productionSellable, false, 'PAUSED listing productionSellable is false');
 
-    service.updateStatus('verified-boutique-villa-mirissa', 'PUBLISHED', admin, 'Renovation complete');
-    const republishVilla = service.getListingById('verified-boutique-villa-mirissa')!;
+    service.updateStatus('contracted-villa-mirissa-verified', 'PUBLISHED', admin, 'Renovation complete');
+    const republishVilla = service.getListingById('contracted-villa-mirissa-verified')!;
     assert.equal(republishVilla.readinessTier.productionSellable, true, 'PUBLISHED verified villa productionSellable restored to true');
+  });
+
+  it('enforces the 5-Source Unified Canonical Offer Pattern (LiteAPI Hotel vs Vacatina Direct Hotel Shape Consistency)', () => {
+    // 1. LiteAPI Candidate Wholesale Bedbank Offer
+    const liteApiCanonical: any = {
+      canonicalOfferId: 'vct-ht-liteapi-dxb-grandpalace-01',
+      productType: 'hotels',
+      inventorySourceType: 'API_SUPPLIER',
+      providerId: 'LITEAPI',
+      supplierId: 'LITEAPI',
+      title: 'Grand Palace Hotel Dubai',
+      pricing: {
+        rawSupplierCostMinor: 4800000,
+        markupPercent: 10,
+        finalSellingPriceMinor: 5280000,
+        currency: 'LKR'
+      },
+      availabilityStatus: 'LIVE',
+      freshness: {
+        lastCheckedAtIso: '2026-10-25T12:00:00Z',
+        ttlSeconds: 1800,
+        expiresAtIso: '2026-10-25T12:30:00Z',
+        isStale: false
+      },
+      environmentClass: 'SANDBOX',
+      sourceEnvironment: 'CANDIDATE',
+      sellability: 'BOOKABLE',
+      providerLifecycle: 'INTEGRATION_CANDIDATE'
+    };
+
+    // 2. Vacatina Direct Hotel Contract Offer
+    const directHotelCanonical: any = {
+      canonicalOfferId: 'vct-ht-direct-dambulla-kandalama-02',
+      productType: 'hotels',
+      inventorySourceType: 'MANUAL_DIRECT',
+      providerId: 'PAYLOAD_CMS_DIRECT',
+      supplierId: 'DIRECT_HOTEL_DESK',
+      title: 'Heritance Kandalama Signature Resort',
+      pricing: {
+        rawSupplierCostMinor: 7800000,
+        markupPercent: 14.1,
+        finalSellingPriceMinor: 8900000,
+        currency: 'LKR'
+      },
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      freshness: {
+        lastCheckedAtIso: '2026-10-25T12:05:00Z',
+        ttlSeconds: 86400,
+        expiresAtIso: '2026-10-26T12:05:00Z',
+        isStale: false
+      },
+      environmentClass: 'PRODUCTION',
+      sourceEnvironment: 'LIVE_MANUAL_VERIFIED',
+      sellability: 'BOOKABLE',
+      providerLifecycle: 'PRODUCTION_LIVE'
+    };
+
+    // Proves: Both normalize into the identical UnifiedCustomerOffer object pattern
+    const unifiedLiteApi = toUnifiedCustomerOffer(liteApiCanonical);
+    const unifiedDirectHotel = toUnifiedCustomerOffer(directHotelCanonical);
+
+    const requiredKeys: (keyof typeof unifiedLiteApi)[] = [
+      'offerId',
+      'productType',
+      'inventorySourceType',
+      'providerId',
+      'supplierId',
+      'title',
+      'price',
+      'currency',
+      'availabilityStatus',
+      'lastCheckedAt',
+      'commercialStatus',
+      'sellable'
+    ];
+
+    requiredKeys.forEach(key => {
+      assert.ok(key in unifiedLiteApi, `LiteAPI offer must have key '${key}'`);
+      assert.ok(key in unifiedDirectHotel, `Direct Hotel offer must have key '${key}'`);
+    });
+
+    // Proves: Correct source taxonomy assignment
+    assert.equal(unifiedLiteApi.inventorySourceType, 'API_SUPPLIER');
+    assert.equal(unifiedDirectHotel.inventorySourceType, 'MANUAL_DIRECT');
+
+    // Proves: Uncertified candidate LiteAPI is marked CANDIDATE_UNVERIFIED and sellable = false in production
+    assert.equal(unifiedLiteApi.commercialStatus, 'CANDIDATE_UNVERIFIED');
+    assert.equal(unifiedLiteApi.sellable, false);
+
+    // Proves: Verified direct hotel is marked COMMERCIALLY_VERIFIED and sellable = true
+    assert.equal(unifiedDirectHotel.commercialStatus, 'COMMERCIALLY_VERIFIED');
+    assert.equal(unifiedDirectHotel.sellable, true);
+
+    // Proves: Discovery Content (Homepage cards) cannot claim to be live inventory offers
+    const discoveryCard = CANONICAL_DISCOVERY_CATALOG[0];
+    assert.equal(discoveryCard.isLiveInventoryOffer, false, 'Homepage card is never live inventory');
+    assert.equal(discoveryCard.sellability, 'DISCOVERY_ONLY', 'Homepage card is DISCOVERY_ONLY');
   });
 });

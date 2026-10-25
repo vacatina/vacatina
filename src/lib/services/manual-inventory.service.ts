@@ -679,32 +679,15 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     createdBy: 'Admin (System)',
     createdAtIso: '2026-10-24T00:00:00Z',
     updatedAtIso: '2026-10-24T00:00:00Z',
-    inventoryClass: 'REAL_CONTRACTED',
+    inventoryClass: 'SAMPLE_INVENTORY',
     readinessTier: {
       systemReady: true,
       sandboxReady: true,
-      commercialReady: true,
-      productionSellable: true
-    },
-    commercialEvidence: {
-      contractReference: 'CNT-DIR-HOTEL-2026-MIRISSA',
-      supplierLegalName: 'Mirissa Ocean Horizon Private Limited',
-      commercialOwner: 'Lead Contracting Officer (emp_ops_08)',
-      signedDateIso: '2026-09-15T00:00:00Z',
-      effectiveFromIso: '2026-10-01T00:00:00Z',
-      effectiveToIso: '2026-12-31T23:59:59Z',
-      rateSource: 'DIRECT_BILATERAL_RATE_SHEET_2026_Q4',
-      settlementTerms: 'NET_30_DAYS_BANK_TRANSFER',
-      cancellationTerms: 'Free cancellation up to 48 hours prior to check-in',
-      allotmentRule: 'DAILY_COMMITTED_ALLOTMENT_8_KEYS',
-      operationalContact: 'contracts@oceanhorizon.vacatina.com',
-      documentProofReference: 'DOC-VAULT-LK-2026-0881',
-      approvedBy: 'Dir. Commercial Partnerships',
-      approvalTimestampIso: '2026-09-16T10:00:00Z',
-      isEvidenceVerified: true
+      commercialReady: false,
+      productionSellable: false
     },
     auditTrail: [
-      { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z', note: 'Bilateral contracted luxury villa allotment' }
+      { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z', note: 'Sample demonstration listing. Physical legal contract and bilateral rate sheet counter-signature pending before commercial activation.' }
     ]
   }
 ];
