@@ -106,6 +106,47 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
     if (!offer.publicationStatus) offer.publicationStatus = 'PUBLISHED';
     if (!offer.distributionScope) offer.distributionScope = 'BOTH';
 
+    // Canonical Inventory Source Model & Verification Invariants (GPT Audit v2.1)
+    if (!offer.canonicalSourceType) {
+      if (offer.environmentClass === 'SEED' || offer.sourceType === 'SEED') {
+        offer.canonicalSourceType = 'ACCELERATOR_SEED';
+      } else if (offer.inventorySource === 'API' || offer.sourceType === 'API') {
+        offer.canonicalSourceType = 'SUPPLIER_API';
+      } else if (offer.productType === 'visa' || offer.inventorySource === 'MANUAL_INTERNAL') {
+        offer.canonicalSourceType = 'MANUAL_SERVICE';
+      } else {
+        offer.canonicalSourceType = 'MANUAL_CONTRACT';
+      }
+    }
+
+    if (!offer.sourceEnvironment) {
+      if (offer.environmentClass === 'SEED') {
+        offer.sourceEnvironment = 'DEMO_ONLY';
+      } else if (offer.environmentClass === 'SANDBOX' || this.config.environment === 'sandbox') {
+        offer.sourceEnvironment = 'SANDBOX';
+      } else if (this.integrationLifecycle === 'PRODUCTION_LIVE') {
+        offer.sourceEnvironment = 'LIVE_CERTIFIED';
+      } else if (offer.inventorySource === 'DIRECT_CONTRACT' || offer.inventorySource === 'MANUAL_INTERNAL') {
+        offer.sourceEnvironment = 'LIVE_MANUAL_VERIFIED';
+      } else {
+        offer.sourceEnvironment = 'CANDIDATE';
+      }
+    }
+
+    if (!offer.canonicalBookingMode) {
+      if (offer.listingKind === 'DISCOVERY_CONTENT' || offer.sellability === 'DISCOVERY_ONLY') {
+        offer.canonicalBookingMode = 'INFORMATION_ONLY';
+      } else if (offer.fulfillmentMode === 'INSTANT' && offer.sourceEnvironment === 'LIVE_CERTIFIED') {
+        offer.canonicalBookingMode = 'INSTANT_API';
+      } else if (offer.availabilityMode === 'ALLOTMENT') {
+        offer.canonicalBookingMode = 'MANUAL_ALLOTMENT';
+      } else if (offer.fulfillmentMode === 'MANUAL_CONFIRMATION') {
+        offer.canonicalBookingMode = 'MANUAL_CONFIRMATION';
+      } else {
+        offer.canonicalBookingMode = 'REQUEST_TO_BOOK';
+      }
+    }
+
     // Granular Source & Integration Separation (GPT Audit v2.0)
     if (!offer.sourceMode) {
       if (offer.listingKind === 'DISCOVERY_CONTENT') offer.sourceMode = 'CONTENT_ONLY';

@@ -20,6 +20,7 @@ import type {
   UUID
 } from '../db/schema.ts';
 import { globalStorageEngine, type VacatinaStorageEngine } from '../db/storage.ts';
+import { assertNoFabricatedUpstreamReferences } from '../inventory/types.ts';
 
 export interface InitiateBookingSagaParams {
   tripBucketId: UUID;
@@ -43,7 +44,12 @@ export interface SagaExecutionResult {
     canonicalOfferId: string;
     productType: string;
     fulfillmentStatus: BookingItemEntity['fulfillmentStatus'];
+    vacatinaBookingReference?: string;
     supplierBookingReference?: string;
+    supplierPnr?: string;
+    supplierConfirmationNumber?: string;
+    vacatinaServiceReference?: string;
+    isUpstreamConfirmed?: boolean;
     failureReason?: string;
   }>;
   requiresManualReview: boolean;
@@ -118,11 +124,18 @@ export class BookingSagaService {
     // 6. Create Individual Booking Items
     const createdBookingItems: BookingItemEntity[] = [];
     for (const item of bucketItems) {
+      const isVisa = item.productType === 'visa';
       const bookingItem = this.storage.addBookingItem({
         bookingGroupId: bookingGroup.id,
+        vacatinaBookingReference: bookingReference,
         canonicalOfferId: item.canonicalOfferId,
         productType: item.productType,
         supplierId: item.sourceType === 'MANUAL' ? 'PAYLOAD_CMS_DIRECT' : 'AMADEUS_GDS',
+        supplierBookingReference: undefined,
+        supplierPnr: undefined, // Real upstream airline PNR (strictly undefined in sandbox/candidate)
+        supplierConfirmationNumber: undefined, // Real upstream hotel confirmation (strictly undefined in sandbox)
+        vacatinaServiceReference: isVisa ? `VSA-INTAKE-${generateUUID().slice(0, 8).toUpperCase()}` : undefined,
+        isUpstreamConfirmed: false, // In candidate / sandbox mode, upstream confirmation is FALSE
         title: item.title,
         bookingMode: item.bookingMode,
         itemPriceMinor: item.unitSellingPriceMinor,
@@ -137,18 +150,27 @@ export class BookingSagaService {
     for (const bItem of createdBookingItems) {
       try {
         // Dispatch to provider adapter with item idempotency
-        const supplierRef = `SUP-${bItem.productType.slice(0, 3).toUpperCase()}-${generateUUID().slice(0, 8).toUpperCase()}`;
+        const supplierRef = `SIM-SUP-${bItem.productType.slice(0, 3).toUpperCase()}-${generateUUID().slice(0, 8).toUpperCase()}`;
         
         // Simulating specific test scenarios: If product is mock-failed, trigger partial failure
         if (bItem.canonicalOfferId.includes('force_failure')) {
           throw new Error('Supplier allocation timeout: Partner quota exhausted');
         }
 
-        this.storage.updateBookingItem(bItem.id, {
+        const isVisa = bItem.productType === 'visa';
+        const updatedItem = this.storage.updateBookingItem(bItem.id, {
           fulfillmentStatus: 'CONFIRMED',
+          vacatinaBookingReference: bookingReference,
           supplierBookingReference: supplierRef,
+          supplierPnr: undefined, // Strictly undefined in sandbox / candidate!
+          supplierConfirmationNumber: undefined, // Strictly undefined in sandbox!
+          vacatinaServiceReference: isVisa ? (bItem.vacatinaServiceReference || `VSA-INTAKE-${generateUUID().slice(0, 8).toUpperCase()}`) : undefined,
+          isUpstreamConfirmed: false, // Sandbox simulations are not upstream confirmed
           confirmedAt: new Date().toISOString()
         });
+
+        // Verify truthful reference invariant
+        assertNoFabricatedUpstreamReferences(updatedItem);
       } catch (err: any) {
         hasFailure = true;
         this.storage.updateBookingItem(bItem.id, {
@@ -212,7 +234,12 @@ export class BookingSagaService {
         canonicalOfferId: i.canonicalOfferId,
         productType: i.productType,
         fulfillmentStatus: i.fulfillmentStatus,
+        vacatinaBookingReference: i.vacatinaBookingReference || bookingReference,
         supplierBookingReference: i.supplierBookingReference,
+        supplierPnr: i.supplierPnr,
+        supplierConfirmationNumber: i.supplierConfirmationNumber,
+        vacatinaServiceReference: i.vacatinaServiceReference,
+        isUpstreamConfirmed: i.isUpstreamConfirmed,
         failureReason: i.failureReason
       })),
       requiresManualReview,

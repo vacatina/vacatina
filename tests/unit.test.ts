@@ -56,6 +56,12 @@ import {
   isOfferEligibleForPinOverride,
   deriveCustomerBadges,
   validateNoTechnicalLeakInCustomerBadges,
+  assertProductionSearchExcludesDemoSeed,
+  assertCandidateCannotBeProductionReady,
+  assertNoFabricatedUpstreamReferences,
+  type CanonicalInventorySourceType,
+  type CanonicalSourceEnvironment,
+  type CanonicalBookingMode,
   ArchitecturalInvariantViolationError
 } from '../src/server/inventory/types.ts';
 import {
@@ -2654,5 +2660,121 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     assert.ok(/^VCT-2026-[A-Z0-9]{6}$/.test(sagaResult.bookingReference), 'Booking reference issued');
     assert.equal(sagaResult.overallStatus, 'CONFIRMED');
     assert.equal(sagaResult.items[0].productType, 'visa');
+  });
+
+  it('enforces Canonical Inventory Source Taxonomy, Truthful Reference Isolation, and Invariant Guards (Audit v2.1)', async () => {
+    // 1. Verify 4 Canonical Source Types, 6 Environments, and 5 Booking Modes
+    const validSourceTypes: CanonicalInventorySourceType[] = [
+      'SUPPLIER_API',
+      'MANUAL_CONTRACT',
+      'MANUAL_SERVICE',
+      'ACCELERATOR_SEED'
+    ];
+    assert.equal(validSourceTypes.length, 4, 'Exactly 4 canonical source types');
+
+    const validEnvironments: CanonicalSourceEnvironment[] = [
+      'LIVE_CERTIFIED',
+      'LIVE_MANUAL_VERIFIED',
+      'CANDIDATE',
+      'SANDBOX',
+      'DEMO_ONLY',
+      'SUSPENDED'
+    ];
+    assert.equal(validEnvironments.length, 6, 'Exactly 6 canonical source environments');
+
+    const validBookingModes: CanonicalBookingMode[] = [
+      'INSTANT_API',
+      'MANUAL_ALLOTMENT',
+      'REQUEST_TO_BOOK',
+      'MANUAL_CONFIRMATION',
+      'INFORMATION_ONLY'
+    ];
+    assert.equal(validBookingModes.length, 5, 'Exactly 5 canonical booking modes');
+
+    // 2. Test Invariant 12: assertProductionSearchExcludesDemoSeed
+    const liveOffers = await new UnifiedInventoryService().search({ productType: 'flights', destination: 'Dubai' });
+    assert.doesNotThrow(() => {
+      assertProductionSearchExcludesDemoSeed(liveOffers);
+    }, 'Production search results must pass demo seed exclusion guard');
+
+    const leakedSeedOffer = {
+      ...liveOffers[0],
+      canonicalSourceType: 'ACCELERATOR_SEED' as const
+    };
+    assert.throws(() => {
+      assertProductionSearchExcludesDemoSeed([leakedSeedOffer]);
+    }, /Production Isolation Guard: DEMO_ONLY \/ ACCELERATOR_SEED offer/, 'Demo seed leak must be blocked by assertion');
+
+    // 3. Test Invariant 13: assertCandidateCannotBeProductionReady
+    const candidateOffer = {
+      ...liveOffers[0],
+      sourceEnvironment: 'CANDIDATE' as const,
+      environmentClass: 'PRODUCTION' as const,
+      sellability: 'BOOKABLE' as const,
+      availabilityStatus: 'LIVE' as const,
+      confirmationMode: 'INSTANT_CONFIRM' as const
+    };
+    assert.throws(() => {
+      assertCandidateCannotBeProductionReady(candidateOffer);
+    }, /Lifecycle Safety Guard: Candidate\/Sandbox offer/, 'Candidate adapter cannot claim production instant live bookability');
+
+    // 4. Test Invariant 14: assertNoFabricatedUpstreamReferences
+    assert.doesNotThrow(() => {
+      assertNoFabricatedUpstreamReferences({
+        vacatinaBookingReference: 'VCT-2026-AB12CD',
+        isUpstreamConfirmed: false,
+        supplierPnr: undefined,
+        supplierConfirmationNumber: undefined,
+        vacatinaServiceReference: 'VSA-INTAKE-998877'
+      });
+    }, 'Truthful reference with undefined supplier PNR passes guard');
+
+    assert.throws(() => {
+      assertNoFabricatedUpstreamReferences({
+        vacatinaBookingReference: 'VCT-2026-AB12CD',
+        isUpstreamConfirmed: false,
+        supplierPnr: 'FAKE-AIRLINE-PNR', // Fabricated PNR in sandbox!
+        supplierConfirmationNumber: undefined
+      });
+    }, /Integrity Guard: supplierPnr cannot be set for uncertified \/ sandbox booking item/, 'Fabricated PNR must throw violation error');
+
+    assert.throws(() => {
+      assertNoFabricatedUpstreamReferences({
+        vacatinaBookingReference: 'INVALID-REF-123',
+        isUpstreamConfirmed: false
+      });
+    }, /Booking Reference Guard: Item missing valid canonical Vacatina booking reference/, 'Invalid reference format must throw error');
+
+    // 5. Test Distributed Saga populates truthful reference fields
+    const storage = new VacatinaStorageEngine();
+    const bucket = storage.getOrCreateTripBucket('sess_truthful_ref_test');
+    storage.addTripBucketItem({
+      tripBucketId: bucket.id,
+      canonicalOfferId: liveOffers[0].canonicalOfferId,
+      productType: 'flights',
+      sourceType: 'API',
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Emirates Flight CMB-DXB',
+      configuration: { cabinClass: 'Economy' },
+      travellerManifest: { adults: 1, leadName: 'Test Traveler' },
+      unitSellingPriceMinor: 9249500,
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    const saga = new BookingSagaService(storage);
+    const sagaResult = await saga.executeBookingSaga({
+      tripBucketId: bucket.id,
+      customerEmail: 'truthful.ref@example.com',
+      customerName: 'Test Traveler',
+      idempotencyKey: 'idemp_truth_ref_992',
+      checkoutSessionId: 'chk_sess_truth_001'
+    });
+
+    assert.ok(/^VCT-2026-[A-Z0-9]{6}$/.test(sagaResult.bookingReference), 'Booking reference is strictly VCT-2026-XXXXXX');
+    assert.equal(sagaResult.items[0].supplierPnr, undefined, 'supplierPnr is strictly undefined in sandbox mode');
+    assert.equal(sagaResult.items[0].supplierConfirmationNumber, undefined, 'supplierConfirmationNumber is strictly undefined in sandbox mode');
+    assert.equal(sagaResult.items[0].isUpstreamConfirmed, false, 'isUpstreamConfirmed is strictly false for sandbox simulation');
+    assert.ok(sagaResult.items[0].vacatinaBookingReference?.startsWith('VCT-2026-'), 'Item references parent Vacatina booking ref');
   });
 });

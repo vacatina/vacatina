@@ -397,10 +397,15 @@ export interface BookingGroupEntity {
 export interface BookingItemEntity {
   id: UUID;
   bookingGroupId: UUID;
+  vacatinaBookingReference: string; // Links to parent BookingGroupEntity.bookingReference
   canonicalOfferId: string;
   productType: string;
   supplierId: string;
   supplierBookingReference?: string;
+  supplierPnr?: string; // Real upstream airline PNR (strictly undefined in sandbox/candidate)
+  supplierConfirmationNumber?: string; // Real upstream hotel confirmation (strictly undefined in sandbox)
+  vacatinaServiceReference?: string; // Internal Vacatina intake ref for visa/concierge
+  isUpstreamConfirmed: boolean;
   title: string;
   bookingMode: string;
   itemPriceMinor: number;

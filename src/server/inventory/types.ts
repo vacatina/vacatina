@@ -84,6 +84,55 @@ export type ProviderLifecycle =
   | 'PRODUCTION_LIVE';// Commercial contract signed, live credentials active, financial settlement enabled
 
 // ----------------------------------------------------------------------------
+// Canonical Inventory Source Model & Verification Invariants (GPT Audit v2.1)
+// ----------------------------------------------------------------------------
+
+/**
+ * Exactly 4 Canonical Source Types:
+ * - SUPPLIER_API: Live/sandbox external supplier (Duffel, Amadeus, LiteAPI, Viator, etc.)
+ * - MANUAL_CONTRACT: Directly contracted allotment/charter managed in Backoffice
+ * - MANUAL_SERVICE: Operational human service handled by Vacatina (Visa concierge, escort)
+ * - ACCELERATOR_SEED: Prototype demo fixtures strictly quarantined from production
+ */
+export type CanonicalInventorySourceType =
+  | 'SUPPLIER_API'
+  | 'MANUAL_CONTRACT'
+  | 'MANUAL_SERVICE'
+  | 'ACCELERATOR_SEED';
+
+/**
+ * Canonical Source Environment States:
+ * - LIVE_CERTIFIED: Supplier API with live certified production credentials & settlement
+ * - LIVE_MANUAL_VERIFIED: Direct contract or internal service verified by operations
+ * - CANDIDATE: Typed adapter scaffold under audit/testing (not certified for live bookings)
+ * - SANDBOX: Provider test credentials or simulated payload active
+ * - DEMO_ONLY: Design accelerator demo fixtures
+ * - SUSPENDED: Circuit breaker tripped, expired allotment, or provider de-listed
+ */
+export type CanonicalSourceEnvironment =
+  | 'LIVE_CERTIFIED'
+  | 'LIVE_MANUAL_VERIFIED'
+  | 'CANDIDATE'
+  | 'SANDBOX'
+  | 'DEMO_ONLY'
+  | 'SUSPENDED';
+
+/**
+ * Canonical Booking Fulfillment Modes:
+ * - INSTANT_API: Automated real-time ticketing/voucher issuance via supplier API
+ * - MANUAL_ALLOTMENT: Direct decrement from confirmed Vacatina room/seat quota
+ * - REQUEST_TO_BOOK: Partner SLA on-request booking requiring manual confirmation
+ * - MANUAL_CONFIRMATION: Human document check / consular checklist review
+ * - INFORMATION_ONLY: Informational discovery teaser / card (not bookable)
+ */
+export type CanonicalBookingMode =
+  | 'INSTANT_API'
+  | 'MANUAL_ALLOTMENT'
+  | 'REQUEST_TO_BOOK'
+  | 'MANUAL_CONFIRMATION'
+  | 'INFORMATION_ONLY';
+
+// ----------------------------------------------------------------------------
 // 2. Publication, Distribution & Booking Capabilities (ADR-008)
 // ----------------------------------------------------------------------------
 
@@ -367,6 +416,11 @@ export interface CanonicalOfferEntity {
   publicationStatus: PublicationStatus;
   distributionScope: DistributionScope;
   bookingCapability: BookingCapability;
+
+  // --- Canonical 4-Source Model & Verification (GPT Audit v2.1) ---
+  canonicalSourceType?: CanonicalInventorySourceType;
+  sourceEnvironment?: CanonicalSourceEnvironment;
+  canonicalBookingMode?: CanonicalBookingMode;
 
   // --- Backward Compatibility Alias ---
   sourceType: InventorySourceType;
@@ -760,6 +814,92 @@ export function assertProductionResponseSafety(
       throw new ArchitecturalInvariantViolationError(
         'EXPIRED_OFFER_BOOKABLE',
         `Freshness Safety Violation: EXPIRED offer '${offer.canonicalOfferId}' presented as BOOKABLE`
+      );
+    }
+  }
+}
+
+/**
+ * Invariant 12: Production Search Excludes Demo / Accelerator Seed (Audit v2.1)
+ * Guarantees prototype accelerator fixtures and demo seed data never leak into production search responses.
+ */
+export function assertProductionSearchExcludesDemoSeed(offers: CanonicalOfferEntity[]): void {
+  for (const offer of offers) {
+    if (
+      offer.canonicalSourceType === 'ACCELERATOR_SEED' ||
+      offer.environmentClass === 'SEED' ||
+      offer.sourceEnvironment === 'DEMO_ONLY' ||
+      offer.sourceType === 'SEED' ||
+      offer.verificationStatus === 'PROTOTYPE'
+    ) {
+      throw new ArchitecturalInvariantViolationError(
+        'PRODUCTION_SEED_LEAK',
+        `Production Isolation Guard: DEMO_ONLY / ACCELERATOR_SEED offer '${offer.canonicalOfferId}' cannot enter production search responses.`
+      );
+    }
+  }
+}
+
+/**
+ * Invariant 13: Candidate or Sandbox Cannot Masquerade as Production Ready (Audit v2.1)
+ * Uncertified scaffolds and sandbox adapters can never be marked Ready for live production execution.
+ */
+export function assertCandidateCannotBeProductionReady(offer: CanonicalOfferEntity): void {
+  const isCandidateOrSandbox =
+    offer.sourceEnvironment === 'CANDIDATE' ||
+    offer.sourceEnvironment === 'SANDBOX' ||
+    offer.environmentClass === 'SANDBOX' ||
+    offer.providerLifecycle === 'INTEGRATION_CANDIDATE' ||
+    offer.providerLifecycle === 'SANDBOX_ACTIVE' ||
+    offer.providerLifecycle === 'SCAFFOLD' ||
+    offer.providerLifecycle === 'PLANNED';
+
+  if (isCandidateOrSandbox) {
+    if (
+      offer.environmentClass === 'PRODUCTION' &&
+      offer.sellability === 'BOOKABLE' &&
+      offer.availabilityStatus === 'LIVE' &&
+      offer.confirmationMode === 'INSTANT_CONFIRM'
+    ) {
+      throw new ArchitecturalInvariantViolationError(
+        'CANDIDATE_MASQUERADING_AS_LIVE',
+        `Lifecycle Safety Guard: Candidate/Sandbox offer '${offer.canonicalOfferId}' cannot claim PRODUCTION instant live bookability.`
+      );
+    }
+  }
+}
+
+/**
+ * Invariant 14: Truthful Booking Reference Semantics & Upstream Isolation (Audit v2.1)
+ * Guarantees that internal booking reference VCT-2026-XXXXXX is never disguised as an airline PNR,
+ * and that upstream PNRs / hotel vouchers are strictly undefined in sandbox or uncertified runs.
+ */
+export function assertNoFabricatedUpstreamReferences(bookingItem: {
+  isUpstreamConfirmed: boolean;
+  supplierPnr?: string;
+  supplierConfirmationNumber?: string;
+  vacatinaBookingReference: string;
+  vacatinaServiceReference?: string;
+}): void {
+  if (!bookingItem.vacatinaBookingReference || !/^VCT-2026-[A-Z0-9]{6}$/.test(bookingItem.vacatinaBookingReference)) {
+    throw new ArchitecturalInvariantViolationError(
+      'INVALID_VACATINA_BOOKING_REFERENCE',
+      `Booking Reference Guard: Item missing valid canonical Vacatina booking reference 'VCT-2026-XXXXXX'.`
+    );
+  }
+
+  // If not confirmed by real upstream provider, supplier PNR & confirmation number MUST be undefined
+  if (!bookingItem.isUpstreamConfirmed) {
+    if (bookingItem.supplierPnr !== undefined) {
+      throw new ArchitecturalInvariantViolationError(
+        'FABRICATED_UPSTREAM_PNR',
+        `Integrity Guard: supplierPnr cannot be set for uncertified / sandbox booking item without real upstream confirmation.`
+      );
+    }
+    if (bookingItem.supplierConfirmationNumber !== undefined) {
+      throw new ArchitecturalInvariantViolationError(
+        'FABRICATED_UPSTREAM_CONFIRMATION',
+        `Integrity Guard: supplierConfirmationNumber cannot be set for uncertified / sandbox booking item without real upstream confirmation.`
       );
     }
   }

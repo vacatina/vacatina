@@ -56,11 +56,41 @@ export function renderAdminPortalHtml(activeTab = 'overview'): string {
         </div>
       </div>
 
-      <!-- Section: Manual Inventory CMS (Payload Equivalent) -->
+      <!-- Section: Backoffice Inventory Architecture (7 Internal Categories) -->
       <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="font-heading font-bold text-base text-brand-black">Manual Inventory Management (Direct Contracts)</h3>
-          <span class="text-xs text-brand-muted">Payload CMS Integration Layer</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="font-heading font-bold text-base text-brand-black">Internal Inventory Governance &amp; CMS Layer</h3>
+            <p class="text-xs text-brand-muted">Internal categorization strictly isolated from customer-facing search results</p>
+          </div>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-brand-subtle text-brand-primary border border-brand-border">
+            <span>7 Canonical Backoffice Categories</span>
+          </span>
+        </div>
+
+        <!-- 7 Internal Category Filter Tabs -->
+        <div class="flex flex-wrap items-center gap-1.5 border-b border-brand-border pb-2 text-xs">
+          <button type="button" class="px-3 py-1.5 rounded-lg font-bold bg-brand-primary text-white shadow-xs">
+            1. All Inventory (${listings.length + 8})
+          </button>
+          <button type="button" class="px-3 py-1.5 rounded-lg font-medium text-brand-muted hover:text-brand-black hover:bg-brand-subtle transition-colors">
+            2. API Sources (Duffel / Amadeus / LiteAPI / Viator)
+          </button>
+          <button type="button" class="px-3 py-1.5 rounded-lg font-medium text-brand-muted hover:text-brand-black hover:bg-brand-subtle transition-colors">
+            3. Direct / Manual Contracts (${listings.length})
+          </button>
+          <button type="button" class="px-3 py-1.5 rounded-lg font-medium text-brand-muted hover:text-brand-black hover:bg-brand-subtle transition-colors">
+            4. On Request / Concierge (2)
+          </button>
+          <button type="button" class="px-3 py-1.5 rounded-lg font-medium text-brand-muted hover:text-brand-black hover:bg-brand-subtle transition-colors">
+            5. Draft / Expired (0)
+          </button>
+          <button type="button" class="px-3 py-1.5 rounded-lg font-medium text-amber-700 bg-amber-50 border border-amber-200">
+            6. Demo / Accelerator Seed (Quarantined)
+          </button>
+          <button type="button" class="px-3 py-1.5 rounded-lg font-medium text-rose-700 bg-rose-50 border border-rose-200">
+            7. Suspended Sources (0)
+          </button>
         </div>
 
         <div class="border border-brand-border rounded-2xl overflow-hidden bg-white">
