@@ -204,3 +204,5 @@ export class AuthorizationEngine {
     return { allowed: true };
   }
 }
+
+export { authenticateClerkRequest, verifyClerkJwt, mapClerkPayloadToSecurityContext } from './clerk-verifier.ts';

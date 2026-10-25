@@ -45,6 +45,7 @@ import {
   isTripBucketDrawerOpen,
   openTripBucketDrawer
 } from '../trip-bucket/trip-bucket-ui.ts';
+import { clerkAuthService } from '../../lib/services/clerk-auth.service.ts';
 
 const NAV_TEXT_TO_TAB_AND_SECTION: Record<
   string,
@@ -245,6 +246,11 @@ export function initHeaderAndNavigation(): void {
 
   // Enhance SVG Globe Locale/Currency selector, Saved Favorites, and Guest/Signed-In Auth Cluster
   initHeaderUtilitiesCluster();
+
+  // Initialize Clerk Authentication Provider (Official ClerkJS SDK)
+  clerkAuthService.init().catch(err => {
+    console.warn('[Vacatina Shell] Clerk deferred initialization:', err?.message || err);
+  });
 
   // Upgrade & wire Mobile Navigation Drawer (Screen 03 Foundation v1.1 Recovery)
   upgradeAndInitMobileNavigationDrawer();
@@ -559,10 +565,17 @@ function initHeaderAuthCluster(header: HTMLElement): void {
     signInLink.id = 'header-sign-in-btn';
     signUpLink.id = 'header-sign-up-btn';
 
-    [signInLink, signUpLink].forEach(btn => {
-      btn.addEventListener('click', event => {
-        event.preventDefault();
-        openAuthModal((btn.textContent || 'Sign In').trim(), btn);
+    signInLink.addEventListener('click', event => {
+      event.preventDefault();
+      clerkAuthService.openSignIn(undefined, () => {
+        openAuthModal('Sign In', signInLink);
+      });
+    });
+
+    signUpLink.addEventListener('click', event => {
+      event.preventDefault();
+      clerkAuthService.openSignUp(undefined, () => {
+        openAuthModal('Sign Up', signUpLink);
       });
     });
 
@@ -655,6 +668,10 @@ function initHeaderAuthCluster(header: HTMLElement): void {
             openTripBucketDrawer(userBtn);
             return;
           }
+          if (action === 'Profile & Co-Travelers' && clerkAuthService.isReady()) {
+            clerkAuthService.openUserProfile();
+            return;
+          }
           openInfoOrSupportModal(
             `${action} — ${authState.name}`,
             `Vacatina Account Desk · ${authState.email}`,
@@ -668,7 +685,7 @@ function initHeaderAuthCluster(header: HTMLElement): void {
       if (signOutBtn) {
         signOutBtn.addEventListener('click', () => {
           closeDesktopDropdowns(false);
-          setSignedInState(false, true);
+          clerkAuthService.signOut();
         });
       }
     }
@@ -682,6 +699,23 @@ export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | nul
     `
       <div class="space-y-4 text-xs">
         <p class="text-brand-muted">Sign in to synchronize your Saved Favorites, passport profiles, visa checklists, and multi-product Trip Bucket dossiers across devices.</p>
+
+        <div>
+          <button
+            type="button"
+            id="clerk-sso-continue-btn"
+            onclick="window.__VACATINA_CLERK__?.openSignIn(); document.querySelector('[data-dialog-close=true]')?.click();"
+            class="w-full min-h-[44px] px-4 py-2.5 rounded-xl border border-brand-border bg-[#F8F9FA] hover:bg-gray-100 text-brand-black font-semibold text-xs flex items-center justify-center gap-2 transition-colors touch-target-44 shadow-sm"
+          >
+            <svg class="w-4 h-4 text-brand-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <span>Continue with Clerk SSO &amp; Social</span>
+          </button>
+          <div class="relative flex py-2.5 items-center">
+            <div class="flex-grow border-t border-brand-border"></div>
+            <span class="flex-shrink mx-2 text-[10px] text-brand-muted uppercase font-bold tracking-wider">Or with Email</span>
+            <div class="flex-grow border-t border-brand-border"></div>
+          </div>
+        </div>
 
         <div class="space-y-2.5">
           <div>
@@ -755,7 +789,9 @@ function syncAuthUiAcrossShell(): void {
       if (bannerBtn) {
         bannerBtn.addEventListener('click', () => {
           closeMobileNavDrawer(false);
-          setSignedInState(true, true);
+          clerkAuthService.openSignIn(undefined, () => {
+            openAuthModal('Sign In', document.getElementById('mobile-nav-toggle'));
+          });
         });
       }
     }
@@ -772,7 +808,7 @@ function syncAuthUiAcrossShell(): void {
       if (outBtn) {
         outBtn.addEventListener('click', () => {
           closeMobileNavDrawer(false);
-          setSignedInState(false, true);
+          clerkAuthService.signOut();
         });
       }
     } else {
@@ -789,13 +825,17 @@ function syncAuthUiAcrossShell(): void {
       if (inBtn) {
         inBtn.addEventListener('click', () => {
           closeMobileNavDrawer(false);
-          openAuthModal('Sign In', document.getElementById('mobile-nav-toggle'));
+          clerkAuthService.openSignIn(undefined, () => {
+            openAuthModal('Sign In', document.getElementById('mobile-nav-toggle'));
+          });
         });
       }
       if (upBtn) {
         upBtn.addEventListener('click', () => {
           closeMobileNavDrawer(false);
-          openAuthModal('Sign Up', document.getElementById('mobile-nav-toggle'));
+          clerkAuthService.openSignUp(undefined, () => {
+            openAuthModal('Sign Up', document.getElementById('mobile-nav-toggle'));
+          });
         });
       }
     }

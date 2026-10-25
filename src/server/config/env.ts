@@ -15,6 +15,9 @@ export interface VacatinaServerEnv {
   
   CLERK_PUBLISHABLE_KEY: string;
   CLERK_SECRET_KEY: string;
+  CLERK_FRONTEND_API?: string;
+  CLERK_JWKS_URL?: string;
+  CLERK_JWT_PUBLIC_KEY?: string;
   JWT_SIGNING_SECRET: string;
   
   R2_BUCKET_NAME: string;
@@ -65,8 +68,17 @@ export function validateServerEnv(envSource: Record<string, string | undefined> 
     DATABASE_POOL_MIN: parseInt(envSource.DATABASE_POOL_MIN || '2', 10),
     DATABASE_POOL_MAX: parseInt(envSource.DATABASE_POOL_MAX || '10', 10),
     
-    CLERK_PUBLISHABLE_KEY: getRequired('CLERK_PUBLISHABLE_KEY', 'pk_test_mock_key'),
+    CLERK_PUBLISHABLE_KEY: (() => {
+      const val = envSource.CLERK_PUBLISHABLE_KEY || envSource.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+      if ((!val || val.includes('placeholder')) && isProd) {
+        throw new Error('[CRITICAL STARTUP ERROR] Missing or placeholder CLERK_PUBLISHABLE_KEY or NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY');
+      }
+      return val || 'pk_test_mock_key';
+    })(),
     CLERK_SECRET_KEY: getRequired('CLERK_SECRET_KEY', 'sk_test_mock_key'),
+    CLERK_FRONTEND_API: envSource.CLERK_FRONTEND_API || 'https://electric-snail-48.clerk.accounts.dev',
+    CLERK_JWKS_URL: envSource.CLERK_JWKS_URL || 'https://electric-snail-48.clerk.accounts.dev/.well-known/jwks.json',
+    CLERK_JWT_PUBLIC_KEY: envSource.CLERK_JWT_PUBLIC_KEY,
     JWT_SIGNING_SECRET: getRequired('JWT_SIGNING_SECRET', 'dev_jwt_secret_32_characters_minimum_string'),
     
     R2_BUCKET_NAME: envSource.R2_BUCKET_NAME || 'vacatina-documents-private',

@@ -48,6 +48,14 @@ import { DeduplicationService } from '../src/server/inventory/deduplication.serv
 import { CacheTtlService } from '../src/server/inventory/cache-ttl.service.ts';
 import { CircuitBreakerService } from '../src/server/inventory/circuit-breaker.service.ts';
 import { UnifiedInventoryService } from '../src/server/inventory/unified-inventory.service.ts';
+import { ClerkAuthService, CLERK_DEFAULT_CONFIG } from '../src/lib/services/clerk-auth.service.ts';
+import {
+  CLERK_VERIFIER_CONFIG,
+  decodeJwtUnverified,
+  verifyClerkJwt,
+  mapClerkPayloadToSecurityContext,
+  authenticateClerkRequest
+} from '../src/server/auth/clerk-verifier.ts';
 import {
   assertSeedCannotBeBookable,
   assertSeedCannotEnterCheckout,
@@ -4190,5 +4198,108 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     };
     assert.equal(governanceProfile.codeVerified, true, 'Code invariants verified by tests');
     assert.equal(governanceProfile.productionSellable, false, 'CODE-SAFE is NOT commercially production sellable');
+  });
+
+  it('enforces Clerk Identity Provider Integration, Client SDK Bridge & Server-Side JWT Claims Verification (Architecture v2.1)', () => {
+    // 1. Client SDK Configuration & Default Invariants
+    assert.equal(
+      CLERK_DEFAULT_CONFIG.publishableKey,
+      'pk_test_ZWxlY3RyaWMtc25haWwtNDguY2xlcmsuYWNjb3VudHMuZGV2JA',
+      'Configured with authentic Vacatina Clerk publishable key'
+    );
+    assert.equal(
+      CLERK_DEFAULT_CONFIG.frontendApi,
+      'https://electric-snail-48.clerk.accounts.dev',
+      'Configured with authentic Vacatina Clerk accounts domain'
+    );
+    assert.ok(
+      CLERK_DEFAULT_CONFIG.scriptUrl.includes('/npm/@clerk/clerk-js@latest/dist/clerk.browser.js'),
+      'Loads official ClerkJS browser bundle'
+    );
+
+    const clerkService = new ClerkAuthService();
+    assert.equal(clerkService.isReady(), false, 'Uninitialized service is not ready in server test runner');
+    assert.equal(clerkService.getCurrentUser(), null, 'Default session is unauthenticated Guest mode');
+
+    // Subscription & Listener integrity
+    let listenerCalled = false;
+    const unsubscribe = clerkService.subscribe(user => {
+      listenerCalled = true;
+    });
+    assert.equal(typeof unsubscribe, 'function');
+    unsubscribe();
+
+    // 2. Server Environment Variable Resolution
+    const mockEnv = validateServerEnv({
+      NODE_ENV: 'test',
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: 'pk_test_ZWxlY3RyaWMtc25haWwtNDguY2xlcmsuYWNjb3VudHMuZGV2JA',
+      CLERK_SECRET_KEY: 'sk_test_yMivnVlmDDXs8dLKHnJRAX2ETia5JE8vCR1qymGct0',
+      DATABASE_URL: 'postgresql://localhost:5432/test',
+      JWT_SIGNING_SECRET: '32_character_minimum_test_secret_for_jwt'
+    });
+    assert.equal(
+      mockEnv.CLERK_PUBLISHABLE_KEY,
+      'pk_test_ZWxlY3RyaWMtc25haWwtNDguY2xlcmsuYWNjb3VudHMuZGV2JA',
+      'Seamlessly resolves NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY into server config'
+    );
+    assert.equal(
+      mockEnv.CLERK_SECRET_KEY,
+      'sk_test_yMivnVlmDDXs8dLKHnJRAX2ETia5JE8vCR1qymGct0'
+    );
+
+    // 3. Cryptographic Verifier & JWKS Configuration
+    assert.equal(
+      CLERK_VERIFIER_CONFIG.issuer,
+      'https://electric-snail-48.clerk.accounts.dev'
+    );
+    assert.equal(
+      CLERK_VERIFIER_CONFIG.jwksUrl,
+      'https://electric-snail-48.clerk.accounts.dev/.well-known/jwks.json'
+    );
+    assert.ok(
+      CLERK_VERIFIER_CONFIG.publicKeyPem.includes('-----BEGIN PUBLIC KEY-----'),
+      'Contains authentic RSA public key for cryptographic signature verification'
+    );
+
+    // 4. JWT Claims Extraction & Unverified Header Decoding
+    const mockTokenHeader = Buffer.from(JSON.stringify({ alg: 'RS256', typ: 'JWT', kid: 'ins_2pGR3nfi6XGAQeW6tSXqKz71VS4' })).toString('base64url');
+    const mockTokenPayload = Buffer.from(JSON.stringify({
+      sub: 'user_2pGR3nfi6XGAQeW6tSXqKz71VS4',
+      iss: 'https://electric-snail-48.clerk.accounts.dev',
+      iat: Math.floor(Date.now() / 1000) - 100,
+      exp: Math.floor(Date.now() / 1000) + 3600,
+      email: 'traveller@vacatina.com',
+      role: 'customer'
+    })).toString('base64url');
+    const dummyToken = `${mockTokenHeader}.${mockTokenPayload}.dummySignature`;
+
+    const decoded = decodeJwtUnverified(dummyToken);
+    assert.ok(decoded);
+    assert.equal(decoded.header.kid, 'ins_2pGR3nfi6XGAQeW6tSXqKz71VS4');
+    assert.equal(decoded.payload.sub, 'user_2pGR3nfi6XGAQeW6tSXqKz71VS4');
+    assert.equal(decoded.payload.email, 'traveller@vacatina.com');
+
+    // 5. Security Context RBAC Mapping
+    const customerContext = mapClerkPayloadToSecurityContext(decoded.payload);
+    assert.equal(customerContext.userId, 'user_2pGR3nfi6XGAQeW6tSXqKz71VS4');
+    assert.equal(customerContext.email, 'traveller@vacatina.com');
+    assert.equal(customerContext.role, 'CUSTOMER');
+
+    const agentPayload = {
+      ...decoded.payload,
+      sub: 'user_agent_99',
+      email: 'agent@partner-agency.com',
+      org_id: 'org_agency_01',
+      org_role: 'org:admin'
+    };
+    const agentContext = mapClerkPayloadToSecurityContext(agentPayload);
+    assert.equal(agentContext.role, 'SUPER_ADMIN', 'Maps admin org_role to SUPER_ADMIN/elevated privilege');
+    assert.equal(agentContext.organizationId, 'org_agency_01');
+    assert.equal(agentContext.organizationType, 'AGENCY');
+
+    // 6. Fail-Closed Authentication on Invalid/Tampered Tokens
+    assert.equal(authenticateClerkRequest(''), null, 'Empty token fails closed');
+    assert.equal(authenticateClerkRequest('Bearer invalid.token.payload'), null, 'Invalid token fails closed');
+    assert.equal(verifyClerkJwt('tampered.token.here'), null, 'Tampered token fails signature verification');
   });
 });

@@ -52,6 +52,7 @@ const BUNDLE_ORDER = [
   'lib/services/favorites.service.ts',
   'lib/services/search.service.ts',
   'lib/services/locale.service.ts',
+  'lib/services/clerk-auth.service.ts',
   'features/flights/index.ts',
   'features/hotels/index.ts',
   'features/visa/index.ts',
@@ -240,6 +241,9 @@ export function buildProject() {
 <link rel="apple-touch-icon" sizes="180x180" href="./public/icons/apple-touch-icon.png">
 <link rel="manifest" href="./public/manifest.webmanifest">
 <meta name="theme-color" content="#1B1464">
+
+<!-- Clerk Identity Provider SDK (Official Preloader) -->
+<script async crossorigin="anonymous" data-clerk-publishable-key="pk_test_ZWxlY3RyaWMtc25haWwtNDguY2xlcmsuYWNjb3VudHMuZGV2JA" src="https://electric-snail-48.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
 
 <!-- Production Compiled CSS (Local Tailwind + DESIGN v4 Tokens) -->
 <link rel="stylesheet" href="./dist/styles/tailwind.css">`;
