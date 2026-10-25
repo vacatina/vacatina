@@ -4220,6 +4220,10 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     const clerkService = new ClerkAuthService();
     assert.equal(clerkService.isReady(), false, 'Uninitialized service is not ready in server test runner');
     assert.equal(clerkService.getCurrentUser(), null, 'Default session is unauthenticated Guest mode');
+    assert.equal(typeof clerkService.mountOrganizationSwitcher, 'function', 'Provides OrganizationSwitcher mount API');
+    assert.equal(typeof clerkService.unmountOrganizationSwitcher, 'function', 'Provides OrganizationSwitcher unmount API');
+    assert.equal(typeof clerkService.openOrganizationProfile, 'function', 'Provides Organization Profile modal API');
+    assert.equal(typeof clerkService.openCreateOrganization, 'function', 'Provides Create Organization modal API');
 
     // Subscription & Listener integrity
     let listenerCalled = false;

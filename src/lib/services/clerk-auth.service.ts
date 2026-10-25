@@ -18,6 +18,9 @@ export interface ClerkUserSnapshot {
   avatarUrl?: string;
   initials: string;
   roleLabel: string;
+  organizationId?: string;
+  organizationName?: string;
+  organizationRole?: string;
 }
 
 export interface ClerkConfig {
@@ -187,6 +190,15 @@ export class ClerkAuthService {
         ? `${clerkUser.firstName[0]}${clerkUser.lastName[0]}`.toUpperCase()
         : fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || 'VT';
 
+      const activeOrg = (typeof window !== 'undefined' && window.Clerk?.organization) || clerkUser.organization;
+      const orgId = activeOrg?.id;
+      const orgName = activeOrg?.name;
+      const orgRole = activeOrg?.membership?.role;
+
+      const roleLabel = orgName
+        ? `${orgName} · Partner Agency`
+        : 'Verified B2C Traveller (Clerk)';
+
       const snapshot: ClerkUserSnapshot = {
         id: clerkUser.id,
         name: fullName,
@@ -194,7 +206,10 @@ export class ClerkAuthService {
         email,
         avatarUrl: clerkUser.imageUrl,
         initials,
-        roleLabel: 'Verified B2C Traveller (Clerk)'
+        roleLabel,
+        organizationId: orgId,
+        organizationName: orgName,
+        organizationRole: orgRole
       };
 
       this.notify(snapshot);
@@ -207,8 +222,12 @@ export class ClerkAuthService {
           userId: clerkUser.id
         });
       }
+
+      // Mount Clerk Organization Switcher if container is present
+      this.mountOrganizationSwitcher('clerk-organization-switcher');
     } else {
       this.notify(null);
+      this.unmountOrganizationSwitcher('clerk-organization-switcher');
       if (typeof window !== 'undefined' && (window as any).__VACATINA_OS__?.setSignedInState) {
         const currentState = (window as any).__VACATINA_OS__.getAuthState?.();
         if (currentState?.isSignedIn) {
@@ -289,6 +308,61 @@ export class ClerkAuthService {
   public openUserProfile(): void {
     if (this.isReady() && typeof window.Clerk.openUserProfile === 'function') {
       window.Clerk.openUserProfile();
+    }
+  }
+
+  /**
+   * Mounts Clerk OrganizationSwitcher into target element.
+   */
+  public mountOrganizationSwitcher(target: HTMLElement | string, options?: any): void {
+    if (!this.isReady() || typeof window.Clerk.mountOrganizationSwitcher !== 'function') return;
+    const el = typeof target === 'string' ? document.getElementById(target) : target;
+    if (el) {
+      try {
+        window.Clerk.mountOrganizationSwitcher(el, {
+          appearance: {
+            variables: {
+              colorPrimary: '#1B1464',
+              colorText: '#1B1464',
+              borderRadius: '0.75rem'
+            }
+          },
+          ...options
+        });
+      } catch (err) {
+        console.warn('[ClerkAuthService] OrganizationSwitcher mount deferred:', err);
+      }
+    }
+  }
+
+  /**
+   * Unmounts Clerk OrganizationSwitcher.
+   */
+  public unmountOrganizationSwitcher(target: HTMLElement | string): void {
+    if (!this.isReady() || typeof window.Clerk.unmountOrganizationSwitcher !== 'function') return;
+    const el = typeof target === 'string' ? document.getElementById(target) : target;
+    if (el) {
+      try {
+        window.Clerk.unmountOrganizationSwitcher(el);
+      } catch {}
+    }
+  }
+
+  /**
+   * Opens Clerk Organization Profile modal for team invitations and member management.
+   */
+  public openOrganizationProfile(): void {
+    if (this.isReady() && typeof window.Clerk.openOrganizationProfile === 'function') {
+      window.Clerk.openOrganizationProfile();
+    }
+  }
+
+  /**
+   * Opens Clerk Create Organization modal.
+   */
+  public openCreateOrganization(): void {
+    if (this.isReady() && typeof window.Clerk.openCreateOrganization === 'function') {
+      window.Clerk.openCreateOrganization();
     }
   }
 

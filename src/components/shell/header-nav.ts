@@ -623,6 +623,10 @@ function initHeaderAuthCluster(header: HTMLElement): void {
             <button type="button" data-account-action="Profile & Travelers" class="w-full text-left px-3 py-2 rounded-lg font-medium text-brand-black hover:bg-brand-subtle">
               Profile &amp; Co-Travelers
             </button>
+            <button type="button" data-account-action="Partner Agency Team" class="w-full text-left px-3 py-2 rounded-lg font-medium text-brand-black hover:bg-brand-subtle flex items-center justify-between">
+              <span>Partner Agency Team</span>
+              <span class="text-[10px] text-brand-primary font-bold">Orgs</span>
+            </button>
             <button type="button" data-account-action="Preferences" class="w-full text-left px-3 py-2 rounded-lg font-medium text-brand-black hover:bg-brand-subtle">
               Seat, Meal &amp; Currency Preferences
             </button>
@@ -638,7 +642,18 @@ function initHeaderAuthCluster(header: HTMLElement): void {
         </div>
       `;
       const container = guestWrap.parentElement || parent;
-      container.insertBefore(signedInWrap, guestWrap.nextSibling);
+
+      // Mount Clerk Organization Switcher wrapper alongside user menu
+      let orgWrap = document.getElementById('clerk-org-switcher-wrap');
+      if (!orgWrap) {
+        orgWrap = document.createElement('div');
+        orgWrap.id = 'clerk-org-switcher-wrap';
+        orgWrap.className = 'hidden sm:inline-flex items-center';
+        orgWrap.innerHTML = `<div id="clerk-organization-switcher"></div>`;
+        container.insertBefore(orgWrap, guestWrap.nextSibling);
+      }
+
+      container.insertBefore(signedInWrap, orgWrap.nextSibling);
 
       const userBtn = signedInWrap.querySelector<HTMLButtonElement>('#signed-in-user-btn');
       const userMenu = signedInWrap.querySelector<HTMLElement>('#user-account-dropdown');
@@ -670,6 +685,15 @@ function initHeaderAuthCluster(header: HTMLElement): void {
           }
           if (action === 'Profile & Co-Travelers' && clerkAuthService.isReady()) {
             clerkAuthService.openUserProfile();
+            return;
+          }
+          if (action === 'Partner Agency Team' && clerkAuthService.isReady()) {
+            const user = clerkAuthService.getCurrentUser();
+            if (user?.organizationId) {
+              clerkAuthService.openOrganizationProfile();
+            } else {
+              clerkAuthService.openCreateOrganization();
+            }
             return;
           }
           openInfoOrSupportModal(
@@ -751,14 +775,23 @@ function syncAuthUiAcrossShell(): void {
   const mobileAuthFooter = document.getElementById('mobile-nav-auth-footer');
 
   if (guestWrap && signedInWrap) {
+    const orgWrap = document.getElementById('clerk-org-switcher-wrap');
     if (authState.isSignedIn) {
       guestWrap.classList.add('hidden');
       guestWrap.classList.remove('sm:flex');
       signedInWrap.classList.remove('hidden');
+      if (orgWrap) {
+        orgWrap.classList.remove('hidden');
+        clerkAuthService.mountOrganizationSwitcher('clerk-organization-switcher');
+      }
     } else {
       guestWrap.classList.remove('hidden');
       guestWrap.classList.add('sm:flex');
       signedInWrap.classList.add('hidden');
+      if (orgWrap) {
+        orgWrap.classList.add('hidden');
+        clerkAuthService.unmountOrganizationSwitcher('clerk-organization-switcher');
+      }
     }
   }
 
