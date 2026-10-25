@@ -93,17 +93,17 @@ export function renderAdminPortalHtml(activeTab = 'overview'): string {
           </button>
         </div>
 
-        <div class="border border-brand-border rounded-2xl overflow-hidden bg-white">
+        <div class="border border-brand-border rounded-2xl overflow-hidden bg-white shadow-xs">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="bg-brand-subtle text-brand-muted border-b border-brand-border font-semibold">
-                <th class="p-3">Listing ID / Title</th>
-                <th class="p-3">Product</th>
+                <th class="p-3">Listing &amp; Supplier Legal ID</th>
+                <th class="p-3">Product / Entity</th>
+                <th class="p-3">Contract &amp; Quota</th>
+                <th class="p-3">Stop-Sell</th>
+                <th class="p-3">Cost / Selling</th>
                 <th class="p-3">Status</th>
-                <th class="p-3">Base Cost</th>
-                <th class="p-3">Selling Price</th>
-                <th class="p-3">Pin Priority</th>
-                <th class="p-3 text-right">Actions</th>
+                <th class="p-3 text-right">Operational Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-brand-border text-brand-black">
@@ -111,31 +111,76 @@ export function renderAdminPortalHtml(activeTab = 'overview'): string {
                 <tr class="hover:bg-brand-canvas transition-colors">
                   <td class="p-3">
                     <div class="font-semibold text-brand-black">${l.title}</div>
-                    <div class="text-[10px] text-brand-muted font-mono">${l.manualListingId}</div>
+                    <div class="text-[10px] text-brand-muted font-mono">${l.id} · ${l.partnerSupplierId}</div>
+                    <div class="text-[10px] text-brand-primary font-medium">${l.supplierLegalName || l.partnerName}</div>
                   </td>
-                  <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-subtle border border-brand-border">${l.productType}</span></td>
+                  <td class="p-3">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-subtle border border-brand-border uppercase">${l.productType}</span>
+                    <div class="text-[10px] text-brand-muted font-mono mt-0.5">${l.canonicalEntityId || 'ent_' + l.id}</div>
+                  </td>
+                  <td class="p-3">
+                    <div class="font-medium font-mono text-[11px] text-brand-black">${l.contractReference || 'DIRECT-2026'}</div>
+                    <div class="text-[10px] text-brand-muted">Quota: <span class="font-bold text-brand-black">${l.availableQuota}</span> / ${l.allotmentTotal || l.availableQuota}</div>
+                    <div class="text-[10px] text-brand-muted">SLA: ${l.partnerSlaHours || 4}h</div>
+                  </td>
+                  <td class="p-3">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.isStopSaleActive ? 'bg-rose-100 text-rose-800 border border-rose-300' : 'bg-emerald-100 text-emerald-800'}">
+                      ${l.isStopSaleActive ? 'STOP-SALE ACTIVE' : 'OPEN'}
+                    </span>
+                  </td>
+                  <td class="p-3 tabular-nums">
+                    <div class="text-brand-muted font-mono text-[11px]">Net: LKR ${(l.contractedBaseCost).toLocaleString()}</div>
+                    <div class="font-bold text-brand-primary font-mono text-xs">Sell: LKR ${(l.standardSellingPriceLkr).toLocaleString()}</div>
+                    <div class="text-[10px] text-emerald-600 font-medium">+${l.markupPercent || 15}% markup</div>
+                  </td>
                   <td class="p-3">
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.status === 'PUBLISHED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
                       ${l.status}
                     </span>
                   </td>
-                  <td class="p-3 tabular-nums font-mono">LKR ${(l.pricing.rawCostAmount).toLocaleString()}</td>
-                  <td class="p-3 tabular-nums font-semibold text-brand-primary">LKR ${(l.pricing.calculatedCustomerPrice).toLocaleString()}</td>
-                  <td class="p-3 font-semibold ${l.pinPriority > 0 ? 'text-amber-600' : 'text-brand-muted'}">
-                    ${l.pinPriority > 0 ? `★ Pinned (${l.pinPriority})` : 'Normal (0)'}
-                  </td>
-                  <td class="p-3 text-right space-x-2">
-                    <button type="button" class="text-brand-primary font-semibold hover:underline" onclick="window.VacatinaAdminPortal?.toggleStatus('${l.manualListingId}')">
+                  <td class="p-3 text-right space-x-2 whitespace-nowrap">
+                    <button type="button" class="text-xs font-semibold ${l.isStopSaleActive ? 'text-emerald-700 hover:underline' : 'text-rose-600 hover:underline'}" onclick="window.VacatinaAdminPortal?.toggleStopSale('${l.id}')">
+                      ${l.isStopSaleActive ? 'Resume Sale' : 'Stop-Sell'}
+                    </button>
+                    <button type="button" class="text-xs text-brand-primary font-semibold hover:underline" onclick="window.VacatinaAdminPortal?.toggleStatus('${l.id}')">
                       ${l.status === 'PUBLISHED' ? 'Pause' : 'Publish'}
                     </button>
-                    <button type="button" class="text-brand-muted font-semibold hover:underline" onclick="window.VacatinaAdminPortal?.overridePrice('${l.manualListingId}')">
-                      Override Price
+                    <button type="button" class="text-xs text-brand-muted font-semibold hover:underline" onclick="window.VacatinaAdminPortal?.editListing('${l.id}')">
+                      Edit 18-Attrs
                     </button>
                   </td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
+        </div>
+
+        <!-- Section: Backoffice 18-Attribute Model Specifications Panel -->
+        <div class="p-4 rounded-2xl bg-brand-subtle border border-brand-border space-y-2 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-heading font-bold text-brand-black">Backoffice Data Model Specification (18 Attributes Verified)</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Payload CMS Schema v2.2</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-[11px] text-brand-muted">
+            <div class="p-2 bg-white rounded-lg border border-brand-border">1. Supplier Legal Identity</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">2. Canonical Entity ID</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">3. Contract Period</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">4. Net / Sell / Markup</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">5. Multi-Currency</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">6. Tax Inclusivity</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">7. Allotment / Lead Days</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">8. Sales Window</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">9. Travel Stay Window</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">10. Blackout Dates</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">11. Stop-Sell Action</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">12. Booking Mode (Allotment)</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">13. Partner SLA (h)</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">14. Cancellation Policy</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">15. Occupancy Limits</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">16. Content &amp; Media</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">17. Publishing Lifecycle</div>
+            <div class="p-2 bg-white rounded-lg border border-brand-border">18. Immutable Audit Trail</div>
+          </div>
         </div>
       </div>
 

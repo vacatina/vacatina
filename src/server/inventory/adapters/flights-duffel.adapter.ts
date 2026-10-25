@@ -3,7 +3,7 @@
  * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md (Q1/Q2/Q9/Q10/Q11)
  * ============================================================================ */
 
-import { BaseSupplierAdapter } from './base.adapter.ts';
+import { BaseSupplierAdapter, FlightSupplierAdapter } from './base.adapter.ts';
 import type {
   BookingCancelResult,
   BookingConfirmResult,
@@ -44,7 +44,7 @@ export interface RawDuffelFlightOffer {
   };
 }
 
-export class FlightsDuffelAdapter extends BaseSupplierAdapter<RawDuffelFlightOffer> {
+export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightOffer> {
   constructor(environment: 'sandbox' | 'production' = 'sandbox', apiToken?: string) {
     super({
       supplierId: 'DUFFEL_NDC',

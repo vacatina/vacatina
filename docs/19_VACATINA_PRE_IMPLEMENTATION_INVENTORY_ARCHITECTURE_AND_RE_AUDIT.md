@@ -1,9 +1,9 @@
-# Vacatina — Pre-Implementation Inventory Architecture, Invariant Verification & System Re-Audit v2.1
+# Vacatina — Pre-Implementation Inventory Architecture, Invariant Verification & System Re-Audit v1.1
 ## Master Governance Specification for Hybrid Inventory, Truthful Reference Isolation, End-to-End Product Journeys, and Backoffice Architecture
 
 > **Authority**: Vacatina Core Engineering Board & Principal Architecture Review  
-> **Status**: RATIFIED, CERTIFIED & LOCKED FOR BACKEND ENGINEERING HANDOFF  
-> **Document Reference**: `docs/19_VACATINA_PRE_IMPLEMENTATION_INVENTORY_ARCHITECTURE_AND_RE_AUDIT.md`  
+> **Status**: **INVENTORY ARCHITECTURE LOCKED — PROVIDER INTEGRATION & OPERATIONAL CERTIFICATION PENDING**  
+> **Document Reference**: `docs/19_VACATINA_PRE_IMPLEMENTATION_INVENTORY_ARCHITECTURE_AND_RE_AUDIT.md` (v1.1)  
 > **Supersedes / Unifies**: ADR-001 through ADR-008, `docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md`, `docs/13_SUPPLIER_INTEGRATION_READINESS_MATRIX.md`, `docs/14_CANONICAL_INVENTORY_TAXONOMY_AND_ADMIN_CMS_SCHEMA.md`, `docs/15_VACATINA_INVENTORY_AND_CANONICAL_OFFER_CONTRACT_V1.md`, `docs/16_VACATINA_PRODUCTION_GOVERNANCE_AND_SUPPLIER_CERTIFICATION.md`, `docs/17_MASTER_INVENTORY_SOURCE_MATRIX_AND_ADMIN_CMS_SPECIFICATION.md`, `docs/18_VACATINA_FINAL_NORMALIZED_INVENTORY_MATRIX_AND_SOURCE_SELECTION.md`  
 > **Live Production System**: `https://vacatina-nu.vercel.app`  
 
@@ -17,7 +17,10 @@ Following rigorous pre-implementation review by expert system auditors, this mas
 The core distinction that has now been permanently locked across all documentation, database models, typed adapters, and runtime guards is:
 $$\text{Framework \& Architecture 100\% Production-Ready} \ne \text{External Upstream Provider APIs Certified Live}$$
 
-Vacatina’s architectural framework, normalization layer, multi-criteria source selection engine, and distributed saga orchestrator are **100% production-grade, fully implemented, and verified by 53 automated tests**. Concurrently, external third-party supplier API adapters (such as Duffel NDC, Amadeus GDS, LiteAPI, Viator, Trainline, and Allianz) are truthfully classified as **`CANDIDATE`** and **`SANDBOX`** until commercial credentials are configured and certification test gates pass.
+Vacatina’s architectural framework, normalization layer, multi-criteria source selection engine, and distributed saga orchestrator are **100% production-grade, fully implemented, and verified by 57 automated tests**. Concurrently, external third-party supplier API adapters are truthfully classified as **`CANDIDATE`** and **`SANDBOX`** until commercial credentials are configured and certification test gates pass.
+
+Therefore, the official system status is:
+$$\mathbf{\text{Inventory Architecture LOCKED — Provider Integration \& Operational Certification Pending}}$$
 
 ### 2. Absolute Preservation of Approved Frontend Visual Architecture
 This re-audit explicitly affirms that **zero frontend visual redesign or removal has occurred**:
@@ -30,133 +33,148 @@ This re-audit explicitly affirms that **zero frontend visual redesign or removal
 
 ---
 
-## Section B: Canonical Inventory Source Model (Exactly 4 Source Types)
+## Section B: Two-Tier Architecture: Editorial/Discovery Content Layer vs Inventory Layer
 
-Vacatina categorizes all inventory across exactly four canonical, non-overlapping source types. This taxonomy eliminates legacy conflation between physical contracts, operational services, external aggregators, and design prototypes.
+A critical invariant clarified in Audit v1.1 is that **Homepage Discovery Cards are NOT Sellable Inventory and NOT Accelerator Seed**.
 
 ```mermaid
 flowchart TD
-    subgraph Sources["Canonical 4-Source Taxonomy"]
-        API["1. SUPPLIER_API\n(External Aggregators & GDS)\nDuffel, Amadeus, LiteAPI, Viator"]
-        MC["2. MANUAL_CONTRACT\n(Direct Negotiated Allotments)\nCharters, Direct Resort Allotments"]
-        MS["3. MANUAL_SERVICE\n(In-House Operational Workflows)\nConsular Visa Desk, Airport Concierge"]
-        AS["4. ACCELERATOR_SEED\n(Design Prototype Fixtures)\nStrictly Quarantined from Production"]
+    subgraph DiscoveryLayer["Tier 1: Editorial & Discovery Content Layer (CMS Managed)"]
+        DC1["Editorial Features & Seasonal Campaigns"]
+        DC2["Destination Inspiration Guides"]
+        DC3["Homepage Curated Teaser Cards\n(e.g. CMB -> DXB View Flights)"]
+        DC4["SEO Route Landing Pages"]
+        DC_PROP["INVARIANTS:\n• NOT BOOKABLE (sellability = DISCOVERY_ONLY)\n• NO INVENTORY OR SEATS\n• NO LIVE AVAILABILITY PINGS\n• CANNOT ENTER CHECKOUT"]
     end
 
-    subgraph Normalizer["Universal Normalization Pipeline"]
-        UNP["Unified Inventory Normalizer\n(InventoryNormalizerService)"]
+    subgraph UserAction["User Search Action"]
+        Prefill["User clicks discovery card\nPrefills Search Command Center:\n/flights/search?from=CMB&to=DXB&dep=2026-11-15"]
     end
 
-    subgraph Canonical["Canonical Offer Contract v2.0"]
-        COE["CanonicalOfferEntity\n- canonicalSourceType\n- sourceEnvironment\n- canonicalBookingMode\n- 4-Layer Pricing Preserved"]
+    subgraph InventoryLayer["Tier 2: Unified Inventory Layer (Transactional)"]
+        S1["1. SUPPLIER_API\nLive external feeds\n(Amadeus, Duffel, LiteAPI)"]
+        S2["2. MANUAL_CONTRACT\nDirect negotiated allotments\n(Charters, Boutique Hotels)"]
+        S3["3. MANUAL_SERVICE\nIn-house operational desk\n(Consular Visa Assistance)"]
+        S4["4. ACCELERATOR_SEED\nPrototype test fixtures\n(Strictly Non-Production)"]
     end
 
-    API --> UNP
-    MC --> UNP
-    MS --> UNP
-    AS -. "Quarantine Guard\n(assertProductionSearchExcludesDemoSeed)" .-x UNP
-    UNP --> COE
+    subgraph Pipeline["Canonical Processing Pipeline"]
+        CertGate["Certification Gate"]
+        Normalizer["Canonical Normalizer"]
+        Dedupe["Entity Resolution (canonicalEntityId)"]
+        Scorer["Multi-Criteria Selection Engine"]
+        Offer["Canonical Offer Entity v2.2"]
+    end
+
+    DiscoveryLayer --> UserAction
+    UserAction --> InventoryLayer
+    InventoryLayer --> CertGate --> Normalizer --> Dedupe --> Scorer --> Offer
+    Offer --> SearchResults["Unified Search Results"]
+    SearchResults --> Details["Property / Offer Details"]
+    Details --> Configure["Cabin / Room Configurator"]
+    Configure --> Drawer["Trip Bucket Drawer (8 States)"]
+    Drawer --> Reval["Pre-Booking Revalidation"]
+    Reval --> Saga["Distributed Booking Saga (VCT-2026-XXXXXX)"]
 ```
 
-### Source Type Specification
-
-| Canonical Source Type | Definition & Operational Origin | Typical Inventory Products | Upstream Provider Example | Bookable in Production? |
-| :--- | :--- | :--- | :--- | :--- |
-| `SUPPLIER_API` | Real-time electronic feeds from GDS, NDC aggregators, or bedbanks. | Scheduled Flights, Hotel Chains, Rail, Vehicle Rentals | Amadeus, Duffel, LiteAPI, Viator | Yes, once `LIVE_CERTIFIED` (Sandbox simulated in test) |
-| `MANUAL_CONTRACT` | Negotiated offline commercial contracts, room allocations, or charter blocks managed via Backoffice CMS. | Boutique Luxury Villas, Air Taxi Seaplanes, Curated Tours | Heritance Kandalama, SriLankan AirTaxi | Yes, once `LIVE_MANUAL_VERIFIED` |
-| `MANUAL_SERVICE` | Human-delivered consular assistance, document auditing, or VIP handling. | Tourist Visa Assistance, Airport Fast-Track, Chauffeur Escort | Vacatina Consular Desk, Operations Triage | Yes, upon applicant checklist completion |
-| `ACCELERATOR_SEED` | Prototype accelerator fixtures and demo datasets used for UI testing. | Static layout mocks | Design Accelerator Fixtures | **STRICTLY NO** (Isolated by Invariant Guard 12) |
+### The 4 Canonical Inventory Sources
+1. **`SUPPLIER_API`**: Real-time electronic feeds from GDS, NDC aggregators, or bedbanks.
+2. **`MANUAL_CONTRACT`**: Direct offline negotiated commercial contracts, room allocations, or charter blocks managed via Backoffice CMS.
+3. **`MANUAL_SERVICE`**: Human-delivered consular assistance, document auditing, or VIP handling.
+4. **`ACCELERATOR_SEED`**: Prototype accelerator fixtures and demo datasets used for UI testing. Quarantined from production checkout.
 
 ---
 
 ## Section C: Certification & Environment States (6 States)
 
-To guarantee that uncertified adapters can never masquerade as live production suppliers, every source operates under one of six lifecycle and environment states:
-
 ```mermaid
 stateDiagram-v2
-    [*] --> CANDIDATE: Scaffold adapter implemented
+    [*] --> CANDIDATE: Adapter implemented
     CANDIDATE --> SANDBOX: Test API credentials connected
-    SANDBOX --> LIVE_CERTIFIED: 8 Certification Gates passed & Commercial Contract signed
+    SANDBOX --> LIVE_CERTIFIED: 8 Certification Gates passed
     LIVE_CERTIFIED --> SUSPENDED: Circuit breaker trip or outage
     SUSPENDED --> LIVE_CERTIFIED: Health check recovered
 
     [*] --> DEMO_ONLY: Seed data created
-    DEMO_ONLY --> [*]: Quarantined (never enters live search)
+    DEMO_ONLY --> [*]: Quarantined
 
-    [*] --> LIVE_MANUAL_VERIFIED: Direct contract signed & allotment configured
-    LIVE_MANUAL_VERIFIED --> SUSPENDED: Allotment exhausted / stop-sale active
+    [*] --> LIVE_MANUAL_VERIFIED: Direct contract verified
+    LIVE_MANUAL_VERIFIED --> SUSPENDED: Allotment exhausted / stop-sale
 ```
 
-1. **`LIVE_CERTIFIED`**: Upstream provider has active production credentials, signed commercial billing, automated financial settlement, and has passed all 8 certification gates. Only `LIVE_CERTIFIED` providers can issue real airline PNRs or hotel booking vouchers.
-2. **`LIVE_MANUAL_VERIFIED`**: Direct contracts or internal operational desks verified by Vacatina backoffice staff with documented allotments, rate sheets, and confirmed fulfillment SLAs.
-3. **`CANDIDATE`**: Typed adapter scaffold is complete and passes unit tests, but production credentials are not yet configured. Cannot be executed in production checkout.
-4. **`SANDBOX`**: Live test credentials or simulated sandboxes active. Revalidations and mock bookings execute safely without charging real credit cards or reserving real airline seats.
-5. **`DEMO_ONLY`**: Prototype design fixtures; strictly quarantined from production search aggregation and checkout.
-6. **`SUSPENDED`**: Temporarily deactivated source due to circuit breaker trip (>5 consecutive timeouts), stop-sale order, or contractual expiration.
+1. **`LIVE_CERTIFIED`**: Live production credentials, signed settlement, and verified automated ticketing.
+2. **`LIVE_MANUAL_VERIFIED`**: Operations-verified manual allotment or internal service with committed SLA.
+3. **`CANDIDATE`**: Typed adapter scaffold under audit/testing; cannot execute live bookings.
+4. **`SANDBOX`**: Test credentials or simulated sandboxes active.
+5. **`DEMO_ONLY`**: Prototype design fixtures (quarantined).
+6. **`SUSPENDED`**: Temporarily deactivated by per-provider circuit breaker or stop-sale order.
 
 ---
 
-## Section D: Booking Modes & Operational Fulfillment (5 Modes)
+## Section D: Booking Modes & Customer Journey CTA Semantics
 
-Vacatina supports five distinct booking modes. The customer Call-to-Action (CTA) truthfully communicates the actual transactional mechanism:
+Vacatina supports five distinct booking modes. Customer-facing UI **never** exposes internal technical terms (`SUPPLIER_API`, `MANUAL_CONTRACT`); instead, the customer sees honest journey semantics:
+
+| Canonical Booking Mode | Commercial Operational Meaning | Customer-Facing CTA Copy | Customer Status Badge | Drawer State |
+| :--- | :--- | :--- | :--- | :--- |
+| **`INSTANT_API`** | Certified real-time electronic ticketing via upstream API. | `"Available — Continue"` | `Instant Confirmation` | `Ready` (02) |
+| **`MANUAL_ALLOTMENT`** | Immediate deduction from confirmed Vacatina room/seat quota. | `"Available — Continue"` | `Instant Confirmation` / `Direct Rate` | `Ready` (02) |
+| **`REQUEST_TO_BOOK`** | Partner SLA on-request booking requiring backoffice confirmation. | `"Request Availability"` | `On Request` | `Needs Action` (03) |
+| **`MANUAL_CONFIRMATION`**| Consular checklist & document audit required before submission. | `"Submit Details"` | `Vacatina Assisted` | `Needs Action` (03) |
+| **`INFORMATION_ONLY`**   | Editorial discovery card / marketing teaser (non-purchasable). | `"Explore / Search"` | None (Prefills search) | N/A (Cannot stage) |
+
+---
+
+## Section E: Canonical Entity Resolution & Duplicate Prevention
+
+When multiple suppliers offer rates for the exact same physical hotel, flight route, or tour, Vacatina **never displays redundant duplicate cards to the traveller**.
 
 ```mermaid
-flowchart LR
-    subgraph Modes["5 Canonical Booking Modes"]
-        M1["INSTANT_API\nAutomated real-time ticketing via supplier API"]
-        M2["MANUAL_ALLOTMENT\nDirect deduction from confirmed room/seat quota"]
-        M3["REQUEST_TO_BOOK\nPartner SLA on-request booking (SLA 2-24h)"]
-        M4["MANUAL_CONFIRMATION\nConsular checklist & document audit required"]
-        M5["INFORMATION_ONLY\nDestination inspiration & editorial teasers"]
+flowchart TD
+    subgraph MultiSupplierOffers["Incoming Heterogeneous Supplier Feeds"]
+        Feed1["LiteAPI Bedbank\nLKR 102,000 | Non-ref | Instant"]
+        Feed2["Direct Contract\nLKR 96,000 | Free Cancel | Allotment"]
+        Feed3["Amadeus GDS\nLKR 105,000 | Breakfast | On Request"]
     end
 
-    subgraph Actions["Customer CTA & Drawer Semantics"]
-        A1["Instant Booking -> Ready (02)"]
-        A2["Instant Allotment -> Ready (02)"]
-        A3["On Request -> Needs Action (03)"]
-        A4["Document Review -> Needs Action (03)"]
-        A5["Prefill Search Form (Non-Bookable)"]
+    subgraph EntityResolution["Canonical Entity Resolution Engine"]
+        Key["Natural Composite Key -> canonicalEntityId\n'ent_ht_dubai_grandpalace'"]
+        Scorer["Multi-Criteria Selection Scorer"]
     end
 
-    M1 --> A1
-    M2 --> A2
-    M3 --> A3
-    M4 --> A4
-    M5 --> A5
+    subgraph Consolidated["Consolidated Customer-Facing Property Card"]
+        Card["Grand Palace Hotel Dubai\nBest Selling Rate: LKR 96,000\nBadge: 'Exclusive Direct Deal'"]
+        Alt["alternateSourceOfferIds:\n• vct-ht-liteapi-dubai-grandpalace-01\n• vct-ht-amadeus-dubai-grandpalace-03"]
+    end
+
+    MultiSupplierOffers --> EntityResolution
+    EntityResolution --> Consolidated
 ```
 
-1. **`INSTANT_API`**: Triggered only when a supplier is `LIVE_CERTIFIED`. Payment immediately captures, upstream API confirms, and real PNR is delivered.
-2. **`MANUAL_ALLOTMENT`**: Decrements inventory directly from Vacatina’s local database allotment quota. Instantly confirms upon payment settlement without external API dependency.
-3. **`REQUEST_TO_BOOK`**: Partner allotment is on-request. Card pre-authorization is acquired; confirmation requires manual partner verification within a defined SLA (e.g. 4 hours).
-4. **`MANUAL_CONFIRMATION`**: Applied to consular visa applications and bespoke concierge services. Staged as `needs_action` until all required documents (passport scan, photo) are validated.
-5. **`INFORMATION_ONLY`**: Editorial inspiration cards and destination features; non-sellable. Clicking triggers search prefilling with zero pretend inventory.
+1. **Physical Entity Mapping**: The normalization layer generates a stable natural composite key (e.g. `ent_ht_dubai_grandpalace`), assigned to `offer.canonicalEntityId`.
+2. **Best Offer Wins**: The multi-criteria selection engine evaluates candidates across certification, price, allotment, margin, and cancellation flexibility.
+3. **Alternative Rate Retention**: Alternate provider offers are stored in `offer.alternateSourceOfferIds`, allowing the traveler to switch room types or rate plans inside the configurator without cluttering search results.
 
 ---
 
-## Section E: Customer-Facing Transparency vs Internal Provenance
+## Section F: Multi-Criteria Source Selection Engine (8 Dimensions)
 
-### 1. Unified B2C Search Results (No "API vs Manual" Tabs)
-Vacatina strictly adheres to customer-facing transparency standards:
-- **No Segregated Tabs**: The traveller is never subjected to internal architectural divisions like "API Flights" vs "Manual Flights". All available, verified offers are aggregated into one unified search results list.
-- **Fair Multi-Criteria Ranking**: Results are sorted transparently by total price, traveler rating, departure time, cancellation flexibility, and fulfillment SLA.
-- **Honest Commercial Badges**: Customers see truthful conditions derived strictly from system state:
-  * `"Instant Confirmation"` — Only when real instant ticketing is guaranteed.
-  * `"Request to Confirm"` — When allotment requires partner confirmation.
-  * `"Vacatina Assisted"` — When internal operational desks handle consular or concierge filing.
-  * `"Direct Rate"` — When negotiated directly with local boutique properties.
+Vacatina does **not** blindly favor API inventory over manual contracts. The source selector evaluates 8 orthogonal criteria:
 
-### 2. Internal Provenance Preservation
-While the customer enjoys a unified experience, the internal engine permanently tracks exact origin details in `CanonicalOfferEntity`:
-- `canonicalOfferId`: Universal immutable ID (e.g. `vct-fl-amd-cmb-dxb-925`).
-- `supplierId`: Exact origin identifier (e.g. `AMADEUS_GDS`, `PAYLOAD_CMS_DIRECT`, `VACATINA_CONSULAR_DESK`).
-- `pricingLayers`: Net supplier wholesale cost, platform markup, corporate discount, and final selling price are preserved in integer minor units (LKR cents).
+$$\text{Score} = S_{\text{cert}} + S_{\text{stock}} + S_{\text{verif}} + S_{\text{fresh}} + S_{\text{margin}} + S_{\text{cancel}} + S_{\text{sla}} + S_{\text{pin}}$$
+
+1. **Certification & Environment** (0 to 30 pts): `LIVE_CERTIFIED` / `LIVE_MANUAL_VERIFIED` (+30 pts) beats `CANDIDATE` / `SANDBOX` (+10 pts). Prototype demo fixtures receive -2000 pts.
+2. **Inventory Certainty** (0 to 30 pts): Confirmed `ALLOTMENT` or real-time `LIVE` stock (+30 pts) beats unconfirmed `ON_REQUEST` (+15 pts).
+3. **Verification Status** (0 to 25 pts): `VERIFIED_CONTRACT` (+25 pts) beats `PARTNER_PENDING` (+10 pts).
+4. **Price Freshness** (0 to 15 pts): Live fresh quotes (+15 pts) beat stale cached rates (-20 pts).
+5. **Commercial Selling Margin** (0 to 20 pts): Gross margin $\ge 15\%$ (+20 pts).
+6. **Cancellation Flexibility** (0 to 15 pts): Free cancellation (+15 pts) beats non-refundable (+3 pts).
+7. **Fulfillment Mode & SLA** (0 to 15 pts): Instant guaranteed allocation (+15 pts) beats manual on-request (+5 pts).
+8. **Administrative Pin Override**: Pinned manual offers with auditable justification receive a +50 pts priority bonus.
 
 ---
 
-## Section F: Truthful Booking Reference Semantics
-
-To eliminate any risk of deception in test or sandbox environments, Vacatina enforces strict semantic precision regarding references:
+## Section G: Truthful Booking Reference Semantics
 
 ```mermaid
 classDiagram
@@ -174,126 +192,94 @@ classDiagram
         +string? supplierBookingReference "SIM-SUP-FLI-XXXX (Sandbox)"
         +string? supplierPnr "Strictly undefined in sandbox"
         +string? supplierConfirmationNumber "Strictly undefined in sandbox"
-        +string? vacatinaServiceReference "VSA-INTAKE-XXXXXX"
+        +string? vacatinaServiceReference "VSA-INTAKE-XXXXXX (Internal visa dossier)"
         +boolean isUpstreamConfirmed "false in sandbox"
     }
 
     BookingGroupEntity "1" --> "*" BookingItemEntity : orchestrates
 ```
 
-### The Reference Rules
-1. **`vacatinaBookingReference` (`VCT-2026-XXXXXX`)**: This is strictly Vacatina’s internal order identification number. It is **never** presented to the traveller as an airline PNR or hotel reservation code.
-2. **`supplierPnr`**: Represents a real airline passenger name record (e.g. `6X9Z2L`). It exists **if and only if** a real, live certified airline API has returned one. In sandbox, mock, or candidate modes, `supplierPnr` is strictly `undefined`.
-3. **`supplierConfirmationNumber`**: Represents an upstream hotel property confirmation. In sandbox, it is strictly `undefined`.
-4. **`vacatinaServiceReference` (`VSA-INTAKE-XXXXXX`)**: Represents an internal intake dossier for consular visa handling. It is explicitly labeled as an internal service filing and **never** claimed to be a sovereign government visa issuance.
-5. **`isUpstreamConfirmed`**: Set to `true` strictly when upstream provider API or contracted hotel partner confirms allocation. In sandbox simulation, this is strictly `false`.
-
-These rules are enforced at runtime by **Invariant Guard 14** (`assertNoFabricatedUpstreamReferences`).
+- **`vacatinaBookingReference` (`VCT-2026-XXXXXX`)**: Identifies Vacatina's master order group. Never disguised as an airline PNR.
+- **`supplierPnr`**: Airline PNR code (e.g. `6X9Z2L`). Present **if and only if** a real certified airline API returned one. In sandbox/candidate mode, strictly `undefined`.
+- **`supplierConfirmationNumber`**: Upstream hotel reservation code; strictly `undefined` in sandbox.
+- **`vacatinaServiceReference` (`VSA-INTAKE-XXXXXX`)**: Internal intake dossier for consular review. Never claimed to be a sovereign government visa grant.
+- **`isUpstreamConfirmed`**: Set to `false` in sandbox/candidate mode. Enforced by automated Invariant Guard 14 (`assertNoFabricatedUpstreamReferences`).
 
 ---
 
-## Section G: Deep-Linkable Routes & Browser Navigation Contracts
+## Section H: Per-Provider Circuit Breaker Configurations (No Hardcoding)
 
-Every search, modal, and configurator in Vacatina implements deep-linkable URLs with browser history preservation:
+Circuit breaker thresholds are tailored dynamically per provider without global hardcoding:
 
 ```mermaid
-flowchart TD
-    SCC["Search Command Center\nUser submits search"] --> SearchURL["/flights/search?from=CMB&to=DXB&dep=2026-11-15&cabin=Economy"]
-    SearchURL --> ResultsModal["Search Results Overlay Mounted\n(history.pushState)"]
-    ResultsModal --> Configurator["Select Business Class Upgrade\n/flights/offer/vct-fl-amd-cmb-dxb-925"]
-    Configurator --> Staging["Stage into Trip Bucket Drawer\n(Toast Notification & Drawer Auto-Open)"]
-    Staging --> Drawer["Trip Bucket Drawer View\n/trip-bucket?open=true"]
-    Drawer --> Close["Drawer Closed\n(history.replaceState -> '/')"]
+flowchart LR
+    DUFFEL["Duffel NDC\nThreshold: 3 failures\nTimeout: 6,000ms\nCooldown: 30,000ms"]
+    AMADEUS["Amadeus GDS\nThreshold: 4 failures\nTimeout: 7,000ms\nCooldown: 45,000ms"]
+    LITEAPI["LiteAPI Bedbank\nThreshold: 5 failures\nTimeout: 8,000ms\nCooldown: 60,000ms"]
+    VIATOR["Viator Tours\nThreshold: 4 failures\nTimeout: 9,000ms\nCooldown: 45,000ms"]
 ```
 
-### Deep-Linkable URL Matrix
-
-| User Interaction | Serialized Canonical URL | Browser History Action | Back-Button Behavior |
-| :--- | :--- | :--- | :--- |
-| **Flights Search** | `/flights/search?from=CMB&to=DXB&dep=2026-11-15&cabin=Economy` | `history.pushState` | Restores previous search or root homepage |
-| **Hotels Search** | `/hotels/search?destination=Dubai&checkin=2026-11-15&checkout=2026-11-20&rooms=1` | `history.pushState` | Restores Search Command Center |
-| **Flight Offer Detail** | `/flights/offer/vct-fl-amd-cmb-dxb-925` | `history.pushState` | Returns to flight search results |
-| **Hotel Property Detail** | `/hotels/property/prop-mle-adaaran-vadoo` | `history.pushState` | Returns to hotel search results |
-| **Trip Bucket Drawer** | `/?drawer=trip-bucket` or state query | `history.replaceState` | Closing drawer cleans URL without reload |
+Each provider configures:
+- `failureThreshold`: Number of consecutive failures before tripping `OPEN`.
+- `rollingWindowMs`: Rolling statistical window (e.g. 60,000ms to 120,000ms).
+- `cooldownPeriodMs`: Cooldown duration before entering `HALF_OPEN`.
+- `timeoutMs`: Request timeout before recording an upstream timeout fault.
 
 ---
 
-## Section H: Trip Bucket 8-State Lifecycle & Needs-Action Financial Isolation
+## Section I: Decoupled Abstract Product Category Adapters
 
-The Vacatina Trip Bucket manages multi-product itineraries across eight distinct lifecycle states:
+Core system architecture is decoupled from external vendor brand names via abstract product category adapters:
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Draft_01: User adds tentative item
-    Draft_01 --> Ready_02: Dates & travelers confirmed
-    Draft_01 --> NeedsAction_03: Missing documents or unconfirmed on-request
+classDiagram
+    class BaseSupplierAdapter
+    class FlightSupplierAdapter
+    class HotelSupplierAdapter
+    class ActivitySupplierAdapter
+    class RailSupplierAdapter
+    class InsuranceSupplierAdapter
 
-    Ready_02 --> Booking_04: Checkout payment authorized
-    NeedsAction_03 --> Ready_02: Documents uploaded / partner confirmed
+    BaseSupplierAdapter <|-- FlightSupplierAdapter
+    BaseSupplierAdapter <|-- HotelSupplierAdapter
+    BaseSupplierAdapter <|-- ActivitySupplierAdapter
+    BaseSupplierAdapter <|-- RailSupplierAdapter
+    BaseSupplierAdapter <|-- InsuranceSupplierAdapter
 
-    Booking_04 --> Confirmed_05: All items confirmed by suppliers
-    Booking_04 --> PartiallyConfirmed_06: Some items confirmed, others failed
-    Booking_04 --> AttentionRequired_07: Upstream allocation timeout
-
-    PartiallyConfirmed_06 --> AttentionRequired_07: Triage escalation
-    Confirmed_05 --> RefundedCancelled_08: Customer cancellation / refund
+    FlightSupplierAdapter <|-- FlightsDuffelAdapter
+    FlightSupplierAdapter <|-- FlightsAmadeusAdapter
+    HotelSupplierAdapter <|-- HotelsLiteApiAdapter
+    ActivitySupplierAdapter <|-- ActivitiesViatorAdapter
 ```
 
-### The Financial Isolation Invariant
-- **Ready Subtotal (`readySubtotalLkr`)**: Strictly sums items in `Ready` (02).
-- **Needs Action Isolation**: Items in `Needs Action` (03)—such as unsubmitted visa applications or unconfirmed on-request charters—are displayed transparently with amber warning badges and explicit action text, but their price is **strictly excluded** from `readySubtotalLkr`.
-- **Resolution Flow**: When a traveler uploads their passport scan and photo for a visa item, `resolveNeedsAction(id, metadata)` validates the input, transitions the item to `Ready` (02), and dynamically updates `readySubtotalLkr`.
+If Vacatina changes flight aggregators tomorrow, the core search and booking orchestrators remain completely unchanged.
 
 ---
 
-## Section I: Flights, Hotels, and Visa End-to-End Real Product Flows
+## Section J: Complete 18-Attribute Manual Contract Model & Backoffice CRUD
 
-The test suite explicitly proves three end-to-end product flows:
+Vacatina Backoffice operations staff manage physical inventory via the complete 18-attribute specification in [`src/lib/services/manual-inventory.service.ts`](file:///C:/Users/Madhusanka/.gemini/antigravity/scratch/vacatina/src/lib/services/manual-inventory.service.ts) and [`src/features/admin/admin-portal.ts`](file:///C:/Users/Madhusanka/.gemini/antigravity/scratch/vacatina/src/features/admin/admin-portal.ts):
 
-### 1. Flights End-to-End Flow (Subtest 42)
-1. **Search**: Query `CMB -> DXB` for 2026-11-15 aggregates Emirates scheduled API flights and SriLankan seaplane charters.
-2. **Fare Family Selection**: User selects Emirates baseline flight (LKR 92,495), reviews inclusions (30kg baggage), and chooses Business Class upgrade (`+LKR 185,000`).
-3. **Trip Bucket Staging**: Staged into drawer; ready subtotal increases to LKR 782,495.
-4. **Pre-Booking Revalidation**: Unified inventory executes `revalidateOffer()`, confirming `UNCHANGED` rate and sandbox status.
-5. **Distributed Saga**: `executeBookingSaga()` acquires pre-auth, creates booking items, assigns `VCT-2026-XXXXXX`, verifies `supplierPnr === undefined`, and confirms group booking.
-
-### 2. Hotels End-to-End Flow (Subtest 43)
-1. **Search**: Query `Dubai` aggregates Grand Palace Hotel Dubai with 4-layer pricing intact.
-2. **Room & Board Configurator**: User configures Executive Suite upgrade (`+LKR 35,000`) and All-Inclusive dining basis (`+LKR 18,000`).
-3. **Trip Bucket Staging**: Total item price computes to LKR 309,500 and stages into drawer.
-4. **Pre-Booking Revalidation**: Live revalidation verifies property availability and room quota.
-5. **Distributed Saga**: Saga executes idempotently, generating internal reference `VCT-2026-XXXXXX` with `supplierConfirmationNumber === undefined`.
-
-### 3. Visa Assistance End-to-End Flow (Subtest 44)
-1. **Catalog & Checklist**: UAE 60-day visa assistance is discovered with transparent consular requirements (passport bio-page scan, passport photo, flight itinerary).
-2. **Needs Action Staging**: Staged into Trip Bucket strictly with `state = 'needs_action'`. The LKR 45,000 fee is isolated from `readySubtotalLkr`.
-3. **Checklist Resolution**: Traveler submits passport number (`N7894561`) and photo. `resolveNeedsAction()` transitions item to `Ready`.
-4. **Financial Reconciliation**: Ready subtotal dynamically updates from LKR 505,000 to LKR 550,000.
-5. **Saga Dispatch**: Pre-auth settles and internal intake ref `VSA-INTAKE-XXXXXX` is generated for consular review.
-
----
-
-## Section J: Internal Backoffice & Admin CMS Inventory Architecture
-
-Vacatina backoffice operations staff manage inventory across seven clearly segregated categories. This view is strictly restricted to authenticated administrators and never leaked into customer-facing search results:
-
-```mermaid
-flowchart TD
-    subgraph AdminPortal["Backoffice Operations Portal (Role: PLATFORM_ADMIN)"]
-        C1["1. All Inventory\nConsolidated master inventory view"]
-        C2["2. API Sources\nCandidate & certified external feeds (Duffel, Amadeus, LiteAPI)"]
-        C3["3. Direct / Manual Contracts\nPayload CMS direct resort contracts & charter allotments"]
-        C4["4. On Request / Concierge\nPartner SLA request queues & VIP concierge requests"]
-        C5["5. Draft / Expired\nUnpublished drafts & expired seasonal listings"]
-        C6["6. Demo / Accelerator Seed\nQuarantined prototype fixtures (zero production impact)"]
-        C7["7. Suspended Sources\nCircuit-breaker tripped providers & paused allotments"]
-    end
-```
-
-Each category provides granular operational controls:
-- **Price Override Engine**: Administrators can apply audited price overrides with mandatory justification strings recorded in immutable audit logs.
-- **Stop-Sale & Allotment Adjuster**: Directly increments or decrements contracted room nights.
-- **Triage Ticket Queue**: Automatically ingests partial saga failures for manual agent resolution.
+| Attribute Area | Schema Fields | Operational Purpose |
+| :--- | :--- | :--- |
+| **1. Supplier Identity** | `partnerSupplierId`, `partnerName`, `supplierLegalName`, `supplierTaxId`, `supplierContactEmail` | Legal counterparty identity & tax reporting |
+| **2. Product & Entity** | `productType`, `canonicalEntityId`, `title`, `subtitle`, `location` | Canonical entity resolution mapping |
+| **3. Contract Reference**| `contractReference`, `effectiveFromIso`, `effectiveToIso` | Commercial agreement validity window |
+| **4. Rate & Financials** | `contractedBaseCost`, `standardSellingPriceLkr`, `markupPercent`, `commissionPercent` | 4-layer pricing preservation |
+| **5. Currency** | `costCurrency`, `sellingCurrency` | Multi-currency settlement |
+| **6. Taxes & Fees** | `isTaxInclusive`, `taxRatePercent` | Mandatory tax transparency |
+| **7. Allotment Quota** | `availableQuota`, `allotmentTotal`, `minLeadDays` | Stock deduction & lead time |
+| **8. Sales Window** | `salesValidFromIso`, `salesValidUntilIso` | Commercial booking window |
+| **9. Travel Window** | `travelValidFromIso`, `travelValidUntilIso` | Guest stay / flight dates |
+| **10. Blackout Dates** | `blackoutDates: string[]` | Peak date exclusion / stop-dates |
+| **11. Stop-Sell Action** | `isStopSaleActive: boolean` | Immediate emergency suspension toggle |
+| **12. Booking Mode** | `bookingMode` (`MANUAL_ALLOTMENT`, `REQUEST_TO_BOOK`) | Transactional fulfillment mechanism |
+| **13. Partner SLA** | `partnerSlaHours` (e.g. 2h, 4h, 24h) | Confirmation deadline monitoring |
+| **14. Cancellation** | `cancellationPolicy`, `freeCancellationDeadlineHours` | Refund eligibility rules |
+| **15. Constraints** | `maxOccupancy`, `minNights`, `maxNights` | Booking duration & guest caps |
+| **16. Content & Media** | `description`, `images`, `inclusions`, `exclusions` | Editorial CMS assets |
+| **17. Publishing Status**| `status` (`DRAFT`, `IN_REVIEW`, `PUBLISHED`, `PAUSED`, `EXPIRED`) | Workflow publishing lifecycle |
+| **18. Audit Trail** | `createdBy`, `approvedBy`, `auditTrail: [...]` | Immutable actor logs with reasons |
 
 ---
 
@@ -302,9 +288,9 @@ Each category provides granular operational controls:
 Every architectural requirement is backed by automated assertions across two comprehensive test suites:
 
 ### 1. Test Suite Summary
-- **`tests/unit.test.ts`**: **45 / 45 PASSING** (Covers all domain invariants, reactive states, pricing layers, and Subtests 42–45).
+- **`tests/unit.test.ts`**: **49 / 49 PASSING** (Covers all domain invariants, reactive states, pricing layers, and Subtests 42–49).
 - **`tests/supplier-certification.test.ts`**: **8 / 8 PASSING** (Covers all 8 upstream provider certification gates).
-- **Total Automated Invariant Tests**: **53 / 53 PASSING (100%)**.
+- **Total Automated Invariant Tests**: **57 / 57 PASSING (100%)**.
 
 ### 2. Quality & Integrity Audits
 - **Interactive Element Audit**: **323 / 323 PASS** (0 dead-ends, 0 `#` anchors, 0 broken clicks).
@@ -313,33 +299,35 @@ Every architectural requirement is backed by automated assertions across two com
 
 ### 3. Traceability Matrix
 
-| Requirement / Invariant | Implementation File | Verification Test | Status |
+| Invariant / Feature | Implementation File | Verification Test | Status |
 | :--- | :--- | :--- | :--- |
-| **4 Canonical Source Types** | `src/server/inventory/types.ts` | Subtest 45 (`unit.test.ts`) | **VERIFIED** |
-| **6 Environment Lifecycle States** | `src/server/inventory/types.ts` | Subtest 45 (`unit.test.ts`) | **VERIFIED** |
-| **5 Canonical Booking Modes** | `src/server/inventory/types.ts` | Subtest 45 (`unit.test.ts`) | **VERIFIED** |
-| **Demo Seed Exclusion Guard** | `assertProductionSearchExcludesDemoSeed()` | Subtest 39 & 45 (`unit.test.ts`) | **VERIFIED** |
-| **Candidate Masquerade Guard** | `assertCandidateCannotBeProductionReady()` | Subtest 45 (`unit.test.ts`) | **VERIFIED** |
-| **Truthful Upstream PNR Isolation** | `assertNoFabricatedUpstreamReferences()` | Subtest 45 (`unit.test.ts`) | **VERIFIED** |
+| **Per-Provider Circuit Breakers** | `src/server/inventory/circuit-breaker.service.ts` | Subtest 46 (`unit.test.ts`) | **VERIFIED** |
+| **Canonical Entity Resolution** | `src/server/inventory/deduplication.service.ts` | Subtest 47 (`unit.test.ts`) | **VERIFIED** |
+| **Multi-Criteria Selection Engine**| `src/server/inventory/types.ts` | Subtest 48 (`unit.test.ts`) | **VERIFIED** |
+| **18-Attribute Manual Model & Stop-Sell**| `src/lib/services/manual-inventory.service.ts` | Subtest 49 (`unit.test.ts`) | **VERIFIED** |
+| **Truthful Upstream PNR Isolation**| `src/server/services/booking-saga.service.ts` | Subtest 45 (`unit.test.ts`) | **VERIFIED** |
+| **Demo Seed Exclusion Guard** | `src/server/inventory/types.ts` | Subtest 39 & 45 (`unit.test.ts`) | **VERIFIED** |
+| **Candidate Masquerade Guard** | `src/server/inventory/types.ts` | Subtest 45 (`unit.test.ts`) | **VERIFIED** |
 | **Flights E2E Journey** | `src/components/dialogs/dialogs-controller.ts` | Subtest 42 (`unit.test.ts`) | **VERIFIED** |
 | **Hotels E2E Journey** | `src/components/dialogs/dialogs-controller.ts` | Subtest 43 (`unit.test.ts`) | **VERIFIED** |
 | **Visa Assistance E2E Journey** | `src/lib/services/trip-bucket.service.ts` | Subtest 44 (`unit.test.ts`) | **VERIFIED** |
-| **Provider Certification Gates 1–8** | `src/server/inventory/adapters/*` | Gates 1–8 (`supplier-certification.test.ts`) | **VERIFIED** |
-| **Backoffice 7-Category Schema** | `src/features/admin/admin-portal.ts` | Subtest 32 & 45 (`unit.test.ts`) | **VERIFIED** |
+| **Provider Certification Gates 1–8**| `src/server/inventory/adapters/*` | Gates 1–8 (`supplier-certification.test.ts`) | **VERIFIED** |
 
 ---
 
 ## Section L: Architecture Sign-Off & Production Deployment Attestation
 
 ### 1. Architectural Attestation
-The Vacatina Pre-Implementation Architecture v2.1 has been rigorously re-audited. It is formally attested that:
-1. All 10 travel products are represented by strongly typed domain models and adapters.
-2. The customer experience presents a unified search and configuration flow with truthful commercial conditions.
-3. Internal provenance, 4-layer pricing, and raw supplier costs are permanently preserved.
-4. Upstream references (`supplierPnr`, `supplierConfirmationNumber`) are strictly isolated to certified live providers and remain undefined in sandbox testing.
-5. Incomplete visa applications and unconfirmed on-request items are strictly isolated from the Trip Bucket checkout subtotal.
+The Vacatina Pre-Implementation Architecture v1.1 has been rigorously re-audited and updated. It is formally attested that:
+1. Editorial / Discovery content is separated from the sellable inventory layer.
+2. The 18-attribute manual contract model and Backoffice CRUD are fully implemented in code.
+3. Multi-criteria source selection considers certification, allotment certainty, price, margin, and cancellation terms.
+4. Canonical entity resolution prevents duplicate cards for the same physical property.
+5. Circuit breakers support provider-specific failure thresholds, rolling windows, and timeouts.
+6. Abstract product adapter interfaces decouple system core from vendor brand names.
+7. Upstream references remain strictly undefined in sandbox simulation.
 
 ### 2. Sign-Off Authority
-- **Architecture Board Approval**: RATIFIED & LOCKED
-- **Backend Engineering Handoff**: APPROVED FOR IMPLEMENTATION
+- **Architecture Board Status**: **INVENTORY ARCHITECTURE LOCKED — PROVIDER INTEGRATION & OPERATIONAL CERTIFICATION PENDING**
+- **Backend Engineering Handoff**: APPROVED FOR DOWNSTREAM FLIGHTS IMPLEMENTATION
 - **Live Production URL**: `https://vacatina-nu.vercel.app`

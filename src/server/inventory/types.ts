@@ -397,6 +397,8 @@ export interface ComponentOfferIdentity {
 export interface CanonicalOfferEntity {
   // Stable universal identifiers
   canonicalOfferId: string;         // Universal stable identifier, e.g. "vct-fl-duffel-cmb-dxb-98a7c2"
+  canonicalEntityId?: string;       // Stable real-world entity identifier (e.g. "HOTEL_DUBAI_001", "FLIGHT_CMB_DXB_EK651")
+  alternateSourceOfferIds?: string[]; // IDs of alternate supplier offers consolidated under this entity
   offerId?: string;                 // Explicit alias for canonicalOfferId
   sourceOfferId?: string;           // Original upstream provider offer ID / CMS listing ID
   productType: TravelProductSlug;
@@ -581,11 +583,35 @@ export function deriveCustomerBadges(offer: CanonicalOfferEntity): CustomerBadge
 }
 
 /**
+ * Maps Canonical Booking Mode to customer-facing journey CTA copy (GPT Audit v2.2)
+ * Customers see honest journey semantics, never technical source labels.
+ */
+export function getCanonicalBookingModeCta(mode?: CanonicalBookingMode): string {
+  switch (mode) {
+    case 'INSTANT_API':
+    case 'MANUAL_ALLOTMENT':
+      return 'Available — Continue';
+    case 'REQUEST_TO_BOOK':
+      return 'Request Availability';
+    case 'MANUAL_CONFIRMATION':
+      return 'Submit Details';
+    case 'INFORMATION_ONLY':
+      return 'Explore / Search';
+    default:
+      return 'View Options';
+  }
+}
+
+/**
  * Verifies that an array of customer badges contains zero internal technical terms.
  */
 export function validateNoTechnicalLeakInCustomerBadges(badges: string[]): boolean {
   const technicalLeakPatterns = [
     'API',
+    'SUPPLIER_API',
+    'MANUAL_CONTRACT',
+    'MANUAL_SERVICE',
+    'ACCELERATOR_SEED',
     'DIRECT_CONTRACT',
     'MANUAL_INTERNAL',
     'PARTNER_MANUAL',
@@ -735,13 +761,24 @@ export function isOfferEligibleForPinOverride(offer: CanonicalOfferEntity): bool
 }
 
 /**
- * Invariant 8: Discovery Content is Never Sellable Inventory (Directive 1)
+ * Invariant 8: Discovery Content is Never Sellable Inventory (Directive 1 & GPT Audit v2.2)
+ * Editorial guides, marketing teasers, and homepage destination cards are NEVER inventory.
+ * They cannot enter checkout, have no live availability, and cannot be purchased.
  */
 export function assertDiscoveryContentCannotBeSold(content: DiscoveryContentEntity): void {
   if (content.isLiveInventoryOffer !== false || content.sellability !== 'DISCOVERY_ONLY') {
     throw new ArchitecturalInvariantViolationError(
       'DISCOVERY_CONTENT_CANNOT_BE_SOLD',
       `Discovery content '${content.contentId}' must have isLiveInventoryOffer = false and sellability = 'DISCOVERY_ONLY'. It cannot be sold as an inventory offer.`
+    );
+  }
+}
+
+export function assertDiscoveryLayerCannotEnterInventoryCheckout(content: { sellability?: string; isLiveInventoryOffer?: boolean; canonicalOfferId?: string }): void {
+  if (content.sellability === 'DISCOVERY_ONLY' || content.isLiveInventoryOffer === false) {
+    throw new ArchitecturalInvariantViolationError(
+      'DISCOVERY_CONTENT_CHECKOUT_BLOCKED',
+      `Content Layer Safety Guard: Discovery/Editorial content '${content.canonicalOfferId || 'item'}' cannot enter checkout or booking flows.`
     );
   }
 }
@@ -906,38 +943,65 @@ export function assertNoFabricatedUpstreamReferences(bookingItem: {
 }
 
 /**
- * Invariant 11: Multi-Criteria Source Selection Engine (Critical Issue #8)
- * Does NOT blindly prefer API over manual. Considers:
- * - availability status (available beats unavailable)
- * - verification status (VERIFIED_CONTRACT / VERIFIED_INTERNAL beats UNVERIFIED)
- * - net cost & selling margin
- * - cancellation flexibility
- * - SLA and fulfillment confidence
+ * Invariant 11: Multi-Criteria Source Selection Engine (GPT Audit v2.2)
+ * Does NOT blindly prefer API over manual. Evaluates 8 orthogonal dimensions:
+ * 1. Certification & environment readiness (LIVE_CERTIFIED / LIVE_MANUAL_VERIFIED vs CANDIDATE)
+ * 2. Inventory certainty (guaranteed ALLOTMENT / LIVE stock vs ON_REQUEST)
+ * 3. Verification status (VERIFIED_CONTRACT / VERIFIED_INTERNAL vs UNVERIFIED)
+ * 4. Price freshness & cache TTL safety
+ * 5. Commercial margin & net-to-selling yield
+ * 6. Cancellation terms & traveler flexibility
+ * 7. Operational fulfillment SLA & booking mode
+ * 8. Administrative pin override (if verified with auditable reason)
  */
 export function computeOfferSourceScore(offer: CanonicalOfferEntity): number {
   let score = 0;
 
-  // 1. Availability Score (0 - 30 pts)
+  // 1. Certification & Environment Readiness (0 - 30 pts)
+  if (offer.sourceEnvironment === 'LIVE_CERTIFIED' || offer.sourceEnvironment === 'LIVE_MANUAL_VERIFIED') {
+    score += 30; // Certified commercial provider with guaranteed fulfillment
+  } else if (offer.sourceEnvironment === 'CANDIDATE' || offer.sourceEnvironment === 'SANDBOX') {
+    score += 10; // Scaffold/sandbox provider under audit
+  } else if (offer.sourceEnvironment === 'DEMO_ONLY' || offer.environmentClass === 'SEED') {
+    return -2000; // Prototype demo fixtures strictly disqualified
+  } else if (offer.sourceEnvironment === 'SUSPENDED') {
+    return -3000; // Circuit-breaker tripped or stop-sale active
+  } else {
+    score += 15;
+  }
+
+  // 2. Inventory Certainty & Availability (0 - 30 pts)
   if (offer.availabilityStatus === 'LIVE' || offer.availabilityStatus === 'MANUAL_AVAILABLE') {
-    score += 30;
+    score += (offer.availabilityMode === 'ALLOTMENT' || offer.canonicalBookingMode === 'MANUAL_ALLOTMENT') ? 30 : 25;
   } else if (offer.availabilityStatus === 'CACHED' || offer.availabilityStatus === 'ON_REQUEST') {
-    score += 18;
+    score += 15;
   } else if (offer.availabilityStatus === 'SOLD_OUT' || offer.availabilityStatus === 'RATE_EXPIRED' || offer.availabilityStatus === 'UNAVAILABLE') {
     return -1000; // Unsellable
   }
 
-  // 2. Verification Status Score (0 - 25 pts)
+  // 3. Verification Status (0 - 25 pts)
   if (offer.verificationStatus === 'VERIFIED_CONTRACT' || offer.verificationStatus === 'VERIFIED_INTERNAL') {
     score += 25;
   } else if (offer.verificationStatus === 'PARTNER_PENDING') {
     score += 10;
   } else if (offer.verificationStatus === 'PROTOTYPE') {
-    return -2000; // SEED prototype cannot beat real offers
+    return -2000;
   } else {
     score += 5; // UNVERIFIED
   }
 
-  // 3. Selling Margin Score (0 - 20 pts)
+  // 4. Price Freshness & Cache TTL (0 - 15 pts)
+  if (offer.freshness) {
+    if (offer.freshness.isStale) {
+      score -= 20; // Stale cache penalty
+    } else {
+      score += 15; // Fresh rate
+    }
+  } else {
+    score += 10;
+  }
+
+  // 5. Selling Margin Score (0 - 20 pts)
   const net = offer.pricing?.rawSupplierCostMinor || 1;
   const selling = offer.pricing?.finalSellingPriceMinor || net;
   const marginPercent = net > 0 ? ((selling - net) / net) * 100 : 0;
@@ -946,7 +1010,7 @@ export function computeOfferSourceScore(offer: CanonicalOfferEntity): number {
   else if (marginPercent >= 5) score += 10;
   else score += 5;
 
-  // 4. Cancellation Flexibility Score (0 - 15 pts)
+  // 6. Cancellation Flexibility Score (0 - 15 pts)
   const policy = (offer.cancellationPolicy || '').toLowerCase();
   if (policy.includes('free cancellation')) {
     score += 15;
@@ -956,16 +1020,20 @@ export function computeOfferSourceScore(offer: CanonicalOfferEntity): number {
     score += 3;
   }
 
-  // 5. Fulfilment SLA & Mode Score (0 - 10 pts)
-  if (offer.fulfillmentMode === 'INSTANT' && offer.bookingCapability === 'INSTANT_RESERVATION') {
+  // 7. Fulfilment SLA & Booking Mode Score (0 - 15 pts)
+  if (
+    (offer.fulfillmentMode === 'INSTANT' && offer.bookingCapability === 'INSTANT_RESERVATION') ||
+    offer.canonicalBookingMode === 'INSTANT_API' ||
+    offer.canonicalBookingMode === 'MANUAL_ALLOTMENT'
+  ) {
+    score += 15; // Instant guaranteed allocation
+  } else if (offer.fulfillmentMode === 'MANUAL_CONFIRMATION' || offer.canonicalBookingMode === 'MANUAL_CONFIRMATION') {
     score += 10;
-  } else if (offer.fulfillmentMode === 'MANUAL_CONFIRMATION') {
-    score += 8;
   } else {
-    score += 5;
+    score += 5; // On request
   }
 
-  // 6. Pin override bonus (if legitimately eligible)
+  // 8. Pin override bonus (if legitimately eligible)
   if (offer.pinAboveApi && isOfferEligibleForPinOverride(offer)) {
     score += 50;
   }
@@ -983,7 +1051,16 @@ export function selectBestSourceOffer(candidates: CanonicalOfferEntity[]): Canon
       offer,
       score: computeOfferSourceScore(offer)
     }))
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => {
+      // Primary: Score
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+      // Secondary: Lower final customer selling price wins
+      const priceA = a.offer.pricing?.finalSellingPriceMinor || 0;
+      const priceB = b.offer.pricing?.finalSellingPriceMinor || 0;
+      return priceA - priceB;
+    });
 
   return scored.length > 0 ? scored[0].offer : candidates[0];
 }

@@ -17,7 +17,7 @@ import { SearchAggregatorService } from '../src/lib/services/search-aggregator.s
 import { BookingOrchestratorService } from '../src/lib/services/booking-orchestrator.service.ts';
 import { CANONICAL_HYBRID_CATALOG } from '../src/lib/mock-data/hybrid-catalog.ts';
 import { getCustomerBuyingCondition, getBookingModeCta } from '../src/lib/domain/inventory-models.ts';
-import { manualInventoryService, ManualInventoryService } from '../src/lib/services/manual-inventory.service.ts';
+import { manualInventoryService, ManualInventoryService, CANONICAL_MANUAL_LISTINGS } from '../src/lib/services/manual-inventory.service.ts';
 import { CANONICAL_ROUTES, isCanonicalRoute, getRouteMeta } from '../src/lib/constants/routes.ts';
 import { VacatinaStorageEngine } from '../src/server/db/storage.ts';
 import { AuthorizationEngine, type SecurityContext } from '../src/server/auth/rbac.ts';
@@ -25,6 +25,7 @@ import { BookingSagaService } from '../src/server/services/booking-saga.service.
 import { PaymentGatewayService } from '../src/server/services/payment-gateway.service.ts';
 import { VacatinaApiRouter } from '../src/server/api/router.ts';
 import { validateServerEnv } from '../src/server/config/env.ts';
+import { FlightSupplierAdapter, HotelSupplierAdapter } from '../src/server/inventory/adapters/base.adapter.ts';
 import { FlightsDuffelAdapter, type RawDuffelFlightOffer } from '../src/server/inventory/adapters/flights-duffel.adapter.ts';
 import { HotelsLiteApiAdapter, type RawLiteApiHotelOffer } from '../src/server/inventory/adapters/hotels-liteapi.adapter.ts';
 import { CarsRentalAdapter } from '../src/server/inventory/adapters/cars-rental.adapter.ts';
@@ -49,6 +50,7 @@ import {
   assertUnavailableOfferCannotBeReady,
   assertDistributionScopeIntegrity,
   assertDiscoveryContentCannotBeSold,
+  assertDiscoveryLayerCannotEnterInventoryCheckout,
   isPackageReadyForCheckout,
   assertProductionResponseSafety,
   computeOfferSourceScore,
@@ -56,6 +58,7 @@ import {
   isOfferEligibleForPinOverride,
   deriveCustomerBadges,
   validateNoTechnicalLeakInCustomerBadges,
+  getCanonicalBookingModeCta,
   assertProductionSearchExcludesDemoSeed,
   assertCandidateCannotBeProductionReady,
   assertNoFabricatedUpstreamReferences,
@@ -2776,5 +2779,176 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     assert.equal(sagaResult.items[0].supplierConfirmationNumber, undefined, 'supplierConfirmationNumber is strictly undefined in sandbox mode');
     assert.equal(sagaResult.items[0].isUpstreamConfirmed, false, 'isUpstreamConfirmed is strictly false for sandbox simulation');
     assert.ok(sagaResult.items[0].vacatinaBookingReference?.startsWith('VCT-2026-'), 'Item references parent Vacatina booking ref');
+  });
+
+  it('enforces Per-Provider Circuit Breaker Configuration & Outage Threshold Isolation (GPT Audit v2.2)', async () => {
+    const cb = new CircuitBreakerService({ defaultFailureThreshold: 5 });
+
+    // Duffel NDC is configured with a strict threshold of 3
+    const duffelConfig = cb.getProviderConfig('DUFFEL_NDC');
+    assert.equal(duffelConfig.failureThreshold, 3, 'Duffel NDC threshold is 3');
+
+    // LiteAPI is configured with threshold of 5
+    const liteConfig = cb.getProviderConfig('LITEAPI');
+    assert.equal(liteConfig.failureThreshold, 5, 'LiteAPI threshold is 5');
+
+    // Record 3 failures on Duffel -> must trip to OPEN
+    cb.recordFailure('DUFFEL_NDC');
+    cb.recordFailure('DUFFEL_NDC');
+    assert.equal(cb.getState('DUFFEL_NDC'), 'CLOSED', 'Duffel still CLOSED after 2 failures');
+    cb.recordFailure('DUFFEL_NDC');
+    assert.equal(cb.getState('DUFFEL_NDC'), 'OPEN', 'Duffel trips to OPEN on 3rd failure');
+
+    // Record 3 failures on LiteAPI -> must remain CLOSED (threshold is 5)
+    cb.recordFailure('LITEAPI');
+    cb.recordFailure('LITEAPI');
+    cb.recordFailure('LITEAPI');
+    assert.equal(cb.getState('LITEAPI'), 'CLOSED', 'LiteAPI remains CLOSED after 3 failures (threshold is 5)');
+
+    // Allow custom dynamic provider override
+    cb.registerProviderConfig('CUSTOM_GDS', { failureThreshold: 2, timeoutMs: 3000, cooldownPeriodMs: 15000, rollingWindowMs: 30000 });
+    cb.recordFailure('CUSTOM_GDS');
+    cb.recordFailure('CUSTOM_GDS');
+    assert.equal(cb.getState('CUSTOM_GDS'), 'OPEN', 'Custom GDS trips on 2nd failure as configured');
+  });
+
+  it('enforces Canonical Entity Resolution & Duplicate Prevention across Suppliers (GPT Audit v2.2)', async () => {
+    // Two suppliers offering the exact same physical hotel property
+    const hotelA: any = {
+      canonicalOfferId: 'vct-ht-liteapi-dubai-grandpalace-01',
+      productType: 'hotels',
+      title: 'Grand Palace Hotel Dubai',
+      subtitle: 'Luxury Marina Wing',
+      location: { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE' },
+      sourceType: 'API',
+      supplierId: 'LITEAPI',
+      availabilityStatus: 'LIVE',
+      pricing: { rawSupplierCostMinor: 9500000, finalSellingPriceMinor: 10200000 },
+      cancellationPolicy: 'Non-refundable'
+    };
+
+    const hotelB: any = {
+      canonicalOfferId: 'vct-ht-direct-dubai-grandpalace-02',
+      productType: 'hotels',
+      title: 'Grand Palace Hotel Dubai',
+      subtitle: 'Direct Contract Allotment',
+      location: { city: 'Dubai', country: 'United Arab Emirates', countryCode: 'AE' },
+      sourceType: 'DIRECT_CONTRACT',
+      canonicalSourceType: 'MANUAL_CONTRACT',
+      sourceEnvironment: 'LIVE_MANUAL_VERIFIED',
+      verificationStatus: 'VERIFIED_CONTRACT',
+      supplierId: 'PAYLOAD_CMS_DIRECT',
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      availabilityMode: 'ALLOTMENT',
+      pricing: { rawSupplierCostMinor: 8000000, finalSellingPriceMinor: 9600000 },
+      cancellationPolicy: 'Free cancellation up to 48 hours'
+    };
+
+    // Deduplicate mixed supplier feeds
+    const results = DeduplicationService.deduplicateAndRank([hotelA, hotelB]);
+    assert.equal(results.length, 1, 'Only ONE consolidated entity card returned to customer, zero duplicates');
+
+    const winningOffer = results[0];
+    assert.equal(winningOffer.canonicalOfferId, 'vct-ht-direct-dubai-grandpalace-02', 'Direct contract wins due to better rate & verified allotment');
+    assert.ok(winningOffer.canonicalEntityId, 'Physical entity ID assigned');
+    assert.equal(winningOffer.alternateSourceOfferIds?.length, 1, 'Alternate provider offer tracked under entity');
+    assert.equal(winningOffer.alternateSourceOfferIds?.[0], 'vct-ht-liteapi-dubai-grandpalace-01');
+    assert.ok(winningOffer.subtitle.includes('Exclusive Direct Deal'), 'Direct deal badge added when beating API');
+  });
+
+  it('enforces Multi-Criteria Source Selection & Customer Journey CTA Semantics (GPT Audit v2.2)', async () => {
+    // 1. Multi-Criteria Source Selection Scoring: Direct contract beats uncertified API
+    const candidateApiOffer: any = {
+      canonicalOfferId: 'cand-api-ht-01',
+      productType: 'hotels',
+      sourceType: 'API',
+      sourceEnvironment: 'CANDIDATE',
+      verificationStatus: 'PARTNER_PENDING',
+      availabilityStatus: 'CACHED',
+      pricing: { rawSupplierCostMinor: 9500000, finalSellingPriceMinor: 10200000 },
+      freshness: { isStale: false }
+    };
+
+    const verifiedDirectOffer: any = {
+      canonicalOfferId: 'verif-dir-ht-02',
+      productType: 'hotels',
+      sourceType: 'DIRECT_CONTRACT',
+      sourceEnvironment: 'LIVE_MANUAL_VERIFIED',
+      verificationStatus: 'VERIFIED_CONTRACT',
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      canonicalBookingMode: 'MANUAL_ALLOTMENT',
+      pricing: { rawSupplierCostMinor: 8000000, finalSellingPriceMinor: 9600000 },
+      cancellationPolicy: 'Free cancellation',
+      freshness: { isStale: false }
+    };
+
+    const scoreApi = computeOfferSourceScore(candidateApiOffer);
+    const scoreDirect = computeOfferSourceScore(verifiedDirectOffer);
+    assert.ok(scoreDirect > scoreApi, `Direct contract score (${scoreDirect}) must beat uncertified API score (${scoreApi})`);
+
+    const bestOffer = selectBestSourceOffer([candidateApiOffer, verifiedDirectOffer]);
+    assert.equal(bestOffer?.canonicalOfferId, 'verif-dir-ht-02', 'selectBestSourceOffer picks verified direct contract');
+
+    // 2. Customer CTA mapping: Honest journey semantics
+    assert.equal(getCanonicalBookingModeCta('INSTANT_API'), 'Available — Continue');
+    assert.equal(getCanonicalBookingModeCta('MANUAL_ALLOTMENT'), 'Available — Continue');
+    assert.equal(getCanonicalBookingModeCta('REQUEST_TO_BOOK'), 'Request Availability');
+    assert.equal(getCanonicalBookingModeCta('MANUAL_CONFIRMATION'), 'Submit Details');
+    assert.equal(getCanonicalBookingModeCta('INFORMATION_ONLY'), 'Explore / Search');
+
+    // 3. Technical Leak Guard: No technical source types in customer badges
+    const customerBadges = ['Available — Continue', 'Instant Confirmation', 'Direct Rate'];
+    assert.ok(validateNoTechnicalLeakInCustomerBadges(customerBadges), 'Clean customer badges pass leak validation');
+
+    const leakingBadges = ['SUPPLIER_API Available', 'MANUAL_CONTRACT'];
+    assert.equal(validateNoTechnicalLeakInCustomerBadges(leakingBadges), false, 'Technical terms caught by leak validator');
+
+    // 4. Content layer isolation from checkout
+    assert.throws(() => {
+      assertDiscoveryLayerCannotEnterInventoryCheckout({ sellability: 'DISCOVERY_ONLY' });
+    }, /Content Layer Safety Guard: Discovery\/Editorial content/, 'Discovery content blocked from checkout');
+  });
+
+  it('enforces Full 18-Attribute Manual Contract Model & Operational Stop-Sell Toggle (GPT Audit v2.2)', async () => {
+    const service = new ManualInventoryService(CANONICAL_MANUAL_LISTINGS);
+    const listings = service.getAllListings();
+    assert.ok(listings.length >= 3, 'Manual listings catalog loaded');
+
+    const charter = listings.find(l => l.id === 'charter-cmb-mle-airtaxi')!;
+    // Verify 18 canonical attributes
+    assert.ok(charter.partnerSupplierId && charter.supplierLegalName, '1. Supplier Identity');
+    assert.ok(charter.productType && charter.canonicalEntityId, '2. Product & Canonical Entity ID');
+    assert.ok(charter.contractReference && charter.effectiveFromIso, '3. Contract & Effective Window');
+    assert.ok(charter.contractedBaseCost && charter.standardSellingPriceLkr, '4. Net Cost & Selling Price');
+    assert.equal(charter.costCurrency, 'LKR', '5. Currency');
+    assert.equal(charter.isTaxInclusive, true, '6. Tax Inclusive');
+    assert.ok(charter.availableQuota && charter.allotmentTotal, '7. Allotment Quota');
+    assert.ok(charter.validFromIso && charter.validUntilIso, '8. Sales Window');
+    assert.ok(charter.travelValidFromIso && charter.travelValidUntilIso, '9. Travel Window');
+    assert.ok(Array.isArray(charter.blackoutDates), '10. Blackout Dates');
+    assert.equal(charter.isStopSaleActive, false, '11. Stop-Sell Initial State (Active)');
+    assert.equal(charter.bookingMode, 'REQUEST_TO_BOOK', '12. Booking Mode');
+    assert.equal(charter.partnerSlaHours, 4, '13. Partner SLA');
+    assert.ok(charter.cancellationPolicy, '14. Cancellation Policy');
+    assert.equal(charter.maxOccupancy, 8, '15. Occupancy Limits');
+    assert.ok(charter.inclusions.length > 0, '16. Content & Inclusions');
+    assert.equal(charter.status, 'PUBLISHED', '17. Publishing Status');
+    assert.ok(charter.auditTrail.length > 0, '18. Immutable Audit Trail');
+
+    // Test Operational Stop-Sell Toggle
+    const adminUser = { id: 'usr_ops_01', name: 'Operations Lead' };
+    service.toggleStopSale(charter.id, adminUser, 'Bad weather in Male Lagoon: suspend charter seaplane');
+    
+    const updated = service.getListingById(charter.id)!;
+    assert.equal(updated.isStopSaleActive, true, 'Stop-sell immediately suspended listing');
+    assert.equal(updated.auditTrail[updated.auditTrail.length - 1].action, 'STOP_SALE_ACTIVATED');
+
+    // Active customer query must exclude stopped-sale items
+    const activeListings = service.queryListings({ productType: 'flights', onlyActive: true });
+    assert.equal(activeListings.some(l => l.id === charter.id), false, 'Stopped-sale charter excluded from customer search results');
+
+    // Lift stop-sell
+    service.toggleStopSale(charter.id, adminUser, 'Weather cleared: resume flights');
+    assert.equal(service.getListingById(charter.id)!.isStopSaleActive, false, 'Stop-sell lifted');
   });
 });

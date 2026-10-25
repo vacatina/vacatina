@@ -257,3 +257,74 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
    */
   public abstract normalize(raw: TRaw): CanonicalOfferEntity;
 }
+
+// ----------------------------------------------------------------------------
+// Abstract Product Category Supplier Adapters (GPT Audit v2.2)
+// Decouples domain architecture from vendor brand names (Duffel, LiteAPI, Viator, etc.)
+// ----------------------------------------------------------------------------
+
+export abstract class FlightSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'flights' });
+  }
+}
+
+export abstract class HotelSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'hotels' });
+  }
+}
+
+export abstract class ActivitySupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'activities' });
+  }
+}
+
+export abstract class SightseeingSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'sightseeing' });
+  }
+}
+
+export abstract class RailSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'rails' });
+  }
+}
+
+export abstract class CruiseSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'cruises' });
+  }
+}
+
+export abstract class CarRentalSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'cars' });
+  }
+}
+
+export abstract class InsuranceSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'insurance' });
+  }
+}
+
+export abstract class VisaServiceSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'visa' });
+  }
+}
+
+export abstract class PackageBundlerSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super({ ...config, productType: 'packages' });
+  }
+}
+
+export abstract class ManualContractSupplierAdapter<TRaw = unknown> extends BaseSupplierAdapter<TRaw> {
+  constructor(config: SupplierAdapterConfig) {
+    super(config);
+  }
+}

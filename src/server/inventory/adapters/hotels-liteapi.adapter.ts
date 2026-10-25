@@ -3,7 +3,7 @@
  * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md (Q3/Q9/Q10/Q11)
  * ============================================================================ */
 
-import { BaseSupplierAdapter } from './base.adapter.ts';
+import { BaseSupplierAdapter, HotelSupplierAdapter } from './base.adapter.ts';
 import type {
   BookingCancelResult,
   BookingConfirmResult,
@@ -32,7 +32,7 @@ export interface RawLiteApiHotelOffer {
   amenities?: string[];
 }
 
-export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOffer> {
+export class HotelsLiteApiAdapter extends HotelSupplierAdapter<RawLiteApiHotelOffer> {
   constructor(environment: 'sandbox' | 'production' = 'sandbox', apiKey?: string) {
     super({
       supplierId: 'LITEAPI',

@@ -10,7 +10,7 @@
  * ============================================================================ */
 
 import type { CanonicalOfferEntity } from './types.ts';
-import { isOfferEligibleForPinOverride } from './types.ts';
+import { isOfferEligibleForPinOverride, selectBestSourceOffer } from './types.ts';
 
 export class DeduplicationService {
   /**
@@ -76,9 +76,13 @@ export class DeduplicationService {
 
     const consolidated: CanonicalOfferEntity[] = [];
 
-    // 2. Resolve duplicates per key
-    for (const [_, group] of grouped.entries()) {
+    // 2. Resolve duplicates per key (Canonical Entity Resolution)
+    for (const [key, group] of grouped.entries()) {
+      const entityId = `ent_${key}`;
+
       if (group.length === 1) {
+        group[0].canonicalEntityId = group[0].canonicalEntityId || entityId;
+        group[0].alternateSourceOfferIds = group[0].alternateSourceOfferIds || [];
         consolidated.push(group[0]);
         continue;
       }
@@ -86,26 +90,21 @@ export class DeduplicationService {
       // Helper to identify direct Vacatina inventory
       const isDirectInventory = (src: string) => ['DIRECT_CONTRACT', 'MANUAL_SERVICE', 'CURATED_PACKAGE', 'MANUAL'].includes(src);
 
-      // Tie-Breaking Strategy:
-      // Priority A: Pin-Above-API strictly if eligible (published, audit reason, available, valid dates)
-      const pinnedDirect = group.find(o => isOfferEligibleForPinOverride(o));
-      if (pinnedDirect) {
-        consolidated.push(pinnedDirect);
-        continue;
+      // Multi-criteria selection: evaluate score across price, certification, allotment, margin, cancellation
+      const winningOffer = selectBestSourceOffer(group) || group[0];
+      winningOffer.canonicalEntityId = entityId;
+      winningOffer.alternateSourceOfferIds = group
+        .filter(o => o.canonicalOfferId !== winningOffer.canonicalOfferId)
+        .map(o => o.canonicalOfferId);
+
+      // If best selected offer is a Direct Contract competing against API, enrich badge
+      if (isDirectInventory(winningOffer.sourceType) && group.some(o => o.sourceType === 'API')) {
+        if (!winningOffer.subtitle.includes('Exclusive Direct Deal')) {
+          winningOffer.subtitle = `${winningOffer.subtitle} · Exclusive Direct Deal`;
+        }
       }
 
-      // Priority B: Best Price Wins (lowest selling price)
-      const sortedByPrice = [...group].sort((a, b) => 
-        a.pricing.finalSellingPriceMinor - b.pricing.finalSellingPriceMinor
-      );
-      const bestPriceOffer = sortedByPrice[0];
-
-      // If best price is a Direct Contract, enrich with direct deal badge
-      if (isDirectInventory(bestPriceOffer.sourceType) && sortedByPrice.some(o => o.sourceType === 'API')) {
-        bestPriceOffer.subtitle = `${bestPriceOffer.subtitle} · Exclusive Direct Deal`;
-      }
-
-      consolidated.push(bestPriceOffer);
+      consolidated.push(winningOffer);
     }
 
     // 3. Final Ordering:
