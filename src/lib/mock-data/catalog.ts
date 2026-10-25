@@ -35,7 +35,13 @@ export const CANONICAL_TRIP_BUCKET_BASELINE: TripBucketCandidate[] = [
     holdStatusText: 'Sample rate · refresh before booking',
     primaryActionLabel: 'Modify Flight',
     supplierName: 'Direct Airline Tariff (Prototype)',
-    integrationMode: 'ADAPTER-READY'
+    integrationMode: 'ADAPTER-READY',
+    offerId: 'vct-fl-api-duffel-cmb-lhr-001',
+    sourceType: 'API',
+    confirmationMode: 'INSTANT_CONFIRM',
+    rawSupplierPrice: 232000,
+    supplierBaseCurrency: 'LKR',
+    markupAmountLkr: 16500
   },
   {
     id: 'tb-hotel-london-deluxe',
@@ -50,7 +56,13 @@ export const CANONICAL_TRIP_BUCKET_BASELINE: TripBucketCandidate[] = [
     holdStatusText: 'Indicative room rate · revalidation required',
     primaryActionLabel: 'Change Room',
     supplierName: 'Hotel Partner Rate (Prototype)',
-    integrationMode: 'ADAPTER-READY'
+    integrationMode: 'ADAPTER-READY',
+    offerId: 'vct-ht-api-liteapi-lon-001',
+    sourceType: 'API',
+    confirmationMode: 'INSTANT_CONFIRM',
+    rawSupplierPrice: 228000,
+    supplierBaseCurrency: 'LKR',
+    markupAmountLkr: 28500
   },
   {
     id: 'tb-visa-uk-standard',
@@ -65,7 +77,13 @@ export const CANONICAL_TRIP_BUCKET_BASELINE: TripBucketCandidate[] = [
     actionRequiredText: 'Action required: Provide passport details & travel dates to include in Ready estimate.',
     primaryActionLabel: 'Complete Details',
     supplierName: 'Consular Advisory Desk (Prototype)',
-    integrationMode: 'ADAPTER-READY'
+    integrationMode: 'ADAPTER-READY',
+    offerId: 'vct-vs-manual-uk-standard-001',
+    sourceType: 'MANUAL',
+    confirmationMode: 'ASSISTED_SERVICE',
+    rawSupplierPrice: 38000,
+    supplierBaseCurrency: 'LKR',
+    markupAmountLkr: 7000
   }
 ];
 
@@ -220,6 +238,21 @@ export const PROTOTYPE_FX_RATES_FROM_LKR: Record<
 };
 
 export const CURRENCY_RATES_FROM_LKR = PROTOTYPE_FX_RATES_FROM_LKR;
+
+export const CANONICAL_EXCHANGE_RATES_TO_LKR: Record<SupportedCurrency, number> = {
+  LKR: 1,
+  USD: 300,
+  AED: 82,
+  EUR: 325,
+  GBP: 380,
+  SGD: 222,
+  AUD: 196,
+  INR: 3.6,
+  SAR: 80,
+  JPY: 2.0,
+  CHF: 340,
+  CAD: 218
+};
 
 export function formatCurrencyAmount(
   amountLkr: number,

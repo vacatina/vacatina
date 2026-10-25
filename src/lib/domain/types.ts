@@ -103,6 +103,13 @@ export interface TripBucketCandidate {
   primaryActionLabel?: string;
   supplierName: string;
   integrationMode: IntegrationClassification;
+  // Hybrid Inventory & Canonical Offer Extensions
+  offerId?: string;
+  sourceType?: 'API' | 'MANUAL' | 'HYBRID';
+  confirmationMode?: 'INSTANT_CONFIRM' | 'REQUEST_TO_CONFIRM' | 'ASSISTED_SERVICE';
+  rawSupplierPrice?: number;
+  supplierBaseCurrency?: SupportedCurrency;
+  markupAmountLkr?: number;
 }
 
 export interface TripBucketSummary {
@@ -133,6 +140,7 @@ export interface SupplierAdapterMetadata {
   runtimeStatus: IntegrationClassification;
   credentialsConfigured: boolean;
   notes: string;
+  inventorySourceMode?: 'API' | 'MANUAL' | 'HYBRID';
 }
 
 export interface ConfigurableProductOption {

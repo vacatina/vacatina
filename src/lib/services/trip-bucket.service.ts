@@ -19,6 +19,7 @@ import type {
   TripBucketItemState,
   TripBucketSummary
 } from '../domain/types.ts';
+import type { VacatinaNormalizedOffer } from '../domain/inventory-models.ts';
 import {
   CANONICAL_TRIP_BUCKET_BASELINE,
   SCREEN_04_CANONICAL_STATES
@@ -284,9 +285,126 @@ export class TripBucketService {
     return { ...item };
   }
 
+  /**
+   * Stages a canonical normalized offer into the Trip Bucket.
+   * Preserves offerId, sourceType, confirmationMode, raw supplier price, and pricing layers.
+   */
+  public stageNormalizedOffer(
+    offer: VacatinaNormalizedOffer,
+    customState?: TripBucketItemState
+  ): TripBucketCandidate {
+    const isRequestToConfirm = offer.confirmationMode === 'REQUEST_TO_CONFIRM';
+    const isAssistedService = offer.confirmationMode === 'ASSISTED_SERVICE';
+
+    let initialState: TripBucketItemState = customState || 'ready';
+    let actionRequiredText: string | undefined = undefined;
+    let holdStatusText: string = 'Instant confirmation eligible · Ready subtotal staged';
+
+    if (isRequestToConfirm) {
+      initialState = 'needs_action';
+      actionRequiredText = 'Request to Confirm: Supplier confirmation required before guaranteed booking.';
+      holdStatusText = 'On Request · Subject to partner allocation';
+    } else if (isAssistedService) {
+      initialState = 'needs_action';
+      actionRequiredText = 'Assisted Service: Applicant document upload required.';
+      holdStatusText = 'Consular advisory desk staging';
+    }
+
+    const candidate: TripBucketCandidate = {
+      id: `tb-${offer.offerId}`,
+      productType: offer.productType,
+      productLabel: offer.productType.charAt(0).toUpperCase() + offer.productType.slice(1),
+      title: offer.title,
+      subtitle: offer.subtitle,
+      dateSummary: 'Travel window confirmed',
+      travellerSummary: 'Standard party configuration',
+      state: initialState,
+      priceLkr: offer.pricing.customerSellingPriceLkr,
+      holdStatusText,
+      actionRequiredText,
+      primaryActionLabel: isRequestToConfirm ? 'Check Request' : 'Complete Details',
+      supplierName: offer.supplierName,
+      integrationMode: offer.sourceType === 'API' ? 'LIVE' : 'ADAPTER-READY',
+      offerId: offer.offerId,
+      sourceType: offer.sourceType,
+      confirmationMode: offer.confirmationMode,
+      rawSupplierPrice: offer.pricing.supplierRawBasePrice,
+      supplierBaseCurrency: offer.pricing.supplierBaseCurrency,
+      markupAmountLkr: offer.pricing.vacatinaMarkup.amountLkr
+    };
+
+    this.stageCandidate(candidate);
+    return candidate;
+  }
+
+  /**
+   * Explicitly confirms a partner allocation for an on-request item,
+   * permitting it to become Ready for booking.
+   */
+  public confirmOnRequestAllocation(id: string, partnerReference?: string): TripBucketCandidate | null {
+    const item = this.items.find(i => i.id === id);
+    if (!item) return null;
+    item.state = 'ready';
+    item.holdStatusText = partnerReference
+      ? `Partner allocation confirmed (${partnerReference}) · Ready for booking`
+      : 'Partner allocation confirmed · Ready for booking';
+    delete item.actionRequiredText;
+    this.emit();
+    return { ...item };
+  }
+
+  /**
+   * Returns breakdown of inventory source modes and confirmation workflows
+   * currently present in the active Trip Bucket.
+   */
+  public getMixedSourceBreakdown(): {
+    apiCount: number;
+    manualCount: number;
+    hybridCount: number;
+    instantCount: number;
+    onRequestCount: number;
+    assistedServiceCount: number;
+  } {
+    let apiCount = 0;
+    let manualCount = 0;
+    let hybridCount = 0;
+    let instantCount = 0;
+    let onRequestCount = 0;
+    let assistedServiceCount = 0;
+
+    for (const item of this.items) {
+      if (item.sourceType === 'API') apiCount++;
+      else if (item.sourceType === 'MANUAL') manualCount++;
+      else if (item.sourceType === 'HYBRID') hybridCount++;
+
+      if (item.confirmationMode === 'INSTANT_CONFIRM') instantCount++;
+      else if (item.confirmationMode === 'REQUEST_TO_CONFIRM') onRequestCount++;
+      else if (item.confirmationMode === 'ASSISTED_SERVICE') assistedServiceCount++;
+    }
+
+    return {
+      apiCount,
+      manualCount,
+      hybridCount,
+      instantCount,
+      onRequestCount,
+      assistedServiceCount
+    };
+  }
+
   public transitionItemState(id: string, nextState: TripBucketItemState, note?: string): void {
     const item = this.items.find(i => i.id === id);
     if (!item) return;
+
+    // Integrity Guard: An on-request item CANNOT falsely become 'ready' without confirmed allocation!
+    if (nextState === 'ready' && item.confirmationMode === 'REQUEST_TO_CONFIRM') {
+      item.state = 'needs_action';
+      item.actionRequiredText = note || 'Request to Confirm pending: Partner confirmation required before booking.';
+      item.holdStatusText = 'On Request · Pending partner response';
+      this.emit();
+      return;
+    }
+
     item.state = nextState;
     if (nextState === 'ready') {
       item.holdStatusText = note || 'Configuration ready · Included in Ready subtotal';
@@ -311,6 +429,13 @@ export class TripBucketService {
         delete item.actionRequiredText;
         break;
       case 'needs_action':
+        // Integrity Guard: Request-to-confirm items cannot become ready without partner approval
+        if (item.confirmationMode === 'REQUEST_TO_CONFIRM') {
+          item.state = 'needs_action';
+          item.holdStatusText = 'Supplier confirmation requested · Awaiting partner response';
+          item.actionRequiredText = 'Partner confirmation pending. You will be notified within SLA.';
+          break;
+        }
         item.state = 'ready';
         item.holdStatusText = 'Passport details uploaded · Ready for submission';
         delete item.actionRequiredText;

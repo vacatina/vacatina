@@ -11,6 +11,12 @@ import { VacatinaLogoFull, VacatinaLogoResponsive, VacatinaMark, renderSvgGlobeI
 import { VACATINA_SOCIAL_LINKS } from '../src/lib/constants/social.ts';
 import { getStoredCookiePreferences, saveCookiePreferences } from '../src/components/dialogs/legal-cookie-modal.ts';
 import { ALL_10_TRAVEL_PRODUCTS } from '../src/features/bundle/index.ts';
+import { PricingEngineService } from '../src/lib/services/pricing-engine.service.ts';
+import { InventoryNormalizerService } from '../src/lib/services/inventory-normalizer.service.ts';
+import { SearchAggregatorService } from '../src/lib/services/search-aggregator.service.ts';
+import { BookingOrchestratorService } from '../src/lib/services/booking-orchestrator.service.ts';
+import { CANONICAL_HYBRID_CATALOG } from '../src/lib/mock-data/hybrid-catalog.ts';
+import { getCustomerBuyingCondition } from '../src/lib/domain/inventory-models.ts';
 
 describe('Vacatina Domain & Validation Unit Tests', () => {
   it('enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order', () => {
@@ -297,5 +303,185 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
       assert.ok(art.includes('<h3') && art.includes('<a href="/'), `Card ${idx + 1} title must be wrapped in canonical <a> link`);
       assert.ok(art.includes('<a href="/') && art.includes('class="w-full bg-brand-primary'), `Card ${idx + 1} primary CTA must be a canonical <a> link`);
     });
+  });
+
+  it('enforces Hybrid Inventory Strategy: canonical offer model, 3 source modes, 3 confirmation modes, and buying condition mapping', () => {
+    // 1. Verify Catalog Coverage across all 3 source types: API, MANUAL, HYBRID
+    const sourceTypes = new Set(CANONICAL_HYBRID_CATALOG.map(o => o.sourceType));
+    assert.ok(sourceTypes.has('API'), 'Catalog must contain API inventory');
+    assert.ok(sourceTypes.has('MANUAL'), 'Catalog must contain MANUAL inventory');
+    assert.ok(sourceTypes.has('HYBRID'), 'Catalog must contain HYBRID inventory');
+
+    // 2. Verify Confirmation Modes: INSTANT_CONFIRM, REQUEST_TO_CONFIRM, ASSISTED_SERVICE
+    const confirmModes = new Set(CANONICAL_HYBRID_CATALOG.map(o => o.confirmationMode));
+    assert.ok(confirmModes.has('INSTANT_CONFIRM'), 'Must support INSTANT_CONFIRM');
+    assert.ok(confirmModes.has('REQUEST_TO_CONFIRM'), 'Must support REQUEST_TO_CONFIRM');
+    assert.ok(confirmModes.has('ASSISTED_SERVICE'), 'Must support ASSISTED_SERVICE');
+
+    // 3. Verify Stable Canonical IDs (Never display text like "Dubai" or "London Deluxe")
+    CANONICAL_HYBRID_CATALOG.forEach(offer => {
+      assert.ok(offer.offerId.startsWith('vct-'), `Offer ID must start with canonical prefix: ${offer.offerId}`);
+      assert.ok(!offer.offerId.includes(' '), `Offer ID must not contain whitespace: ${offer.offerId}`);
+      assert.ok(offer.location.countryCode.length >= 2, 'Must have structured location countryCode');
+      assert.ok(offer.inclusions.length > 0, 'Must have audited inclusions');
+    });
+
+    // 4. Honest B2C Customer Buying Condition Mapping (Never expose internal "API/Manual" tags)
+    const instantOffer = CANONICAL_HYBRID_CATALOG.find(o => o.confirmationMode === 'INSTANT_CONFIRM' && o.availabilityStatus === 'LIVE')!;
+    assert.equal(getCustomerBuyingCondition(instantOffer), 'Instant Confirmation');
+
+    const onRequestOffer = CANONICAL_HYBRID_CATALOG.find(o => o.confirmationMode === 'REQUEST_TO_CONFIRM')!;
+    assert.equal(getCustomerBuyingCondition(onRequestOffer), 'Request to Confirm');
+
+    const visaOffer = CANONICAL_HYBRID_CATALOG.find(o => o.productType === 'visa')!;
+    assert.equal(getCustomerBuyingCondition(visaOffer), 'Available');
+  });
+
+  it('enforces 4-layer pricing architecture with raw supplier cost preservation, percentage/fixed markups, and auditable overrides', () => {
+    // Layer 1: Raw supplier base price
+    // Layer 2: Vacatina markup (percentage or fixed)
+    // Layer 3: Approved administrative override
+    // Layer 4: Final customer selling price
+
+    // Case A: Percentage markup (e.g. USD 500 base, 10% markup)
+    const pricingPct = PricingEngineService.calculatePricing({
+      supplierRawBasePrice: 500,
+      supplierBaseCurrency: 'USD',
+      markup: {
+        type: 'PERCENTAGE',
+        value: 10.0,
+        ruleId: 'AIR_10_PCT',
+        ruleDescription: '10% Standard Airline Markup'
+      },
+      customerDisplayCurrency: 'LKR'
+    });
+
+    assert.equal(pricingPct.supplierRawBasePrice, 500, 'Raw supplier cost must be preserved');
+    assert.equal(pricingPct.supplierBaseCurrency, 'USD');
+    assert.equal(pricingPct.exchangeRateToBase, 300); // 1 USD = 300 LKR
+    assert.equal(pricingPct.supplierBasePriceLkr, 500 * 300); // LKR 150,000
+    assert.equal(pricingPct.vacatinaMarkup.amountLkr, Math.round(150000 * 0.1)); // LKR 15,000
+    assert.equal(pricingPct.customerSellingPriceLkr, 150000 + 15000); // LKR 165,000
+
+    // Case B: Fixed markup (e.g. LKR 8,000 fixed transfer margin)
+    const pricingFixed = PricingEngineService.calculatePricing({
+      supplierRawBasePrice: 20000,
+      supplierBaseCurrency: 'LKR',
+      markup: {
+        type: 'FIXED',
+        value: 8000,
+        ruleId: 'CAR_FIXED_8K'
+      },
+      customerDisplayCurrency: 'LKR'
+    });
+    assert.equal(pricingFixed.supplierBasePriceLkr, 20000);
+    assert.equal(pricingFixed.vacatinaMarkup.amountLkr, 8000);
+    assert.equal(pricingFixed.customerSellingPriceLkr, 28000);
+
+    // Case C: Auditable Administrative Price Override
+    const overridden = PricingEngineService.applyAdminOverride(
+      pricingPct,
+      160000,
+      'Director Special Corporate Waiver',
+      'usr-admin-88',
+      'Operations Director'
+    );
+    assert.equal(overridden.supplierRawBasePrice, 500, 'Original supplier raw cost must NEVER be destroyed by override');
+    assert.equal(overridden.customerSellingPriceLkr, 160000, 'Selling price must reflect approved override');
+    assert.ok(overridden.manualOverride, 'Manual override audit record must exist');
+    assert.equal(overridden.manualOverride?.previousValueLkr, 165000);
+    assert.equal(overridden.manualOverride?.newValueLkr, 160000);
+    assert.equal(overridden.manualOverride?.varianceLkr, -5000);
+    assert.equal(overridden.manualOverride?.overrideReason, 'Director Special Corporate Waiver');
+    assert.equal(overridden.manualOverride?.authorizedByUserId, 'usr-admin-88');
+
+    // Case D: Negative price guard
+    assert.throws(() => {
+      PricingEngineService.calculatePricing({
+        supplierRawBasePrice: -100,
+        supplierBaseCurrency: 'USD',
+        markup: { type: 'PERCENTAGE', value: 10 }
+      });
+    }, /cannot be negative/);
+  });
+
+  it('enforces Search Aggregation, Deduplication, and Mixed-Source Trip Bucket Orchestration with On-Request Guards', () => {
+    const aggregator = new SearchAggregatorService(CANONICAL_HYBRID_CATALOG);
+
+    // 1. Multi-source search aggregation
+    const allResults = aggregator.search();
+    assert.ok(allResults.length >= 10, 'Aggregator must return offers across all products');
+
+    const flightResults = aggregator.search({ productType: 'flights' });
+    assert.ok(flightResults.length >= 2, 'Must aggregate both API GDS flight and Manual charter');
+    assert.ok(flightResults.some(f => f.sourceType === 'API'));
+    assert.ok(flightResults.some(f => f.sourceType === 'MANUAL'));
+
+    // 2. Filter by instant confirmation
+    const instantResults = aggregator.search({ instantConfirmOnly: true });
+    instantResults.forEach(offer => {
+      assert.equal(offer.confirmationMode, 'INSTANT_CONFIRM');
+    });
+
+    // 3. Mixed-Source Trip Bucket Journey
+    const bucket = new TripBucketService([]);
+    assert.equal(bucket.getItems().length, 0);
+
+    const apiFlight = CANONICAL_HYBRID_CATALOG.find(o => o.productType === 'flights' && o.sourceType === 'API')!;
+    const manualHotel = CANONICAL_HYBRID_CATALOG.find(o => o.productType === 'hotels' && o.sourceType === 'MANUAL')!;
+    const manualVisa = CANONICAL_HYBRID_CATALOG.find(o => o.productType === 'visa')!;
+    const onRequestCharter = CANONICAL_HYBRID_CATALOG.find(o => o.confirmationMode === 'REQUEST_TO_CONFIRM')!;
+
+    // Stage API flight (instant confirm) -> Ready
+    bucket.stageNormalizedOffer(apiFlight);
+    // Stage Manual hotel (instant confirm) -> Ready
+    bucket.stageNormalizedOffer(manualHotel);
+    // Stage Manual visa (assisted service) -> Needs Action
+    bucket.stageNormalizedOffer(manualVisa);
+    // Stage On-request charter -> Needs Action
+    bucket.stageNormalizedOffer(onRequestCharter);
+
+    const breakdown = bucket.getMixedSourceBreakdown();
+    assert.equal(breakdown.apiCount, 1);
+    assert.equal(breakdown.manualCount, 3);
+    assert.equal(breakdown.instantCount, 2);
+    assert.equal(breakdown.onRequestCount, 1);
+    assert.equal(breakdown.assistedServiceCount, 1);
+
+    const summary = bucket.getSummary();
+    assert.equal(summary.totalItems, 4);
+    assert.equal(summary.readyCount, 2); // Only instant-confirm items are ready
+    assert.equal(summary.needsActionCount, 2); // Visa + On-request
+
+    // 4. Critical Invariant: On-Request items CANNOT falsely become 'ready' without confirmed allocation!
+    const charterCandidateId = `tb-${onRequestCharter.offerId}`;
+    bucket.transitionItemState(charterCandidateId, 'ready');
+    const guardedSummary = bucket.getSummary();
+    assert.equal(guardedSummary.readyCount, 2, 'On-request item must NOT become ready via standard transition');
+    assert.equal(guardedSummary.needsActionCount, 2);
+
+    // Confirm partner allocation explicitly -> Promoted to Ready
+    bucket.confirmOnRequestAllocation(charterCandidateId, 'SRILANKAN-AIRTAXI-CONFIRM-882');
+    const confirmedSummary = bucket.getSummary();
+    assert.equal(confirmedSummary.readyCount, 3, 'After explicit partner allocation, item becomes Ready');
+
+    // 5. Booking Orchestrator: Multi-Channel Component Routing
+    const dossier = BookingOrchestratorService.orchestrateBooking(
+      [apiFlight, manualHotel, manualVisa, onRequestCharter],
+      { name: 'Dr. Rohan Silva', email: 'rohan.silva@example.com' }
+    );
+
+    assert.equal(dossier.totalComponents, 4);
+    assert.equal(dossier.instantConfirmedCount, 2);
+    assert.equal(dossier.onRequestCount, 1);
+    assert.equal(dossier.assistedServiceCount, 1);
+    assert.equal(dossier.isFullyInstantConfirmed, false);
+    assert.equal(dossier.tickets.length, 4);
+
+    // Verify routing methods:
+    assert.ok(dossier.tickets.some(t => t.fulfillmentMethod === 'SUPPLIER_API'));
+    assert.ok(dossier.tickets.some(t => t.fulfillmentMethod === 'MANUAL_INVENTORY'));
+    assert.ok(dossier.tickets.some(t => t.fulfillmentMethod === 'ON_REQUEST_DISPATCH'));
+    assert.ok(dossier.tickets.some(t => t.fulfillmentMethod === 'ASSISTED_SERVICE_CASE'));
   });
 });

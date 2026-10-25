@@ -48,6 +48,11 @@ import { favoritesService } from '../lib/services/favorites.service.ts';
 import { searchCommandService } from '../lib/services/search.service.ts';
 import { localeService } from '../lib/services/locale.service.ts';
 import { routerService } from '../lib/services/router.service.ts';
+import { PricingEngineService } from '../lib/services/pricing-engine.service.ts';
+import { InventoryNormalizerService } from '../lib/services/inventory-normalizer.service.ts';
+import { SearchAggregatorService, searchAggregatorService } from '../lib/services/search-aggregator.service.ts';
+import { BookingOrchestratorService } from '../lib/services/booking-orchestrator.service.ts';
+import { CANONICAL_HYBRID_CATALOG } from '../lib/mock-data/hybrid-catalog.ts';
 import { SUPPLIER_ADAPTER_REGISTRY } from '../lib/adapters/supplier-adapters.ts';
 import { telemetry } from '../lib/analytics/telemetry.ts';
 
@@ -123,7 +128,12 @@ export function bootstrapVacatinaApp(): void {
     openLegalAndCookieModal,
     getStoredCookiePreferences,
     saveCookiePreferences,
-    updateTripControlsVisibility
+    updateTripControlsVisibility,
+    pricingEngine: PricingEngineService,
+    inventoryNormalizer: InventoryNormalizerService,
+    searchAggregator: searchAggregatorService,
+    bookingOrchestrator: BookingOrchestratorService,
+    hybridCatalog: CANONICAL_HYBRID_CATALOG
   };
 
   telemetry.track('app_bootstrapped', { version: '4.1.0-ultra-reconstructed-locked' });

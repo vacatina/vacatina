@@ -23,6 +23,7 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'VERIFY-LIVE',
     runtimeStatus: 'ADAPTER-READY',
     credentialsConfigured: false,
+    inventorySourceMode: 'API',
     notes: 'Typed FlightSupplierAdapter interface active; using deterministic mock inventory (no DUFFEL_ACCESS_TOKEN in local env).'
   },
   {
@@ -31,6 +32,7 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'VERIFY-LIVE',
     runtimeStatus: 'ADAPTER-READY',
     credentialsConfigured: false,
+    inventorySourceMode: 'API',
     notes: 'Typed HotelSupplierAdapter interface active; using deterministic mock room/tariff blocks (no LITEAPI_KEY in local env).'
   },
   {
@@ -39,6 +41,7 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'VERIFY-LIVE',
     runtimeStatus: 'ADAPTER-READY',
     credentialsConfigured: false,
+    inventorySourceMode: 'API',
     notes: 'AuthSessionAdapter interface active with guest & demo traveller session switch (no CLERK_PUBLISHABLE_KEY in local env).'
   },
   {
@@ -47,6 +50,7 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'VERIFY-LIVE',
     runtimeStatus: 'ADAPTER-READY',
     credentialsConfigured: false,
+    inventorySourceMode: 'API',
     notes: 'TripPersistenceAdapter active; persists Trip Bucket & Saved Favorites via browser localStorage when DATABASE_URL is absent.'
   },
   {
@@ -55,6 +59,7 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'VERIFY-LIVE',
     runtimeStatus: 'ADAPTER-READY',
     credentialsConfigured: false,
+    inventorySourceMode: 'MANUAL',
     notes: 'VisaDocumentVaultAdapter simulates encrypted bio-page scan verification and promotes Visa items from Needs Action to Ready.'
   },
   {
@@ -63,6 +68,7 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'VERIFY-LIVE',
     runtimeStatus: 'ADAPTER-READY',
     credentialsConfigured: false,
+    inventorySourceMode: 'API',
     notes: 'PaymentGatewayAdapter validates Ready items subtotal before dossier checkout simulation.'
   },
   {
@@ -71,7 +77,8 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'ADAPTER-READY',
     runtimeStatus: 'MOCK',
     credentialsConfigured: false,
-    notes: 'Airport transfer, private chauffeur, and self-drive car hire mock adapter.'
+    inventorySourceMode: 'HYBRID',
+    notes: 'Airport transfer API broker + Vacatina local private chauffeur fleet.'
   },
   {
     domain: 'Holiday Packages',
@@ -79,7 +86,8 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'MOCK',
     runtimeStatus: 'MOCK',
     credentialsConfigured: false,
-    notes: 'Curated multi-day package configurator with day-by-day itinerary and inclusion auditing.'
+    inventorySourceMode: 'HYBRID',
+    notes: 'Curated multi-day package configurator with dynamic hybrid bundling of API flights and manual boutique stays.'
   },
   {
     domain: 'Rails (High-Speed & Scenic Rail)',
@@ -87,7 +95,8 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'MOCK',
     runtimeStatus: 'MOCK',
     credentialsConfigured: false,
-    notes: 'Station-to-station rail schedule and cabin class mock adapter.'
+    inventorySourceMode: 'HYBRID',
+    notes: 'High-speed station API broker + manual panoramic Swiss/Sri Lanka scenic journeys.'
   },
   {
     domain: 'Cruises & Sea Voyages',
@@ -95,7 +104,8 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'MOCK',
     runtimeStatus: 'MOCK',
     credentialsConfigured: false,
-    notes: 'Ocean & regional archipelago stateroom configurator.'
+    inventorySourceMode: 'HYBRID',
+    notes: 'Major cruise line GDS broker + niche luxury boutique expedition partners.'
   },
   {
     domain: 'Activities & Day Experiences',
@@ -103,7 +113,8 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'MOCK',
     runtimeStatus: 'MOCK',
     credentialsConfigured: false,
-    notes: 'Participatory adventure, safari, watersports, and culinary workshop mock adapter.'
+    inventorySourceMode: 'HYBRID',
+    notes: 'Supplier API activities + direct contracted local experiences.'
   },
   {
     domain: 'Sightseeing Tours',
@@ -111,7 +122,8 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'MOCK',
     runtimeStatus: 'MOCK',
     credentialsConfigured: false,
-    notes: 'Guided landmark, cultural trail, and timed admission pass mock adapter.'
+    inventorySourceMode: 'MANUAL',
+    notes: 'Direct contracted licensed heritage guides and skip-the-line monument entries.'
   },
   {
     domain: 'Travel Insurance',
@@ -119,7 +131,8 @@ export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
     documentedStatus: 'MOCK',
     runtimeStatus: 'MOCK',
     credentialsConfigured: false,
-    notes: 'Single-trip, family, and annual multi-trip policy comparison mock adapter.'
+    inventorySourceMode: 'API',
+    notes: 'Underwritten insurance policy comparisons via partner underwriting API.'
   }
 ];
 
