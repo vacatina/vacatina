@@ -8,7 +8,7 @@
 
 export interface CanonicalRouteDefinition {
   path: string;
-  category: 'product_hub' | 'search_results' | 'offer_config' | 'resources' | 'company' | 'support' | 'account' | 'legal' | 'orchestration';
+  category: 'product_hub' | 'search_results' | 'offer_config' | 'resources' | 'company' | 'support' | 'account' | 'legal' | 'orchestration' | 'partner' | 'admin' | 'checkout';
   title: string;
   expectedBehavior: 'page_hub' | 'search_panel' | 'config_modal' | 'info_modal' | 'drawer' | 'account_portal';
   requiresAuth: boolean;
@@ -21,7 +21,21 @@ export const CANONICAL_ROUTES: Record<string, CanonicalRouteDefinition> = {
   '/trip-builder/results': { path: '/trip-builder/results', category: 'orchestration', title: 'Build Your Bundle Orchestration', expectedBehavior: 'config_modal', requiresAuth: false },
   '/trip-planner': { path: '/trip-planner', category: 'orchestration', title: 'Ask Vacatina — Structured Trip Planner', expectedBehavior: 'info_modal', requiresAuth: false },
   '/trip/review': { path: '/trip/review', category: 'orchestration', title: 'Trip Dossier Review & Unified Checkout', expectedBehavior: 'config_modal', requiresAuth: false },
+  '/trip-bucket': { path: '/trip-bucket', category: 'orchestration', title: 'Trip Bucket Workspace', expectedBehavior: 'drawer', requiresAuth: false },
+  '/trip': { path: '/trip', category: 'orchestration', title: 'Trip Workspace', expectedBehavior: 'drawer', requiresAuth: false },
   '/favorites': { path: '/favorites', category: 'orchestration', title: 'Saved Favorites Drawer', expectedBehavior: 'drawer', requiresAuth: false },
+  '/checkout': { path: '/checkout', category: 'checkout', title: 'Checkout & Trip Dossier Review', expectedBehavior: 'config_modal', requiresAuth: false },
+
+  // 1b. B2B Partner Portal & Admin Operations
+  '/partner': { path: '/partner', category: 'partner', title: 'B2B Partner Portal — Agency Operations', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/partner/clients': { path: '/partner/clients', category: 'partner', title: 'B2B Partner Client Roster', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/partner/quotes': { path: '/partner/quotes', category: 'partner', title: 'B2B Dynamic Quotes', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/partner/commissions': { path: '/partner/commissions', category: 'partner', title: 'B2B Commission Ledger', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/admin': { path: '/admin', category: 'admin', title: 'Vacatina Operations Backoffice', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/admin/triage': { path: '/admin/triage', category: 'admin', title: 'Operations Triage Queue', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/admin/listings': { path: '/admin/listings', category: 'admin', title: 'Manual Inventory CMS Manager', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/admin/pricing': { path: '/admin/pricing', category: 'admin', title: 'Pricing & Override Controls', expectedBehavior: 'account_portal', requiresAuth: true },
+  '/admin/audit': { path: '/admin/audit', category: 'admin', title: 'Platform Audit Trail', expectedBehavior: 'account_portal', requiresAuth: true },
 
   // 2. 10 Product Hubs
   '/flights': { path: '/flights', category: 'product_hub', title: 'Flights Product Hub', expectedBehavior: 'page_hub', requiresAuth: false, productType: 'flights' },
@@ -101,6 +115,11 @@ export const CANONICAL_ROUTES: Record<string, CanonicalRouteDefinition> = {
 export function isCanonicalRoute(path: string): boolean {
   if (CANONICAL_ROUTES[path]) return true;
   // Check parameterized paths
+  if (path.startsWith('/partner')) return true;
+  if (path.startsWith('/admin')) return true;
+  if (path.startsWith('/checkout')) return true;
+  if (path.startsWith('/bookings/')) return true;
+  if (path.startsWith('/manage/')) return true;
   if (path.startsWith('/flights/offer/')) return true;
   if (path.startsWith('/hotels/property/')) return true;
   if (path.startsWith('/visa-assistance/')) return true;

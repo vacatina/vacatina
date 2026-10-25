@@ -19,6 +19,12 @@ import { CANONICAL_HYBRID_CATALOG } from '../src/lib/mock-data/hybrid-catalog.ts
 import { getCustomerBuyingCondition, getBookingModeCta } from '../src/lib/domain/inventory-models.ts';
 import { manualInventoryService, ManualInventoryService } from '../src/lib/services/manual-inventory.service.ts';
 import { CANONICAL_ROUTES, isCanonicalRoute, getRouteMeta } from '../src/lib/constants/routes.ts';
+import { VacatinaStorageEngine } from '../src/server/db/storage.ts';
+import { AuthorizationEngine, type SecurityContext } from '../src/server/auth/rbac.ts';
+import { BookingSagaService } from '../src/server/services/booking-saga.service.ts';
+import { PaymentGatewayService } from '../src/server/services/payment-gateway.service.ts';
+import { VacatinaApiRouter } from '../src/server/api/router.ts';
+import { validateServerEnv } from '../src/server/config/env.ts';
 
 describe('Vacatina Domain & Validation Unit Tests', () => {
   it('enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order', () => {
@@ -644,5 +650,316 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.ok(meta);
     assert.equal(meta.category, 'offer_config');
     assert.equal(meta.productType, 'flights');
+  });
+
+  it('enforces Server Architecture, Database Schema, and Storage Engine invariants (ADR-001)', () => {
+    const storage = new VacatinaStorageEngine();
+
+    // 1. Pre-seeded Platform and Partner Organizations
+    const hqOrg = storage.getOrganization('org_vacatina_hq_001');
+    assert.ok(hqOrg);
+    assert.equal(hqOrg.type, 'PLATFORM');
+
+    const partnerOrg = storage.getOrganization('org_partner_ceylon_tours');
+    assert.ok(partnerOrg);
+    assert.equal(partnerOrg.type, 'AGENCY');
+    assert.equal(partnerOrg.currency, 'LKR');
+
+    // 2. Client Management and Integer Minor Unit Persistence
+    const clients = storage.getClientsByOrg(partnerOrg.id);
+    assert.ok(clients.length >= 1);
+    const client = clients[0];
+    assert.equal(client.corporateName, 'Dialog Axiata PLC');
+    assert.equal(client.creditLimitMinor, 250000000); // LKR 2,500,000.00 (Zero floating-point errors)
+
+    // 3. Immutable Audit Logging
+    const audit = storage.recordAuditLog({
+      action: 'CREDIT_LIMIT_UPDATED',
+      targetEntity: 'clients',
+      targetEntityId: client.id,
+      previousState: { creditLimitMinor: 200000000 },
+      newState: { creditLimitMinor: 250000000 },
+      justificationReason: 'Approved by Vacatina Financial Risk Committee'
+    });
+    assert.ok(audit.id);
+    assert.equal(audit.action, 'CREDIT_LIMIT_UPDATED');
+
+    const queriedLogs = storage.getAuditLogs('clients', client.id);
+    assert.ok(queriedLogs.length >= 1);
+    assert.equal(queriedLogs[0].justificationReason, 'Approved by Vacatina Financial Risk Committee');
+
+    // 4. Startup Environment Validator
+    const env = validateServerEnv({
+      NODE_ENV: 'test',
+      DATABASE_URL: 'postgresql://test_user:pass@localhost:5432/vacatina_test'
+    });
+    assert.equal(env.NODE_ENV, 'test');
+    assert.equal(env.DATABASE_POOL_MIN, 2);
+  });
+
+  it('enforces Tenant-Aware RBAC and strictly blocks cross-tenant leakage (ADR-003)', () => {
+    const agencyAContext: SecurityContext = {
+      userId: 'usr_agent_001',
+      email: 'sarah@agency-a.com',
+      role: 'BOOKING_AGENT',
+      organizationId: 'org_agency_a',
+      organizationType: 'AGENCY'
+    };
+
+    const agencyBContext: SecurityContext = {
+      userId: 'usr_agent_002',
+      email: 'david@agency-b.com',
+      role: 'BOOKING_AGENT',
+      organizationId: 'org_agency_b',
+      organizationType: 'AGENCY'
+    };
+
+    const customerContext: SecurityContext = {
+      userId: 'usr_cust_001',
+      email: 'traveller@gmail.com',
+      role: 'CUSTOMER'
+    };
+
+    // 1. Role Permission Checks
+    assert.ok(AuthorizationEngine.hasPermission(agencyAContext, 'agency:view_dashboard'));
+    assert.ok(AuthorizationEngine.hasPermission(agencyAContext, 'agency:create_quote'));
+    assert.equal(AuthorizationEngine.hasPermission(agencyAContext, 'platform:system_admin'), false);
+    assert.equal(AuthorizationEngine.hasPermission(customerContext, 'agency:view_dashboard'), false);
+
+    // 2. Tenant Ownership Guard (Cross-Tenant Leakage Protection)
+    // Agency A accessing Agency A resource -> ALLOWED
+    const allowedCheck = AuthorizationEngine.authorizeResourceAccess(agencyAContext, 'agency:manage_clients', 'org_agency_a');
+    assert.ok(allowedCheck.allowed);
+
+    // Agency A attempting to access Agency B resource -> STRICTLY FORBIDDEN!
+    const deniedCheck = AuthorizationEngine.authorizeResourceAccess(agencyAContext, 'agency:manage_clients', 'org_agency_b');
+    assert.equal(deniedCheck.allowed, false);
+    assert.ok(deniedCheck.reason?.includes('Tenant mismatch'));
+
+    // Customer attempting to access Agency A resource -> STRICTLY FORBIDDEN!
+    const customerDenied = AuthorizationEngine.authorizeResourceAccess(customerContext, 'agency:manage_clients', 'org_agency_a');
+    assert.equal(customerDenied.allowed, false);
+  });
+
+  it('enforces Distributed Booking Saga Orchestrator with partial-failure compensation (ADR-005)', async () => {
+    const storage = new VacatinaStorageEngine();
+    const saga = new BookingSagaService(storage);
+
+    const bucket = storage.getOrCreateTripBucket('sess_saga_test_001');
+
+    // 1. Staging ready items into bucket
+    const item1 = storage.addTripBucketItem({
+      tripBucketId: bucket.id,
+      canonicalOfferId: 'vct-fl-amadeus-cmb-dxb-001',
+      productType: 'flights',
+      sourceType: 'API',
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Colombo to Dubai Flight UL225',
+      configuration: { flightNumber: 'UL225' },
+      travellerManifest: { adults: 1 },
+      unitSellingPriceMinor: 18500000, // LKR 185,000.00
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    const item2 = storage.addTripBucketItem({
+      tripBucketId: bucket.id,
+      canonicalOfferId: 'vct-ht-direct-sri-kandalama-01',
+      productType: 'hotels',
+      sourceType: 'DIRECT_CONTRACT',
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Heritance Kandalama Deluxe Room',
+      configuration: { roomType: 'Deluxe' },
+      travellerManifest: { adults: 1 },
+      unitSellingPriceMinor: 4800000, // LKR 48,000.00
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    // 2. Execute Successful Multi-Product Saga
+    const successResult = await saga.executeBookingSaga({
+      tripBucketId: bucket.id,
+      customerEmail: 'alex@example.com',
+      customerName: 'Alex Morgan',
+      checkoutSessionId: 'cs_live_123',
+      idempotencyKey: 'idemp_saga_success_001'
+    });
+
+    assert.ok(successResult.bookingGroupId);
+    assert.ok(successResult.bookingReference.startsWith('VCT-2026-'));
+    assert.equal(successResult.overallStatus, 'CONFIRMED');
+    assert.equal(successResult.paymentStatus, 'SETTLED');
+    assert.equal(successResult.totalSellingPriceMinor, 23300000); // LKR 233,000.00
+    assert.equal(successResult.items.length, 2);
+    assert.ok(successResult.items.every(i => i.fulfillmentStatus === 'CONFIRMED'));
+    assert.equal(successResult.requiresManualReview, false);
+
+    // 3. Test Partial Failure & Compensation Flow
+    const partialBucket = storage.getOrCreateTripBucket('sess_partial_test_002');
+    storage.addTripBucketItem({
+      tripBucketId: partialBucket.id,
+      canonicalOfferId: 'vct-fl-success-001',
+      productType: 'flights',
+      sourceType: 'API',
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Confirmed Flight Leg',
+      configuration: {},
+      travellerManifest: {},
+      unitSellingPriceMinor: 10000000,
+      currency: 'LKR',
+      state: 'READY'
+    });
+    storage.addTripBucketItem({
+      tripBucketId: partialBucket.id,
+      canonicalOfferId: 'vct-ht-force_failure-002', // Triggers simulated timeout/exhaustion
+      productType: 'hotels',
+      sourceType: 'API',
+      bookingMode: 'REQUEST_TO_BOOK',
+      title: 'Failing Hotel Property',
+      configuration: {},
+      travellerManifest: {},
+      unitSellingPriceMinor: 5000000,
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    const partialResult = await saga.executeBookingSaga({
+      tripBucketId: partialBucket.id,
+      customerEmail: 'sam@example.com',
+      customerName: 'Sam Perera',
+      checkoutSessionId: 'cs_partial_456',
+      idempotencyKey: 'idemp_saga_partial_002'
+    });
+
+    assert.equal(partialResult.overallStatus, 'PARTIAL_FAILURE');
+    assert.equal(partialResult.paymentStatus, 'PARTIALLY_REFUNDED');
+    assert.equal(partialResult.requiresManualReview, true);
+    assert.equal(partialResult.compensationTriggered, true);
+
+    // Assert that an operational support triage ticket was automatically created
+    const triageTickets = storage.getSupportTickets('OPEN');
+    assert.ok(triageTickets.some(t => t.ticketReference.includes(partialResult.bookingReference)));
+  });
+
+  it('enforces Payment Gateway Abstraction, SAQ-A compliance, and Idempotent Webhook Ledger (ADR-004)', async () => {
+    const storage = new VacatinaStorageEngine();
+    const paymentService = new PaymentGatewayService(storage);
+
+    // 1. Create Idempotent Payment Intent
+    const intent1 = await paymentService.createPaymentIntent({
+      bookingGroupId: 'bg_test_001',
+      amountMinor: 15000000,
+      currency: 'LKR',
+      customerEmail: 'customer@vacatina.com',
+      customerName: 'Customer Name',
+      idempotencyKey: 'idemp_pay_001',
+      returnUrl: 'https://vacatina-nu.vercel.app/checkout'
+    });
+
+    assert.ok(intent1.paymentOrderId);
+    assert.ok(intent1.gatewayOrderId);
+    assert.equal(intent1.status, 'PENDING');
+
+    // Identical call returns identical result without duplicate order creation
+    const intent2 = await paymentService.createPaymentIntent({
+      bookingGroupId: 'bg_test_001',
+      amountMinor: 15000000,
+      currency: 'LKR',
+      customerEmail: 'customer@vacatina.com',
+      customerName: 'Customer Name',
+      idempotencyKey: 'idemp_pay_001',
+      returnUrl: 'https://vacatina-nu.vercel.app/checkout'
+    });
+    assert.equal(intent2.paymentOrderId, intent1.paymentOrderId);
+
+    // 2. Webhook Ingestion & Deduplication
+    const webhookRes1 = await paymentService.handleWebhookEvent({
+      gatewayId: 'STRIPE',
+      eventId: 'evt_stripe_succ_999',
+      eventType: 'payment_intent.succeeded',
+      payloadString: JSON.stringify({ paymentOrderId: intent1.paymentOrderId }),
+      signatureHeader: 'sig_mock_header_123'
+    });
+    assert.equal(webhookRes1.status, 'SUCCESS');
+
+    // Duplicate webhook delivery -> ALREADY_PROCESSED
+    const webhookRes2 = await paymentService.handleWebhookEvent({
+      gatewayId: 'STRIPE',
+      eventId: 'evt_stripe_succ_999',
+      eventType: 'payment_intent.succeeded',
+      payloadString: JSON.stringify({ paymentOrderId: intent1.paymentOrderId }),
+      signatureHeader: 'sig_mock_header_123'
+    });
+    assert.equal(webhookRes2.status, 'ALREADY_PROCESSED');
+
+    // 3. Refund Execution
+    const refund = await paymentService.processRefund(intent1.paymentOrderId, 5000000, 'Customer requested partial cancellation');
+    assert.ok(refund.success);
+    assert.ok(refund.refundId);
+  });
+
+  it('enforces Web-Standard API Router with RFC 7807 problem details (ADR-002)', async () => {
+    const router = new VacatinaApiRouter();
+
+    // 1. Health Probe
+    const healthReq = new Request('https://vacatina-nu.vercel.app/api/v1/health', { method: 'GET' });
+    const healthRes = await router.handleRequest(healthReq);
+    assert.equal(healthRes.status, 200);
+    const healthData = await healthRes.json();
+    assert.equal(healthData.status, 'HEALTHY');
+
+    // 2. Search Endpoint: POST /api/v1/search/flights
+    const searchReq = new Request('https://vacatina-nu.vercel.app/api/v1/search/flights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ destination: 'Dubai' })
+    });
+    const searchRes = await router.handleRequest(searchReq);
+    assert.equal(searchRes.status, 200);
+    const searchData = await searchRes.json();
+    assert.ok(Array.isArray(searchData.offers));
+
+    // 3. B2B Partner Dashboard (Requires Authentication)
+    const unauthReq = new Request('https://vacatina-nu.vercel.app/api/v1/partner/dashboard', { method: 'GET' });
+    const unauthRes = await router.handleRequest(unauthReq);
+    assert.equal(unauthRes.status, 401); // Unauthorized
+
+    const partnerReq = new Request('https://vacatina-nu.vercel.app/api/v1/partner/dashboard', { method: 'GET' });
+    const partnerRes = await router.handleRequest(partnerReq, {
+      userId: 'usr_partner_001',
+      email: 'agent@partner.com',
+      role: 'AGENCY_MANAGER',
+      organizationId: 'org_partner_ceylon_tours',
+      organizationType: 'AGENCY'
+    });
+    assert.equal(partnerRes.status, 200);
+    const partnerData = await partnerRes.json();
+    assert.equal(partnerData.organization.slug, 'ceylon-prestige-travel');
+
+    // 4. Admin Backoffice Triage (Requires Admin Role)
+    const adminReq = new Request('https://vacatina-nu.vercel.app/api/v1/admin/triage', { method: 'GET' });
+    const adminRes = await router.handleRequest(adminReq, {
+      userId: 'usr_admin_001',
+      email: 'ops@vacatina.com',
+      role: 'PLATFORM_ADMIN'
+    });
+    assert.equal(adminRes.status, 200);
+
+    // Non-Admin gets 403 Forbidden
+    const deniedAdminRes = await router.handleRequest(adminReq, {
+      userId: 'usr_cust_999',
+      email: 'cust@vacatina.com',
+      role: 'CUSTOMER'
+    });
+    assert.equal(deniedAdminRes.status, 403);
+
+    // 5. RFC 7807 Problem Details on Unmatched Route
+    const notFoundReq = new Request('https://vacatina-nu.vercel.app/api/v1/invalid/endpoint', { method: 'GET' });
+    const notFoundRes = await router.handleRequest(notFoundReq);
+    assert.equal(notFoundRes.status, 404);
+    assert.equal(notFoundRes.headers.get('content-type'), 'application/problem+json');
+    const problem = await notFoundRes.json();
+    assert.equal(problem.code, 'ENDPOINT_NOT_FOUND');
+    assert.ok(problem.type.includes('vacatina.com/errors/'));
   });
 });

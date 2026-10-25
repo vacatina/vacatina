@@ -24,6 +24,8 @@ import {
   openFlightOfferModal,
   openHotelPropertyModal,
   openNormalizedOfferModal,
+  openPartnerPortalModal,
+  openAdminPortalModal,
   closeActiveDialog
 } from '../../components/dialogs/dialogs-controller.ts';
 import {
@@ -368,9 +370,34 @@ export class CanonicalRouterService {
       return;
     }
 
-    // 16. Trip Bucket Review (Section 19)
-    if (path === '/trip/review') {
+    // 16. Trip Bucket Review & Workspace
+    if (path === '/trip/review' || path === '/checkout' || path.startsWith('/checkout/')) {
       openTripDossierReviewModal();
+      return;
+    }
+    if (path === '/trip-bucket' || path === '/trip') {
+      openTripBucketDrawer();
+      return;
+    }
+
+    // 16b. B2B Partner Portal Workspace
+    if (path === '/partner' || path.startsWith('/partner/')) {
+      const subpath = path.replace('/partner', '').replace(/^\//, '') || 'dashboard';
+      openPartnerPortalModal(subpath);
+      return;
+    }
+
+    // 16c. Operations & Admin Backoffice
+    if (path === '/admin' || path.startsWith('/admin/')) {
+      const subpath = path.replace('/admin', '').replace(/^\//, '') || 'overview';
+      openAdminPortalModal(subpath);
+      return;
+    }
+
+    // 16d. Booking Dossier Lookup (/bookings/:ref or /manage/:ref)
+    if (path.startsWith('/bookings/') || path.startsWith('/manage/')) {
+      const ref = path.replace('/bookings/', '').replace('/manage/', '');
+      this.handleManageBookingLookup();
       return;
     }
 

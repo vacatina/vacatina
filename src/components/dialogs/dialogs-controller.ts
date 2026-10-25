@@ -53,6 +53,10 @@ import {
   getCustomerBuyingCondition,
   type VacatinaNormalizedOffer
 } from '../../lib/domain/inventory-models.ts';
+import { renderPartnerPortalHtml } from '../../features/partner/partner-portal.ts';
+import { renderAdminPortalHtml } from '../../features/admin/admin-portal.ts';
+import { manualInventoryService } from '../../lib/services/manual-inventory.service.ts';
+import { globalStorageEngine } from '../../server/db/storage.ts';
 
 export {
   openLegalAndCookieModal,
@@ -1945,5 +1949,106 @@ export function openNormalizedOfferModal(
 
   wireCommonModalCloseButtons(modal);
   telemetry.track('open_normalized_offer_modal', { offerId });
+  openDialogElement(modal, triggerElement);
+}
+
+/**
+ * 12. B2B Partner Portal Workspace Modal
+ */
+export function openPartnerPortalModal(subpath = 'dashboard', triggerElement?: HTMLElement | null): void {
+  const modal = ensureDynamicModalShell();
+
+  // Setup interactive window handlers
+  if (typeof window !== 'undefined') {
+    (window as any).VacatinaPartnerPortal = {
+      createQuoteForClient: (clientId: string) => {
+        showToast(`Draft quote created for client. Staged in B2B Quote Ledger.`, 'success');
+      }
+    };
+  }
+
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-brand-black/45 backdrop-blur-sm transition-opacity" data-dialog-backdrop="true"></div>
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-4xl w-full text-left">
+        <div class="absolute top-4 right-4 z-10">
+          <button type="button" data-dialog-close="true" aria-label="Close Portal" class="icon-touch-44 text-brand-muted hover:text-brand-black rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+        ${renderPartnerPortalHtml(subpath)}
+      </div>
+    </div>
+  `;
+
+  const newQuoteBtn = modal.querySelector('#partner-new-quote-btn') as HTMLElement | null;
+  if (newQuoteBtn) {
+    newQuoteBtn.onclick = () => {
+      showToast('New client quote composer opened. Dynamic markup active.', 'brand');
+    };
+  }
+
+  const settlementBtn = modal.querySelector('#partner-settlement-btn') as HTMLElement | null;
+  if (settlementBtn) {
+    settlementBtn.onclick = () => {
+      showToast('Settlement request submitted to Vacatina Finance Operations.', 'success');
+    };
+  }
+
+  wireCommonModalCloseButtons(modal);
+  telemetry.track('open_partner_portal', { subpath });
+  openDialogElement(modal, triggerElement);
+}
+
+/**
+ * 13. Admin & Operations Control Center Modal
+ */
+export function openAdminPortalModal(subpath = 'overview', triggerElement?: HTMLElement | null): void {
+  const modal = ensureDynamicModalShell();
+
+  // Setup interactive window handlers for Admin
+  if (typeof window !== 'undefined') {
+    (window as any).VacatinaAdminPortal = {
+      toggleStatus: (manualListingId: string) => {
+        const listing = manualInventoryService.getListing(manualListingId);
+        if (listing) {
+          const newStatus = listing.status === 'PUBLISHED' ? 'PAUSED' : 'PUBLISHED';
+          manualInventoryService.updateListingStatus(manualListingId, newStatus, 'Status toggled via Operations Backoffice');
+          showToast(`Listing ${manualListingId} status set to ${newStatus}.`, 'brand');
+          openAdminPortalModal(subpath);
+        }
+      },
+      overridePrice: (manualListingId: string) => {
+        const listing = manualInventoryService.getListing(manualListingId);
+        if (listing) {
+          const currentPrice = listing.pricing.calculatedCustomerPrice;
+          const adjusted = currentPrice - 5000;
+          manualInventoryService.updateListingPricing(manualListingId, {
+            manualOverrideAmount: adjusted,
+            overrideReason: 'Promotional operational adjustment'
+          });
+          showToast(`Price for ${manualListingId} adjusted to LKR ${adjusted.toLocaleString()}.`, 'success');
+          openAdminPortalModal(subpath);
+        }
+      }
+    };
+  }
+
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-brand-black/45 backdrop-blur-sm transition-opacity" data-dialog-backdrop="true"></div>
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-4xl w-full text-left">
+        <div class="absolute top-4 right-4 z-10">
+          <button type="button" data-dialog-close="true" aria-label="Close Admin" class="icon-touch-44 text-brand-muted hover:text-brand-black rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+        ${renderAdminPortalHtml(subpath)}
+      </div>
+    </div>
+  `;
+
+  wireCommonModalCloseButtons(modal);
+  telemetry.track('open_admin_portal', { subpath });
   openDialogElement(modal, triggerElement);
 }
