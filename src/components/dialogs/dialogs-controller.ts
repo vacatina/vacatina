@@ -1821,13 +1821,12 @@ export function openHotelPropertyModal(
         closeActiveDialog(false);
 
         const headerBucketBtn = document.getElementById('header-trip-bucket-btn');
+        if (headerBucketBtn) {
+          headerBucketBtn.click();
+        }
         showToast(
           `Staged "${candidate.title}" to Trip Bucket (${candidate.state === 'ready' ? 'Ready' : 'Needs Action'}).`,
-          'success',
-          'Open Trip Bucket',
-          () => {
-            if (headerBucketBtn) headerBucketBtn.click();
-          }
+          'success'
         );
       });
     }

@@ -360,6 +360,23 @@ export class TripBucketService {
   }
 
   /**
+   * Resolves a 'needs_action' item (such as uploading visa applicant passport details or
+   * completing mandatory room configuration), transitioning the item to 'ready'.
+   */
+  public resolveNeedsAction(id: string, metadata?: Record<string, unknown>): TripBucketCandidate | null {
+    const item = this.items.find(i => i.id === id);
+    if (!item) return null;
+    item.state = 'ready';
+    item.holdStatusText = 'Requirements satisfied · Ready for checkout';
+    delete item.actionRequiredText;
+    if (metadata) {
+      (item as any).metadata = { ...((item as any).metadata || {}), ...metadata };
+    }
+    this.emit();
+    return { ...item };
+  }
+
+  /**
    * Returns breakdown of inventory source modes and confirmation workflows
    * currently present in the active Trip Bucket.
    */

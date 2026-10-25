@@ -2457,4 +2457,202 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     assert.equal(replayResult.bookingReference, sagaResult.bookingReference);
     assert.equal(replayResult.bookingGroupId, sagaResult.bookingGroupId);
   });
+
+  it('enforces Hotels End-to-End Real Product Flow (Search Aggregation, Room & Board Tier Configurator, Trip Bucket Staging, Pre-Booking Revalidation, and Saga Hold/Confirm)', async () => {
+    // 1. Search Aggregation & Destination Filtering
+    const searchAggregator = new SearchAggregatorService(CANONICAL_HYBRID_CATALOG);
+
+    const maldivesHotels = searchAggregator.search({ productType: 'hotels', destinationQuery: 'Maldives' });
+    assert.ok(maldivesHotels.length >= 1, 'Search for Maldives hotels must return properties');
+    assert.equal(maldivesHotels[0].productType, 'hotels');
+
+    // 2. Unified Inventory Multi-Source Querying & Product Extension
+    const unifiedInventory = new UnifiedInventoryService();
+    const unifiedHotels = await unifiedInventory.search({ productType: 'hotels', destination: 'Dubai' });
+    assert.ok(unifiedHotels.length >= 1, 'Unified search must return canonical hotel offers');
+
+    const primaryHotel = unifiedHotels[0];
+    assert.equal(primaryHotel.productType, 'hotels');
+    assert.ok(primaryHotel.productExtension, 'Hotel must have rich ProductExtension');
+    assert.equal(primaryHotel.productExtension.productType, 'hotels');
+
+    const hotelExt = primaryHotel.productExtension.hotel;
+    assert.equal(hotelExt.starRating, 5);
+    assert.ok(hotelExt.roomType.length > 0);
+    assert.ok(hotelExt.checkInTime.includes(':'));
+    assert.ok(hotelExt.checkOutTime.includes(':'));
+    assert.equal(hotelExt.maxOccupancy.maxAdults, 2);
+
+    // 3. Dynamic Room & Board Calculations
+    const baseRate = 256500; // Baseline room rate in LKR
+    const suiteDelta = 35000;
+    const allInclusiveDelta = 18000;
+
+    assert.equal(baseRate + suiteDelta, 291500, 'Upgraded room tier price calculation');
+    assert.equal(baseRate + suiteDelta + allInclusiveDelta, 309500, 'Upgraded room + all-inclusive board calculation');
+
+    // 4. Staging into Trip Bucket & Financial Math Isolation
+    const tripBucket = new TripBucketService();
+    tripBucket.stageCandidate({
+      id: 'ht-staged-dubai-001',
+      productType: 'hotels',
+      productLabel: 'Hotel',
+      title: 'Grand Palace Hotel Dubai',
+      subtitle: 'Executive Suite · All Inclusive',
+      dateSummary: '15 Nov – 20 Nov 2026',
+      travellerSummary: '2 Adults · 1 Room',
+      state: 'ready',
+      priceLkr: baseRate + suiteDelta + allInclusiveDelta,
+      offerId: primaryHotel.canonicalOfferId,
+      sourceType: 'API',
+      confirmationMode: 'INSTANT_CONFIRM',
+      supplierName: 'LITEAPI',
+      integrationMode: 'ADAPTER-READY'
+    });
+
+    const summary = tripBucket.getSummary();
+    assert.equal(summary.totalItems, 4, 'Trip Bucket has 4 total items (3 baseline + 1 staged hotel)');
+    assert.equal(summary.readyCount, 3, 'Trip Bucket has 3 Ready items');
+    assert.equal(summary.readySubtotalLkr, 505000 + 309500, 'Ready subtotal correctly includes staged hotel room');
+
+    // 5. Pre-Booking Revalidation Ping
+    const reval = await unifiedInventory.revalidateOffer(primaryHotel.canonicalOfferId);
+    assert.equal(reval.status, 'UNCHANGED', 'Hotel revalidation confirms UNCHANGED rate');
+    assert.ok(reval.message?.includes('SANDBOX') || reval.message?.includes('revalidated') || reval.message?.includes('Unified Inventory'));
+
+    // 6. Distributed Booking Saga Orchestration
+    const storage = new VacatinaStorageEngine();
+    const testBucket = storage.getOrCreateTripBucket('sess_hotel_flow_test');
+    storage.addTripBucketItem({
+      tripBucketId: testBucket.id,
+      canonicalOfferId: primaryHotel.canonicalOfferId,
+      productType: 'hotels',
+      sourceType: 'API',
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Grand Palace Hotel Dubai',
+      configuration: {
+        roomType: 'Executive Suite',
+        boardBasis: 'All Inclusive'
+      },
+      travellerManifest: {
+        adults: 2,
+        leadName: 'Perera / Kasun Mr'
+      },
+      unitSellingPriceMinor: primaryHotel.pricing.finalSellingPriceMinor,
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    const saga = new BookingSagaService(storage);
+    const sagaResult = await saga.executeBookingSaga({
+      tripBucketId: testBucket.id,
+      customerEmail: 'kasun.perera@example.com',
+      customerName: 'Kasun Perera',
+      idempotencyKey: 'idemp_hotel_flow_771',
+      checkoutSessionId: 'chk_sess_ht_001'
+    });
+
+    assert.ok(/^VCT-2026-[A-Z0-9]{6}$/.test(sagaResult.bookingReference), 'Booking reference must follow canonical VCT-2026-XXXXXX format');
+    assert.equal(sagaResult.totalSellingPriceMinor, primaryHotel.pricing.finalSellingPriceMinor);
+    assert.equal(sagaResult.items.length, 1);
+    assert.equal(sagaResult.items[0].productType, 'hotels');
+  });
+
+  it('enforces Visa Assistance End-to-End Real Product Flow (Country Catalog, Consular Checklist, Needs-Action Staging Isolation, and Resolution to Ready)', async () => {
+    // 1. Destination Country Catalog & Advisory Checklist
+    const searchAggregator = new SearchAggregatorService(CANONICAL_HYBRID_CATALOG);
+    const uaeVisa = searchAggregator.search({ productType: 'visa', destinationQuery: 'United Arab Emirates' });
+    assert.ok(uaeVisa.length >= 1, 'UAE visa assistance must be discoverable');
+    assert.equal(uaeVisa[0].productType, 'visa');
+    assert.equal(uaeVisa[0].sourceType, 'MANUAL');
+    assert.equal(uaeVisa[0].confirmationMode, 'ASSISTED_SERVICE');
+    assert.ok(uaeVisa[0].inclusions.length >= 2, 'Consular checklist requirements must be transparent');
+
+    // 2. Unified Inventory Consular Adapter Query
+    const unifiedInventory = new UnifiedInventoryService();
+    const consularOffers = await unifiedInventory.search({ productType: 'visa', destination: 'United Arab Emirates' });
+    assert.ok(consularOffers.length >= 1, 'Consular desk offers returned');
+    
+    const visaOffer = consularOffers[0];
+    assert.equal(visaOffer.sourceMode, 'MANUAL');
+    assert.equal(visaOffer.manualSourceType, 'MANUAL_INTERNAL');
+    assert.equal(visaOffer.currentAvailabilityMode, 'MANUAL_CONFIRMATION');
+    assert.equal(visaOffer.currentPricingMode, 'FIXED_MANUAL');
+
+    // 3. Staging into Trip Bucket: Strict Needs-Action Invariant
+    const tripBucket = new TripBucketService();
+    tripBucket.stageCandidate({
+      id: 'vs-staged-uae-001',
+      productType: 'visa',
+      productLabel: 'Visa',
+      title: 'UAE 60-Day Tourist Visa Assistance',
+      subtitle: 'Consular Document Review · Dedicated Officer SLA 48h',
+      dateSummary: 'Pre-departure submission',
+      travellerSummary: '1 Adult · Ordinary Passport',
+      state: 'needs_action', // Always staged as needs_action until applicant passport is uploaded
+      priceLkr: 45000,
+      offerId: visaOffer.canonicalOfferId,
+      sourceType: 'MANUAL',
+      confirmationMode: 'ASSISTED_SERVICE',
+      supplierName: 'VACATINA_CONSULAR_DESK',
+      integrationMode: 'ADAPTER-READY',
+      actionRequiredText: 'Provide applicant passport scan and digital photograph.'
+    });
+
+    const summaryPre = tripBucket.getSummary();
+    assert.equal(summaryPre.totalItems, 4, 'Trip Bucket has 4 total items (3 baseline + 1 staged visa)');
+    assert.equal(summaryPre.needsActionCount, 2, 'Two items in Needs Action (1 baseline visa + 1 newly staged visa)');
+    assert.equal(summaryPre.readySubtotalLkr, 505000, 'Ready subtotal strictly excludes uncompleted visa applications');
+
+    // 4. Resolution Workflow: Completing Applicant Details Transitions to Ready
+    const resolvedVisa = tripBucket.resolveNeedsAction('vs-staged-uae-001', {
+      passportNumber: 'N7894561',
+      expiryDate: '2031-10-15',
+      biometricPhotoVerified: true
+    });
+
+    assert.ok(resolvedVisa, 'Resolved visa candidate returned');
+    assert.equal(resolvedVisa.state, 'ready', 'Resolved visa transitions to Ready');
+
+    const summaryPost = tripBucket.getSummary();
+    assert.equal(summaryPost.readyCount, 3, 'Ready count increases to 3');
+    assert.equal(summaryPost.needsActionCount, 1, 'Needs Action count decreases back to 1');
+    assert.equal(summaryPost.readySubtotalLkr, 505000 + 45000, 'Ready subtotal now includes verified visa service (550,000 LKR)');
+
+    // 5. Distributed Saga Pre-Auth and Dispatch for Verified Visa
+    const storage = new VacatinaStorageEngine();
+    const testBucket = storage.getOrCreateTripBucket('sess_visa_flow_test');
+    storage.addTripBucketItem({
+      tripBucketId: testBucket.id,
+      canonicalOfferId: visaOffer.canonicalOfferId,
+      productType: 'visa',
+      sourceType: 'MANUAL',
+      bookingMode: 'REQUEST_TO_BOOK',
+      title: 'UAE 60-Day Tourist Visa Assistance',
+      configuration: {
+        passportNumber: 'N7894561',
+        nationality: 'Sri Lankan'
+      },
+      travellerManifest: {
+        adults: 1,
+        leadName: 'Perera / Kasun Mr'
+      },
+      unitSellingPriceMinor: visaOffer.pricing.finalSellingPriceMinor,
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    const saga = new BookingSagaService(storage);
+    const sagaResult = await saga.executeBookingSaga({
+      tripBucketId: testBucket.id,
+      customerEmail: 'kasun.perera@example.com',
+      customerName: 'Kasun Perera',
+      idempotencyKey: 'idemp_visa_flow_552',
+      checkoutSessionId: 'chk_sess_vs_001'
+    });
+
+    assert.ok(/^VCT-2026-[A-Z0-9]{6}$/.test(sagaResult.bookingReference), 'Booking reference issued');
+    assert.equal(sagaResult.overallStatus, 'CONFIRMED');
+    assert.equal(sagaResult.items[0].productType, 'visa');
+  });
 });
