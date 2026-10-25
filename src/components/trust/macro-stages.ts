@@ -220,15 +220,39 @@ function initNewsletterSubscription(): void {
   subBtn.id = 'newsletter-subscribe-btn';
 
   const submitNewsletter = () => {
-    const res = validateEmailAddress(emailInput.value);
+    const rawEmail = (emailInput.value || '').trim();
+    const res = validateEmailAddress(rawEmail);
     if (!res.valid) {
       showToast(res.message, 'warning');
       emailInput.focus();
       return;
     }
-    telemetry.track('newsletter_subscribe', { email: emailInput.value });
-    emailInput.value = '';
-    showToast(res.message, 'success');
+
+    // Check client storage to prevent duplicate submissions
+    try {
+      const stored = JSON.parse(localStorage.getItem('vacatina_subscribed_newsletters') || '[]');
+      if (Array.isArray(stored) && stored.includes(rawEmail.toLowerCase())) {
+        showToast(`The email ${rawEmail} is already subscribed to Vacatina Travel Notes.`, 'brand');
+        emailInput.value = '';
+        return;
+      }
+      stored.push(rawEmail.toLowerCase());
+      localStorage.setItem('vacatina_subscribed_newsletters', JSON.stringify(stored));
+    } catch {
+      // LocalStorage fallback
+    }
+
+    subBtn.disabled = true;
+    const originalText = subBtn.textContent;
+    subBtn.textContent = 'Subscribing...';
+
+    window.setTimeout(() => {
+      telemetry.track('newsletter_subscribe', { email: rawEmail });
+      emailInput.value = '';
+      subBtn.disabled = false;
+      subBtn.textContent = originalText;
+      showToast(res.message, 'success');
+    }, 400);
   };
 
   subBtn.addEventListener('click', submitNewsletter);

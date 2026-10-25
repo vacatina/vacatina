@@ -16,7 +16,9 @@ import { InventoryNormalizerService } from '../src/lib/services/inventory-normal
 import { SearchAggregatorService } from '../src/lib/services/search-aggregator.service.ts';
 import { BookingOrchestratorService } from '../src/lib/services/booking-orchestrator.service.ts';
 import { CANONICAL_HYBRID_CATALOG } from '../src/lib/mock-data/hybrid-catalog.ts';
-import { getCustomerBuyingCondition } from '../src/lib/domain/inventory-models.ts';
+import { getCustomerBuyingCondition, getBookingModeCta } from '../src/lib/domain/inventory-models.ts';
+import { manualInventoryService, ManualInventoryService } from '../src/lib/services/manual-inventory.service.ts';
+import { CANONICAL_ROUTES, isCanonicalRoute, getRouteMeta } from '../src/lib/constants/routes.ts';
 
 describe('Vacatina Domain & Validation Unit Tests', () => {
   it('enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order', () => {
@@ -220,9 +222,9 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     const ar = SUPPORTED_LANGUAGES.find(l => l.code === 'AR');
 
     assert.ok(en?.regionHint.includes('Full Production'));
-    assert.ok(si?.regionHint.includes('Prototype Localization'));
-    assert.ok(ta?.regionHint.includes('Prototype Localization'));
-    assert.ok(ar?.regionHint.includes('Architecture Ready'));
+    assert.ok(si?.regionHint.includes('Beta') || si?.regionHint.includes('Prototype Localization'));
+    assert.ok(ta?.regionHint.includes('Beta') || ta?.regionHint.includes('Prototype Localization'));
+    assert.ok(ar?.regionHint.includes('Coming Soon') || ar?.regionHint.includes('Architecture Ready'));
   });
 
   it('validates Vercel deployment configuration and dedicated website output directory', () => {
@@ -541,5 +543,106 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
       assert.ok(!condition.includes('LiteAPI'), 'Customer buying condition must not expose upstream supplier name');
       assert.ok(!condition.includes('Payload'), 'Customer buying condition must not expose CMS name');
     }
+  });
+
+  it('enforces Manual Inventory Service lifecycle, Seed Content separation, Pin-Above-API ranking, and Canonical Route Registry', () => {
+    // 1. Manual Inventory Service Lifecycle & Audit Logging (Part 10)
+    const testListingService = new ManualInventoryService();
+    testListingService.registerListing({
+      id: 'test-charter-001',
+      collection: 'manual-charter-flights',
+      productType: 'flights',
+      partnerSupplierId: 'SRILANKAN_AIRTAXI',
+      partnerName: 'AirTaxi Direct',
+      title: 'Private Lagoon Seaplane',
+      subtitle: 'Exclusive charter',
+      slug: 'private-lagoon-seaplane',
+      location: { city: 'Male', country: 'Maldives', countryCode: 'MV' },
+      status: 'PUBLISHED',
+      confirmationMode: 'REQUEST_TO_CONFIRM',
+      bookingMode: 'REQUEST_TO_BOOK',
+      availableQuota: 4,
+      contractedBaseCost: 150000,
+      costCurrency: 'LKR',
+      standardSellingPriceLkr: 180000,
+      validFromIso: '2026-01-01T00:00:00Z',
+      validUntilIso: '2026-12-31T23:59:59Z',
+      inclusions: ['Lagoon transfer'],
+      exclusions: ['Heavy luggage'],
+      cancellationPolicy: '72hr notice',
+      pinPriority: 20,
+      exclusiveOffer: true,
+      featured: true,
+      auditTrail: []
+    });
+
+    const activeListings = testListingService.queryListings({ productType: 'flights' });
+    assert.equal(activeListings.length, 1);
+    assert.equal(activeListings[0].id, 'test-charter-001');
+
+    // Admin pauses listing -> must disappear from customer query
+    testListingService.updateStatus('test-charter-001', 'PAUSED', { id: 'admin-1', name: 'Sara Chief' }, 'Temporary weather hold');
+    const pausedQuery = testListingService.queryListings({ productType: 'flights', onlyActive: true });
+    assert.equal(pausedQuery.length, 0, 'Paused manual listing must not appear in customer active search');
+
+    // 2. Seed Content Separation Guard (Part 5 & 16)
+    const tripBucket = new TripBucketService();
+    const seedOffer = {
+      ...CANONICAL_HYBRID_CATALOG[0],
+      offerId: 'seed-prototype-flight-card',
+      sourceType: 'SEED' as const,
+      isSeedContent: true,
+      pricing: { ...CANONICAL_HYBRID_CATALOG[0].pricing, customerSellingPriceLkr: 120000 }
+    };
+
+    const stagedSeed = tripBucket.stageNormalizedOffer(seedOffer);
+    assert.equal(stagedSeed.state, 'draft', 'Seed content MUST stage as draft, never Ready');
+
+    // Attempt transition to ready -> MUST be blocked
+    tripBucket.transitionItemState(stagedSeed.id, 'ready');
+    const seedItemInBucket = tripBucket.getItems().find(i => i.id === stagedSeed.id);
+    assert.ok(seedItemInBucket);
+    assert.equal(seedItemInBucket.state, 'draft', 'Seed content MUST NOT become Ready without promotion to real inventory');
+    assert.ok(seedItemInBucket.actionRequiredText?.includes('Prototype Seed Content'));
+
+    // Check summary: ready count must remain strictly at baseline (2), seed item must not enter ready subtotal
+    const summaryAfterTransition = tripBucket.getSummary();
+    assert.equal(summaryAfterTransition.readyCount, 2, 'Ready count must remain 2 (seed item excluded from ready count)');
+    assert.equal(summaryAfterTransition.readySubtotalLkr, 505000, 'Seed item MUST NOT contribute to readySubtotalLkr');
+
+    // 3. Pin Above API Results (Part 12)
+    const aggregator = new SearchAggregatorService(CANONICAL_HYBRID_CATALOG);
+    const searchResults = aggregator.search({ productType: 'hotels' });
+    // Adaaran (LiteAPI, pinPriority 0) vs Heritance Kandalama (Manual, pinPriority 15)
+    assert.ok(searchResults.length >= 2);
+    // Pinned manual contract with pinPriority must be prioritized in recommended ranking
+    const pinnedFirst = searchResults[0];
+    assert.ok(
+      (pinnedFirst.pinPriority || 0) >= (searchResults[1].pinPriority || 0),
+      'Pinned offer must rank higher than unpinned offer'
+    );
+
+    // 4. Truthful Booking Mode CTAs (Part 8)
+    assert.equal(getBookingModeCta('INSTANT_BOOK'), 'Check Availability');
+    assert.equal(getBookingModeCta('REQUEST_TO_BOOK'), 'Request Booking');
+    assert.equal(getBookingModeCta('REQUEST_AVAILABILITY'), 'Request Availability');
+    assert.equal(getBookingModeCta('INQUIRY_ONLY'), 'Contact Vacatina');
+
+    // 5. Canonical Route Registry (Part 2, 18, 21, 22, 23, 25)
+    assert.ok(isCanonicalRoute('/'));
+    assert.ok(isCanonicalRoute('/flights'));
+    assert.ok(isCanonicalRoute('/hotels/search'));
+    assert.ok(isCanonicalRoute('/flights/offer/vct-fl-amadeus-cmb-dxb-001'));
+    assert.ok(isCanonicalRoute('/hotels/property/vct-ht-liteapi-001/configure'));
+    assert.ok(isCanonicalRoute('/resources/travel-disruption'));
+    assert.ok(isCanonicalRoute('/corporate-travel'));
+    assert.ok(isCanonicalRoute('/manage-booking'));
+    assert.ok(isCanonicalRoute('/legal/cookies'));
+    assert.equal(isCanonicalRoute('/random-fake-destination-path'), false);
+
+    const meta = getRouteMeta('/flights/offer/vct-fl-001');
+    assert.ok(meta);
+    assert.equal(meta.category, 'offer_config');
+    assert.equal(meta.productType, 'flights');
   });
 });

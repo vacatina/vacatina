@@ -87,14 +87,42 @@ export function getAuthState(): AuthSessionState {
   return { ...authState };
 }
 
-export function setSignedInState(signedIn: boolean, announce = true): void {
+function checkIsDevMode(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return Boolean(
+      new URLSearchParams(window.location.search).get('dev') === 'true' ||
+      window.localStorage.getItem('vacatina_dev_mode') === 'true'
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function setSignedInState(
+  signedIn: boolean,
+  announce = true,
+  user?: { name?: string; email?: string }
+): void {
   authState.isSignedIn = signedIn;
   if (signedIn) {
-    authState.name = 'Alex Morgan';
-    authState.shortName = 'Alex M.';
-    authState.initials = 'AM';
-    authState.email = 'alex.morgan@example.com';
-    authState.roleLabel = 'Verified B2C Traveller';
+    if (user?.email) {
+      const email = user.email.trim();
+      const derivedName = user.name?.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const initials = derivedName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'VT';
+      authState.name = derivedName;
+      authState.shortName = derivedName.split(' ')[0];
+      authState.initials = initials;
+      authState.email = email;
+      authState.roleLabel = 'Verified B2C Traveller';
+    } else {
+      const isDev = checkIsDevMode();
+      authState.name = isDev ? 'Alex Morgan' : 'Verified Traveller';
+      authState.shortName = isDev ? 'Alex M.' : 'Traveller';
+      authState.initials = isDev ? 'AM' : 'VT';
+      authState.email = isDev ? 'alex.morgan@example.com' : 'traveller@vacatina.com';
+      authState.roleLabel = 'Verified B2C Traveller';
+    }
   } else {
     authState.name = '';
     authState.shortName = '';
@@ -670,7 +698,7 @@ export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | nul
           <button
             type="button"
             id="auth-modal-signin-btn"
-            onclick="window.__VACATINA_OS__.setSignedInState(true); document.querySelector('[data-dialog-close=true]')?.click();"
+            onclick="const mail = document.getElementById('auth-modal-email')?.value; window.__VACATINA_OS__.setSignedInState(true, true, mail ? { email: mail } : undefined); document.querySelector('[data-dialog-close=true]')?.click();"
             class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-brand-primary text-white font-semibold whitespace-nowrap hover:opacity-90 transition-opacity"
           >
             ${modeLabel === 'Sign Up' ? 'Create Account' : 'Sign In'}

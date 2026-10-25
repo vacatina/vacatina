@@ -32,6 +32,7 @@ export interface SearchAggregationCriteria {
   maxPriceLkr?: number;
   minPriceLkr?: number;
   instantConfirmOnly?: boolean;
+  includeSeedContent?: boolean; // Defaults false for commercial results
   sortBy?: 'recommended' | 'price_low_high' | 'price_high_low' | 'freshness';
 }
 
@@ -96,10 +97,15 @@ export class SearchAggregatorService {
       results = results.filter(offer => offer.pricing.customerSellingPriceLkr <= criteria.maxPriceLkr!);
     }
 
-    // 7. Deduplicate identical offerings (e.g. direct contract vs aggregator)
+    // 7. Seed Content Separation (Locked Part 5): Exclude prototype seed content from commercial results
+    if (!criteria.includeSeedContent) {
+      results = results.filter(offer => offer.sourceType !== 'SEED' && !offer.isSeedContent);
+    }
+
+    // 8. Deduplicate identical offerings (e.g. direct contract vs aggregator)
     results = this.deduplicateOffers(results);
 
-    // 8. Rank and Sort
+    // 9. Rank and Sort (Locked Part 12: Admin Pin Above API Results)
     results = this.rankOffers(results, criteria.sortBy || 'recommended');
 
     return results;
@@ -155,10 +161,12 @@ export class SearchAggregatorService {
       return [...offers].sort((a, b) => new Date(b.freshness.lastCheckedAtIso).getTime() - new Date(a.freshness.lastCheckedAtIso).getTime());
     }
 
-    // Default 'recommended': Instant confirm & direct manual contracts scored higher
+    // Default 'recommended': Pinned manual offers (Part 12), Instant confirm & direct manual contracts scored higher
     return [...offers].sort((a, b) => {
-      const scoreA = (a.confirmationMode === 'INSTANT_CONFIRM' ? 20 : 0) + (a.sourceType === 'MANUAL' ? 10 : 0);
-      const scoreB = (b.confirmationMode === 'INSTANT_CONFIRM' ? 20 : 0) + (b.sourceType === 'MANUAL' ? 10 : 0);
+      const pinScoreA = (a.pinPriority || 0) * 100;
+      const pinScoreB = (b.pinPriority || 0) * 100;
+      const scoreA = pinScoreA + (a.confirmationMode === 'INSTANT_CONFIRM' ? 20 : 0) + (a.sourceType === 'MANUAL' ? 10 : 0);
+      const scoreB = pinScoreB + (b.confirmationMode === 'INSTANT_CONFIRM' ? 20 : 0) + (b.sourceType === 'MANUAL' ? 10 : 0);
       if (scoreA !== scoreB) {
         return scoreB - scoreA;
       }

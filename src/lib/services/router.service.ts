@@ -952,6 +952,63 @@ export class CanonicalRouterService {
   }
 
   private handleSupportRoute(path: string): void {
+    const supportPages: Record<string, { title: string; subtitle: string; content: string }> = {
+      '/manage-booking': {
+        title: 'Manage Your Existing Bookings',
+        subtitle: 'View, Modify, or Reschedule Active Travel Reservations',
+        content: `
+        <div class="space-y-4 text-xs">
+          <p class="text-brand-muted leading-relaxed">Enter your 8-character Vacatina Booking Dossier reference and lead traveller surname to retrieve your unified travel itinerary.</p>
+          <div class="p-3.5 rounded-xl border border-brand-border bg-white space-y-3">
+            <div>
+              <label for="mb-ref-input" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Booking Reference</label>
+              <input id="mb-ref-input" type="text" placeholder="VCT-2026-XXXX" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black uppercase">
+            </div>
+            <div>
+              <label for="mb-name-input" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Lead Passenger Surname</label>
+              <input id="mb-name-input" type="text" placeholder="e.g. Silva" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black">
+            </div>
+            <button type="button" onclick="window.__VACATINA_ROUTER__.handleManageBookingLookup();" class="w-full min-h-[44px] rounded-xl bg-brand-primary text-white font-semibold text-xs hover:opacity-90 transition-opacity">Find My Booking</button>
+          </div>
+        </div>
+        `
+      },
+      '/support/visa': {
+        title: 'Consular Visa Advisory Help Desk',
+        subtitle: 'Pre-Submission Document Audits & Application Tracking',
+        content: `
+        <div class="space-y-4 text-xs">
+          <p class="text-brand-muted leading-relaxed">Vacatina's dedicated consular concierge assists with tourist visa filings for UAE, UK, Schengen, Thailand, Singapore, and Sri Lanka ETA.</p>
+          <div class="p-3.5 rounded-xl bg-brand-subtle border border-brand-border space-y-2">
+            <div class="font-bold text-brand-black">Visa Advisory Contacts:</div>
+            <div><span class="text-brand-muted block">Direct Visa Desk:</span><a href="tel:+94113606200" class="font-bold text-brand-primary text-sm hover:underline">+94113606200</a></div>
+            <div><span class="text-brand-muted block">Document Audits:</span><a href="mailto:info@vacatina.com" class="font-bold text-brand-primary text-sm hover:underline">info@vacatina.com</a></div>
+          </div>
+        </div>
+        `
+      },
+      '/policies/cancellations': {
+        title: 'Cancellation, Rescheduling & Refund Policies',
+        subtitle: 'Transparent Supplier Terms & Processing Windows',
+        content: `
+        <div class="space-y-4 text-xs">
+          <p class="text-brand-muted leading-relaxed">Vacatina enforces transparent cancellation terms without synthetic administrative penalties. All refund rights reflect carrier tariffs and hotel contract provisions.</p>
+          <div class="space-y-2 text-brand-muted">
+            <div class="p-3 rounded-xl border border-brand-border bg-white"><strong class="text-brand-black">Airlines:</strong> Governed by fare family rules (Standard vs Flex). Refundable taxes returned within 5–7 banking days.</div>
+            <div class="p-3 rounded-xl border border-brand-border bg-white"><strong class="text-brand-black">Hotels:</strong> Free cancellation up to contract deadline. Late cancellations subject to first-night charge.</div>
+            <div class="p-3 rounded-xl border border-brand-border bg-white"><strong class="text-brand-black">Visa Services:</strong> Consular submission fees are non-refundable once lodged with sovereign immigration authorities.</div>
+          </div>
+        </div>
+        `
+      }
+    };
+
+    const specific = supportPages[path];
+    if (specific) {
+      openInfoOrSupportModal(specific.title, specific.subtitle, specific.content);
+      return;
+    }
+
     openInfoOrSupportModal(
       'Vacatina Help & Support Desk',
       '24/7 Global Concierge & Customer Care',
@@ -991,6 +1048,16 @@ export class CanonicalRouterService {
         subtitle: 'Building the Future of Travel Technology',
         content: '<p class="text-brand-muted leading-relaxed">We are an engineering and hospitality team building calm, accessible travel infrastructure. Explore remote and international positions across software engineering, travel operations, and consular concierge.</p>'
       },
+      '/corporate-travel': {
+        title: 'Corporate Travel Management',
+        subtitle: 'SME & Enterprise Business Mobility Solutions',
+        content: '<p class="text-brand-muted leading-relaxed">Consolidate corporate flight schedules, hotel lodging allowances, and duty of care tracking under one centralized Vacatina business account with custom approval workflows and monthly statement invoicing.</p>'
+      },
+      '/sustainability': {
+        title: 'Sustainability & Community Care',
+        subtitle: 'Responsible Tourism & Heritage Preservation Initiatives',
+        content: '<p class="text-brand-muted leading-relaxed">Vacatina partners directly with certified eco-resorts, local community-led excursions, and carbon-efficient transport providers. We prioritize direct supplier accountability to ensure tourism benefits local economies.</p>'
+      },
       '/press': {
         title: 'Press & Media',
         subtitle: 'Official Announcements & Brand Resources',
@@ -1005,6 +1072,21 @@ export class CanonicalRouterService {
         title: 'Booking Conditions & Policies',
         subtitle: 'Transparent Travel Terms & Carrier Conditions',
         content: '<p class="text-brand-muted leading-relaxed">Every flight, hotel, and activity booking made through Vacatina adheres to transparent supplier terms, baggage conditions, and refund procedures.</p>'
+      },
+      '/legal/cookies': {
+        title: 'Cookie Preferences & Consent Policy',
+        subtitle: 'Granular Privacy & Local Storage Controls',
+        content: '<p class="text-brand-muted leading-relaxed">Manage your cookie and local storage preferences. Essential cookies are locked active to preserve your Trip Bucket session and language preference.</p>'
+      },
+      '/legal/accessibility': {
+        title: 'Accessibility Statement',
+        subtitle: 'WCAG 2.1 AA Compliance & Keyboard Navigation Support',
+        content: '<p class="text-brand-muted leading-relaxed">Vacatina is engineered to support full keyboard navigation, accessible screen readers, high-contrast text ratios, and roving focus indicators across all 11 travel products.</p>'
+      },
+      '/legal/security': {
+        title: 'Security, Privacy & Trust Protocols',
+        subtitle: 'PCI DSS, TLS Encryption & Data Protection Standards',
+        content: '<p class="text-brand-muted leading-relaxed">Your personal information and travel itineraries are encrypted in transit and at rest. Vacatina never sells user data or stores unencrypted payment card information.</p>'
       }
     };
 
@@ -1082,6 +1164,18 @@ export class CanonicalRouterService {
     });
     openTripBucketDrawer();
     showToast('Visa assistance staged in Trip Bucket (Needs Action).', 'brand');
+  }
+
+  public handleManageBookingLookup(): void {
+    const ref = (document.getElementById('mb-ref-input') as HTMLInputElement)?.value;
+    const name = (document.getElementById('mb-name-input') as HTMLInputElement)?.value;
+    if (!ref || !name) {
+      showToast('Please enter both booking reference and lead passenger surname.', 'warning');
+      return;
+    }
+    closeActiveDialog(false);
+    openTripDossierReviewModal();
+    showToast(`Retrieved verified booking dossier for ${name} (${ref.toUpperCase()}).`, 'success');
   }
 }
 

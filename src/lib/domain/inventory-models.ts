@@ -18,9 +18,37 @@
 import type { SupportedCurrency, TravelProductSlug } from './types.ts';
 
 /**
- * Three canonical inventory source modes.
+ * Canonical inventory source modes (Locked Part 5 & 6).
+ * SEED represents development/prototype content that cannot enter production checkout as Ready.
  */
-export type InventorySourceType = 'API' | 'MANUAL' | 'HYBRID';
+export type InventorySourceType =
+  | 'API'
+  | 'DIRECT_CONTRACT'
+  | 'MANUAL'
+  | 'CURATED_PACKAGE'
+  | 'HYBRID'
+  | 'SEED';
+
+/**
+ * Four canonical booking modes (Locked Part 8).
+ * The customer CTA must truthfully reflect the real commercial condition.
+ */
+export type BookingMode =
+  | 'INSTANT_BOOK'
+  | 'REQUEST_TO_BOOK'
+  | 'REQUEST_AVAILABILITY'
+  | 'INQUIRY_ONLY';
+
+/**
+ * Manual listing lifecycle states for Payload CMS / Admin (Locked Part 10).
+ */
+export type ManualListingStatus =
+  | 'DRAFT'
+  | 'REVIEW'
+  | 'PUBLISHED'
+  | 'PAUSED'
+  | 'EXPIRED'
+  | 'ARCHIVED';
 
 /**
  * Three fundamental confirmation workflows.
@@ -154,6 +182,19 @@ export interface PriceFreshness {
   revalidationEndpoint?: string;
 }
 
+export interface CancellationPolicyDetail {
+  policySummary: string;
+  refundable: boolean;
+  deadlineIso?: string;
+  feeLkr?: number;
+}
+
+export interface ChangePolicyDetail {
+  changeable: boolean;
+  changeFeeLkr?: number;
+  summary: string;
+}
+
 /**
  * Universal Normalized Vacatina Offer Structure.
  * Both API and Manual items normalize into this contract.
@@ -168,6 +209,8 @@ export interface VacatinaNormalizedOffer {
   manualListingId?: string;        // Payload CMS document/listing ID
   title: string;
   subtitle: string;
+  slug?: string;
+  bookingMode?: BookingMode;
   location: StructuredLocation;
   configurationRequirements: ConfigurationRequirements;
   availabilityStatus: AvailabilityState;
@@ -175,8 +218,18 @@ export interface VacatinaNormalizedOffer {
   pricing: PricingLayers;
   freshness: PriceFreshness;
   cancellationTermsReference: string;
+  cancellationTerms?: { policySummary: string; deadlineIso?: string; refundable: boolean };
+  cancellationPolicy?: CancellationPolicyDetail;
+  changePolicy?: ChangePolicyDetail;
   inclusions: string[];
   exclusions: string[];
+  pinPriority?: number;           // For Admin "Pin Above API Results"
+  featured?: boolean;
+  exclusiveOffer?: boolean;       // For "Exclusive Vacatina Offer" badge
+  isSeedContent?: boolean;        // True if prototype / accelerator content (blocks checkout Ready)
+  remainingUnits?: number;
+  validFrom?: string;
+  validUntil?: string;
   sourceMetadata: Record<string, unknown>;
   revalidationCapability: {
     canRevalidateOnline: boolean;
@@ -184,6 +237,19 @@ export interface VacatinaNormalizedOffer {
     lastRevalidationResult?: 'UNCHANGED' | 'PRICE_CHANGED' | 'UNAVAILABLE';
   };
   fulfillmentRouting: BookingFulfillmentRouting;
+}
+
+/**
+ * Maps booking mode to honest customer-facing CTA button label (Locked Part 8).
+ */
+export function getBookingModeCta(mode?: BookingMode): string {
+  switch (mode) {
+    case 'INSTANT_BOOK': return 'Check Availability';
+    case 'REQUEST_TO_BOOK': return 'Request Booking';
+    case 'REQUEST_AVAILABILITY': return 'Request Availability';
+    case 'INQUIRY_ONLY': return 'Contact Vacatina';
+    default: return 'Configure';
+  }
 }
 
 /**

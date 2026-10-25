@@ -295,12 +295,18 @@ export class TripBucketService {
   ): TripBucketCandidate {
     const isRequestToConfirm = offer.confirmationMode === 'REQUEST_TO_CONFIRM';
     const isAssistedService = offer.confirmationMode === 'ASSISTED_SERVICE';
+    const isSeed = offer.sourceType === 'SEED' || Boolean(offer.isSeedContent);
 
     let initialState: TripBucketItemState = customState || 'ready';
     let actionRequiredText: string | undefined = undefined;
     let holdStatusText: string = 'Instant confirmation eligible · Ready subtotal staged';
 
-    if (isRequestToConfirm) {
+    if (isSeed) {
+      // Enforce Part 5: Seed content MUST NOT enter checkout as Ready
+      initialState = 'draft';
+      actionRequiredText = 'Prototype Seed Content: Discovery sample only. Select from live search or promote to manual inventory before booking.';
+      holdStatusText = 'Seed Content · Non-commercial draft';
+    } else if (isRequestToConfirm) {
       initialState = 'needs_action';
       actionRequiredText = 'Request to Confirm: Supplier confirmation required before guaranteed booking.';
       holdStatusText = 'On Request · Subject to partner allocation';
@@ -396,6 +402,15 @@ export class TripBucketService {
     const item = this.items.find(i => i.id === id);
     if (!item) return;
 
+    // Integrity Guard (Part 5): Seed content MUST NOT enter checkout as Ready
+    if (nextState === 'ready' && item.sourceType === 'SEED') {
+      item.state = 'draft';
+      item.actionRequiredText = note || 'Prototype Seed Content: Must be selected from live search or promoted to manual inventory before booking.';
+      item.holdStatusText = 'Seed Content · Non-commercial draft';
+      this.emit();
+      return;
+    }
+
     // Integrity Guard: An on-request item CANNOT falsely become 'ready' without confirmed allocation!
     if (nextState === 'ready' && item.confirmationMode === 'REQUEST_TO_CONFIRM') {
       item.state = 'needs_action';
@@ -418,6 +433,13 @@ export class TripBucketService {
   public resolveItemAction(id: string): TripBucketCandidate | null {
     const item = this.items.find(i => i.id === id);
     if (!item) return null;
+
+    // Part 5 Guard: Seed items cannot be resolved into Ready without inventory promotion
+    if (item.sourceType === 'SEED') {
+      item.actionRequiredText = 'Prototype Seed Content: Please select a verified live offer from search.';
+      this.emit();
+      return { ...item };
+    }
 
     switch (item.state) {
       case 'draft':

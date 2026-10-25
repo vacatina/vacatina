@@ -1,7 +1,7 @@
 {
-  "total": 176,
+  "total": 178,
   "summary": {
-    "WORKING": 176,
+    "WORKING": 178,
     "DEAD_END": 0,
     "PLANNED": 0,
     "BLOCKED": 0
@@ -928,6 +928,22 @@
       "classification": "WORKING"
     },
     {
+      "text": "Explore Seasonal Guide &rarr;",
+      "href": "/resources/seasonal-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "How We Compare Options &rarr;",
+      "href": "/resources/booking-transparency",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
       "text": "+94113606200",
       "href": "tel:+94113606200",
       "id": "",
@@ -1120,16 +1136,24 @@
       "classification": "WORKING"
     },
     {
-      "text": "Why Vacatina",
-      "href": "/why-vacatina",
+      "text": "Careers",
+      "href": "/careers",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
       "classification": "WORKING"
     },
     {
-      "text": "Careers",
-      "href": "/careers",
+      "text": "Corporate Travel",
+      "href": "/corporate-travel",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Sustainability",
+      "href": "/sustainability",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
@@ -1144,8 +1168,24 @@
       "classification": "WORKING"
     },
     {
-      "text": "Partners &amp; Suppliers",
-      "href": "/partners",
+      "text": "Customer Support",
+      "href": "/support",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Manage Booking",
+      "href": "/manage-booking",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Visa Advisory Desk",
+      "href": "/support/visa",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
@@ -1160,6 +1200,14 @@
       "classification": "WORKING"
     },
     {
+      "text": "Cancellation Policies",
+      "href": "/policies/cancellations",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
       "text": "Contact Us",
       "href": "/contact",
       "id": "",
@@ -1168,22 +1216,6 @@
       "classification": "WORKING"
     },
     {
-      "text": "Booking Conditions",
-      "href": "/legal/booking-conditions",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "WORKING"
-    },
-    {
-      "text": "How We Compare Options",
-      "href": "/resources/booking-transparency",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "WORKING"
-    },
-    {
       "text": "Privacy Policy",
       "href": "/legal/privacy",
       "id": "",
@@ -1201,31 +1233,7 @@
     },
     {
       "text": "Cookie Preferences",
-      "href": "#",
-      "id": "",
-      "dataModal": "cookies",
-      "ariaLabel": "",
-      "classification": "WORKING"
-    },
-    {
-      "text": "Privacy Policy",
-      "href": "/legal/privacy",
-      "id": "",
-      "dataModal": "privacy",
-      "ariaLabel": "",
-      "classification": "WORKING"
-    },
-    {
-      "text": "Terms of Service",
-      "href": "/legal/terms",
-      "id": "",
-      "dataModal": "terms",
-      "ariaLabel": "",
-      "classification": "WORKING"
-    },
-    {
-      "text": "Cookie Preferences",
-      "href": "#",
+      "href": "/legal/cookies",
       "id": "",
       "dataModal": "cookies",
       "ariaLabel": "",
@@ -1244,6 +1252,14 @@
       "href": "/legal/security",
       "id": "",
       "dataModal": "security",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Booking Conditions",
+      "href": "/legal/booking-conditions",
+      "id": "",
+      "dataModal": "booking-conditions",
       "ariaLabel": "",
       "classification": "WORKING"
     },

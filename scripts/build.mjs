@@ -35,12 +35,14 @@ const CARDS_DIR = path.join(ROOT_DIR, 'public', 'cards');
 
 const BUNDLE_ORDER = [
   'lib/constants/social.ts',
+  'lib/constants/routes.ts',
   'lib/domain/types.ts',
   'lib/domain/inventory-models.ts',
   'lib/validation/travellers.ts',
   'lib/mock-data/catalog.ts',
   'lib/services/pricing-engine.service.ts',
   'lib/services/inventory-normalizer.service.ts',
+  'lib/services/manual-inventory.service.ts',
   'lib/mock-data/hybrid-catalog.ts',
   'lib/services/search-aggregator.service.ts',
   'lib/services/booking-orchestrator.service.ts',

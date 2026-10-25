@@ -36,15 +36,15 @@ export interface CurrencyDescriptor {
 
 export const SUPPORTED_LANGUAGES: LanguageDescriptor[] = [
   { code: 'EN', htmlLang: 'en', name: 'English', nativeName: 'English', regionHint: 'International · Full Production', dir: 'ltr', suggested: true },
-  { code: 'SI', htmlLang: 'si', name: 'Sinhala', nativeName: 'සිංහල', regionHint: 'Sri Lanka · Prototype Localization (Phase 1)', dir: 'ltr', suggested: true },
-  { code: 'TA', htmlLang: 'ta', name: 'Tamil', nativeName: 'தமிழ்', regionHint: 'Sri Lanka / SG · Prototype Localization (Phase 1)', dir: 'ltr', suggested: true },
-  { code: 'AR', htmlLang: 'ar', name: 'Arabic', nativeName: 'العربية', regionHint: 'UAE / Middle East · Architecture Ready', dir: 'rtl' },
-  { code: 'FR', htmlLang: 'fr', name: 'French', nativeName: 'Français', regionHint: 'Europe · Architecture Ready', dir: 'ltr' },
-  { code: 'DE', htmlLang: 'de', name: 'German', nativeName: 'Deutsch', regionHint: 'Europe · Architecture Ready', dir: 'ltr' },
-  { code: 'ZH', htmlLang: 'zh', name: 'Chinese', nativeName: '中文 (简体)', regionHint: 'East Asia · Architecture Ready', dir: 'ltr' },
-  { code: 'JA', htmlLang: 'ja', name: 'Japanese', nativeName: '日本語', regionHint: 'Japan · Architecture Ready', dir: 'ltr' },
-  { code: 'RU', htmlLang: 'ru', name: 'Russian', nativeName: 'Русский', regionHint: 'Eurasia · Architecture Ready', dir: 'ltr' },
-  { code: 'HI', htmlLang: 'hi', name: 'Hindi', nativeName: 'हिन्दी', regionHint: 'India · Architecture Ready', dir: 'ltr' }
+  { code: 'SI', htmlLang: 'si', name: 'Sinhala', nativeName: 'සිංහල', regionHint: 'Sri Lanka · Beta / In Progress', dir: 'ltr', suggested: true },
+  { code: 'TA', htmlLang: 'ta', name: 'Tamil', nativeName: 'தமிழ்', regionHint: 'Sri Lanka / SG · Beta / In Progress', dir: 'ltr', suggested: true },
+  { code: 'AR', htmlLang: 'ar', name: 'Arabic', nativeName: 'العربية', regionHint: 'Middle East · Coming Soon', dir: 'rtl' },
+  { code: 'FR', htmlLang: 'fr', name: 'French', nativeName: 'Français', regionHint: 'Europe · Coming Soon', dir: 'ltr' },
+  { code: 'DE', htmlLang: 'de', name: 'German', nativeName: 'Deutsch', regionHint: 'Europe · Coming Soon', dir: 'ltr' },
+  { code: 'ZH', htmlLang: 'zh', name: 'Chinese', nativeName: '中文 (简体)', regionHint: 'East Asia · Coming Soon', dir: 'ltr' },
+  { code: 'JA', htmlLang: 'ja', name: 'Japanese', nativeName: '日本語', regionHint: 'Japan · Coming Soon', dir: 'ltr' },
+  { code: 'RU', htmlLang: 'ru', name: 'Russian', nativeName: 'Русский', regionHint: 'Eurasia · Coming Soon', dir: 'ltr' },
+  { code: 'HI', htmlLang: 'hi', name: 'Hindi', nativeName: 'हिन्दी', regionHint: 'India · Coming Soon', dir: 'ltr' }
 ];
 
 export const SUPPORTED_CURRENCIES: CurrencyDescriptor[] = (
