@@ -1347,6 +1347,50 @@ export type ProviderOperationalState =
 // 18. Expanded Unified Customer Offer Pattern (Directive 4)
 // ----------------------------------------------------------------------------
 
+export type InventoryFlowState =
+  | 'INITIAL'
+  | 'LOADING'
+  | 'RESULTS'
+  | 'NO_RESULTS'
+  | 'VALIDATION_ERROR'
+  | 'SUPPLIER_ERROR'
+  | 'TIMEOUT'
+  | 'UNAVAILABLE'
+  | 'PRICE_CHANGED'
+  | 'RECHECK_REQUIRED'
+  | 'EXPIRED';
+
+export type CanonicalSourceType = 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+export type CanonicalProductBookingMode = 'INSTANT' | 'REQUEST' | 'ASSISTED';
+export type CanonicalProductAvailabilityMode = 'LIVE' | 'ON_REQUEST' | 'SCHEDULED' | 'STATIC';
+export type PriceStatus = 'VERIFIED' | 'ESTIMATED' | 'PRICE_CHANGED' | 'EXPIRED' | 'STALE';
+export type ConfigurationStatus = 'NOT_CONFIGURED' | 'CONFIGURING' | 'CONFIGURED' | 'CONFIGURATION_COMPLETE';
+export type BookabilityStatus = 'BOOKABLE_NOW' | 'REQUIRES_CONFIGURATION' | 'ON_REQUEST_ONLY' | 'NOT_BOOKABLE';
+
+/**
+ * 17 Mandatory Canonical Product Attributes (Master Inventory Architecture v2.2)
+ * Governs every sellable and discoverable product across the 10 verticals.
+ */
+export interface CanonicalProductRecord {
+  sourceType: 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+  bookingMode: 'INSTANT' | 'REQUEST' | 'ASSISTED';
+  availabilityMode: 'LIVE' | 'ON_REQUEST' | 'SCHEDULED' | 'STATIC';
+  productType: TravelProductSlug;
+  canonicalId: string;
+  sourceRecordId: string;
+  supplierId?: string;
+  title: string;
+  destinationId: string;
+  price: number;
+  currency: string;
+  priceStatus: PriceStatus;
+  availabilityStatus: AvailabilityState | 'AVAILABLE' | 'LIMITED' | 'ON_REQUEST' | 'SOLD_OUT' | 'UNAVAILABLE';
+  lastCheckedAt: string;
+  requiresRecheck: boolean;
+  configurationStatus: ConfigurationStatus;
+  bookabilityStatus: BookabilityStatus;
+}
+
 export interface UnifiedCustomerOffer {
   // 1. Identity & Provenance (Authoritative 2-Tier Architecture)
   offerId: string;
@@ -1387,6 +1431,16 @@ export interface UnifiedCustomerOffer {
   confirmationMode: ConfirmationMode;
   commercialStatus: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED';
   sellable: boolean;
+
+  // 5. Explicit 17 Canonical Product Declarations (Master Directive v2.2)
+  canonicalId?: string;
+  sourceRecordId?: string;
+  destinationId?: string;
+  availabilityMode?: CanonicalProductAvailabilityMode;
+  priceStatus?: PriceStatus;
+  requiresRecheck?: boolean;
+  configurationStatus?: ConfigurationStatus;
+  bookabilityStatus?: BookabilityStatus;
 }
 
 export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCustomerOffer {
@@ -1476,8 +1530,42 @@ export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCust
       ? 'NON_REFUNDABLE'
       : 'PARTIALLY_REFUNDABLE';
 
+  const canonicalId = offer.canonicalOfferId || offer.offerId || '';
+  const sourceRecordId = offer.sourceOfferId || offer.manualListingId || canonicalId;
+  const destinationId = offer.location?.city || offer.location?.country || 'GLOBAL';
+  const availabilityMode: CanonicalProductAvailabilityMode =
+    offer.availabilityMode === 'SCHEDULED'
+      ? 'SCHEDULED'
+      : offer.availabilityStatus === 'ON_REQUEST' || offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+      ? 'ON_REQUEST'
+      : offer.availabilityStatus === 'MANUAL_AVAILABLE' || offer.sourceType === 'MANUAL'
+      ? 'STATIC'
+      : 'LIVE';
+  const priceStatus: PriceStatus =
+    offer.freshness?.isStale
+      ? 'STALE'
+      : offer.availabilityStatus === 'RATE_EXPIRED' || offer.availabilityStatus === 'EXPIRED'
+      ? 'EXPIRED'
+      : 'VERIFIED';
+  const requiresRecheck = Boolean(offer.requiresRevalidation || offer.freshness?.isStale);
+  const configurationStatus: ConfigurationStatus = 'CONFIGURED';
+  const bookabilityStatus: BookabilityStatus =
+    !isProdSellable
+      ? 'NOT_BOOKABLE'
+      : offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+      ? 'ON_REQUEST_ONLY'
+      : 'BOOKABLE_NOW';
+
   return {
-    offerId: offer.canonicalOfferId || offer.offerId || '',
+    offerId: canonicalId,
+    canonicalId,
+    sourceRecordId,
+    destinationId,
+    availabilityMode,
+    priceStatus,
+    requiresRecheck,
+    configurationStatus,
+    bookabilityStatus,
     productType: offer.productType,
     sourceType: topSource,
     sourceSubtype: subSource,
@@ -1485,7 +1573,7 @@ export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCust
     providerId: offer.providerId || offer.supplierId,
     supplierId: offer.supplierId,
     sourceOfferId: offer.sourceOfferId || offer.manualListingId,
-    sourceReference: offer.sourceOfferId || offer.manualListingId || offer.canonicalOfferId,
+    sourceReference: offer.sourceOfferId || offer.manualListingId || canonicalId,
     title: offer.title,
 
     netPrice,
