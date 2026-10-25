@@ -2,7 +2,7 @@
 
 **Document Classification:** Master Architectural Contract & Defensible Pre-Flight Handoff Standard  
 **Authority:** Vacatina Architectural Board & Senior Systems Architect  
-**Branch / Commit:** `main` (Locked at [`a62aec7`](https://github.com/vacatina/vacatina/commit/a62aec7))  
+**Branch / Commit:** `main` (Locked at [`783f500`](https://github.com/vacatina/vacatina/commit/783f500))  
 **Production URL:** [https://vacatina-nu.vercel.app](https://vacatina-nu.vercel.app)  
 **TypeScript Status:** `0 errors` (`tsc --noEmit`)  
 **Automated Verification:** `74 / 74 tests passing (100%)` across 2 test suites  
