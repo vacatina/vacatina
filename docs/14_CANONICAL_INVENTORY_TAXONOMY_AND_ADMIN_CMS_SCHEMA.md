@@ -1,176 +1,180 @@
-# Vacatina — Canonical Inventory Taxonomy & Admin Manual CMS Schema v1.0
+# Vacatina — Canonical Inventory Taxonomy & Admin Manual CMS Schema v2.0
+## Orthogonal 7-Dimension Inventory Model & Payload CMS / PostgreSQL Schema
 
 > **Authority**: Vacatina Core Engineering Board & Architecture Review  
 > **Status**: RATIFIED & LOCKED SPECIFICATION  
 > **Document Reference**: `docs/14_CANONICAL_INVENTORY_TAXONOMY_AND_ADMIN_CMS_SCHEMA.md`  
-> **Related Architecture**: `docs/11_PRODUCTION_IMPLEMENTATION_CHARTER.md`, `docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md`, `docs/13_SUPPLIER_INTEGRATION_READINESS_MATRIX.md`, `ADR-001` through `ADR-006`  
+> **Related Architecture**: `docs/11_PRODUCTION_IMPLEMENTATION_CHARTER.md`, `docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md`, `docs/13_SUPPLIER_INTEGRATION_READINESS_MATRIX.md`, `ADR-001` through `ADR-007`  
 
 ---
 
-## 1. Canonical 6-Source Inventory Taxonomy
+## 1. The 7 Orthogonal Canonical Inventory Dimensions (ADR-007)
 
-To eliminate technical ambiguity across the frontend, backend, and database layers (such as *"Is Direct Contract manual or a separate source type?"*), Vacatina formally ratifies **six distinct, unambiguous inventory source types**:
+To eliminate technical conflation across the frontend, backend, and database layers, Vacatina formally ratifies **seven orthogonal, typed dimensions** governing every product and offer:
 
 ```mermaid
 flowchart TD
-    subgraph UpstreamSources["6 Canonical Inventory Sources"]
-        API["1. API\nLive GDS / NDC / Supplier APIs\n(Amadeus, Duffel, LiteAPI, Viator, Trainline)"]
-        DC["2. DIRECT_CONTRACT\nNegotiated Physical Inventory\n(Boutique Resorts, Chauffeur Fleet, Air Charters)"]
-        MS["3. MANUAL_SERVICE\nOperations & Consular Workflows\n(Visa Advisory Desk, Concierge Support)"]
-        CP["4. CURATED_PACKAGE\nFixed Pre-Assembled Packages\n(Sri Lanka Heritage Escapes, Fixed Tours)"]
-        HYB["5. HYBRID\nDynamic Multi-Component Bundles\n(API Flight + Direct Hotel + Manual Visa)"]
-        SEED["6. SEED / DEMO\nDesign Sprints & Prototype Cards\n(Strictly Non-Bookable; Blocked from Checkout)"]
+    subgraph Dimensions["7 Orthogonal Canonical Dimensions"]
+        D1["1. inventorySource\nAPI | DIRECT_CONTRACT |\nMANUAL_INTERNAL | PARTNER_MANUAL"]
+        D2["2. listingKind\nDISCOVERY_CONTENT | SELLABLE_INVENTORY |\nSERVICE | PACKAGE"]
+        D3["3. compositionType\nSINGLE | CURATED_PACKAGE |\nDYNAMIC_BUNDLE"]
+        D4["4. fulfillmentMode\nINSTANT | ON_REQUEST |\nMANUAL_CONFIRMATION"]
+        D5["5. environmentClass\nPRODUCTION | SANDBOX |\nSEED"]
+        D6["6. sellability\nDISCOVERY_ONLY | QUOTE_ONLY |\nBOOKABLE"]
+        D7["7. providerLifecycle\nPLANNED | SCAFFOLD | SANDBOX_ACTIVE |\nCERTIFIED | PRODUCTION_LIVE"]
     end
 
-    subgraph PlatformEngine["Unified Platform Engine"]
-        Normalizer["Canonical Offer Normalizer\n(Zero Provider Leakage)"]
+    subgraph Normalization["Unified Inventory Engine"]
+        Canon["CanonicalOfferEntity\n(Universal Stable Schema)"]
         Pricing["4-Layer Integer Minor Pricing Engine"]
-        Dedup["Composite Key Deduplication & Best-Price Wins"]
-        Aggregator["Unified Search Aggregator"]
+        Dedup["Natural Composite Key Deduplication\n(Best-Price Wins & Exclusive Direct Deal)"]
     end
 
-    subgraph ConsumerExperience["Consumer Touchpoints"]
-        SearchUI["B2C / B2B Search Results"]
-        Bucket["Trip Bucket (8 States)"]
-        Saga["Distributed Booking Saga (9 States)"]
+    subgraph Consumer["Customer Touchpoints"]
+        UI["Truthful Customer Badges\n(Zero Technical Leakage)"]
+        TripBucket["Trip Bucket (8 States)"]
+        Checkout["Checkout / Booking Saga"]
     end
 
-    API --> Normalizer
-    DC --> Normalizer
-    MS --> Normalizer
-    CP --> Normalizer
-    HYB --> Normalizer
-    SEED -.->|Commercial Guard: BLOCKED| Normalizer
-
-    Normalizer --> Pricing
+    Dimensions --> Canon
+    Canon --> Pricing
     Pricing --> Dedup
-    Dedup --> Aggregator
-
-    Aggregator --> SearchUI
-    SearchUI --> Bucket
-    Bucket --> Saga
+    Dedup --> UI
+    UI --> TripBucket
+    TripBucket --> Checkout
 ```
 
-### The 6 Canonical Source Definitions:
+### The 7 Dimensions Defined:
 
-1. **`API`**:
-   - Live external travel inventory ingested via third-party GDS, NDC, or supplier APIs (Duffel, Amadeus, LiteAPI, Viator, Trainline).
-   - Subject to external supplier volatility. Mandatory revalidation before checkout.
-2. **`DIRECT_CONTRACT`**:
-   - Physical travel inventory negotiated directly by Vacatina contracts (e.g. 10 exclusive suites at a Galle Fort boutique villa, Cinnamon Air scenic amphibian seats, local Colombo luxury van fleet).
-   - Governed by committed contractual quotas (`availableQuota`) and negotiated wholesale net rates.
-3. **`MANUAL_SERVICE`**:
-   - Operational service workflows rather than fixed room/seat inventory (e.g. Vacatina Consular Visa Assistance, dedicated document vetting, VIP airport fast-track).
-   - Truthfully classified as an **"Operationally Live Manual Service"** (Vacatina-operated consular desk workflow) — never misrepresented as a government or embassy API.
-4. **`CURATED_PACKAGE`**:
-   - Fixed, non-dynamic multi-day itineraries crafted by Vacatina travel curators with pre-set itineraries, inclusions, and marketing themes.
-5. **`HYBRID`**:
-   - Dynamically coordinated multi-component bundles that combine real-time API inventory (e.g. Emirates flight via Duffel) with direct contract boutique accommodations and manual visa advisory.
-   - Appears as a single `CanonicalOfferEntity` to the customer, while the booking saga fulfills each component through its respective upstream channel.
-6. **`SEED` / `DEMO`**:
-   - Design sprint cards, test fixtures, and accelerator prototype remnants.
-   - **Strictly isolated and quarantined from commercial checkout**. Attempting to checkout a `SEED` item immediately throws a commercial violation error.
-
----
-
-## 2. Customer-Facing Truth Rule: Source Disclosure vs Buying Conditions
-
-Internal source classifications (`API`, `DIRECT_CONTRACT`, `MANUAL_SERVICE`, `CURATED_PACKAGE`, `HYBRID`, `SEED`) exist **strictly on the backend and database layer**.
-
-Customers are **never** shown confusing internal provider terminology like `"Manual CMS Listing"` or `"Duffel API Offer"`. Instead, travellers see the clear commercial buying condition:
-
-| Canonical Source | Customer Buying Condition Badge | Meaning to Traveller |
-| :--- | :--- | :--- |
-| **`API`** | **`Instant Confirmation`** | Instant PNR / reservation block issued automatically upon payment. |
-| **`DIRECT_CONTRACT`** | **`Instant Confirmation`** or **`Request to Confirm`** | Direct Vacatina negotiated allotment; instant voucher or confirmed within 60m SLA. |
-| **`DIRECT_CONTRACT`** *(When Cheaper than API)* | **`Exclusive Direct Deal`** | Vacatina's contracted rate beats the public GDS rate. Direct contract wins deduplication. |
-| **`MANUAL_SERVICE`** | **`Assisted Service`** | Consular/concierge service with dedicated officer review (e.g. SLA 2-3 business days). |
-| **`CURATED_PACKAGE`** | **`Request to Confirm`** | Curated multi-day package confirmed by Vacatina tour operations. |
-| **`HYBRID`** | **`Request to Confirm`** | Coordinated multi-product bundle verified across all components. |
+1. **`inventorySource`**:
+   - `API`: Live external supplier/GDS/NDC/Bedbank (Amadeus, Duffel, LiteAPI, Viator, Trainline).
+   - `DIRECT_CONTRACT`: Directly negotiated commercial contract managed in Admin/Payload CMS.
+   - `MANUAL_INTERNAL`: Internal operational workflow executed by Vacatina operations staff (e.g. Consular Concierge).
+   - `PARTNER_MANUAL`: External travel partner managing inventory via Vacatina Extranet.
+2. **`listingKind`**:
+   - `DISCOVERY_CONTENT`: Marketing cards, destination inspiration, teasers (never directly bookable).
+   - `SELLABLE_INVENTORY`: Physical inventory (seats, rooms, vehicles, berths).
+   - `SERVICE`: Human/operational service (visa assistance, concierge, airport escort).
+   - `PACKAGE`: Structured multi-day holiday packages.
+3. **`compositionType`**:
+   - `SINGLE`: Standalone individual product (one flight or one room).
+   - `CURATED_PACKAGE`: Fixed multi-day itinerary pre-assembled by Vacatina.
+   - `DYNAMIC_BUNDLE`: Algorithmic or user-assembled multi-product bundle (e.g. flight + hotel + transfer).
+4. **`fulfillmentMode`**:
+   - `INSTANT`: Instant electronic issuance upon payment.
+   - `ON_REQUEST`: Requires supplier / allotment allocation before final confirmation.
+   - `MANUAL_CONFIRMATION`: Requires manual human document check and consular/concierge review.
+5. **`environmentClass`**:
+   - `PRODUCTION`: Live commercial environment.
+   - `SANDBOX`: Safe test/simulated environment.
+   - `SEED`: Prototype accelerator / demo data, strictly isolated from checkout.
+6. **`sellability`**:
+   - `DISCOVERY_ONLY`: Non-purchasable informational teaser; click prefills real search.
+   - `QUOTE_ONLY`: Requires agent quotation before checkout.
+   - `BOOKABLE`: Directly purchasable online through Vacatina checkout.
+7. **`providerLifecycle`** (Tracked PER PROVIDER):
+   - `PLANNED` | `SCAFFOLD` | `SANDBOX_ACTIVE` | `CERTIFIED` | `PRODUCTION_LIVE`.
 
 ---
 
-## 3. Production Admin Manual CMS Schema Specification (Payload CMS / PostgreSQL)
+## 2. Customer-Facing Truth Rule: Badging vs Technical Privacy
 
-Vacatina administrators manage direct contracts, manual services, and curated packages via the Operations Backoffice (`/admin/*`). 
+Customer-facing UI **NEVER** displays internal technical terms (`API`, `DIRECT_CONTRACT`, `MANUAL_INTERNAL`, `SCAFFOLD`, `SANDBOX`, `SEED`).
+Instead, customer UI derives strictly truthful operational and commercial badges:
+- `Live Availability`: Strictly when live, fresh, and in production.
+- `Instant Confirmation`: When electronic issuance is instant.
+- `On Request`: When allotment release is required.
+- `Vacatina Assisted`: When operations concierge vets documents (Visa, Custom packages).
+- `Direct Rate`: Directly contracted physical inventory.
+- `Exclusive Direct Deal`: Pinned administrative exclusive direct contract.
 
-Below is the complete, production-ready schema specification:
+---
 
-### Collection: `manual_listings`
+## 3. Dynamic Bundles & Component Heterogeneity (Rule 9)
+
+In dynamic bundles (`compositionType = 'DYNAMIC_BUNDLE'`), each individual component preserves its own source origin, fulfillment mechanism, and revalidation contract within `offer.components`:
+- **Flight Component**: `inventorySource = 'API'`, `fulfillmentMode = 'INSTANT'`, `revalidationRequired = true`
+- **Hotel Component**: `inventorySource = 'DIRECT_CONTRACT'`, `fulfillmentMode = 'INSTANT'`, `revalidationRequired = false`
+- **Chauffeur Transfer**: `inventorySource = 'DIRECT_CONTRACT'`, `fulfillmentMode = 'INSTANT'`, `revalidationRequired = false`
+- **Visa Assistance**: `inventorySource = 'MANUAL_INTERNAL'`, `listingKind = 'SERVICE'`, `fulfillmentMode = 'MANUAL_CONFIRMATION'`, `revalidationRequired = false`
+
+---
+
+## 4. Admin Manual CMS Schema Specification (Payload CMS / PostgreSQL)
+
+Direct Contract and Manual Listings are persisted in PostgreSQL via Drizzle ORM and managed through Payload CMS collections:
 
 ```typescript
 export type ManualListingStatus = 'DRAFT' | 'IN_REVIEW' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED';
 
 export interface ManualListingEntity {
-  // 1. Primary Identification
-  id: UUID;                                  // Primary Key (UUIDv4)
-  organizationId?: UUID;                     // Tenant ID (for multi-tenant white-label DMCs)
-  productType: TravelProductSlug;            // 'flights' | 'hotels' | 'visa' | 'packages' | 'cars' | ...
-  sourceType: 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE';
+  id: UUID;
+  organizationId?: UUID;
+  productType: string;
 
-  // 2. Partner & Contract Information
-  partnerSupplierId: string;                 // Identifier of the contracted hotel, charter, or DMC
-  partnerName: string;                       // "Cinnamon Heritage Hotels", "Air Senok", "Ceylon Chauffeurs"
-  contractReference: string;                 // "AGR-2026-GALLE-001" (for financial auditing)
+  // 7 Orthogonal Dimensions (ADR-007)
+  inventorySource: 'DIRECT_CONTRACT' | 'MANUAL_INTERNAL' | 'PARTNER_MANUAL';
+  listingKind: 'SELLABLE_INVENTORY' | 'SERVICE' | 'PACKAGE';
+  compositionType: 'SINGLE' | 'CURATED_PACKAGE' | 'DYNAMIC_BUNDLE';
+  fulfillmentMode: 'INSTANT' | 'ON_REQUEST' | 'MANUAL_CONFIRMATION';
+  environmentClass: 'PRODUCTION' | 'SANDBOX' | 'SEED';
+  sellability: 'DISCOVERY_ONLY' | 'QUOTE_ONLY' | 'BOOKABLE';
 
-  // 3. Content & Presentation
-  title: string;                             // "Galle Fort Heritage Bungalow Deluxe Suite"
-  subtitle: string;                          // "Colonial Luxury Suite · Breakfast Included · Butler Service"
-  description: string;                       // Full marketing copy and editorial notes
-  heroImageUrl: string;                      // CDN URL of primary high-resolution card image
-  galleryImageUrls: string[];                // Additional property / cabin / vehicle imagery
+  // Commercial & Partner Relations
+  partnerSupplierId: string;
+  partnerName: string;
+  contractReference: string;
+  title: string;
+  subtitle: string;
+  description: string;
 
-  // 4. Structured Location
-  destinationCity: string;                   // "Galle", "Kandy", "Dubai", "Colombo"
-  destinationCountry: string;                // "Sri Lanka", "United Arab Emirates"
-  destinationCountryCode: string;            // "LK", "AE" (ISO 3166-1 alpha-2)
-  latitude?: number;                         // Geolocation coordinates
+  // Geographic Taxonomy
+  destinationCity: string;
+  destinationCountry: string;
+  destinationCountryCode: string; // ISO 3166-1 alpha-2
+  latitude?: number;
   longitude?: number;
 
-  // 5. Commercial Pricing & Minor Units Arithmetic
-  contractedNetCostMinor: number;            // Layer 1: Raw wholesale supplier cost (e.g. 4500000 = LKR 45,000.00)
-  costCurrency: string;                      // "LKR", "USD", "EUR"
-  platformMarkupPercent: number;             // Layer 2: Base B2C margin percentage (e.g. 10.0%)
-  manualOverridePriceMinor?: number;         // Layer 4: Authoritative promotional override (if active)
-  overrideReason?: string;                   // "Black Friday Seasonal Campaign", "Direct Deal Promotion"
-  sellingPriceMinor: number;                 // Final Customer Selling Price in Minor Units
-  sellingCurrency: string;                   // "LKR"
+  // Commercial Economics (Integer Minor Units)
+  contractedNetCostMinor: number;
+  costCurrency: string;
+  platformMarkupPercent: number;
+  manualOverridePriceMinor?: number;
+  overrideReason?: string;
+  sellingPriceMinor: number;
+  sellingCurrency: string;
 
-  // 6. Availability, Quota & Booking Rules
-  availableQuota: number;                    // Committed unsold allotment (e.g. 10 rooms, 6 charter seats)
-  isUnlimitedQuota: boolean;                 // True for services like visa advisory without physical caps
-  blackoutDates: string[];                   // Array of ISO dates ['2026-12-24', '2026-12-31']
-  minimumNoticeHours: number;                // Advance notice required (e.g. 24 hours before check-in)
-  validFrom: ISODateString;                  // Contract validity start
-  validUntil: ISODateString;                 // Contract validity end
+  // Allotment & Availability Controls
+  availableQuota: number;
+  isUnlimitedQuota: boolean;
+  blackoutDates: string[]; // ISO YYYY-MM-DD
+  minimumNoticeHours: number;
+  validFrom: ISODateString;
+  validUntil: ISODateString;
+
+  // Operational Policies
   confirmationMode: 'INSTANT_CONFIRM' | 'REQUEST_TO_CONFIRM' | 'ASSISTED_SERVICE';
+  inclusions: string[];
+  exclusions: string[];
+  cancellationPolicy: string;
+  termsReference: string;
 
-  // 7. Commercial Terms & Policies
-  inclusions: string[];                      // ['Full English breakfast', 'Free airport chauffeur transfer']
-  exclusions: string[];                      // ['Alcoholic beverages', 'City tourism tax']
-  cancellationPolicy: string;                // "Free cancellation up to 48 hours prior to check-in"
-  termsReference: string;                    // Internal legal terms document link
+  // Media & Merchandising
+  heroImageUrl: string;
+  galleryImageUrls: string[];
+  isFeatured: boolean;
+  pinAboveApi: boolean;
+  isB2BVisible: boolean;
+  isB2CVisible: boolean;
 
-  // 8. Visibility & Merchandising Controls
-  isFeatured: boolean;                       // Elevated placement in homepage discovery
-  pinAboveApi: boolean;                      // Ranks above external API results on matching searches
-  isB2BVisible: boolean;                     // Visible to authenticated travel agencies
-  isB2CVisible: boolean;                     // Visible to public B2C consumers
-
-  // 9. Lifecycle & Audit Trail
-  status: ManualListingStatus;               // DRAFT | IN_REVIEW | PUBLISHED | PAUSED | ARCHIVED
-  publishedByUserId?: UUID;                  // User ID of operations manager who approved
+  // Lifecycle & Audit
+  status: ManualListingStatus;
+  publishedByUserId?: UUID;
   publishedAt?: ISODateString;
   createdAt: ISODateString;
   updatedAt: ISODateString;
 }
-```
 
-### Audit Trail: `manual_listing_audits`
-
-Every state change, price override, quota modification, or pause action generates an immutable audit record:
-
-```typescript
 export interface ManualListingAuditLogEntity {
   id: UUID;
   listingId: UUID;
@@ -185,48 +189,13 @@ export interface ManualListingAuditLogEntity {
 
 ---
 
-## 4. Admin Publishing Workflow
+## 5. Automated Invariant Safeguards (Rule 14)
 
-```mermaid
-stateDiagram-v2
-    [*] --> DRAFT: Operations Specialist Creates Listing
-    DRAFT --> IN_REVIEW: Submit for Manager Approval
-    IN_REVIEW --> PUBLISHED: Commercial Director Approves (Cache Purged)
-    IN_REVIEW --> DRAFT: Changes Requested
-    PUBLISHED --> PAUSED: Quota Exhausted / Partner Blackout
-    PAUSED --> PUBLISHED: Quota Replenished
-    PUBLISHED --> ARCHIVED: Contract Expired / Terminated
-```
-
-1. **`DRAFT`**: Listing drafted by product coordinator. Not returned by search APIs.
-2. **`IN_REVIEW`**: Submitted for pricing & contract reference compliance review.
-3. **`PUBLISHED`**: Verified and active. Immediately invalidates search cache tags (`manual_listing_{id}`) and enters the Unified Inventory Engine.
-4. **`PAUSED`**: Temporarily hidden from customer search due to partner allotment pauses or seasonal closure. Existing confirmed bookings remain unaffected.
-5. **`ARCHIVED`**: Contract concluded; historical data preserved for financial reconciliation.
-
----
-
-## 5. Deduplication & Best-Price Precedence
-
-When a customer searches for a destination (e.g. `Dubai` or `Galle`), `UnifiedInventoryService` merges live API results with direct contracts:
-
-1. **Composite Key Matching**:
-   - Hotels: `hash(city + normalized_name)`
-   - Flights: `hash(carrier + flight_number + departure_date + cabin)`
-   - Cars: `hash(pickup + vehicle_category)`
-2. **Resolution Rules**:
-   - **`pinAboveApi === true`**: The Direct Contract is elevated to rank #1.
-   - **Direct Rate $\le$ API Rate**: The Direct Contract wins, receives the badge `"Exclusive Direct Deal"`, and suppresses the higher-priced API duplicate.
-   - **API Outage / Circuit Breaker OPEN**: Direct Contracts continue serving customers smoothly without false claims or missing results.
-
----
-
-## 6. Summary of Architectural Alignment
-
-| Layer | Implementation | Verification Status |
-| :--- | :--- | :--- |
-| **Taxonomy** | 6 Canonical Types (`API`, `DIRECT_CONTRACT`, `MANUAL_SERVICE`, `CURATED_PACKAGE`, `HYBRID`, `SEED`) | Synchronized in `types.ts`, `schema.ts`, `inventory-models.ts` |
-| **Visa Classification** | Operationally Live Manual Service (Consular advisory desk, SLA 48h) | Verified in `VisaConsularAdapter` |
-| **Admin CMS Schema** | `ManualListingEntity` with 9 complete functional sections | Added to `src/server/db/schema.ts` & `storage.ts` |
-| **Deduplication** | Supports all direct inventory types (`DIRECT_CONTRACT`, `MANUAL_SERVICE`, `CURATED_PACKAGE`) | Implemented in `DeduplicationService` |
-| **Unit Test Coverage** | Subtests 1–32 covering all domain, pricing, saga, and taxonomy rules | 100% Pass Rate (32/32) |
+The architecture is safeguarded by strict automated invariants verified by tests:
+1. `SEED` data cannot have `sellability = 'BOOKABLE'` (throws `SEED_CANNOT_BE_BOOKABLE`).
+2. `SEED` data cannot enter checkout or payment (throws `SEED_CHECKOUT_BLOCKED`).
+3. `SCAFFOLD` providers cannot execute production bookings (throws `SCAFFOLD_PRODUCTION_BOOKING_BLOCKED`).
+4. Only `PRODUCTION_LIVE` providers can execute live bookings.
+5. Manual/direct contract offers require `status: 'PUBLISHED'` to be bookable.
+6. `SOLD_OUT` or `RATE_EXPIRED` items cannot transition to Trip Bucket `READY` state.
+7. Customer UI badge validator statically confirms 0 technical taxonomy leakage.

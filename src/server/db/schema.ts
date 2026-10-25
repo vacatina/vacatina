@@ -158,6 +158,12 @@ export interface TripBucketItemEntity {
   canonicalOfferId: string;
   productType: string;
   sourceType: 'API' | 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE' | 'HYBRID' | 'SEED' | 'MANUAL';
+  inventorySource?: 'API' | 'DIRECT_CONTRACT' | 'MANUAL_INTERNAL' | 'PARTNER_MANUAL';
+  listingKind?: 'DISCOVERY_CONTENT' | 'SELLABLE_INVENTORY' | 'SERVICE' | 'PACKAGE';
+  compositionType?: 'SINGLE' | 'CURATED_PACKAGE' | 'DYNAMIC_BUNDLE';
+  fulfillmentMode?: 'INSTANT' | 'ON_REQUEST' | 'MANUAL_CONFIRMATION';
+  environmentClass?: 'PRODUCTION' | 'SANDBOX' | 'SEED';
+  sellability?: 'DISCOVERY_ONLY' | 'QUOTE_ONLY' | 'BOOKABLE';
   bookingMode: 'INSTANT_BOOK' | 'REQUEST_TO_BOOK' | 'REQUEST_AVAILABILITY' | 'INQUIRY_ONLY';
   title: string;
   configuration: Record<string, unknown>;
@@ -192,6 +198,12 @@ export interface ManualListingEntity {
   organizationId?: UUID;
   productType: string;
   sourceType: 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE';
+  inventorySource?: 'DIRECT_CONTRACT' | 'MANUAL_INTERNAL' | 'PARTNER_MANUAL';
+  listingKind?: 'SELLABLE_INVENTORY' | 'SERVICE' | 'PACKAGE';
+  compositionType?: 'SINGLE' | 'CURATED_PACKAGE' | 'DYNAMIC_BUNDLE';
+  fulfillmentMode?: 'INSTANT' | 'ON_REQUEST' | 'MANUAL_CONFIRMATION';
+  environmentClass?: 'PRODUCTION' | 'SANDBOX' | 'SEED';
+  sellability?: 'DISCOVERY_ONLY' | 'QUOTE_ONLY' | 'BOOKABLE';
   partnerSupplierId: string;
   partnerName: string;
   contractReference: string;

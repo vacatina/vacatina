@@ -58,6 +58,13 @@ export class SightseeingViatorAdapter extends BaseSupplierAdapter<RawSightseeing
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: 'sightseeing',
+      inventorySource: 'API',
+      listingKind: 'SELLABLE_INVENTORY',
+      compositionType: 'SINGLE',
+      fulfillmentMode: 'INSTANT',
+      environmentClass: this.isProduction && this.config.apiKey ? 'PRODUCTION' : 'SANDBOX',
+      sellability: this.isProduction && this.config.apiKey ? 'BOOKABLE' : 'QUOTE_ONLY',
+      providerLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceType: 'API',
       supplierId: this.supplierId,
       supplierName: `${raw.title} via Viator`,
@@ -144,6 +151,7 @@ export class SightseeingViatorAdapter extends BaseSupplierAdapter<RawSightseeing
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    this.assertCanExecuteProductionBooking();
     const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       supplierReference: isLive

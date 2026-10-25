@@ -56,6 +56,13 @@ export class InsuranceAllianzAdapter extends BaseSupplierAdapter<RawInsurancePla
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: 'insurance',
+      inventorySource: 'API',
+      listingKind: 'SERVICE',
+      compositionType: 'SINGLE',
+      fulfillmentMode: 'INSTANT',
+      environmentClass: this.isProduction && this.config.apiKey ? 'PRODUCTION' : 'SANDBOX',
+      sellability: this.isProduction && this.config.apiKey ? 'BOOKABLE' : 'QUOTE_ONLY',
+      providerLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceType: 'API',
       supplierId: this.supplierId,
       supplierName: `${raw.planName} via Allianz Partners`,
@@ -140,6 +147,7 @@ export class InsuranceAllianzAdapter extends BaseSupplierAdapter<RawInsurancePla
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    this.assertCanExecuteProductionBooking();
     const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       supplierReference: isLive

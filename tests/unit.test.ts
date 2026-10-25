@@ -41,6 +41,20 @@ import { DeduplicationService } from '../src/server/inventory/deduplication.serv
 import { CacheTtlService } from '../src/server/inventory/cache-ttl.service.ts';
 import { CircuitBreakerService } from '../src/server/inventory/circuit-breaker.service.ts';
 import { UnifiedInventoryService } from '../src/server/inventory/unified-inventory.service.ts';
+import {
+  assertSeedCannotBeBookable,
+  assertSeedCannotEnterCheckout,
+  assertScaffoldCannotCreateProductionBooking,
+  assertManualOfferPublishedForBooking,
+  assertUnavailableOfferCannotBeReady,
+  deriveCustomerBadges,
+  validateNoTechnicalLeakInCustomerBadges,
+  ArchitecturalInvariantViolationError
+} from '../src/server/inventory/types.ts';
+import {
+  ProviderRegistryService,
+  CANONICAL_PROVIDER_REGISTRY
+} from '../src/server/inventory/provider-registry.ts';
 
 describe('Vacatina Domain & Validation Unit Tests', () => {
   it('enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order', () => {
@@ -1455,5 +1469,145 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.equal(updatedAudits.length, 2);
     assert.equal(updatedAudits[1].action, 'UPDATED');
     assert.equal(updatedAudits[1].changeSummary, 'Applied seasonal promotional rate override');
+  });
+
+  it('enforces the 7-Dimension Inventory Invariants and Truthful Sandbox Guards (Rule 14 & ADR-007)', () => {
+    // 1. SEED cannot become BOOKABLE
+    assert.throws(
+      () => assertSeedCannotBeBookable({ environmentClass: 'SEED', sellability: 'BOOKABLE' }),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'SEED_CANNOT_BE_BOOKABLE'
+    );
+
+    // 2. SEED cannot enter checkout
+    assert.throws(
+      () => assertSeedCannotEnterCheckout({ environmentClass: 'SEED', canonicalOfferId: 'vct-demo-seed-001' }),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'SEED_CHECKOUT_BLOCKED'
+    );
+
+    // 3. SCAFFOLD providers cannot create production bookings
+    assert.throws(
+      () => assertScaffoldCannotCreateProductionBooking({
+        providerId: 'DUFFEL_NDC',
+        lifecycle: 'SCAFFOLD',
+        environment: 'PRODUCTION'
+      }),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'SCAFFOLD_PRODUCTION_BOOKING_BLOCKED'
+    );
+
+    // 4. Manual/direct offers require PUBLISHED state to be BOOKABLE
+    assert.throws(
+      () => assertManualOfferPublishedForBooking({
+        status: 'DRAFT',
+        sellability: 'BOOKABLE',
+        title: 'Unpublished Hotel'
+      }),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'MANUAL_OFFER_NOT_PUBLISHED'
+    );
+
+    // 5. Unavailable/expired offers cannot become Trip Bucket Ready
+    assert.throws(
+      () => assertUnavailableOfferCannotBeReady({
+        availabilityStatus: 'SOLD_OUT',
+        targetTripBucketState: 'READY'
+      }),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'EXPIRED_OFFER_CANNOT_BE_READY'
+    );
+    assert.throws(
+      () => assertUnavailableOfferCannotBeReady({
+        availabilityStatus: 'RATE_EXPIRED',
+        targetTripBucketState: 'READY'
+      }),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'EXPIRED_OFFER_CANNOT_BE_READY'
+    );
+
+    // 6. Dynamic bundle components retain their individual source identities (Rule 9 & 14)
+    const bundler = new PackagesBundlerAdapter();
+    const hybridOffer = bundler.normalize({
+      bundleId: 'bdl_dubai_001',
+      title: 'Dubai Complete Escape',
+      destinationCity: 'Dubai',
+      destinationCountry: 'United Arab Emirates',
+      durationDays: 5,
+      components: {
+        flight: { supplierId: 'DUFFEL_NDC', flightNumber: 'UL-225', rawCostMinor: 10000000 },
+        hotel: { supplierId: 'DIRECT_HOTEL', propertyName: 'Atlantis', rawCostMinor: 20000000 },
+        transfer: { supplierId: 'LOCAL_FLEET', vehicle: 'Van', rawCostMinor: 3000000 },
+        visa: { supplierId: 'VACATINA_VISA_DESK', type: 'Tourist Visa', rawCostMinor: 4000000 }
+      },
+      costCurrency: 'LKR',
+      inclusions: ['Flight', 'Hotel', 'Transfer', 'Visa'],
+      exclusions: []
+    });
+
+    assert.equal(hybridOffer.compositionType, 'DYNAMIC_BUNDLE');
+    assert.ok(hybridOffer.components && hybridOffer.components.length === 4);
+    assert.equal(hybridOffer.components[0].inventorySource, 'API');
+    assert.equal(hybridOffer.components[0].supplierId, 'DUFFEL_NDC');
+    assert.equal(hybridOffer.components[1].inventorySource, 'DIRECT_CONTRACT');
+    assert.equal(hybridOffer.components[2].inventorySource, 'DIRECT_CONTRACT');
+    assert.equal(hybridOffer.components[3].inventorySource, 'MANUAL_INTERNAL');
+    assert.equal(hybridOffer.components[3].listingKind, 'SERVICE');
+
+    // 7. Customer UI never leaks internal source taxonomy accidentally (Rule 2 & 3)
+    const manualAdapter = new ManualCmsAdapter();
+    const directHotel = manualAdapter.normalize({
+      id: 'cms_dir_ht_001',
+      productType: 'hotels',
+      partnerSupplierId: 'CEYLON_HOTELS',
+      partnerName: 'Galle Fort Bungalow',
+      title: 'Galle Fort Bungalow',
+      subtitle: 'Luxury Suite',
+      location: { city: 'Galle', country: 'Sri Lanka', countryCode: 'LK' },
+      confirmationMode: 'INSTANT_CONFIRM',
+      availableQuota: 5,
+      contractedBaseCostMinor: 4500000,
+      costCurrency: 'LKR',
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation 48h',
+      pinAboveApi: true,
+      status: 'PUBLISHED'
+    });
+
+    const customerBadges = deriveCustomerBadges(directHotel);
+    assert.ok(customerBadges.includes('Instant Confirmation'));
+    assert.ok(customerBadges.includes('Direct Rate'));
+    assert.ok(customerBadges.includes('Exclusive Direct Deal'));
+    assert.equal(validateNoTechnicalLeakInCustomerBadges(customerBadges), true);
+
+    // Negative leak test: verify validator catches internal leak
+    assert.equal(validateNoTechnicalLeakInCustomerBadges(['Exclusive Direct Deal', 'API Listing']), false);
+    assert.equal(validateNoTechnicalLeakInCustomerBadges(['Direct Rate', 'DIRECT_CONTRACT']), false);
+  });
+
+  it('enforces Provider Registry candidate/target tracking and booking execution permissions (Rule 10 & 11)', () => {
+    // 1. All currently named external suppliers are strictly CANDIDATE or TARGET
+    const candidates = ProviderRegistryService.getCandidates().map(p => p.providerId);
+    const targets = ProviderRegistryService.getTargets().map(p => p.providerId);
+
+    assert.ok(candidates.includes('DUFFEL_NDC'));
+    assert.ok(candidates.includes('LITEAPI'));
+    assert.ok(candidates.includes('VIATOR'));
+    assert.ok(candidates.includes('TRAINLINE'));
+
+    assert.ok(targets.includes('AMADEUS_GDS'));
+    assert.ok(targets.includes('RENTALCARS'));
+    assert.ok(targets.includes('TRAVELTEK'));
+    assert.ok(targets.includes('ALLIANZ'));
+
+    // 2. No candidate or target has production credentials or live booking execution enabled
+    for (const provider of CANONICAL_PROVIDER_REGISTRY) {
+      if (provider.role === 'CANDIDATE' || provider.role === 'TARGET') {
+        assert.equal(provider.credentialsConfigured, false, `${provider.providerId} must not claim live credentials`);
+        assert.equal(provider.bookingExecutionSupported, false, `${provider.providerId} must not support live booking execution`);
+        assert.notEqual(provider.lifecycle, 'PRODUCTION_LIVE', `${provider.providerId} must not claim PRODUCTION_LIVE`);
+      }
+    }
+
+    // 3. Only internal operational services support live execution
+    assert.equal(ProviderRegistryService.canExecuteLiveBooking('PAYLOAD_CMS_DIRECT'), true);
+    assert.equal(ProviderRegistryService.canExecuteLiveBooking('VACATINA_CONSULAR_CONCIERGE'), true);
+    assert.equal(ProviderRegistryService.canExecuteLiveBooking('DUFFEL_NDC'), false);
+    assert.equal(ProviderRegistryService.canExecuteLiveBooking('AMADEUS_GDS'), false);
   });
 });

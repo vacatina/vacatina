@@ -61,6 +61,13 @@ export class CruisesTraveltekAdapter extends BaseSupplierAdapter<RawCruiseSailin
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: 'cruises',
+      inventorySource: 'API',
+      listingKind: 'SELLABLE_INVENTORY',
+      compositionType: 'SINGLE',
+      fulfillmentMode: 'INSTANT',
+      environmentClass: this.isProduction && this.config.apiKey ? 'PRODUCTION' : 'SANDBOX',
+      sellability: this.isProduction && this.config.apiKey ? 'BOOKABLE' : 'QUOTE_ONLY',
+      providerLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceType: 'API',
       supplierId: this.supplierId,
       supplierName: `${raw.cruiseLine} via Traveltek`,
@@ -149,6 +156,7 @@ export class CruisesTraveltekAdapter extends BaseSupplierAdapter<RawCruiseSailin
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    this.assertCanExecuteProductionBooking();
     const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       supplierReference: isLive

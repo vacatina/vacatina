@@ -61,6 +61,13 @@ export class CarsRentalAdapter extends BaseSupplierAdapter<RawRentalCarOffer> {
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: 'cars',
+      inventorySource: 'API',
+      listingKind: 'SELLABLE_INVENTORY',
+      compositionType: 'SINGLE',
+      fulfillmentMode: 'INSTANT',
+      environmentClass: this.isProduction && this.config.apiKey ? 'PRODUCTION' : 'SANDBOX',
+      sellability: this.isProduction && this.config.apiKey ? 'BOOKABLE' : 'QUOTE_ONLY',
+      providerLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceType: 'API',
       supplierId: this.supplierId,
       supplierName: `${raw.vehicleModel} via Rentalcars Connect`,
@@ -148,6 +155,7 @@ export class CarsRentalAdapter extends BaseSupplierAdapter<RawRentalCarOffer> {
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    this.assertCanExecuteProductionBooking();
     const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       supplierReference: isLive

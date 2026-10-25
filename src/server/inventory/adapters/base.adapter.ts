@@ -3,12 +3,13 @@
  * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md & ADR-006
  * ============================================================================ */
 
-import type {
-  CanonicalOfferEntity,
-  IntegrationLifecycleStatus,
-  RevalidationResult,
-  SearchQueryCriteria,
-  TravelProductSlug
+import {
+  ArchitecturalInvariantViolationError,
+  type CanonicalOfferEntity,
+  type IntegrationLifecycleStatus,
+  type RevalidationResult,
+  type SearchQueryCriteria,
+  type TravelProductSlug
 } from '../types.ts';
 
 export interface SupplierAdapterConfig {
@@ -76,6 +77,19 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
 
   public get integrationLifecycle(): IntegrationLifecycleStatus {
     return this.config.integrationLifecycle || 'SCAFFOLD';
+  }
+
+  /**
+   * Asserts that provider is permitted to execute live production bookings.
+   * Prevents premature live bookings for SCAFFOLD or SANDBOX_ACTIVE adapters.
+   */
+  public assertCanExecuteProductionBooking(): void {
+    if (this.config.environment === 'production' && this.integrationLifecycle !== 'PRODUCTION_LIVE') {
+      throw new ArchitecturalInvariantViolationError(
+        'SCAFFOLD_PRODUCTION_BOOKING_BLOCKED',
+        `Supplier '${this.supplierId}' has lifecycle '${this.integrationLifecycle}'. Only 'PRODUCTION_LIVE' providers may execute live production bookings.`
+      );
+    }
   }
 
   /**

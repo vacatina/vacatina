@@ -57,6 +57,13 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: 'visa',
+      inventorySource: 'MANUAL_INTERNAL',
+      listingKind: 'SERVICE',
+      compositionType: 'SINGLE',
+      fulfillmentMode: 'MANUAL_CONFIRMATION',
+      environmentClass: 'PRODUCTION',
+      sellability: 'BOOKABLE',
+      providerLifecycle: 'PRODUCTION_LIVE',
       sourceType: 'MANUAL_SERVICE',
       supplierId: this.supplierId,
       supplierName: 'Vacatina Consular Advisory Service',

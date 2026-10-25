@@ -14,12 +14,19 @@ import type {
 } from './base.adapter.ts';
 import type {
   CanonicalOfferEntity,
+  CompositionType,
   ConfirmationMode,
+  FulfillmentMode,
+  InventorySource,
+  InventorySourceType,
+  ListingKind,
   RevalidationResult,
   SearchQueryCriteria,
+  Sellability,
   StructuredLocation,
   TravelProductSlug
 } from '../types.ts';
+import { assertManualOfferPublishedForBooking } from '../types.ts';
 import { PricingPrecedenceService } from '../pricing-precedence.service.ts';
 import { DeduplicationService } from '../deduplication.service.ts';
 
@@ -148,15 +155,36 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
 
     // Resolve canonical source type according to product nature
     let canonicalSourceType: InventorySourceType = 'DIRECT_CONTRACT';
+    let inventorySource: InventorySource = 'DIRECT_CONTRACT';
+    let listingKind: ListingKind = 'SELLABLE_INVENTORY';
+    let compositionType: CompositionType = 'SINGLE';
+    let fulfillmentMode: FulfillmentMode = raw.confirmationMode === 'INSTANT_CONFIRM' ? 'INSTANT' : 'ON_REQUEST';
+
     if (raw.productType === 'visa') {
       canonicalSourceType = 'MANUAL_SERVICE';
+      inventorySource = 'MANUAL_INTERNAL';
+      listingKind = 'SERVICE';
+      fulfillmentMode = 'MANUAL_CONFIRMATION';
     } else if (raw.productType === 'packages') {
       canonicalSourceType = 'CURATED_PACKAGE';
+      inventorySource = 'DIRECT_CONTRACT';
+      listingKind = 'PACKAGE';
+      compositionType = 'CURATED_PACKAGE';
     }
+
+    const isPublished = raw.status === 'PUBLISHED';
+    const sellability: Sellability = isPublished ? 'BOOKABLE' : 'DISCOVERY_ONLY';
 
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: raw.productType,
+      inventorySource,
+      listingKind,
+      compositionType,
+      fulfillmentMode,
+      environmentClass: 'PRODUCTION',
+      sellability,
+      providerLifecycle: 'PRODUCTION_LIVE',
       sourceType: canonicalSourceType,
       supplierId: raw.partnerSupplierId,
       supplierName: raw.partnerName,

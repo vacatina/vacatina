@@ -64,6 +64,13 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: 'hotels',
+      inventorySource: 'API',
+      listingKind: 'SELLABLE_INVENTORY',
+      compositionType: 'SINGLE',
+      fulfillmentMode: raw.instantConfirmation ? 'INSTANT' : 'ON_REQUEST',
+      environmentClass: this.isProduction && this.config.apiKey ? 'PRODUCTION' : 'SANDBOX',
+      sellability: this.isProduction && this.config.apiKey ? 'BOOKABLE' : 'QUOTE_ONLY',
+      providerLifecycle: this.isProduction && this.config.apiKey ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
       sourceType: 'API',
       supplierId: this.supplierId,
       supplierName: `${raw.name} via LiteAPI`,
@@ -159,6 +166,7 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
   }
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
+    this.assertCanExecuteProductionBooking();
     const isLive = Boolean(this.isProduction && this.config.apiKey);
     return {
       supplierReference: isLive

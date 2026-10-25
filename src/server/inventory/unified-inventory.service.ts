@@ -111,8 +111,14 @@ export class UnifiedInventoryService {
       }
     }
 
-    // 4. Deduplicate and Apply Pin-Above-API / Best-Price Ranking
-    const rankedOffers = DeduplicationService.deduplicateAndRank(collectedOffers);
+    // 4. Strict SEED Isolation & Sellability Filter (Rule 4 & 5)
+    // SEED and DISCOVERY_ONLY content must NEVER enter live supplier search results
+    const eligibleOffers = collectedOffers.filter(
+      offer => offer.environmentClass !== 'SEED' && offer.sellability !== 'DISCOVERY_ONLY'
+    );
+
+    // 5. Deduplicate and Apply Pin-Above-API / Best-Price Ranking
+    const rankedOffers = DeduplicationService.deduplicateAndRank(eligibleOffers);
 
     // 5. Store in Product-by-Product TTL Cache
     if (rankedOffers.length > 0) {

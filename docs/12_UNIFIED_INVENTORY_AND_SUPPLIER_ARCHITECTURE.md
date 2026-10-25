@@ -11,7 +11,14 @@
 
 Vacatina is **not** an API-only travel aggregator. Commercial viability in the Sri Lankan and South Asian travel landscape requires seamless coexistence between **real-time GDS/API inventory** and **exclusive manually managed direct contracts** (boutique resorts, private charters, consular visa advisory, curated itineraries).
 
-To eliminate architectural confusion, Vacatina formally ratifies **four canonical inventory source types**:
+Per **ADR-007**, Vacatina decomposes inventory into **seven orthogonal canonical dimensions**:
+1. **`inventorySource`**: `API` | `DIRECT_CONTRACT` | `MANUAL_INTERNAL` | `PARTNER_MANUAL`
+2. **`listingKind`**: `DISCOVERY_CONTENT` | `SELLABLE_INVENTORY` | `SERVICE` | `PACKAGE`
+3. **`compositionType`**: `SINGLE` | `CURATED_PACKAGE` | `DYNAMIC_BUNDLE`
+4. **`fulfillmentMode`**: `INSTANT` | `ON_REQUEST` | `MANUAL_CONFIRMATION`
+5. **`environmentClass`**: `PRODUCTION` | `SANDBOX` | `SEED`
+6. **`sellability`**: `DISCOVERY_ONLY` | `QUOTE_ONLY` | `BOOKABLE`
+7. **`providerLifecycle`** (Tracked PER PROVIDER): `PLANNED` | `SCAFFOLD` | `SANDBOX_ACTIVE` | `CERTIFIED` | `PRODUCTION_LIVE`
 
 ```mermaid
 flowchart TD
