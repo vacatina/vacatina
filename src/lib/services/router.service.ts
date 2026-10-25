@@ -20,6 +20,10 @@ import {
   openProductConfiguratorModal,
   openSavedFavoritesDrawer,
   openTripDossierReviewModal,
+  openSearchResultsModal,
+  openFlightOfferModal,
+  openHotelPropertyModal,
+  openNormalizedOfferModal,
   closeActiveDialog
 } from '../../components/dialogs/dialogs-controller.ts';
 import {
@@ -274,6 +278,42 @@ export class CanonicalRouterService {
       return;
     }
 
+    // Flights Offer Deep Link (Section 7)
+    if (path.startsWith('/flights/offer/')) {
+      const offerId = path.replace('/flights/offer/', '');
+      openFlightOfferModal(offerId);
+      return;
+    }
+
+    // Hotel Property Deep Link (Section 8)
+    if (path.startsWith('/hotels/property/')) {
+      const remaining = path.replace('/hotels/property/', '');
+      const parts = remaining.split('/');
+      const propertyId = parts[0];
+      const isConfigure = parts[1] === 'configure';
+      openHotelPropertyModal(propertyId, isConfigure);
+      return;
+    }
+
+    // Generic Normalized Offer Deep Links across other products
+    const offerPrefixes = [
+      '/visa-assistance/offer/',
+      '/holiday-packages/offer/',
+      '/cars-transfers/offer/',
+      '/rails/offer/',
+      '/cruises/offer/',
+      '/activities/offer/',
+      '/sightseeing-tours/offer/',
+      '/travel-insurance/offer/'
+    ];
+    for (const prefix of offerPrefixes) {
+      if (path.startsWith(prefix)) {
+        const offerId = path.replace(prefix, '');
+        openNormalizedOfferModal(offerId);
+        return;
+      }
+    }
+
     // 8. Visa Assistance Routes (Section 9)
     if (path.startsWith('/visa-assistance/')) {
       this.handleVisaRoute(path);
@@ -398,6 +438,10 @@ export class CanonicalRouterService {
     if (scc) scc.scrollIntoView({ behavior: 'smooth', block: 'center' });
     highlightSearchPanel(`panel-${tab}`);
 
+    const origin = query.get('from') || query.get('origin') || undefined;
+    const destination = query.get('to') || query.get('destination') || query.get('country') || undefined;
+
+    openSearchResultsModal(tab, { origin, destination });
     showToast(`Displaying live search results and validated options for ${tab.toUpperCase()}.`, 'success');
   }
 

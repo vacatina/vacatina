@@ -47,6 +47,12 @@ import {
   getStoredCookiePreferences,
   saveCookiePreferences
 } from './legal-cookie-modal.ts';
+import { searchAggregatorService } from '../../lib/services/search-aggregator.service.ts';
+import { CANONICAL_HYBRID_CATALOG } from '../../lib/mock-data/hybrid-catalog.ts';
+import {
+  getCustomerBuyingCondition,
+  type VacatinaNormalizedOffer
+} from '../../lib/domain/inventory-models.ts';
 
 export {
   openLegalAndCookieModal,
@@ -1097,4 +1103,847 @@ export function initStaticPackageModalCloseWiring(): void {
 
 export function isAnyCustomDialogOpen(): boolean {
   return activeModalElement !== null && !activeModalElement.classList.contains('hidden');
+}
+
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderOfferCardHtml(offer: VacatinaNormalizedOffer, currency = searchCommandService.getState().currency): string {
+  const buyingCondition = getCustomerBuyingCondition(offer);
+
+  let badgeClass = 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC]';
+  let badgeIcon = '✓';
+  if (offer.confirmationMode === 'REQUEST_TO_CONFIRM') {
+    badgeClass = 'bg-[#FEF3C7] text-[#B45309] border-[#FCD34D]';
+    badgeIcon = '⚡';
+  } else if (offer.confirmationMode === 'ASSISTED_SERVICE') {
+    badgeClass = 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]';
+    badgeIcon = 'ℹ';
+  }
+
+  const formattedPrice = formatCurrencyAmount(offer.pricing.customerSellingPriceLkr, currency);
+
+  return `
+    <article class="p-4 rounded-xl border border-brand-border bg-white hover:border-brand-primary transition-all shadow-sm space-y-3" data-offer-id="${offer.offerId}">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeClass}">
+            <span>${badgeIcon}</span> ${buyingCondition}
+          </span>
+          <h4 class="font-heading font-bold text-base text-brand-black mt-1">${escapeHtml(offer.title)}</h4>
+          <p class="text-xs text-brand-muted mt-0.5">${escapeHtml(offer.subtitle)}</p>
+        </div>
+        <div class="text-left sm:text-right sm:shrink-0">
+          <span class="text-[10px] uppercase font-bold text-brand-muted block">Selling Price</span>
+          <div class="text-lg font-bold text-brand-primary font-heading tabular-nums">${formattedPrice}</div>
+          <span class="text-[10px] text-brand-muted block">Taxes included</span>
+        </div>
+      </div>
+
+      ${offer.inclusions && offer.inclusions.length > 0 ? `
+        <div class="flex flex-wrap gap-1.5 text-[11px]">
+          ${offer.inclusions.slice(0, 3).map(inc => `
+            <span class="px-2 py-0.5 rounded-md bg-brand-subtle text-brand-muted border border-brand-border flex items-center gap-1">
+              <svg class="w-3 h-3 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              ${escapeHtml(inc)}
+            </span>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <div class="pt-3 border-t border-brand-border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <span class="text-[11px] text-brand-muted">
+          ${offer.confirmationMode === 'INSTANT_CONFIRM' ? 'Eligible for instant subtotal hold' : 'Subject to partner allocation verification'}
+        </span>
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <button
+            type="button"
+            data-action="configure-offer"
+            data-offer-id="${offer.offerId}"
+            data-product-type="${offer.productType}"
+            class="px-3.5 py-2 rounded-lg border border-brand-border hover:bg-brand-canvas text-brand-black font-semibold text-xs touch-target-44"
+          >
+            Configure
+          </button>
+          <button
+            type="button"
+            data-action="stage-offer"
+            data-offer-id="${offer.offerId}"
+            class="px-4 py-2 rounded-lg bg-brand-primary text-white font-semibold text-xs hover:opacity-90 touch-target-44 shadow-sm"
+          >
+            Add to Trip
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function wireOfferCardButtons(modal: HTMLElement, offers: VacatinaNormalizedOffer[]): void {
+  modal.querySelectorAll<HTMLElement>('[data-action="stage-offer"]').forEach(btn => {
+    btn.onclick = () => {
+      const offerId = btn.getAttribute('data-offer-id');
+      const found = offers.find(o => o.offerId === offerId) || CANONICAL_HYBRID_CATALOG.find(o => o.offerId === offerId);
+      if (!found) return;
+
+      const candidate = tripBucketService.stageNormalizedOffer(found);
+      const isReady = candidate.state === 'ready';
+
+      closeActiveDialog(false);
+      const headerBucketBtn = document.getElementById('header-trip-bucket-btn');
+      showToast(
+        `Staged "${found.title}" (${isReady ? 'Ready' : 'Needs Action'}) to Trip Bucket.`,
+        'success',
+        'Open Trip Bucket',
+        () => {
+          if (headerBucketBtn) headerBucketBtn.click();
+        }
+      );
+    };
+  });
+
+  modal.querySelectorAll<HTMLElement>('[data-action="configure-offer"]').forEach(btn => {
+    btn.onclick = () => {
+      const offerId = btn.getAttribute('data-offer-id');
+      const pType = btn.getAttribute('data-product-type');
+      if (!offerId) return;
+
+      const router = (window as unknown as { __VACATINA_ROUTER__?: { navigateTo: (url: string) => void } }).__VACATINA_ROUTER__;
+      if (pType === 'flights') {
+        if (router) router.navigateTo(`/flights/offer/${offerId}`);
+        else openFlightOfferModal(offerId);
+      } else if (pType === 'hotels') {
+        if (router) router.navigateTo(`/hotels/property/${offerId}/configure`);
+        else openHotelPropertyModal(offerId, true);
+      } else {
+        openNormalizedOfferModal(offerId);
+      }
+    };
+  });
+}
+
+/**
+ * 7. Canonical Search Results Modal
+ * Consumes VacatinaNormalizedOffer via searchAggregatorService.
+ * Displays honest buying condition badges, transparent selling prices, and configure/stage CTAs.
+ */
+export function openSearchResultsModal(
+  productType: CommandCenterTabId | TravelProductSlug,
+  criteria: { origin?: string; destination?: string } = {},
+  triggerElement?: HTMLElement | null
+): void {
+  const modal = ensureDynamicModalShell();
+  const state = searchCommandService.getState();
+
+  const canonicalProductType = (productType === 'bundle' ? 'packages' : productType) as TravelProductSlug;
+  let offers = searchAggregatorService.search({
+    productType: canonicalProductType,
+    destinationQuery: criteria.destination,
+    originQuery: criteria.origin
+  });
+
+  if (offers.length === 0) {
+    offers = searchAggregatorService.search({
+      productType: canonicalProductType
+    });
+  }
+
+  const productLabels: Record<string, string> = {
+    flights: 'Flights & Passenger Air Travel',
+    hotels: 'Curated Hotels & Stays',
+    visa: 'Visa Assistance & Consular Advisory',
+    packages: 'Holiday Packages & Bundles',
+    cars: 'Ground Mobility & Chauffeur Transfers',
+    rails: 'Scenic Rail Journeys & Intercity Trains',
+    cruises: 'Cruises & Coastal Expeditions',
+    activities: 'Curated Activities & Desert Safaris',
+    sightseeing: 'Guided Cultural Sightseeing Tours',
+    insurance: 'Worldwide Travel Shield & Insurance'
+  };
+
+  const title = productLabels[canonicalProductType] || 'Search Results';
+  const subtitle = criteria.destination
+    ? `${criteria.origin ? `${criteria.origin} → ` : ''}${criteria.destination} · ${offers.length} Verified Options Available`
+    : `Verified live and direct-contract inventory · ${offers.length} Options Available`;
+
+  const renderCards = (items: VacatinaNormalizedOffer[], instantOnly = false) => {
+    const filtered = instantOnly ? items.filter(o => o.confirmationMode === 'INSTANT_CONFIRM') : items;
+    if (filtered.length === 0) {
+      return `
+        <div class="p-8 text-center bg-brand-subtle rounded-xl border border-brand-border">
+          <p class="text-sm font-semibold text-brand-black">No options match the selected filters.</p>
+          <p class="text-xs text-brand-muted mt-1">Try toggling instant confirmation or adjusting your travel destination.</p>
+        </div>
+      `;
+    }
+    return filtered.map(offer => renderOfferCardHtml(offer, state.currency)).join('');
+  };
+
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-brand-black/45 backdrop-blur-sm transition-opacity" data-dialog-backdrop="true"></div>
+    <div class="min-h-full flex items-center justify-center p-3 sm:p-4">
+      <div class="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-3xl w-full p-4 sm:p-6 text-left overflow-hidden">
+        <div class="flex items-start justify-between pb-4 border-b border-brand-border">
+          <div>
+            <span class="text-[11px] font-bold text-brand-primary uppercase tracking-wider">Search Results · Vacatina Verified Ecosystem</span>
+            <h3 class="font-heading font-bold text-xl text-brand-black mt-0.5">${escapeHtml(title)}</h3>
+            <p class="text-xs text-brand-muted mt-1">${escapeHtml(subtitle)}</p>
+          </div>
+          <button type="button" data-dialog-close="true" aria-label="Close Search Results" class="icon-touch-44 text-brand-muted hover:text-brand-black rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+
+        <div class="py-3 flex flex-wrap items-center justify-between gap-3 border-b border-brand-border text-xs">
+          <label class="inline-flex items-center gap-2 cursor-pointer font-semibold text-brand-black">
+            <input type="checkbox" id="sr-instant-filter" class="rounded border-brand-border text-brand-primary">
+            <span>Instant Confirmation Only</span>
+          </label>
+          <div class="text-[11px] text-brand-muted">
+            Display currency: <strong class="text-brand-black font-bold uppercase">${state.currency}</strong> · Rates refreshed
+          </div>
+        </div>
+
+        <div id="sr-cards-container" class="py-4 space-y-3 max-h-[62vh] overflow-y-auto pr-1">
+          ${renderCards(offers)}
+        </div>
+
+        <div class="pt-4 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="text-[11px] text-brand-muted text-center sm:text-left">
+            Need bespoke or VIP concierge planning? <a href="tel:+94113606200" class="text-brand-primary font-semibold hover:underline">+94113606200</a>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <button type="button" data-dialog-close="true" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-brand-border text-xs font-semibold text-brand-black hover:bg-brand-canvas touch-target-44">Back</button>
+            <button type="button" onclick="if(window.__VACATINA_ROUTER__) window.__VACATINA_ROUTER__.navigateTo('/trip/review');" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-semibold hover:opacity-90 touch-target-44 shadow-sm">Review Trip Dossier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const instantFilter = modal.querySelector<HTMLInputElement>('#sr-instant-filter');
+  const cardsContainer = modal.querySelector<HTMLElement>('#sr-cards-container');
+  if (instantFilter && cardsContainer) {
+    instantFilter.addEventListener('change', () => {
+      cardsContainer.innerHTML = renderCards(offers, instantFilter.checked);
+      wireOfferCardButtons(modal, offers);
+    });
+  }
+
+  wireOfferCardButtons(modal, offers);
+  wireCommonModalCloseButtons(modal);
+  telemetry.track('open_search_results_modal', { productType, resultsCount: offers.length });
+  openDialogElement(modal, triggerElement);
+}
+
+/**
+ * 8. Flight Offer Configuration Modal
+ * Deep-link target for /flights/offer/:offerId
+ */
+export function openFlightOfferModal(
+  offerId: string,
+  triggerElement?: HTMLElement | null
+): void {
+  const modal = ensureDynamicModalShell();
+  const state = searchCommandService.getState();
+
+  const offer = CANONICAL_HYBRID_CATALOG.find(
+    o => o.offerId === offerId || o.offerId.includes(offerId) || offerId.includes(o.offerId)
+  ) || CANONICAL_HYBRID_CATALOG.find(o => o.productType === 'flights')!;
+
+  const basePrice = offer.pricing.customerSellingPriceLkr;
+
+  let selectedFareDelta = 0;
+  let selectedBaggageDelta = 0;
+  let selectedFareLabel = 'Economy Standard';
+
+  const updatePrice = () => {
+    const computedEl = modal.querySelector('#fl-computed-total');
+    if (computedEl) {
+      computedEl.textContent = formatCurrencyAmount(basePrice + selectedFareDelta + selectedBaggageDelta, state.currency);
+    }
+  };
+
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-brand-black/45 backdrop-blur-sm transition-opacity" data-dialog-backdrop="true"></div>
+    <div class="min-h-full flex items-center justify-center p-3 sm:p-4">
+      <div class="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-2xl w-full p-4 sm:p-6 text-left overflow-hidden">
+        <div class="flex items-start justify-between pb-4 border-b border-brand-border">
+          <div>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+              offer.confirmationMode === 'INSTANT_CONFIRM'
+                ? 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC]'
+                : 'bg-[#FEF3C7] text-[#B45309] border-[#FCD34D]'
+            }">
+              ${offer.confirmationMode === 'INSTANT_CONFIRM' ? '✓ Instant Confirmation' : '⚡ Request to Confirm'}
+            </span>
+            <h3 class="font-heading font-bold text-xl text-brand-black mt-1.5">${escapeHtml(offer.title)}</h3>
+            <p class="text-xs text-brand-muted mt-0.5">${escapeHtml(offer.subtitle)}</p>
+          </div>
+          <button type="button" data-dialog-close="true" aria-label="Close Flight Configurator" class="icon-touch-44 text-brand-muted hover:text-brand-black rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+
+        <div class="py-4 space-y-4 max-h-[64vh] overflow-y-auto pr-1 text-xs">
+          <div class="p-3.5 rounded-xl bg-brand-canvas border border-brand-border space-y-2">
+            <div class="font-bold text-brand-black flex items-center justify-between">
+              <span>Flight Schedule &amp; Routing</span>
+              <span class="text-[11px] font-semibold text-brand-primary">Direct Passenger Service</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-brand-muted text-[11px]">
+              <div><strong class="text-brand-black block">Origin:</strong> ${escapeHtml(offer.location.city)} (${offer.location.iataCode || 'CMB'})</div>
+              <div><strong class="text-brand-black block">Destination:</strong> Dubai (DXB)</div>
+              <div><strong class="text-brand-black block">Baggage:</strong> 30kg Checked Baggage Included</div>
+              <div><strong class="text-brand-black block">Cabin:</strong> Economy Class</div>
+            </div>
+          </div>
+
+          <div>
+            <span class="block text-[11px] font-bold text-brand-muted uppercase mb-2">1. Select Fare Family</span>
+            <div class="space-y-2" id="fl-fare-options">
+              <label class="flex items-start justify-between gap-3 p-3 rounded-xl border border-brand-primary bg-[#F0EFFC]/50 cursor-pointer">
+                <div class="flex items-start gap-2.5">
+                  <input type="radio" name="fl-fare-radio" value="0" data-label="Economy Standard" checked class="mt-1 text-brand-primary">
+                  <div>
+                    <div class="font-bold text-brand-black">Economy Standard</div>
+                    <div class="text-[11px] text-brand-muted">30kg checked baggage, standard seat allocation, ticket rebooking subject to airline fare rule</div>
+                  </div>
+                </div>
+                <span class="font-bold text-brand-primary">Included</span>
+              </label>
+              <label class="flex items-start justify-between gap-3 p-3 rounded-xl border border-brand-border bg-white hover:border-brand-primary cursor-pointer">
+                <div class="flex items-start gap-2.5">
+                  <input type="radio" name="fl-fare-radio" value="14500" data-label="Economy Flex" class="mt-1 text-brand-primary">
+                  <div>
+                    <div class="font-bold text-brand-black">Economy Flex</div>
+                    <div class="text-[11px] text-brand-muted">Complimentary seat selection, 35kg checked baggage, 1 free date amendment</div>
+                  </div>
+                </div>
+                <span class="font-bold text-brand-primary">+${formatCurrencyAmount(14500, state.currency)}</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <span class="block text-[11px] font-bold text-brand-muted uppercase mb-2">2. Baggage &amp; Seat Preferences</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="fl-baggage-sel" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Additional Baggage</label>
+                <select id="fl-baggage-sel" class="w-full min-h-[44px] px-3 py-2 rounded-xl border border-brand-border bg-white text-xs font-semibold text-brand-black">
+                  <option value="0">Standard 30kg (Included)</option>
+                  <option value="12000">+15kg Extra Baggage (+${formatCurrencyAmount(12000, state.currency)})</option>
+                  <option value="22000">+25kg Extra Baggage (+${formatCurrencyAmount(22000, state.currency)})</option>
+                </select>
+              </div>
+              <div>
+                <label for="fl-seat-sel" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Seat Preference</label>
+                <select id="fl-seat-sel" class="w-full min-h-[44px] px-3 py-2 rounded-xl border border-brand-border bg-white text-xs font-semibold text-brand-black">
+                  <option value="any">Standard Allocation (Any)</option>
+                  <option value="window">Window Seat (Complimentary)</option>
+                  <option value="aisle">Aisle Seat (Complimentary)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-brand-subtle border border-brand-border text-brand-muted leading-relaxed text-[11px]">
+            <strong>Fare Lock Policy:</strong> Staging this offer places an indicative hold on seat allocation. Fares are confirmed during live revalidation prior to unified ticket issuance.
+          </div>
+
+          <div class="pt-3 border-t border-brand-border flex items-center justify-between">
+            <div>
+              <span class="block text-[11px] text-brand-muted font-medium uppercase">Configured Total</span>
+              <span class="text-[10px] text-brand-muted">Mandatory taxes &amp; fees included</span>
+            </div>
+            <div id="fl-computed-total" class="text-2xl font-extrabold text-brand-primary font-heading tabular-nums">
+              ${formatCurrencyAmount(basePrice, state.currency)}
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-brand-border flex flex-col sm:flex-row items-center justify-end gap-3">
+          <button type="button" data-dialog-close="true" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-brand-border text-xs font-semibold text-brand-black hover:bg-brand-canvas touch-target-44">Cancel</button>
+          <button
+            type="button"
+            id="fl-stage-btn"
+            class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-semibold hover:opacity-90 touch-target-44 shadow-sm"
+          >
+            Stage Flight in Trip Bucket
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const fareRadios = modal.querySelectorAll<HTMLInputElement>('input[name="fl-fare-radio"]');
+  fareRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      selectedFareDelta = parseInt(radio.value, 10) || 0;
+      selectedFareLabel = radio.getAttribute('data-label') || selectedFareLabel;
+      fareRadios.forEach(r => {
+        const lbl = r.closest('label');
+        if (lbl) {
+          lbl.classList.toggle('border-brand-primary', r.checked);
+          lbl.classList.toggle('bg-[#F0EFFC]/50', r.checked);
+          lbl.classList.toggle('border-brand-border', !r.checked);
+        }
+      });
+      updatePrice();
+    });
+  });
+
+  const baggageSel = modal.querySelector<HTMLSelectElement>('#fl-baggage-sel');
+  if (baggageSel) {
+    baggageSel.addEventListener('change', () => {
+      selectedBaggageDelta = parseInt(baggageSel.value, 10) || 0;
+      updatePrice();
+    });
+  }
+
+  const stageBtn = modal.querySelector<HTMLButtonElement>('#fl-stage-btn');
+  if (stageBtn) {
+    stageBtn.addEventListener('click', () => {
+      const finalPrice = basePrice + selectedFareDelta + selectedBaggageDelta;
+      const candidate: TripBucketCandidate = {
+        id: `fl-staged-${offer.offerId}-${Date.now()}`,
+        productType: 'flights',
+        productLabel: 'Flight',
+        title: offer.title,
+        subtitle: `${selectedFareLabel} · ${offer.subtitle}`,
+        dateSummary: '15 Nov – 22 Nov 2026',
+        travellerSummary: '2 Adults · Economy',
+        state: offer.confirmationMode === 'INSTANT_CONFIRM' ? 'ready' : 'needs_action',
+        priceLkr: finalPrice,
+        offerId: offer.offerId,
+        sourceType: offer.sourceType,
+        confirmationMode: offer.confirmationMode,
+        rawSupplierPrice: offer.pricing.rawSupplierCost,
+        supplierBaseCurrency: offer.pricing.supplierCurrency,
+        markupAmountLkr: offer.pricing.markupAmountLkr,
+        holdStatusText: offer.confirmationMode === 'INSTANT_CONFIRM'
+          ? 'Instant confirmation eligible · Ready subtotal staged'
+          : 'On Request · Subject to airline partner seat allocation',
+        actionRequiredText: offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+          ? 'Request to Confirm: Airline partner allocation verification required.'
+          : undefined,
+        primaryActionLabel: offer.confirmationMode === 'REQUEST_TO_CONFIRM' ? 'Verify Allocation' : 'Modify',
+        supplierName: offer.supplierId,
+        integrationMode: 'ADAPTER-READY'
+      };
+
+      tripBucketService.stageCandidate(candidate);
+      closeActiveDialog(false);
+
+      const headerBucketBtn = document.getElementById('header-trip-bucket-btn');
+      showToast(
+        `Staged "${candidate.title}" to Trip Bucket (${candidate.state === 'ready' ? 'Ready' : 'Needs Action'}).`,
+        'success',
+        'Open Trip Bucket',
+        () => {
+          if (headerBucketBtn) headerBucketBtn.click();
+        }
+      );
+    });
+  }
+
+  wireCommonModalCloseButtons(modal);
+  telemetry.track('open_flight_offer_modal', { offerId });
+  openDialogElement(modal, triggerElement);
+}
+
+/**
+ * 9. Hotel Property Details & Room Configuration Modal
+ * Deep-link target for /hotels/property/:propertyId and /hotels/property/:propertyId/configure
+ */
+export function openHotelPropertyModal(
+  propertyId: string,
+  isConfigure = false,
+  triggerElement?: HTMLElement | null
+): void {
+  const modal = ensureDynamicModalShell();
+  const state = searchCommandService.getState();
+
+  const hotel = CANONICAL_HYBRID_CATALOG.find(
+    o => o.offerId === propertyId || o.offerId.includes(propertyId) || propertyId.includes(o.offerId)
+  ) || CANONICAL_HYBRID_CATALOG.find(o => o.productType === 'hotels')!;
+
+  const baseRate = hotel.pricing.customerSellingPriceLkr;
+
+  if (!isConfigure) {
+    modal.innerHTML = `
+      <div class="fixed inset-0 bg-brand-black/45 backdrop-blur-sm transition-opacity" data-dialog-backdrop="true"></div>
+      <div class="min-h-full flex items-center justify-center p-3 sm:p-4">
+        <div class="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-2xl w-full p-4 sm:p-6 text-left overflow-hidden">
+          <div class="flex items-start justify-between pb-4 border-b border-brand-border">
+            <div>
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                hotel.confirmationMode === 'INSTANT_CONFIRM'
+                  ? 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC]'
+                  : 'bg-[#FEF3C7] text-[#B45309] border-[#FCD34D]'
+              }">
+                ${hotel.confirmationMode === 'INSTANT_CONFIRM' ? '✓ Instant Confirmation' : '⚡ Request to Confirm'}
+              </span>
+              <h3 class="font-heading font-bold text-xl text-brand-black mt-1.5">${escapeHtml(hotel.title)}</h3>
+              <p class="text-xs text-brand-muted mt-0.5">${escapeHtml(hotel.location.city)}, ${escapeHtml(hotel.location.country)} · Luxury Property</p>
+            </div>
+            <button type="button" data-dialog-close="true" aria-label="Close Hotel Details" class="icon-touch-44 text-brand-muted hover:text-brand-black rounded-lg">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+          </div>
+
+          <div class="py-4 space-y-4 max-h-[64vh] overflow-y-auto pr-1 text-xs">
+            <p class="text-brand-muted leading-relaxed">${escapeHtml(hotel.subtitle)}</p>
+
+            ${hotel.inclusions && hotel.inclusions.length > 0 ? `
+              <div>
+                <span class="block text-[11px] font-bold text-brand-muted uppercase mb-2">Verified Property Amenities &amp; Inclusions</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                  ${hotel.inclusions.map(inc => `
+                    <div class="p-2 rounded-lg bg-brand-subtle border border-brand-border flex items-center gap-2">
+                      <svg class="w-3.5 h-3.5 text-green-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>${escapeHtml(inc)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <div class="p-3.5 rounded-xl bg-brand-canvas border border-brand-border space-y-1.5">
+              <div class="font-bold text-brand-black">Cancellation &amp; Booking Terms</div>
+              <p class="text-brand-muted text-[11px] leading-relaxed">${escapeHtml(hotel.cancellationTerms.policySummary)}</p>
+            </div>
+
+            <div class="pt-3 border-t border-brand-border flex items-center justify-between">
+              <div>
+                <span class="block text-[11px] text-brand-muted font-medium uppercase">Indicative Nightly Rate</span>
+                <span class="text-[10px] text-brand-muted">Resort service fee &amp; city taxes included</span>
+              </div>
+              <div class="text-2xl font-extrabold text-brand-primary font-heading tabular-nums">
+                ${formatCurrencyAmount(baseRate, state.currency)}
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-brand-border flex flex-col sm:flex-row items-center justify-end gap-3">
+            <button type="button" data-dialog-close="true" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-brand-border text-xs font-semibold text-brand-black hover:bg-brand-canvas touch-target-44">Back</button>
+            <button
+              type="button"
+              id="ht-open-config-btn"
+              class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-semibold hover:opacity-90 touch-target-44 shadow-sm"
+            >
+              Configure Room &amp; Rates
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const configBtn = modal.querySelector<HTMLButtonElement>('#ht-open-config-btn');
+    if (configBtn) {
+      configBtn.onclick = () => {
+        const router = (window as unknown as { __VACATINA_ROUTER__?: { navigateTo: (url: string) => void } }).__VACATINA_ROUTER__;
+        if (router) router.navigateTo(`/hotels/property/${hotel.offerId}/configure`);
+        else openHotelPropertyModal(hotel.offerId, true);
+      };
+    }
+  } else {
+    let roomDelta = 0;
+    let boardDelta = 0;
+    let roomLabel = 'Deluxe Sunrise Water Villa';
+
+    const updatePrice = () => {
+      const computedEl = modal.querySelector('#ht-computed-total');
+      if (computedEl) {
+        computedEl.textContent = formatCurrencyAmount(baseRate + roomDelta + boardDelta, state.currency);
+      }
+    };
+
+    modal.innerHTML = `
+      <div class="fixed inset-0 bg-brand-black/45 backdrop-blur-sm transition-opacity" data-dialog-backdrop="true"></div>
+      <div class="min-h-full flex items-center justify-center p-3 sm:p-4">
+        <div class="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-2xl w-full p-4 sm:p-6 text-left overflow-hidden">
+          <div class="flex items-start justify-between pb-4 border-b border-brand-border">
+            <div>
+              <span class="text-[11px] font-bold text-brand-primary uppercase tracking-wider">Configure Room &amp; Staging · Hotels</span>
+              <h3 class="font-heading font-bold text-xl text-brand-black mt-0.5">${escapeHtml(hotel.title)}</h3>
+              <p class="text-xs text-brand-muted mt-0.5">${escapeHtml(hotel.location.city)} · Configure room and dining tier</p>
+            </div>
+            <button type="button" data-dialog-close="true" aria-label="Close Room Configurator" class="icon-touch-44 text-brand-muted hover:text-brand-black rounded-lg">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+          </div>
+
+          <div class="py-4 space-y-4 max-h-[64vh] overflow-y-auto pr-1 text-xs">
+            <div>
+              <span class="block text-[11px] font-bold text-brand-muted uppercase mb-2">1. Select Room Tier</span>
+              <div class="space-y-2" id="ht-room-options">
+                <label class="flex items-start justify-between gap-3 p-3 rounded-xl border border-brand-primary bg-[#F0EFFC]/50 cursor-pointer">
+                  <div class="flex items-start gap-2.5">
+                    <input type="radio" name="ht-room-radio" value="0" data-label="Deluxe Sunrise Water Villa" checked class="mt-1 text-brand-primary">
+                    <div>
+                      <div class="font-bold text-brand-black">Deluxe Sunrise Water Villa</div>
+                      <div class="text-[11px] text-brand-muted">Overwater terrace, private plunge pool, direct lagoon staircase</div>
+                    </div>
+                  </div>
+                  <span class="font-bold text-brand-primary">Included</span>
+                </label>
+                <label class="flex items-start justify-between gap-3 p-3 rounded-xl border border-brand-border bg-white hover:border-brand-primary cursor-pointer">
+                  <div class="flex items-start gap-2.5">
+                    <input type="radio" name="ht-room-radio" value="35000" data-label="Sunset Villa with Private Pool" class="mt-1 text-brand-primary">
+                    <div>
+                      <div class="font-bold text-brand-black">Sunset Villa with Private Pool</div>
+                      <div class="text-[11px] text-brand-muted">Panoramic sunset aspect, expanded wooden sundeck, outdoor shower</div>
+                    </div>
+                  </div>
+                  <span class="font-bold text-brand-primary">+${formatCurrencyAmount(35000, state.currency)}</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <span class="block text-[11px] font-bold text-brand-muted uppercase mb-2">2. Dining &amp; Board Basis</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label for="ht-board-sel" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Board Basis</label>
+                  <select id="ht-board-sel" class="w-full min-h-[44px] px-3 py-2 rounded-xl border border-brand-border bg-white text-xs font-semibold text-brand-black">
+                    <option value="0">Bed &amp; Breakfast (Included)</option>
+                    <option value="18000">Half Board (+${formatCurrencyAmount(18000, state.currency)})</option>
+                    <option value="32000">All-Inclusive Dine Around (+${formatCurrencyAmount(32000, state.currency)})</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="ht-bed-sel" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Bed Configuration</label>
+                  <select id="ht-bed-sel" class="w-full min-h-[44px] px-3 py-2 rounded-xl border border-brand-border bg-white text-xs font-semibold text-brand-black">
+                    <option value="king">1 King Size Bed</option>
+                    <option value="twin">2 Twin Single Beds</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-brand-border flex items-center justify-between">
+              <div>
+                <span class="block text-[11px] text-brand-muted font-medium uppercase">Configured Total</span>
+                <span class="text-[10px] text-brand-muted">Resort taxes &amp; service charges included</span>
+              </div>
+              <div id="ht-computed-total" class="text-2xl font-extrabold text-brand-primary font-heading tabular-nums">
+                ${formatCurrencyAmount(baseRate, state.currency)}
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-brand-border flex flex-col sm:flex-row items-center justify-end gap-3">
+            <button type="button" data-dialog-close="true" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-brand-border text-xs font-semibold text-brand-black hover:bg-brand-canvas touch-target-44">Cancel</button>
+            <button
+              type="button"
+              id="ht-stage-btn"
+              class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-semibold hover:opacity-90 touch-target-44 shadow-sm"
+            >
+              Stage Room in Trip Bucket
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const roomRadios = modal.querySelectorAll<HTMLInputElement>('input[name="ht-room-radio"]');
+    roomRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        roomDelta = parseInt(radio.value, 10) || 0;
+        roomLabel = radio.getAttribute('data-label') || roomLabel;
+        roomRadios.forEach(r => {
+          const lbl = r.closest('label');
+          if (lbl) {
+            lbl.classList.toggle('border-brand-primary', r.checked);
+            lbl.classList.toggle('bg-[#F0EFFC]/50', r.checked);
+            lbl.classList.toggle('border-brand-border', !r.checked);
+          }
+        });
+        updatePrice();
+      });
+    });
+
+    const boardSel = modal.querySelector<HTMLSelectElement>('#ht-board-sel');
+    if (boardSel) {
+      boardSel.addEventListener('change', () => {
+        boardDelta = parseInt(boardSel.value, 10) || 0;
+        updatePrice();
+      });
+    }
+
+    const stageBtn = modal.querySelector<HTMLButtonElement>('#ht-stage-btn');
+    if (stageBtn) {
+      stageBtn.addEventListener('click', () => {
+        const finalPrice = baseRate + roomDelta + boardDelta;
+        const candidate: TripBucketCandidate = {
+          id: `ht-staged-${hotel.offerId}-${Date.now()}`,
+          productType: 'hotels',
+          productLabel: 'Hotel',
+          title: hotel.title,
+          subtitle: `${roomLabel} · ${hotel.location.city}`,
+          dateSummary: '15 Nov – 20 Nov 2026',
+          travellerSummary: '2 Adults · 1 Room',
+          state: hotel.confirmationMode === 'INSTANT_CONFIRM' ? 'ready' : 'needs_action',
+          priceLkr: finalPrice,
+          offerId: hotel.offerId,
+          sourceType: hotel.sourceType,
+          confirmationMode: hotel.confirmationMode,
+          rawSupplierPrice: hotel.pricing.rawSupplierCost,
+          supplierBaseCurrency: hotel.pricing.supplierCurrency,
+          markupAmountLkr: hotel.pricing.markupAmountLkr,
+          holdStatusText: hotel.confirmationMode === 'INSTANT_CONFIRM'
+            ? 'Room configured · Indicative rate staged'
+            : 'On Request · Subject to hotel room allocation confirmation',
+          actionRequiredText: hotel.confirmationMode === 'REQUEST_TO_CONFIRM'
+            ? 'Request to Confirm: Hotel partner room allocation required.'
+            : undefined,
+          primaryActionLabel: hotel.confirmationMode === 'REQUEST_TO_CONFIRM' ? 'Confirm Allocation' : 'Modify',
+          supplierName: hotel.supplierId,
+          integrationMode: 'ADAPTER-READY'
+        };
+
+        tripBucketService.stageCandidate(candidate);
+        closeActiveDialog(false);
+
+        const headerBucketBtn = document.getElementById('header-trip-bucket-btn');
+        showToast(
+          `Staged "${candidate.title}" to Trip Bucket (${candidate.state === 'ready' ? 'Ready' : 'Needs Action'}).`,
+          'success',
+          'Open Trip Bucket',
+          () => {
+            if (headerBucketBtn) headerBucketBtn.click();
+          }
+        );
+      });
+    }
+  }
+
+  wireCommonModalCloseButtons(modal);
+  telemetry.track('open_hotel_property_modal', { propertyId, isConfigure });
+  openDialogElement(modal, triggerElement);
+}
+
+/**
+ * 10. Generic Normalized Offer Modal
+ * Deep-link target for /:product/offer/:offerId
+ */
+export function openNormalizedOfferModal(
+  offerId: string,
+  triggerElement?: HTMLElement | null
+): void {
+  const modal = ensureDynamicModalShell();
+  const state = searchCommandService.getState();
+
+  const offer = CANONICAL_HYBRID_CATALOG.find(
+    o => o.offerId === offerId || o.offerId.includes(offerId) || offerId.includes(o.offerId)
+  );
+
+  if (!offer) {
+    showToast(`Offer "${offerId}" not found in current catalog.`, 'warning');
+    return;
+  }
+
+  const buyingCondition = getCustomerBuyingCondition(offer);
+  const formattedPrice = formatCurrencyAmount(offer.pricing.customerSellingPriceLkr, state.currency);
+
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-brand-black/45 backdrop-blur-sm transition-opacity" data-dialog-backdrop="true"></div>
+    <div class="min-h-full flex items-center justify-center p-3 sm:p-4">
+      <div class="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-2xl w-full p-4 sm:p-6 text-left overflow-hidden">
+        <div class="flex items-start justify-between pb-4 border-b border-brand-border">
+          <div>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+              offer.confirmationMode === 'INSTANT_CONFIRM'
+                ? 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC]'
+                : offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+                ? 'bg-[#FEF3C7] text-[#B45309] border-[#FCD34D]'
+                : 'bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]'
+            }">
+              ${buyingCondition}
+            </span>
+            <h3 class="font-heading font-bold text-xl text-brand-black mt-1.5">${escapeHtml(offer.title)}</h3>
+            <p class="text-xs text-brand-muted mt-0.5">${escapeHtml(offer.subtitle)}</p>
+          </div>
+          <button type="button" data-dialog-close="true" aria-label="Close Offer Details" class="icon-touch-44 text-brand-muted hover:text-brand-black rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+
+        <div class="py-4 space-y-4 max-h-[64vh] overflow-y-auto pr-1 text-xs">
+          <div class="p-3.5 rounded-xl bg-brand-canvas border border-brand-border space-y-2">
+            <div class="font-bold text-brand-black">Itinerary &amp; Destination Details</div>
+            <div class="text-brand-muted text-[11px]">
+              <div><strong>Location:</strong> ${escapeHtml(offer.location.city)}, ${escapeHtml(offer.location.country)}</div>
+              <div><strong>Confirmation:</strong> ${buyingCondition}</div>
+              <div><strong>Availability:</strong> ${offer.availabilityStatus}</div>
+            </div>
+          </div>
+
+          ${offer.inclusions && offer.inclusions.length > 0 ? `
+            <div>
+              <span class="block text-[11px] font-bold text-brand-muted uppercase mb-2">Verified Inclusions</span>
+              <ul class="space-y-1.5 text-brand-muted text-[11px]">
+                ${offer.inclusions.map(inc => `
+                  <li class="flex items-start gap-2">
+                    <svg class="w-3.5 h-3.5 text-green-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>${escapeHtml(inc)}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          <div class="p-3.5 rounded-xl bg-brand-subtle border border-brand-border space-y-1">
+            <div class="font-bold text-brand-black">Cancellation Terms</div>
+            <p class="text-brand-muted text-[11px] leading-relaxed">${escapeHtml(offer.cancellationTerms.policySummary)}</p>
+          </div>
+
+          <div class="pt-3 border-t border-brand-border flex items-center justify-between">
+            <div>
+              <span class="block text-[11px] text-brand-muted font-medium uppercase">Customer Selling Price</span>
+              <span class="text-[10px] text-brand-muted">All taxes &amp; fees included</span>
+            </div>
+            <div class="text-2xl font-extrabold text-brand-primary font-heading tabular-nums">
+              ${formattedPrice}
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-brand-border flex flex-col sm:flex-row items-center justify-end gap-3">
+          <button type="button" data-dialog-close="true" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-brand-border text-xs font-semibold text-brand-black hover:bg-brand-canvas touch-target-44">Cancel</button>
+          <button
+            type="button"
+            id="no-stage-btn"
+            class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-semibold hover:opacity-90 touch-target-44 shadow-sm"
+          >
+            Stage in Trip Bucket
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const stageBtn = modal.querySelector<HTMLButtonElement>('#no-stage-btn');
+  if (stageBtn) {
+    stageBtn.onclick = () => {
+      const candidate = tripBucketService.stageNormalizedOffer(offer);
+      closeActiveDialog(false);
+
+      const headerBucketBtn = document.getElementById('header-trip-bucket-btn');
+      showToast(
+        `Staged "${offer.title}" to Trip Bucket (${candidate.state === 'ready' ? 'Ready' : 'Needs Action'}).`,
+        'success',
+        'Open Trip Bucket',
+        () => {
+          if (headerBucketBtn) headerBucketBtn.click();
+        }
+      );
+    };
+  }
+
+  wireCommonModalCloseButtons(modal);
+  telemetry.track('open_normalized_offer_modal', { offerId });
+  openDialogElement(modal, triggerElement);
 }

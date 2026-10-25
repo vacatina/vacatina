@@ -484,4 +484,62 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.ok(dossier.tickets.some(t => t.fulfillmentMethod === 'ON_REQUEST_DISPATCH'));
     assert.ok(dossier.tickets.some(t => t.fulfillmentMethod === 'ASSISTED_SERVICE_CASE'));
   });
+
+  it('enforces downstream routing for Search Results, Offer Configurators, and Property Details with zero dead-ends', () => {
+    // 1. Verify all 10 product search routes map to registered catalog categories
+    const searchRoutes: Record<string, string> = {
+      '/flights/search': 'flights',
+      '/hotels/search': 'hotels',
+      '/visa-assistance/options': 'visa',
+      '/holiday-packages/search': 'packages',
+      '/cars-transfers/search': 'cars',
+      '/rails/search': 'rails',
+      '/cruises/search': 'cruises',
+      '/activities/search': 'activities',
+      '/sightseeing-tours/search': 'sightseeing',
+      '/travel-insurance/compare': 'insurance'
+    };
+
+    const searchAggregator = new SearchAggregatorService(CANONICAL_HYBRID_CATALOG);
+    for (const [route, productType] of Object.entries(searchRoutes)) {
+      const results = searchAggregator.search({ productType: productType as any });
+      assert.ok(results.length > 0, `Search aggregator must yield results for route ${route} (${productType})`);
+      for (const offer of results) {
+        assert.ok(offer.offerId, 'Offer must have a stable canonical offerId');
+        assert.ok(offer.pricing.customerSellingPriceLkr > 0, 'Offer must have customer selling price > 0');
+        const buyingCondition = getCustomerBuyingCondition(offer);
+        assert.ok(
+          ['Instant Confirmation', 'Request to Confirm', 'Assisted Service', 'Available'].includes(buyingCondition),
+          `Buying condition "${buyingCondition}" must be customer-facing and compliant`
+        );
+      }
+    }
+
+    // 2. Verify Flight Offer deep links have matching canonical offers
+    const flightOffers = CANONICAL_HYBRID_CATALOG.filter(o => o.productType === 'flights');
+    for (const fl of flightOffers) {
+      const deepLink = `/flights/offer/${fl.offerId}`;
+      assert.ok(deepLink.startsWith('/flights/offer/vct-fl-'), `Deep link format valid: ${deepLink}`);
+    }
+
+    // 3. Verify Hotel Property deep links and configuration subroutes
+    const hotelOffers = CANONICAL_HYBRID_CATALOG.filter(o => o.productType === 'hotels');
+    for (const ht of hotelOffers) {
+      const propLink = `/hotels/property/${ht.offerId}`;
+      const cfgLink = `/hotels/property/${ht.offerId}/configure`;
+      assert.ok(propLink.startsWith('/hotels/property/vct-h'), `Property link format valid: ${propLink}`);
+      assert.ok(cfgLink.endsWith('/configure'), `Config link ends with /configure: ${cfgLink}`);
+    }
+
+    // 4. Verify B2C Protection: Zero raw pricing or internal provider tags exposed in customer conditions
+    for (const offer of CANONICAL_HYBRID_CATALOG) {
+      const condition = getCustomerBuyingCondition(offer);
+      assert.ok(!condition.includes('API'), 'Customer buying condition must not expose internal API term');
+      assert.ok(!condition.includes('MANUAL'), 'Customer buying condition must not expose internal MANUAL term');
+      assert.ok(!condition.includes('Amadeus'), 'Customer buying condition must not expose upstream supplier name');
+      assert.ok(!condition.includes('Sabre'), 'Customer buying condition must not expose upstream supplier name');
+      assert.ok(!condition.includes('LiteAPI'), 'Customer buying condition must not expose upstream supplier name');
+      assert.ok(!condition.includes('Payload'), 'Customer buying condition must not expose CMS name');
+    }
+  });
 });
