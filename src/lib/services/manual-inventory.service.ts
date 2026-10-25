@@ -19,6 +19,12 @@ import type {
   VacatinaNormalizedOffer
 } from '../domain/inventory-models.ts';
 import { InventoryNormalizerService } from './inventory-normalizer.service.ts';
+import type {
+  InventoryCommercialClass,
+  OperationalReadinessTier,
+  CommercialEvidenceDossier
+} from '../../server/inventory/types.ts';
+import { ArchitecturalInvariantViolationError } from '../../server/inventory/types.ts';
 
 export interface ManualListingRecord {
   // 1. Supplier Commercial Identity
@@ -118,6 +124,38 @@ export interface ManualListingRecord {
     timestampIso: string;
     note?: string;
   }[];
+
+  // 19. Commercial Truth & Operational Evidence Dossier (Audit v2.3)
+  inventoryClass: InventoryCommercialClass;
+  readinessTier: OperationalReadinessTier;
+  commercialEvidence?: CommercialEvidenceDossier;
+}
+
+export function assertListingIsProductionSellable(listing: ManualListingRecord): void {
+  if (listing.inventoryClass === 'SAMPLE_INVENTORY') {
+    throw new ArchitecturalInvariantViolationError(
+      'SAMPLE_INVENTORY_CANNOT_SELL',
+      `Commercial Truth Guard: Listing '${listing.id}' is classified as SAMPLE_INVENTORY. Sample listings are for system demonstration only and cannot be sold in production.`
+    );
+  }
+  if (!listing.readinessTier || !listing.readinessTier.commercialReady) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_COMMERCIAL_EVIDENCE',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks verified commercial readiness. Real signed contract and settlement terms are required.`
+    );
+  }
+  if (!listing.commercialEvidence || !listing.commercialEvidence.isEvidenceVerified) {
+    throw new ArchitecturalInvariantViolationError(
+      'UNVERIFIED_EVIDENCE_DOSSIER',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks verified commercialEvidence dossier (document reference, signed date, legal name, settlement terms).`
+    );
+  }
+  if (!listing.readinessTier.productionSellable) {
+    throw new ArchitecturalInvariantViolationError(
+      'LISTING_NOT_PRODUCTION_SELLABLE',
+      `Commercial Truth Guard: Listing '${listing.id}' has productionSellable = false.`
+    );
+  }
 }
 
 export class ManualInventoryService {
@@ -317,6 +355,24 @@ export class ManualInventoryService {
 
     const previousStatus = listing.status;
     listing.status = newStatus;
+
+    if (!listing.readinessTier) {
+      listing.readinessTier = {
+        systemReady: true,
+        sandboxReady: true,
+        commercialReady: Boolean(listing.commercialEvidence?.isEvidenceVerified),
+        productionSellable: false
+      };
+    }
+
+    if (newStatus === 'PUBLISHED') {
+      listing.readinessTier.productionSellable = Boolean(
+        listing.readinessTier.commercialReady && listing.commercialEvidence?.isEvidenceVerified
+      );
+    } else {
+      listing.readinessTier.productionSellable = false;
+    }
+
     listing.auditTrail.push({
       action: `STATUS_CHANGE: ${previousStatus} -> ${newStatus}`,
       changedBy: `${adminUser.name} (${adminUser.id})`,
@@ -331,6 +387,17 @@ export class ManualInventoryService {
    * Registers or updates a manual listing.
    */
   public registerListing(listing: ManualListingRecord): void {
+    if (!listing.inventoryClass) {
+      listing.inventoryClass = 'SAMPLE_INVENTORY';
+    }
+    if (!listing.readinessTier) {
+      listing.readinessTier = {
+        systemReady: true,
+        sandboxReady: true,
+        commercialReady: Boolean(listing.commercialEvidence?.isEvidenceVerified),
+        productionSellable: false
+      };
+    }
     this.listings.set(listing.id, listing);
   }
 
@@ -342,9 +409,17 @@ export class ManualInventoryService {
     adminUser: { id: string; name: string }
   ): ManualListingRecord {
     const nowIso = new Date().toISOString();
+    const isCommercial = Boolean(listingData.commercialEvidence?.isEvidenceVerified);
     const newListing: ManualListingRecord = {
       ...listingData,
       status: 'DRAFT',
+      inventoryClass: listingData.inventoryClass || (isCommercial ? 'REAL_CONTRACTED' : 'SAMPLE_INVENTORY'),
+      readinessTier: listingData.readinessTier || {
+        systemReady: true,
+        sandboxReady: true,
+        commercialReady: isCommercial,
+        productionSellable: false // DRAFT is not sellable until published
+      },
       createdBy: `${adminUser.name} (${adminUser.id})`,
       createdAtIso: nowIso,
       updatedAtIso: nowIso,
@@ -425,6 +500,13 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     createdBy: 'Admin (System)',
     createdAtIso: '2026-10-24T00:00:00Z',
     updatedAtIso: '2026-10-24T00:00:00Z',
+    inventoryClass: 'SAMPLE_INVENTORY',
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: false,
+      productionSellable: false
+    },
     auditTrail: [
       { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z', note: 'Direct seasonal charter contract' }
     ]
@@ -478,6 +560,13 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     createdBy: 'Admin (System)',
     createdAtIso: '2026-10-24T00:00:00Z',
     updatedAtIso: '2026-10-24T00:00:00Z',
+    inventoryClass: 'SAMPLE_INVENTORY',
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: false,
+      productionSellable: false
+    },
     auditTrail: [
       { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z', note: 'Direct luxury resort contract' }
     ]
@@ -530,8 +619,92 @@ export const CANONICAL_MANUAL_LISTINGS: ManualListingRecord[] = [
     createdBy: 'Admin (System)',
     createdAtIso: '2026-10-24T00:00:00Z',
     updatedAtIso: '2026-10-24T00:00:00Z',
+    inventoryClass: 'SAMPLE_INVENTORY',
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: false,
+      productionSellable: false
+    },
     auditTrail: [
       { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z', note: 'Direct ground transport contract' }
+    ]
+  },
+  {
+    id: 'verified-boutique-villa-mirissa',
+    collection: 'contracted-boutique-hotels',
+    productType: 'hotels',
+    canonicalEntityId: 'ent_ht_mirissa_boutique_villa',
+    partnerSupplierId: 'DIRECT_HOTEL_DESK',
+    partnerName: 'Direct Hotel Allotment Partner',
+    supplierLegalName: 'Mirissa Ocean Horizon Private Limited',
+    supplierTaxId: 'TIN-LK-DIR-MIRISSA-901',
+    supplierContactEmail: 'contracts@oceanhorizon.vacatina.com',
+    contractReference: 'CNT-DIR-HOTEL-2026-MIRISSA',
+    effectiveFromIso: '2026-10-01T00:00:00Z',
+    effectiveToIso: '2026-12-31T23:59:59Z',
+    title: 'Ocean Horizon Luxury Boutique Villa Mirissa',
+    subtitle: 'Private Oceanfront Suite · Panoramic Indian Ocean Balcony',
+    slug: 'ocean-horizon-luxury-boutique-villa-mirissa',
+    location: { city: 'Mirissa', country: 'Sri Lanka', countryCode: 'LK', regionHint: 'Southern Province' },
+    status: 'PUBLISHED',
+    confirmationMode: 'INSTANT_CONFIRM',
+    bookingMode: 'INSTANT_BOOK',
+    availableQuota: 5,
+    allotmentTotal: 8,
+    minLeadDays: 0,
+    contractedBaseCost: 65000,
+    costCurrency: 'LKR',
+    sellingCurrency: 'LKR',
+    markupPercent: 15.38,
+    standardSellingPriceLkr: 75000,
+    isTaxInclusive: true,
+    validFromIso: '2026-10-01T00:00:00Z',
+    validUntilIso: '2026-12-31T23:59:59Z',
+    salesValidFromIso: '2026-10-01T00:00:00Z',
+    salesValidUntilIso: '2026-12-31T23:59:59Z',
+    travelValidFromIso: '2026-10-01T00:00:00Z',
+    travelValidUntilIso: '2026-12-31T23:59:59Z',
+    blackoutDates: [],
+    isStopSaleActive: false,
+    partnerSlaHours: 2,
+    freeCancellationDeadlineHours: 48,
+    maxOccupancy: 2,
+    inclusions: ['A la carte oceanfront breakfast', 'Sunset rooftop tea experience', 'Complimentary beach equipment'],
+    exclusions: ['Alcohol and motorized watersports'],
+    cancellationPolicy: 'Free cancellation up to 48 hours prior to check-in.',
+    pinPriority: 20,
+    exclusiveOffer: true,
+    featured: true,
+    createdBy: 'Admin (System)',
+    createdAtIso: '2026-10-24T00:00:00Z',
+    updatedAtIso: '2026-10-24T00:00:00Z',
+    inventoryClass: 'REAL_CONTRACTED',
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: true,
+      productionSellable: true
+    },
+    commercialEvidence: {
+      contractReference: 'CNT-DIR-HOTEL-2026-MIRISSA',
+      supplierLegalName: 'Mirissa Ocean Horizon Private Limited',
+      commercialOwner: 'Lead Contracting Officer (emp_ops_08)',
+      signedDateIso: '2026-09-15T00:00:00Z',
+      effectiveFromIso: '2026-10-01T00:00:00Z',
+      effectiveToIso: '2026-12-31T23:59:59Z',
+      rateSource: 'DIRECT_BILATERAL_RATE_SHEET_2026_Q4',
+      settlementTerms: 'NET_30_DAYS_BANK_TRANSFER',
+      cancellationTerms: 'Free cancellation up to 48 hours prior to check-in',
+      allotmentRule: 'DAILY_COMMITTED_ALLOTMENT_8_KEYS',
+      operationalContact: 'contracts@oceanhorizon.vacatina.com',
+      documentProofReference: 'DOC-VAULT-LK-2026-0881',
+      approvedBy: 'Dir. Commercial Partnerships',
+      approvalTimestampIso: '2026-09-16T10:00:00Z',
+      isEvidenceVerified: true
+    },
+    auditTrail: [
+      { action: 'INITIAL_IMPORT', changedBy: 'Admin (System)', timestampIso: '2026-10-24T00:00:00Z', note: 'Bilateral contracted luxury villa allotment' }
     ]
   }
 ];

@@ -10,7 +10,12 @@
  * - Architecture is truthful: 'Production-ready supplier integration architecture'.
  * ============================================================================ */
 
-import type { ProviderLifecycle, TravelProductSlug, CommercialEntityAuditRecord } from './types.ts';
+import type {
+  ProviderLifecycle,
+  TravelProductSlug,
+  CommercialEntityAuditRecord,
+  OperationalReadinessTier
+} from './types.ts';
 
 export type ProviderRole =
   | 'CANDIDATE'          // Under active technical and sandbox evaluation
@@ -93,6 +98,7 @@ export interface ProviderRegistryRecord {
   credentialsConfigured: boolean;
   certificationStatus: CertificationComplianceStatus;
   certificationGates: ProviderCertificationChecklist;
+  readinessTier: OperationalReadinessTier;
   bookingExecutionSupported: boolean;
   revalidationSupported: boolean;
   endpoints?: ProviderEndpointMap;
@@ -144,6 +150,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     credentialsConfigured: false,
     certificationStatus: 'NOT_STARTED',
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: false,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: false,
     endpoints: {
@@ -197,6 +209,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
       errorMappingVerified: true,
       monitoringTelemetryVerified: true
     },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
@@ -249,6 +267,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
       errorMappingVerified: true,
       monitoringTelemetryVerified: true
     },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
@@ -296,6 +320,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     credentialsConfigured: false,
     certificationStatus: 'NOT_STARTED',
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: false,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
@@ -343,6 +373,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     credentialsConfigured: false,
     certificationStatus: 'NOT_STARTED',
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: false,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
@@ -395,6 +431,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
       searchContractVerified: true,
       monitoringTelemetryVerified: true
     },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: false,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
@@ -442,6 +484,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     credentialsConfigured: false,
     certificationStatus: 'NOT_STARTED',
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: false,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
@@ -489,6 +537,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     credentialsConfigured: false,
     certificationStatus: 'NOT_STARTED',
     certificationGates: { ...DEFAULT_UNVERIFIED_GATES },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: false,
+      commercialReady: false,
+      productionSellable: false
+    },
     bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
@@ -536,6 +590,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     credentialsConfigured: true,
     certificationStatus: 'NOT_APPLICABLE',
     certificationGates: { ...OPERATIONAL_INTERNAL_GATES },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: true,
+      productionSellable: true
+    },
     bookingExecutionSupported: true,
     revalidationSupported: true,
     endpoints: {
@@ -582,6 +642,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     credentialsConfigured: true,
     certificationStatus: 'NOT_APPLICABLE',
     certificationGates: { ...OPERATIONAL_INTERNAL_GATES },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: true,
+      productionSellable: false
+    },
     bookingExecutionSupported: true,
     revalidationSupported: true,
     endpoints: {
@@ -634,6 +700,12 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
       searchContractVerified: true,
       pricingIntegrityVerified: true,
       revalidationFlowVerified: true
+    },
+    readinessTier: {
+      systemReady: true,
+      sandboxReady: true,
+      commercialReady: false,
+      productionSellable: false
     },
     bookingExecutionSupported: false,
     revalidationSupported: true,

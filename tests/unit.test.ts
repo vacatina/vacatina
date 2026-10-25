@@ -17,7 +17,12 @@ import { SearchAggregatorService } from '../src/lib/services/search-aggregator.s
 import { BookingOrchestratorService } from '../src/lib/services/booking-orchestrator.service.ts';
 import { CANONICAL_HYBRID_CATALOG } from '../src/lib/mock-data/hybrid-catalog.ts';
 import { getCustomerBuyingCondition, getBookingModeCta } from '../src/lib/domain/inventory-models.ts';
-import { manualInventoryService, ManualInventoryService, CANONICAL_MANUAL_LISTINGS } from '../src/lib/services/manual-inventory.service.ts';
+import {
+  manualInventoryService,
+  ManualInventoryService,
+  CANONICAL_MANUAL_LISTINGS,
+  assertListingIsProductionSellable
+} from '../src/lib/services/manual-inventory.service.ts';
 import { CANONICAL_ROUTES, isCanonicalRoute, getRouteMeta } from '../src/lib/constants/routes.ts';
 import { VacatinaStorageEngine } from '../src/server/db/storage.ts';
 import { AuthorizationEngine, type SecurityContext } from '../src/server/auth/rbac.ts';
@@ -64,6 +69,7 @@ import {
   assertNoFabricatedUpstreamReferences,
   assertCommercialEntitySellable,
   assertProviderCanExecuteLiveBooking,
+  assertProviderIsProductionSellable,
   type CanonicalInventorySourceType,
   type CanonicalSourceEnvironment,
   type CanonicalBookingMode,
@@ -3293,5 +3299,114 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
         supplierPnr: 'EK-PNR-FAKE-992'
       });
     }, /Integrity Guard: supplierPnr cannot be set for uncertified \/ sandbox booking item/, 'Fabricated PNR blocked');
+  });
+
+  it('enforces Four-Tier Operational Readiness Tier on all 11 Providers & Blocks Uncertified Live Sales (Commercial Truth Gate 1)', () => {
+    const providers = ProviderRegistryService.getAllProviders();
+    assert.equal(providers.length, 11, 'All 11 canonical providers registered');
+
+    // Tier 1: SYSTEM_READY must be true for all 11 providers (code, schemas & tests pass)
+    providers.forEach(p => {
+      assert.ok(p.readinessTier, `Provider ${p.providerId} must define readinessTier`);
+      assert.equal(p.readinessTier.systemReady, true, `Provider ${p.providerId} must be SYSTEM_READY`);
+    });
+
+    // Tier 2: SANDBOX_READY is true only for scaffolded/active adapters
+    const duffel = ProviderRegistryService.getProvider('DUFFEL_NDC')!;
+    const amadeus = ProviderRegistryService.getProvider('AMADEUS_GDS')!;
+    const liteapi = ProviderRegistryService.getProvider('LITEAPI')!;
+    const consular = ProviderRegistryService.getProvider('VACATINA_CONSULAR_CONCIERGE')!;
+    const payloadCms = ProviderRegistryService.getProvider('PAYLOAD_CMS_DIRECT')!;
+
+    assert.equal(duffel.readinessTier.sandboxReady, true, 'Duffel is SANDBOX_READY');
+    assert.equal(liteapi.readinessTier.sandboxReady, true, 'LiteAPI is SANDBOX_READY');
+    assert.equal(amadeus.readinessTier.sandboxReady, false, 'Amadeus target is not yet SANDBOX_READY');
+
+    // Tier 3: COMMERCIAL_READY requires verified bilateral contract and settlement terms
+    assert.equal(duffel.readinessTier.commercialReady, false, 'Duffel is not COMMERCIAL_READY (pending live agreement)');
+    assert.equal(amadeus.readinessTier.commercialReady, false, 'Amadeus is not COMMERCIAL_READY');
+    assert.equal(liteapi.readinessTier.commercialReady, false, 'LiteAPI is not COMMERCIAL_READY');
+    assert.equal(payloadCms.readinessTier.commercialReady, true, 'Payload CMS direct contracts desk is COMMERCIAL_READY');
+    assert.equal(consular.readinessTier.commercialReady, true, 'Consular Concierge is COMMERCIAL_READY');
+
+    // Tier 4: PRODUCTION_SELLABLE requires both COMMERCIAL_READY and cleared certification gates
+    // Uncertified API providers MUST throw when checked for production sellability
+    assert.throws(() => {
+      assertProviderIsProductionSellable(duffel);
+    }, /Commercial Truth Guard: Provider 'DUFFEL_NDC' is not COMMERCIAL_READY/, 'Duffel blocked from production selling');
+
+    assert.throws(() => {
+      assertProviderIsProductionSellable(amadeus);
+    }, /Commercial Truth Guard: Provider 'AMADEUS_GDS' is not COMMERCIAL_READY/, 'Amadeus blocked from production selling');
+
+    assert.throws(() => {
+      assertProviderIsProductionSellable(liteapi);
+    }, /Commercial Truth Guard: Provider 'LITEAPI' is not COMMERCIAL_READY/, 'LiteAPI blocked from production selling');
+
+    // Payload CMS platform itself is PLATFORM_CAPABILITY, not an individual sellable offer
+    assert.throws(() => {
+      assertProviderIsProductionSellable(payloadCms);
+    }, /Commercial Truth Guard: Provider 'PAYLOAD_CMS_DIRECT' is not PRODUCTION_SELLABLE/, 'Payload CMS platform blocked as whole provider');
+
+    // Only VACATINA_CONSULAR_CONCIERGE is commercially and operationally certified for live sales
+    assert.equal(consular.readinessTier.productionSellable, true);
+    assert.doesNotThrow(() => {
+      assertProviderIsProductionSellable(consular);
+    }, 'Consular concierge clears production sellability check');
+  });
+
+  it('enforces Commercial Evidence Dossier Validation on Manual Listings & Blocks Sample Inventory (Commercial Truth Gate 2)', () => {
+    // 1. Sample Listings in canonical catalog MUST be blocked from production selling
+    const sampleCharter = CANONICAL_MANUAL_LISTINGS.find(l => l.id === 'charter-cmb-mle-airtaxi')!;
+    assert.equal(sampleCharter.inventoryClass, 'SAMPLE_INVENTORY', 'Demo charter is classified as SAMPLE_INVENTORY');
+    assert.equal(sampleCharter.readinessTier.productionSellable, false, 'Demo charter cannot be sold in production');
+
+    assert.throws(() => {
+      assertListingIsProductionSellable(sampleCharter);
+    }, /Commercial Truth Guard: Listing 'charter-cmb-mle-airtaxi' is classified as SAMPLE_INVENTORY/, 'Sample inventory blocked from production sales');
+
+    const sampleHotel = CANONICAL_MANUAL_LISTINGS.find(l => l.id === 'heritance-kandalama-signature')!;
+    assert.equal(sampleHotel.inventoryClass, 'SAMPLE_INVENTORY');
+    assert.throws(() => {
+      assertListingIsProductionSellable(sampleHotel);
+    }, /SAMPLE_INVENTORY_CANNOT_SELL/);
+
+    // 2. Verified Real Contracted Listing MUST pass production sellability guard
+    const verifiedVilla = CANONICAL_MANUAL_LISTINGS.find(l => l.id === 'verified-boutique-villa-mirissa')!;
+    assert.equal(verifiedVilla.inventoryClass, 'REAL_CONTRACTED', 'Verified villa is REAL_CONTRACTED');
+    assert.equal(verifiedVilla.readinessTier.commercialReady, true);
+    assert.equal(verifiedVilla.readinessTier.productionSellable, true);
+    assert.ok(verifiedVilla.commercialEvidence, 'Verified villa has commercialEvidence');
+    assert.equal(verifiedVilla.commercialEvidence!.isEvidenceVerified, true);
+    assert.equal(verifiedVilla.commercialEvidence!.documentProofReference, 'DOC-VAULT-LK-2026-0881');
+
+    assert.doesNotThrow(() => {
+      assertListingIsProductionSellable(verifiedVilla);
+    }, 'Verified villa with evidence dossier passes production sellability check');
+
+    // 3. Unverified Dossier Invariant: Missing or unverified evidence blocks production selling
+    const unverifiedListing = {
+      ...verifiedVilla,
+      id: 'unverified-hotel-test',
+      commercialEvidence: {
+        ...verifiedVilla.commercialEvidence!,
+        isEvidenceVerified: false
+      }
+    };
+    assert.throws(() => {
+      assertListingIsProductionSellable(unverifiedListing as any);
+    }, /UNVERIFIED_EVIDENCE_DOSSIER/, 'Unverified dossier strictly blocked');
+
+    // 4. Status Transition Lifecycle Guard: PAUSED immediately disables productionSellable
+    const service = new ManualInventoryService(CANONICAL_MANUAL_LISTINGS);
+    const admin = { id: 'admin-ops-01', name: 'Contracting Lead' };
+
+    service.updateStatus('verified-boutique-villa-mirissa', 'PAUSED', admin, 'Temporary renovation');
+    const pausedVilla = service.getListingById('verified-boutique-villa-mirissa')!;
+    assert.equal(pausedVilla.readinessTier.productionSellable, false, 'PAUSED listing productionSellable is false');
+
+    service.updateStatus('verified-boutique-villa-mirissa', 'PUBLISHED', admin, 'Renovation complete');
+    const republishVilla = service.getListingById('verified-boutique-villa-mirissa')!;
+    assert.equal(republishVilla.readinessTier.productionSellable, true, 'PUBLISHED verified villa productionSellable restored to true');
   });
 });

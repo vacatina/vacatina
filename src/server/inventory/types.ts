@@ -1126,3 +1126,63 @@ export function assertProviderCanExecuteLiveBooking(provider: {
     );
   }
 }
+
+// ----------------------------------------------------------------------------
+// 16. Four-Tier Commercial Truth & Operational Status Model (Audit v2.3)
+// ----------------------------------------------------------------------------
+
+export interface OperationalReadinessTier {
+  systemReady: boolean;        // Schemas, normalizers, deduplication, pricing, backoffice CRUD & tests pass
+  sandboxReady: boolean;       // Sandbox/simulated adapter can execute supported search/recheck/order flows
+  commercialReady: boolean;    // Signed contract, rate sheet, allotment agreement, settlement terms & legal approval
+  productionSellable: boolean; // Both commercialReady = true AND all 12 operational certification gates cleared
+}
+
+export type InventoryCommercialClass =
+  | 'PLATFORM_CAPABILITY'     // Underlying subsystem capability (e.g. Payload CMS, Bundler engine)
+  | 'SAMPLE_INVENTORY'        // Uncertified sample/demo records for testing and UI demonstration
+  | 'REAL_CONTRACTED'         // Legally verified direct contract with full signed evidence dossier
+  | 'LIVE_API_CERTIFIED';     // Certified external supplier API with production keys and active settlement
+
+export interface CommercialEvidenceDossier {
+  contractReference: string;         // e.g. 'CNT-DIR-HOTEL-2026-A'
+  supplierLegalName: string;         // e.g. 'Boutique Eco-Luxury Resort Operations Ltd'
+  commercialOwner: string;           // e.g. 'Lead Contracting Officer (emp_ops_08)'
+  signedDateIso: string;             // e.g. '2026-09-15T00:00:00Z'
+  effectiveFromIso: string;          // e.g. '2026-10-01T00:00:00Z'
+  effectiveToIso: string;            // e.g. '2026-12-31T23:59:59Z'
+  rateSource: string;                // e.g. 'DIRECT_BILATERAL_RATE_SHEET_2026_Q4'
+  settlementTerms: string;           // e.g. 'NET_30_DAYS_BANK_TRANSFER'
+  cancellationTerms: string;         // e.g. 'Free cancellation up to 48 hours prior to check-in'
+  allotmentRule: string;             // e.g. 'DAILY_COMMITTED_ALLOTMENT_15_KEYS' or 'ON_REQUEST_4H_SLA'
+  operationalContact: string;        // e.g. 'contracts@direct-desk.vacatina.com'
+  documentProofReference: string;    // Document vault hash/reference e.g. 'DOC-VAULT-LK-2026-0881'
+  approvedBy: string;                // User ID / Name of approver
+  approvalTimestampIso: string;      // Timestamp of authorization
+  isEvidenceVerified: boolean;       // Must be explicitly true
+}
+
+export function assertProviderIsProductionSellable(provider: {
+  providerId: string;
+  readinessTier?: OperationalReadinessTier;
+  lifecycle: ProviderLifecycle;
+}): void {
+  if (!provider.readinessTier) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_READINESS_TIER',
+      `Commercial Truth Guard: Provider '${provider.providerId}' has no operational readiness tier defined.`
+    );
+  }
+  if (!provider.readinessTier.commercialReady) {
+    throw new ArchitecturalInvariantViolationError(
+      'PROVIDER_NOT_COMMERCIALLY_READY',
+      `Commercial Truth Guard: Provider '${provider.providerId}' is not COMMERCIAL_READY (requires bilateral contract and legal settlement terms).`
+    );
+  }
+  if (!provider.readinessTier.productionSellable || provider.lifecycle !== 'PRODUCTION_LIVE') {
+    throw new ArchitecturalInvariantViolationError(
+      'PROVIDER_NOT_PRODUCTION_SELLABLE',
+      `Commercial Truth Guard: Provider '${provider.providerId}' is not PRODUCTION_SELLABLE.`
+    );
+  }
+}
