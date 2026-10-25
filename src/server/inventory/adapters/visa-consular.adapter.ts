@@ -1,8 +1,11 @@
 /* ============================================================================
  * Vacatina Consular Advisory & Visa Desk Adapter
  * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md (Visa)
+ * Knowledge Sync: docs/26_VACATINA_LEGACY_KNOWLEDGE_BASE_AND_INTEGRATION_SYNC.md
+ * Source Provenance: flights.vacatina.com (modules/visa-assistance/catalog/seed)
  *
  * Dedicated manual service adapter for embassy visa application document vetting.
+ * Supports Sri Lankan (LK) passport routes: India, Singapore, UAE (Tourist & Business).
  * ============================================================================ */
 
 import { BaseSupplierAdapter } from './base.adapter.ts';
@@ -23,11 +26,13 @@ export interface RawVisaProductOffer {
   visaServiceId: string;
   countryName: string;
   countryCode: string;
-  visaType: string;         // "Tourist e-Visa" | "Business Visa"
+  visaType: string;         // e.g. "Tourist e-Visa Assistance" | "Business Visa Assistance"
+  category?: 'TOURIST_EVISA' | 'BUSINESS_VISA' | 'STICKER_VISA' | 'TRANSIT';
   durationDays: number;     // 30 | 60
   consularBaseCostMinor: number;
   currency: string;
   processingSlaDays: number;
+  documentChecklist?: string[];
 }
 
 export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer> {
@@ -52,7 +57,15 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
       targetCurrency: raw.currency
     });
 
-    const offerId = `vct-vs-consular-${raw.countryCode.toLowerCase()}-${raw.durationDays}d`;
+    const isBiz = (raw.category === 'BUSINESS_VISA') || raw.visaType.toLowerCase().includes('business') || raw.visaServiceId.includes('business');
+    const offerSuffix = isBiz ? 'biz' : `${raw.durationDays}d`;
+    const offerId = `vct-vs-consular-${raw.countryCode.toLowerCase()}-${offerSuffix}`;
+
+    const defaultChecklist = [
+      'Passport copy valid for 6+ months with 2 blank pages (per traveler)',
+      'Passport-sized digital photograph with white background (per traveler)',
+      'Return flight itinerary and confirmed accommodation proof (per application)'
+    ];
 
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
@@ -68,7 +81,7 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
       supplierId: this.supplierId,
       supplierName: 'Vacatina Consular Advisory Service',
       supplierOfferId: raw.visaServiceId,
-      title: `${raw.countryName} ${raw.durationDays}-Day ${raw.visaType} Assistance`,
+      title: `${raw.countryName} ${raw.durationDays}-Day ${raw.visaType}`,
       subtitle: `Document Vetting & Application Filing · SLA ${raw.processingSlaDays} Business Days`,
       location: {
         city: raw.countryName,
@@ -110,17 +123,13 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
         productType: 'visa',
         visa: {
           destinationCountry: raw.countryName,
-          visaType: 'TOURIST_EVISA',
+          visaType: raw.category || (isBiz ? 'BUSINESS_VISA' : 'TOURIST_EVISA'),
           eligibleNationality: 'Sri Lankan (LKA)',
           residenceCountry: 'Sri Lanka',
           processingSlaBusinessDays: raw.processingSlaDays,
           embassyFeeMinor: Math.round(raw.consularBaseCostMinor * 0.6),
           vacatinaServiceFeeMinor: Math.round(raw.consularBaseCostMinor * 0.4),
-          documentChecklist: [
-            'Passport copy valid for 6+ months with 2 blank pages',
-            'Passport-sized digital photograph with white background',
-            'Return flight itinerary and confirmed accommodation proof'
-          ],
+          documentChecklist: raw.documentChecklist || defaultChecklist,
           submissionMethod: 'ONLINE_PORTAL'
         }
       }
@@ -131,17 +140,149 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {
-    const mockRaw: RawVisaProductOffer = {
-      visaServiceId: `vs_${(criteria.destination || 'dxb').slice(0, 3)}_01`,
-      countryName: criteria.destination || 'United Arab Emirates',
-      countryCode: 'AE',
-      visaType: 'Tourist e-Visa Assistance',
-      durationDays: 60,
-      consularBaseCostMinor: 3500000, // LKR 35,000 base
-      currency: criteria.currency || 'LKR',
-      processingSlaDays: 2
-    };
-    return [this.normalize(mockRaw)];
+    const isUsd = (criteria.currency || '').toUpperCase() === 'USD';
+    const currency = isUsd ? 'USD' : 'LKR';
+
+    // Authentic Vacatina Consular Catalog synced with legacy flights.vacatina.com seed
+    const catalog: RawVisaProductOffer[] = [
+      // 1. UAE Tourist
+      {
+        visaServiceId: 'vs_ae_tourist_01',
+        countryName: 'United Arab Emirates',
+        countryCode: 'AE',
+        visaType: 'Tourist e-Visa Assistance',
+        category: 'TOURIST_EVISA',
+        durationDays: 60,
+        consularBaseCostMinor: isUsd ? 14500 : 3500000, // $145 USD or 35,000 LKR
+        currency,
+        processingSlaDays: 2,
+        documentChecklist: [
+          'Passport bio page: clear scan valid for 6+ months with 2 blank pages (per traveler)',
+          'Recent passport-style photo: clear photo with white background (per traveler)',
+          'Return flight itinerary and confirmed accommodation proof (per application)'
+        ]
+      },
+      // 2. UAE Business
+      {
+        visaServiceId: 'vs_ae_business_01',
+        countryName: 'United Arab Emirates',
+        countryCode: 'AE',
+        visaType: 'Business Visa Assistance',
+        category: 'BUSINESS_VISA',
+        durationDays: 60,
+        consularBaseCostMinor: isUsd ? 19500 : 4800000, // $195 USD or 48,000 LKR
+        currency,
+        processingSlaDays: 3,
+        documentChecklist: [
+          'Passport bio page: clear scan valid for 6+ months with 2 blank pages (per traveler)',
+          'Recent passport-style photo: clear photo with white background (per traveler)',
+          'Business invitation letter from UAE registered entity (per application)',
+          'Return flight itinerary and business meeting schedule (per application)'
+        ]
+      },
+      // 3. India Tourist
+      {
+        visaServiceId: 'vs_in_tourist_01',
+        countryName: 'India',
+        countryCode: 'IN',
+        visaType: 'Tourist e-Visa Assistance',
+        category: 'TOURIST_EVISA',
+        durationDays: 30,
+        consularBaseCostMinor: isUsd ? 7500 : 2400000, // $75 USD or 24,000 LKR
+        currency,
+        processingSlaDays: 3,
+        documentChecklist: [
+          'Passport bio page: clear scan showing photo and personal details (per traveler)',
+          'Recent passport-style photo: 2x2 inch square photo on white background (per traveler)',
+          'Travel itinerary: planned entry and return dates (per application)'
+        ]
+      },
+      // 4. India Business
+      {
+        visaServiceId: 'vs_in_business_01',
+        countryName: 'India',
+        countryCode: 'IN',
+        visaType: 'Business e-Visa Assistance',
+        category: 'BUSINESS_VISA',
+        durationDays: 30,
+        consularBaseCostMinor: isUsd ? 11000 : 3500000, // $110 USD or 35,000 LKR
+        currency,
+        processingSlaDays: 4,
+        documentChecklist: [
+          'Passport bio page: clear scan showing photo and personal details (per traveler)',
+          'Recent passport-style photo: 2x2 inch square photo on white background (per traveler)',
+          'Business invitation letter from Indian host organization (per application)',
+          'Copy of visiting business card / company profile (per application)'
+        ]
+      },
+      // 5. Singapore Tourist
+      {
+        visaServiceId: 'vs_sg_tourist_01',
+        countryName: 'Singapore',
+        countryCode: 'SG',
+        visaType: 'Tourist Entry Visa Assistance',
+        category: 'TOURIST_EVISA',
+        durationDays: 30,
+        consularBaseCostMinor: isUsd ? 9500 : 3000000, // $95 USD or 30,000 LKR
+        currency,
+        processingSlaDays: 3,
+        documentChecklist: [
+          'Passport bio page: clear scan valid for 6+ months (per traveler)',
+          'Recent passport-style photo: white background taken within 3 months (per traveler)',
+          'Confirmed return flight booking details (per application)',
+          'Accommodation details: hotel reservation or Singapore residential address (per application)'
+        ]
+      },
+      // 6. Singapore Business
+      {
+        visaServiceId: 'vs_sg_business_01',
+        countryName: 'Singapore',
+        countryCode: 'SG',
+        visaType: 'Business Entry Visa Assistance',
+        category: 'BUSINESS_VISA',
+        durationDays: 30,
+        consularBaseCostMinor: isUsd ? 13500 : 4200000, // $135 USD or 42,000 LKR
+        currency,
+        processingSlaDays: 4,
+        documentChecklist: [
+          'Passport bio page: clear scan valid for 6+ months (per traveler)',
+          'Recent passport-style photo: white background taken within 3 months (per traveler)',
+          'Business invitation letter describing host organization, visit purpose & dates (per application)',
+          'Confirmed flight and accommodation itinerary (per application)'
+        ]
+      }
+    ];
+
+    const dest = (criteria.destination || '').toLowerCase();
+    let filtered: RawVisaProductOffer[];
+
+    if (dest.includes('india') || dest.includes('delhi') || dest.includes('mumbai') || dest === 'in') {
+      filtered = catalog.filter((item) => item.countryCode === 'IN');
+    } else if (dest.includes('singapore') || dest === 'sg' || dest === 'sin') {
+      filtered = catalog.filter((item) => item.countryCode === 'SG');
+    } else if (dest.includes('emirates') || dest.includes('uae') || dest.includes('dubai') || dest.includes('dxb') || dest === 'ae') {
+      filtered = catalog.filter((item) => item.countryCode === 'AE');
+    } else if (dest) {
+      filtered = catalog.filter((item) => item.countryName.toLowerCase().includes(dest) || item.countryCode.toLowerCase() === dest);
+      if (filtered.length === 0) {
+        // Fallback for custom search query: adapt UAE tourist as baseline
+        filtered = [{
+          visaServiceId: `vs_${dest.slice(0, 3)}_01`,
+          countryName: criteria.destination || 'United Arab Emirates',
+          countryCode: 'AE',
+          visaType: 'Tourist e-Visa Assistance',
+          category: 'TOURIST_EVISA',
+          durationDays: 60,
+          consularBaseCostMinor: isUsd ? 14500 : 3500000,
+          currency,
+          processingSlaDays: 2
+        }];
+      }
+    } else {
+      filtered = catalog;
+    }
+
+    return filtered.map((raw) => this.normalize(raw));
   }
 
   public async revalidate(supplierOfferId: string): Promise<RevalidationResult> {

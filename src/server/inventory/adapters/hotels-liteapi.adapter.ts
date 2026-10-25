@@ -1,6 +1,17 @@
 /* ============================================================================
  * Vacatina LiteAPI Hotel Supplier Adapter
  * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md (Q3/Q9/Q10/Q11)
+ * Knowledge Sync: docs/26_VACATINA_LEGACY_KNOWLEDGE_BASE_AND_INTEGRATION_SYNC.md
+ * Source Provenance: flights.vacatina.com (modules/hotels/Nuitee Connect.md)
+ *
+ * Nuitee Connect / LiteAPI v3.0 Specification:
+ * - Rates Endpoint: POST https://api.liteapi.travel/v3.0/hotels/rates
+ * - Prebook Endpoint: POST https://api.liteapi.travel/v3.0/rates/prebook
+ * - Book Endpoint: POST https://book.liteapi.travel/v3.0/rates/book
+ * - Hotel Details: GET https://api.liteapi.travel/v3.0/data/hotel?hotelId={id}
+ * - Places Search: GET https://api.liteapi.travel/v3.0/data/places?query={query}
+ * - Authentication: Header "X-API-Key: <key>"
+ * - Key Prefix: "prod_" for production, "sand_" / "sandbox_" for sandbox
  * ============================================================================ */
 
 import { BaseSupplierAdapter, HotelSupplierAdapter } from './base.adapter.ts';
@@ -39,8 +50,8 @@ export class HotelsLiteApiAdapter extends HotelSupplierAdapter<RawLiteApiHotelOf
       supplierName: 'LiteAPI Global Bedbank',
       productType: 'hotels',
       environment,
-      sandboxBaseUrl: 'https://api.sandbox.liteapi.travel/v1',
-      productionBaseUrl: 'https://api.liteapi.travel/v1',
+      sandboxBaseUrl: 'https://api.liteapi.travel/v3.0',
+      productionBaseUrl: 'https://api.liteapi.travel/v3.0',
       apiKey,
       timeoutMs: 5000
     });
