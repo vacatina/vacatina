@@ -1,8 +1,8 @@
 {
-  "total": 68,
+  "total": 176,
   "summary": {
-    "WORKING": 11,
-    "PROTOTYPE_ROUTE": 57,
+    "WORKING": 176,
+    "DEAD_END": 0,
     "PLANNED": 0,
     "BLOCKED": 0
   },
@@ -17,139 +17,915 @@
     },
     {
       "text": "Vacatina Homepage",
-      "href": "#",
+      "href": "/",
       "id": "",
       "dataModal": "",
       "ariaLabel": "Vacatina Homepage",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Home",
-      "href": "#",
+      "href": "/",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Flights",
-      "href": "#",
+      "href": "/flights",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Hotels",
-      "href": "#",
+      "href": "/hotels",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Visa Assistance",
-      "href": "#",
+      "href": "/visa-assistance",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Holiday Packages",
-      "href": "#",
+      "href": "/holiday-packages",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Cars &amp; Transfers",
-      "href": "#",
+      "href": "/cars-transfers",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Activities",
-      "href": "#",
+      "href": "/activities",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Sightseeing Tours",
-      "href": "#",
+      "href": "/sightseeing-tours",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Rails",
-      "href": "#",
+      "href": "/rails",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Cruises",
-      "href": "#",
+      "href": "/cruises",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Travel Insurance",
-      "href": "#",
+      "href": "/travel-insurance",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "Blog",
-      "href": "#",
+      "text": "Travel Notes &amp; Blog",
+      "href": "/resources/travel-notes",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "About Us",
-      "href": "#",
+      "text": "Destination Guides",
+      "href": "/resources/destinations",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "FAQ",
-      "href": "#",
+      "text": "Seasonal Travel Guide",
+      "href": "/resources/seasonal-guide",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "Contact Us",
-      "href": "#",
+      "text": "Visa Requirement Checker",
+      "href": "/resources/visa-requirements",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
+    },
+    {
+      "text": "Travel Insurance Guide",
+      "href": "/resources/travel-insurance-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Travel Disruption Guide",
+      "href": "/resources/travel-disruption",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Trip Bucket Guide",
+      "href": "/resources/trip-bucket-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View All Resources",
+      "href": "/resources",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Saved Favorites",
+      "href": "/favorites",
+      "id": "header-favorites-btn",
+      "dataModal": "",
+      "ariaLabel": "Saved Favorites",
+      "classification": "WORKING"
     },
     {
       "text": "Sign In",
-      "href": "#",
+      "href": "/auth/sign-in",
+      "id": "header-sign-in-btn",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Sign Up",
+      "href": "/auth/sign-up",
+      "id": "header-sign-up-btn",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "⌕ Compare options",
+      "href": "/resources/booking-transparency",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
+    },
+    {
+      "text": "◇ Transparent pricing",
+      "href": "/resources/booking-transparency",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "✓ One place for your trip",
+      "href": "/resources/trip-bucket-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Plan My Trip",
+      "href": "/trip-planner?prompt=Plan%205%20days%20in%20Dubai%20with%20flights%2C%20hotel%20and%20visa",
+      "id": "hero-plan-btn",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View all flights",
+      "href": "/flights/explore",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Dubai, United Arab Emirates",
+      "href": "/flights?from=CMB&to=DXB",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Flights",
+      "href": "/flights?from=CMB&to=DXB",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Malé, Maldives",
+      "href": "/flights?from=CMB&to=MLE",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Flights",
+      "href": "/flights?from=CMB&to=MLE",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Bangkok, Thailand",
+      "href": "/flights?from=CMB&to=BKK",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Flights",
+      "href": "/flights?from=CMB&to=BKK",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "London, United Kingdom",
+      "href": "/flights?from=CMB&to=LHR",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Flights",
+      "href": "/flights?from=CMB&to=LHR",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View all visa services",
+      "href": "/visa-assistance",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Tourist &amp; Visit Visa Guidance",
+      "href": "/visa-assistance/uae",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Check Requirements",
+      "href": "/visa-assistance/uae",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Standard Visitor Visa Guidance",
+      "href": "/visa-assistance/uk",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Check Requirements",
+      "href": "/visa-assistance/uk",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Tourist Visa Guidance",
+      "href": "/visa-assistance/thailand",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Check Requirements",
+      "href": "/visa-assistance/thailand",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Entry &amp; e-Visa Guidance",
+      "href": "/visa-assistance/singapore",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Check Requirements",
+      "href": "/visa-assistance/singapore",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore all packages",
+      "href": "/holiday-packages",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Maldives Escape",
+      "href": "/holiday-packages/maldives-luxury-escape",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Package Details",
+      "href": "/holiday-packages/maldives-luxury-escape",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Dubai City Escape",
+      "href": "/holiday-packages/dubai-skyline-desert",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Package Details",
+      "href": "/holiday-packages/dubai-skyline-desert",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Bali Island Journey",
+      "href": "/holiday-packages/bali-cultural-retreat",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Package Details",
+      "href": "/holiday-packages/bali-cultural-retreat",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Thailand Discovery",
+      "href": "/holiday-packages/thailand-island-hopper",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Package Details",
+      "href": "/holiday-packages/thailand-island-hopper",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Ocean Lagoon Water Villa",
+      "href": "/hotels?destination=Maldives",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Hotels",
+      "href": "/hotels?destination=Maldives",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Grand Skyline View Hotel",
+      "href": "/hotels?destination=Dubai",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Hotels",
+      "href": "/hotels?destination=Dubai",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Southern Cliffside Eco-Resort",
+      "href": "/hotels?destination=Sri%20Lanka",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Hotels",
+      "href": "/hotels?destination=Sri%20Lanka",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Serene Forest Pool Villa",
+      "href": "/hotels?destination=Bali",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Hotels",
+      "href": "/hotels?destination=Bali",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Whale Shark &amp; Manta Ray Snorkelling",
+      "href": "/activities/maldives-snorkelling-reef",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Activity",
+      "href": "/activities/maldives-snorkelling-reef",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Sunset Dune Safari &amp; Sandboarding",
+      "href": "/activities/dubai-desert-safari",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Activity",
+      "href": "/activities/dubai-desert-safari",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Guided Leopard &amp; Wildlife 4x4 Safari",
+      "href": "/activities/bentota-mangrove-boat-safari",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Activity",
+      "href": "/activities/bentota-mangrove-boat-safari",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Traditional Herb &amp; Culinary Workshop",
+      "href": "/activities/bali-ubud-swing-waterfall",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Activity",
+      "href": "/activities/bali-ubud-swing-waterfall",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View all sightseeing tours",
+      "href": "/sightseeing-tours",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Dubai City Highlights &amp; Sky Deck",
+      "href": "/sightseeing-tours/sigiriya-ancient-fortress",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Tour Details",
+      "href": "/sightseeing-tours/sigiriya-ancient-fortress",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Bangkok Temples &amp; Grand Palace Heritage",
+      "href": "/sightseeing-tours/bangkok-grand-palace",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Tour Details",
+      "href": "/sightseeing-tours/bangkok-grand-palace",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "London Historic Landmarks &amp; River Passage",
+      "href": "/sightseeing-tours/london-historic-landmarks",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Tour Details",
+      "href": "/sightseeing-tours/london-historic-landmarks",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Singapore Civic District &amp; Marina Discovery",
+      "href": "/sightseeing-tours/singapore-gardens-by-the-bay",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View Tour Details",
+      "href": "/sightseeing-tours/singapore-gardens-by-the-bay",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View all cars &amp; transfers",
+      "href": "/cars-transfers",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Dubai Airport to City Hotel Transfer",
+      "href": "/cars-transfers?destination=Dubai",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Transfer",
+      "href": "/cars-transfers?destination=Dubai",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "London Heathrow Airport Chauffeur Transfer",
+      "href": "/cars-transfers?destination=London",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Transfer",
+      "href": "/cars-transfers?destination=London",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Sri Lanka Island Discovery Car Hire",
+      "href": "/cars-transfers?destination=Sri%20Lanka",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Car Hire",
+      "href": "/cars-transfers?destination=Sri%20Lanka",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Bangkok Suvarnabhumi Private Transfer",
+      "href": "/cars-transfers?destination=Bangkok",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Transfer",
+      "href": "/cars-transfers?destination=Bangkok",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View all cruises",
+      "href": "/cruises",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Dubai &amp; Arabian Gulf Cruise",
+      "href": "/cruises/dubai-arabian-gulf",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cruise",
+      "href": "/cruises/dubai-arabian-gulf",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Singapore &amp; Southeast Asia Cruise",
+      "href": "/cruises/singapore-southeast-asia",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cruise",
+      "href": "/cruises/singapore-southeast-asia",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Mediterranean Explorer",
+      "href": "/cruises/mediterranean-classic",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cruise",
+      "href": "/cruises/mediterranean-classic",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Indian Ocean Sea Voyage",
+      "href": "/cruises/indian-ocean-expedition",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cruise",
+      "href": "/cruises/indian-ocean-expedition",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "London to Paris",
+      "href": "/rails?from=London&to=Paris",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Rail Journey",
+      "href": "/rails?from=London&to=Paris",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Tokyo to Kyoto",
+      "href": "/rails?from=Tokyo&to=Kyoto",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Rail Journey",
+      "href": "/rails?from=Tokyo&to=Kyoto",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Kandy to Ella Scenic Main Line",
+      "href": "/rails?from=Kandy&to=Ella",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Rail Journey",
+      "href": "/rails?from=Kandy&to=Ella",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Swiss Alps Panoramic Journey",
+      "href": "/rails/journeys/swiss-alps",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Rail Journey",
+      "href": "/rails/journeys/swiss-alps",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View all insurance options",
+      "href": "/travel-insurance/plans",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Essential Medical Plan",
+      "href": "/travel-insurance/plans/single-trip-essential",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cover",
+      "href": "/travel-insurance/plans/single-trip-essential",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Comprehensive Single Trip",
+      "href": "/travel-insurance/plans/comprehensive-worldwide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cover",
+      "href": "/travel-insurance/plans/comprehensive-worldwide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Family Travel Protection",
+      "href": "/travel-insurance/plans/family-multi-trip",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cover",
+      "href": "/travel-insurance/plans/family-multi-trip",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Annual Multi-Trip Cover",
+      "href": "/travel-insurance/plans/annual-multi-trip",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Explore Cover",
+      "href": "/travel-insurance/plans/annual-multi-trip",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
     },
     {
       "text": "+94113606200",
@@ -193,199 +969,223 @@
     },
     {
       "text": "Flights",
-      "href": "#",
+      "href": "/flights",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Hotels",
-      "href": "#",
+      "href": "/hotels",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Visa Assistance",
-      "href": "#",
+      "href": "/visa-assistance",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Holiday Packages",
-      "href": "#",
+      "href": "/holiday-packages",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Cars &amp; Transfers",
-      "href": "#",
+      "href": "/cars-transfers",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Rails",
-      "href": "#",
+      "href": "/rails",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Cruises",
-      "href": "#",
+      "href": "/cruises",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Activities",
-      "href": "#",
+      "href": "/activities",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Sightseeing Tours",
-      "href": "#",
+      "href": "/sightseeing-tours",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Travel Insurance",
-      "href": "#",
+      "href": "/travel-insurance",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "About Vacatina",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Careers",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Corporate Travel",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Sustainability &amp; Care",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Press &amp; Media",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Customer Support",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Manage Bookings",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Visa Help Desk",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "FAQ",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
-    },
-    {
-      "text": "Cancellation Policies",
-      "href": "#",
-      "id": "",
-      "dataModal": "",
-      "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Travel Notes &amp; Blog",
-      "href": "#",
+      "href": "/resources/travel-notes",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "Seasonal Destination Guide",
-      "href": "#",
+      "text": "Destination Guides",
+      "href": "/resources/destinations",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "Disruption Protocol",
-      "href": "#",
+      "text": "Seasonal Travel Guide",
+      "href": "/resources/seasonal-guide",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "Trip Bucket Guidelines",
-      "href": "#",
+      "text": "Visa Requirement Checker",
+      "href": "/resources/visa-requirements",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
+    },
+    {
+      "text": "Travel Insurance Guide",
+      "href": "/resources/travel-insurance-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Travel Disruption Guide",
+      "href": "/resources/travel-disruption",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Trip Bucket Guide",
+      "href": "/resources/trip-bucket-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View All Resources",
+      "href": "/resources",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "About Vacatina",
+      "href": "/about",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Why Vacatina",
+      "href": "/why-vacatina",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Careers",
+      "href": "/careers",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Press &amp; Media",
+      "href": "/press",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Partners &amp; Suppliers",
+      "href": "/partners",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Help &amp; FAQ",
+      "href": "/help/faq",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Contact Us",
+      "href": "/contact",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Booking Conditions",
+      "href": "/legal/booking-conditions",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "How We Compare Options",
+      "href": "/resources/booking-transparency",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
     },
     {
       "text": "Privacy Policy",
-      "href": "#",
+      "href": "/legal/privacy",
       "id": "",
       "dataModal": "privacy",
       "ariaLabel": "",
@@ -393,7 +1193,31 @@
     },
     {
       "text": "Terms of Service",
+      "href": "/legal/terms",
+      "id": "",
+      "dataModal": "terms",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Cookie Preferences",
       "href": "#",
+      "id": "",
+      "dataModal": "cookies",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "/legal/privacy",
+      "id": "",
+      "dataModal": "privacy",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "/legal/terms",
       "id": "",
       "dataModal": "terms",
       "ariaLabel": "",
@@ -409,7 +1233,7 @@
     },
     {
       "text": "Accessibility Statement",
-      "href": "#",
+      "href": "/legal/accessibility",
       "id": "",
       "dataModal": "accessibility",
       "ariaLabel": "",
@@ -417,7 +1241,7 @@
     },
     {
       "text": "Security &amp; Trust",
-      "href": "#",
+      "href": "/legal/security",
       "id": "",
       "dataModal": "security",
       "ariaLabel": "",
@@ -425,131 +1249,171 @@
     },
     {
       "text": "Home",
-      "href": "#",
+      "href": "/",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Flights",
-      "href": "#",
+      "href": "/flights",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Hotels",
-      "href": "#",
+      "href": "/hotels",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Visa Assistance",
-      "href": "#",
+      "href": "/visa-assistance",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Holiday Packages",
-      "href": "#",
+      "href": "/holiday-packages",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Cars &amp; Transfers",
-      "href": "#",
+      "href": "/cars-transfers",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Activities",
-      "href": "#",
+      "href": "/activities",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Sightseeing Tours",
-      "href": "#",
+      "href": "/sightseeing-tours",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Rails",
-      "href": "#",
+      "href": "/rails",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Cruises",
-      "href": "#",
+      "href": "/cruises",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
       "text": "Travel Insurance",
-      "href": "#",
+      "href": "/travel-insurance",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "Blog",
-      "href": "#",
+      "text": "Travel Notes &amp; Blog",
+      "href": "/resources/travel-notes",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "About Us",
-      "href": "#",
+      "text": "Destination Guides",
+      "href": "/resources/destinations",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "FAQ",
-      "href": "#",
+      "text": "Seasonal Travel Guide",
+      "href": "/resources/seasonal-guide",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     },
     {
-      "text": "Contact Us",
-      "href": "#",
+      "text": "Visa Requirement Checker",
+      "href": "/resources/visa-requirements",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
+    },
+    {
+      "text": "Travel Insurance Guide",
+      "href": "/resources/travel-insurance-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Travel Disruption Guide",
+      "href": "/resources/travel-disruption",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Trip Bucket Guide",
+      "href": "/resources/trip-bucket-guide",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "View All Resources",
+      "href": "/resources",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
+    },
+    {
+      "text": "Sign Up",
+      "href": "/auth/sign-up",
+      "id": "",
+      "dataModal": "",
+      "ariaLabel": "",
+      "classification": "WORKING"
     },
     {
       "text": "Sign In",
-      "href": "#",
+      "href": "/auth/sign-in",
       "id": "",
       "dataModal": "",
       "ariaLabel": "",
-      "classification": "PROTOTYPE ROUTE"
+      "classification": "WORKING"
     }
   ]
 }

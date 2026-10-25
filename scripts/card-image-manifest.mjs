@@ -293,7 +293,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'cruises',
     destination: 'Dubai / Arabian Gulf',
     filename: 'cruise-dubai.webp',
-    alt: 'Cruise ship in Dubai and the Arabian Gulf',
+    alt: 'AIDAdiva cruise ship docked at Dubai port on the Arabian Gulf',
     subjectPrompt:
       'Large modern unbranded cruise ship in a believable Dubai or Arabian Gulf port environment, Dubai skyline subtly visible, blue water, premium cruise travel editorial photography.'
   },
@@ -302,7 +302,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'cruises',
     destination: 'Singapore',
     filename: 'cruise-singapore.webp',
-    alt: 'Cruise ship at Singapore',
+    alt: 'Cruise ship Costa Victoria docked at Singapore Cruise Centre',
     subjectPrompt:
       'Large modern cruise vessel near Singapore cruise terminal with recognizable Singapore skyline context, photorealistic maritime travel photography, clean tropical daylight.'
   },
@@ -311,7 +311,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'cruises',
     destination: 'Mediterranean',
     filename: 'cruise-mediterranean.webp',
-    alt: 'Cruise ship sailing in the Mediterranean',
+    alt: 'Silversea luxury cruise ship sailing along Mediterranean coastal waters',
     subjectPrompt:
       'Large elegant modern unbranded cruise ship sailing through spectacular but realistic Mediterranean coastal scenery, deep blue sea, sunlit cliffs or historic coastal town, premium cruise editorial photography.'
   },
@@ -320,7 +320,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'cruises',
     destination: 'Indian Ocean',
     filename: 'cruise-indianocean.webp',
-    alt: 'Cruise vessel in the Indian Ocean',
+    alt: 'Wind Spirit luxury cruise vessel sailing near tropical islands',
     subjectPrompt:
       'Modern unbranded cruise vessel in beautiful tropical Indian Ocean waters near lush island landscape, believable premium sea-voyage photography, natural tropical light.'
   },
@@ -331,7 +331,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'rails',
     destination: 'London / Paris',
     filename: 'rail-london-paris.webp',
-    alt: 'Modern high-speed European passenger train',
+    alt: 'Eurostar high-speed passenger train traveling on High Speed 1',
     subjectPrompt:
       'Modern European high-speed passenger train traveling through a believable intercity rail environment, sleek aerodynamic train, no carrier logo, premium rail travel editorial photography.'
   },
@@ -340,7 +340,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'rails',
     destination: 'Japan',
     filename: 'rail-tokyo-kyoto.webp',
-    alt: 'Japanese Shinkansen high-speed train',
+    alt: 'Japanese Shinkansen Series N700 high-speed bullet train with Mount Fuji',
     subjectPrompt:
       'Authentic Japanese Shinkansen high-speed train traveling through a realistic Japanese landscape, clean modern rail infrastructure, premium natural travel photography.'
   },
@@ -349,7 +349,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'rails',
     destination: 'Sri Lanka',
     filename: 'rail-kandy-ella.webp',
-    alt: 'Sri Lankan train through the hill country',
+    alt: 'Blue train crossing Demodara Nine Arch Bridge in Ella, Sri Lanka',
     subjectPrompt:
       'Authentic blue Sri Lankan passenger train traveling through lush green hill-country scenery, tea plantations, misty mountains and realistic railway environment, classic Kandy to Ella atmosphere.'
   },
@@ -358,7 +358,7 @@ export const CARD_IMAGE_MANIFEST = [
     category: 'rails',
     destination: 'Swiss Alps',
     filename: 'rail-swiss-alps.webp',
-    alt: 'Panoramic train in the Swiss Alps',
+    alt: 'Glacier Express panoramic passenger train on Landwasser Viaduct in the Swiss Alps',
     subjectPrompt:
       'Beautiful panoramic passenger train traveling through authentic Swiss Alpine scenery, dramatic mountains, valleys and realistic railway infrastructure, premium European travel photography.'
   },

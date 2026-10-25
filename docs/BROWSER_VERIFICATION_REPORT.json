@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-24T23:14:39.088Z",
+  "timestamp": "2026-10-25T00:41:33.088Z",
   "version": "4.2.0-ultra-reconstructed-locked",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewportsTested": [
@@ -751,31 +751,31 @@
           "tag": "DIV",
           "id": "",
           "class": "flex flex-wrap items-center gap-3 sm:gap-5 flex-sh",
-          "right": 894.015625
+          "right": 837.234375
         },
         {
-          "tag": "BUTTON",
+          "tag": "A",
           "id": "",
           "class": "text-brand-primary font-semibold text-[13px] sm:te",
-          "right": 894.015625
+          "right": 837.234375
         },
         {
           "tag": "SPAN",
           "id": "",
           "class": "",
-          "right": 868.015625
+          "right": 811.234375
         },
         {
           "tag": "svg",
           "id": "",
           "class": "",
-          "right": 890.015625
+          "right": 833.234375
         },
         {
           "tag": "path",
           "id": "",
           "class": "",
-          "right": 886.6823120117188
+          "right": 829.9010620117188
         },
         {
           "tag": "DIV",
@@ -844,7 +844,7 @@
           "right": 922.890625
         },
         {
-          "tag": "BUTTON",
+          "tag": "A",
           "id": "",
           "class": "text-brand-primary font-semibold text-[13px] sm:te",
           "right": 922.890625
@@ -874,7 +874,7 @@
           "right": 938.3125
         },
         {
-          "tag": "BUTTON",
+          "tag": "A",
           "id": "",
           "class": "text-brand-primary font-semibold text-[13px] sm:te",
           "right": 938.3125
@@ -904,7 +904,7 @@
           "right": 813.703125
         },
         {
-          "tag": "BUTTON",
+          "tag": "A",
           "id": "",
           "class": "text-brand-primary font-semibold text-[13px] sm:te",
           "right": 813.703125
@@ -964,7 +964,7 @@
           "right": 916.96875
         },
         {
-          "tag": "BUTTON",
+          "tag": "A",
           "id": "",
           "class": "text-brand-primary font-semibold text-[13px] sm:te",
           "right": 916.96875
@@ -1215,7 +1215,7 @@
     {
       "name": "P0 #3 — Exact 1440px Desktop Header Controls All Inside Viewport Bounds",
       "passed": true,
-      "details": "tested=21 controls, bounds=[{\"name\":\"header\",\"left\":0,\"right\":1425,\"width\":1425,\"inside\":true},{\"name\":\"nav-item-0\",\"left\":198.859375,\"right\":251.875,\"width\":53.015625,\"inside\":true},{\"name\":\"nav-item-1\",\"left\":255.875,\"right\":313.28125,\"width\":57.40625,\"inside\":true},{\"name\":\"nav-item-2\",\"left\":317.28125,\"right\":373.03125,\"width\":55.75,\"inside\":true},{\"name\":\"nav-item-3\",\"left\":377.03125,\"right\":491.65625,\"width\":114.625,\"inside\":true},{\"name\":\"nav-item-4\",\"left\":495.65625,\"right\":622.421875,\"width\":126.765625,\"inside\":true},{\"name\":\"nav-item-5\",\"left\":626.421875,\"right\":745.96875,\"width\":119.546875,\"inside\":true},{\"name\":\"nav-item-6\",\"left\":749.96875,\"right\":818.109375,\"width\":68.140625,\"inside\":true},{\"name\":\"nav-item-7\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-8\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-9\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-10\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-11\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-12\",\"left\":822.109375,\"right\":923.59375,\"width\":101.484375,\"inside\":true},{\"name\":\"nav-item-13\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-14\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-15\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-16\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"locale-btn\",\"left\":956.453125,\"right\":1068.15625,\"width\":111.703125,\"inside\":true},{\"name\":\"trip-bucket-btn\",\"left\":1120.15625,\"right\":1263.84375,\"width\":143.6875,\"inside\":true},{\"name\":\"auth-group\",\"left\":1282.84375,\"right\":1409,\"width\":126.15625,\"inside\":true}]"
+      "details": "tested=25 controls, bounds=[{\"name\":\"header\",\"left\":0,\"right\":1425,\"width\":1425,\"inside\":true},{\"name\":\"nav-item-0\",\"left\":198.859375,\"right\":251.875,\"width\":53.015625,\"inside\":true},{\"name\":\"nav-item-1\",\"left\":255.875,\"right\":313.28125,\"width\":57.40625,\"inside\":true},{\"name\":\"nav-item-2\",\"left\":317.28125,\"right\":373.03125,\"width\":55.75,\"inside\":true},{\"name\":\"nav-item-3\",\"left\":377.03125,\"right\":491.65625,\"width\":114.625,\"inside\":true},{\"name\":\"nav-item-4\",\"left\":495.65625,\"right\":622.421875,\"width\":126.765625,\"inside\":true},{\"name\":\"nav-item-5\",\"left\":626.421875,\"right\":745.96875,\"width\":119.546875,\"inside\":true},{\"name\":\"nav-item-6\",\"left\":749.96875,\"right\":818.109375,\"width\":68.140625,\"inside\":true},{\"name\":\"nav-item-7\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-8\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-9\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-10\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-11\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-12\",\"left\":822.109375,\"right\":923.59375,\"width\":101.484375,\"inside\":true},{\"name\":\"nav-item-13\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-14\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-15\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-16\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-17\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-18\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-19\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"nav-item-20\",\"left\":0,\"right\":0,\"width\":0,\"inside\":true},{\"name\":\"locale-btn\",\"left\":956.453125,\"right\":1068.15625,\"width\":111.703125,\"inside\":true},{\"name\":\"trip-bucket-btn\",\"left\":1120.15625,\"right\":1263.84375,\"width\":143.6875,\"inside\":true},{\"name\":\"auth-group\",\"left\":1271.84375,\"right\":1409,\"width\":137.15625,\"inside\":true}]"
     },
     {
       "name": "Journey A — Brand DNA (#1B1464), Official Logo Pack v2 Tagline & 11 Tabs",

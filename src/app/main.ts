@@ -47,6 +47,7 @@ import { tripBucketService } from '../lib/services/trip-bucket.service.ts';
 import { favoritesService } from '../lib/services/favorites.service.ts';
 import { searchCommandService } from '../lib/services/search.service.ts';
 import { localeService } from '../lib/services/locale.service.ts';
+import { routerService } from '../lib/services/router.service.ts';
 import { SUPPLIER_ADAPTER_REGISTRY } from '../lib/adapters/supplier-adapters.ts';
 import { telemetry } from '../lib/analytics/telemetry.ts';
 
@@ -60,6 +61,7 @@ export function bootstrapVacatinaApp(): void {
   initTripBucketUi();
   initMacroStages();
   initLegalAndCookieInteractions();
+  routerService.init();
 
   // Global Escape key handler with exact priority & focus restoration
   document.addEventListener('keydown', event => {
@@ -104,12 +106,14 @@ export function bootstrapVacatinaApp(): void {
 
   // Expose structured runtime handle for automated browser acceptance tests
   const win = window as unknown as Record<string, unknown>;
+  win.__VACATINA_ROUTER__ = routerService;
   win.__VACATINA_OS__ = {
     version: '4.2.0-ultra-reconstructed-locked',
     tripBucketService,
     favoritesService,
     searchCommandService,
     localeService,
+    routerService,
     getAuthState,
     setSignedInState,
     adapters: SUPPLIER_ADAPTER_REGISTRY,

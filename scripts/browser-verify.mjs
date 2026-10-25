@@ -236,6 +236,11 @@ async function runVerification() {
     await cdp.send('Page.navigate', { url: `http://127.0.0.1:${SERVER_PORT}/index.html` });
     await sleep(1800);
 
+    if (cdp.pageExceptions.length > 0 || cdp.consoleErrors.length > 0) {
+      console.error('[CDP Page Exceptions]', cdp.pageExceptions);
+      console.error('[CDP Console Errors]', cdp.consoleErrors);
+    }
+
     // =========================================================================
     // 1. All 11 Required Viewports (§93, §123) with Exact Bounding Box Checks
     // =========================================================================

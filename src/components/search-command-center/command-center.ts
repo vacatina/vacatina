@@ -23,6 +23,7 @@ import { telemetry } from '../../lib/analytics/telemetry.ts';
 import { showToast } from '../ui/toast.ts';
 import { openProductConfiguratorModal } from '../dialogs/dialogs-controller.ts';
 import { openTripBucketDrawer } from '../trip-bucket/trip-bucket-ui.ts';
+import { routerService } from '../../lib/services/router.service.ts';
 
 let activeTravellerTrigger: HTMLElement | null = null;
 
@@ -80,6 +81,13 @@ export function activateSearchTabByDomId(tabDomId: string, focusTab = false): vo
   if (matched) {
     searchCommandService.setActiveTab(matched.id);
     telemetry.track('search_tab_activated', { tabId: matched.id, tabDomId });
+
+    if (typeof window !== 'undefined' && window.location.pathname === '/') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', matched.id);
+      url.hash = 'search-command-center';
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
   }
 }
 
@@ -819,11 +827,15 @@ function initSearchSubmitButtons(): void {
     submitBtn.addEventListener('click', () => {
       const state = searchCommandService.getState();
 
-      // Validate Origin !== Destination on Flights
+      // Validation per tabMeta.id
       if (tabMeta.id === 'flights') {
         const fromNorm = state.flights.from.trim().toLowerCase();
         const toNorm = state.flights.to.trim().toLowerCase();
         const alertEl = document.getElementById('flight-validation-alert');
+        if (!state.flights.from || !state.flights.to) {
+          showToast('Please specify both origin and destination airports.', 'warning');
+          return;
+        }
         if (fromNorm && fromNorm === toNorm) {
           if (alertEl) {
             alertEl.textContent =
@@ -836,44 +848,24 @@ function initSearchSubmitButtons(): void {
         if (alertEl) alertEl.classList.add('hidden');
       }
 
-      let hint = '';
-      switch (tabMeta.id) {
-        case 'flights':
-          hint = state.flights.to;
-          break;
-        case 'hotels':
-          hint = state.hotels.destination;
-          break;
-        case 'visa':
-          hint = state.visa.country;
-          break;
-        case 'packages':
-          hint = state.packages.destination;
-          break;
-        case 'cars':
-          hint = state.cars.pickup;
-          break;
-        case 'rails':
-          hint = state.rails.toStation;
-          break;
-        case 'cruises':
-          hint = state.cruises.region;
-          break;
-        case 'activities':
-          hint = state.activities.destination;
-          break;
-        case 'sightseeing':
-          hint = state.sightseeing.destination;
-          break;
-        case 'insurance':
-          hint = state.insurance.region;
-          break;
-        case 'bundle':
-          hint = state.bundle.destination;
-          break;
-      }
+      const canonicalSearchRoutes: Record<CommandCenterTabId, string> = {
+        bundle: '/trip-builder/results',
+        flights: '/flights/search',
+        hotels: '/hotels/search',
+        visa: '/visa-assistance/options',
+        packages: '/holiday-packages/search',
+        cars: '/cars-transfers/search',
+        rails: '/rails/search',
+        cruises: '/cruises/search',
+        activities: '/activities/search',
+        sightseeing: '/sightseeing-tours/search',
+        insurance: '/travel-insurance/compare'
+      };
 
-      openProductConfiguratorModal(tabMeta.id, hint, submitBtn);
+      const destRoute = canonicalSearchRoutes[tabMeta.id];
+      if (destRoute) {
+        routerService.navigateTo(destRoute);
+      }
     });
   });
 }
@@ -903,19 +895,8 @@ function initHeroAiTripPrompt(): void {
       planBtn.id = 'hero-plan-my-trip-btn';
       planBtn.classList.add('touch-target-44');
       planBtn.addEventListener('click', () => {
-        const res = searchCommandService.parseAiPromptToBundle(input.value);
-        activateSearchTabByDomId('tab-bundle', false);
-        const scc = document.getElementById('search-command-center');
-        if (scc) scc.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        showToast(
-          `✦ ${res.summary}`,
-          'brand',
-          'Stage as Draft (01)',
-          () => {
-            tripBucketService.stageDraftTripPlan(res.destination, res.components);
-            openTripBucketDrawer(planBtn);
-          }
-        );
+        const promptVal = input.value.trim() || 'Plan 5 days in Dubai with flights, hotel and visa.';
+        routerService.navigateTo(`/trip-planner?prompt=${encodeURIComponent(promptVal)}`);
       });
     }
   }

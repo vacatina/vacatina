@@ -20,6 +20,7 @@ import { spawnSync } from 'node:child_process';
 import * as nodeModule from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { applyCardImageReplacements } from './apply-card-images.mjs';
+import { applyCanonicalArchitecture } from './apply-canonical-architecture.mjs';
 
 const stripTypeScriptTypes = nodeModule.stripTypeScriptTypes || ((code) => code);
 
@@ -60,6 +61,7 @@ const BUNDLE_ORDER = [
   'components/dialogs/legal-cookie-modal.ts',
   'components/dialogs/dialogs-controller.ts',
   'components/trip-bucket/trip-bucket-ui.ts',
+  'lib/services/router.service.ts',
   'components/shell/header-nav.ts',
   'components/search-command-center/command-center.ts',
   'components/discovery/discovery-controller.ts',
@@ -243,7 +245,7 @@ export function buildProject() {
   // Canonical Header Logo: Official Mark (<1440px) + Full Logo with Tagline (>=1440px) — ZERO FLASH OF FAKE LOGO
   // LOCKED: Desktop Navigation Header uses Vacatina_Logo_OneColor_SpaceCadet (#1B1464, RGB 27, 20, 100), width ~150px
   const fakeHeaderLogoPattern = /<a href="#" class="flex flex-col flex-shrink-0 group focus:outline-none" aria-label="Vacatina Homepage">[\s\S]*?<\/a>/;
-  const canonicalHeaderLogoHtml = `<a href="#" class="flex items-center flex-shrink-0 group focus:outline-none" aria-label="Vacatina Homepage">
+  const canonicalHeaderLogoHtml = `<a href="/" class="flex items-center flex-shrink-0 group focus:outline-none" aria-label="Vacatina Homepage">
   <div class="vacatina-logo-mark-wrap flex items-center">
     <img src="./public/brand/web/Vacatina_Mark_SpaceCadet.web.png" alt="Vacatina" class="h-9 w-9 object-contain" width="36" height="36" loading="eager" decoding="async">
   </div>
@@ -352,6 +354,9 @@ export function buildProject() {
 
   // Apply Verified Card Image Replacements (Zero Unrelated Duplicates; Destination + Product Type + Travel Intent)
   assembledHtml = applyCardImageReplacements(assembledHtml);
+
+  // Apply Canonical Architecture & Zero Dead-Ends Routing (Click-to-Destination v1.0)
+  assembledHtml = applyCanonicalArchitecture(assembledHtml);
 
   // Write index.html (lean static assets in public/brand/web/ + public/cards/ + local compiled Tailwind)
   const projectIndexHtml =

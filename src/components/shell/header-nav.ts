@@ -19,6 +19,7 @@ import {
   localeService
 } from '../../lib/services/locale.service.ts';
 import { tripBucketService } from '../../lib/services/trip-bucket.service.ts';
+import { routerService } from '../../lib/services/router.service.ts';
 import { telemetry } from '../../lib/analytics/telemetry.ts';
 import {
   VacatinaLogoFull,
@@ -73,11 +74,11 @@ export interface AuthSessionState {
 
 let authState: AuthSessionState = {
   isSignedIn: false,
-  name: 'Alex Morgan',
-  shortName: 'Alex M.',
-  initials: 'AM',
-  email: 'alex.morgan@example.com',
-  roleLabel: 'Verified B2C Traveller'
+  name: '',
+  shortName: '',
+  initials: '',
+  email: '',
+  roleLabel: ''
 };
 
 let activeDesktopDropdownTrigger: HTMLElement | null = null;
@@ -88,6 +89,19 @@ export function getAuthState(): AuthSessionState {
 
 export function setSignedInState(signedIn: boolean, announce = true): void {
   authState.isSignedIn = signedIn;
+  if (signedIn) {
+    authState.name = 'Alex Morgan';
+    authState.shortName = 'Alex M.';
+    authState.initials = 'AM';
+    authState.email = 'alex.morgan@example.com';
+    authState.roleLabel = 'Verified B2C Traveller';
+  } else {
+    authState.name = '';
+    authState.shortName = '';
+    authState.initials = '';
+    authState.email = '';
+    authState.roleLabel = '';
+  }
   syncAuthUiAcrossShell();
   telemetry.track('auth_state_changed', { isSignedIn: signedIn });
   if (announce) {
@@ -582,7 +596,8 @@ function initHeaderAuthCluster(header: HTMLElement): void {
           </div>
         </div>
       `;
-      parent.insertBefore(signedInWrap, guestWrap.nextSibling);
+      const container = guestWrap.parentElement || parent;
+      container.insertBefore(signedInWrap, guestWrap.nextSibling);
 
       const userBtn = signedInWrap.querySelector<HTMLButtonElement>('#signed-in-user-btn');
       const userMenu = signedInWrap.querySelector<HTMLElement>('#user-account-dropdown');
@@ -635,7 +650,7 @@ function initHeaderAuthCluster(header: HTMLElement): void {
 export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | null): void {
   openInfoOrSupportModal(
     `${modeLabel} to Vacatina Travel OS`,
-    'B2C Traveller Account & Trip Bucket Synchronization (Clerk Auth Adapter)',
+    'B2C Traveller Account & Trip Bucket Synchronization',
     `
       <div class="space-y-4 text-xs">
         <p class="text-brand-muted">Sign in to synchronize your Saved Favorites, passport profiles, visa checklists, and multi-product Trip Bucket dossiers across devices.</p>
@@ -643,26 +658,22 @@ export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | nul
         <div class="space-y-2.5">
           <div>
             <label for="auth-modal-email" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Email Address</label>
-            <input id="auth-modal-email" type="email" value="alex.morgan@example.com" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black">
+            <input id="auth-modal-email" type="email" placeholder="name@example.com" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black">
           </div>
           <div>
             <label for="auth-modal-password" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Password or One-Time Passcode</label>
-            <input id="auth-modal-password" type="password" value="••••••••••••" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black">
+            <input id="auth-modal-password" type="password" placeholder="••••••••••••" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black">
           </div>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[#F0EFFC] border border-[#C7C3F4] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <div class="font-bold text-brand-primary">Screen 03 Foundation v1.1 Auth State</div>
-            <div class="text-[11px] text-brand-muted">Switch between Guest mode and Signed-In (Alex Morgan) mode.</div>
-          </div>
+        <div class="pt-2">
           <button
             type="button"
-            id="auth-modal-demo-signin-btn"
+            id="auth-modal-signin-btn"
             onclick="window.__VACATINA_OS__.setSignedInState(true); document.querySelector('[data-dialog-close=true]')?.click();"
-            class="min-h-[44px] px-4 py-2 rounded-xl bg-brand-primary text-white font-semibold whitespace-nowrap hover:opacity-90"
+            class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-brand-primary text-white font-semibold whitespace-nowrap hover:opacity-90 transition-opacity"
           >
-            Sign In as Alex Morgan
+            ${modeLabel === 'Sign Up' ? 'Create Account' : 'Sign In'}
           </button>
         </div>
       </div>
@@ -799,17 +810,16 @@ function upgradeAndInitMobileNavigationDrawer(): void {
         </div>
       </div>
 
-      <!-- Services (10 Travel Products + Build Your Bundle) -->
+      <!-- Services (10 Travel Products) -->
       <div>
         <div class="text-[10px] font-bold text-brand-muted uppercase tracking-wider px-2 mb-1.5">Travel Products &amp; Services</div>
         <div class="space-y-1 font-medium text-brand-black">
-          <a href="#top" class="block px-3 py-2 rounded-lg bg-brand-subtle text-brand-primary font-semibold">Home</a>
-          <a href="#search-command-center" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle text-brand-primary font-semibold">Build Your Bundle</a>
-          <a href="#popular-flights-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Flights</a>
-          <a href="#recommended-hotels-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Hotels</a>
-          <a href="#visa-assistance-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Visa Assistance</a>
-          <a href="#holiday-packages-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Holiday Packages</a>
-          <a href="#cars-transfers-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Cars &amp; Transfers</a>
+          <a href="/" class="block px-3 py-2 rounded-lg bg-brand-subtle text-brand-primary font-semibold">Home</a>
+          <a href="/flights" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Flights</a>
+          <a href="/hotels" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Hotels</a>
+          <a href="/visa-assistance" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Visa Assistance</a>
+          <a href="/holiday-packages" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Holiday Packages</a>
+          <a href="/cars-transfers" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle">Cars &amp; Transfers</a>
 
           <div class="pt-1 border-t border-brand-border">
             <button id="mobile-more-toggle" type="button" aria-expanded="false" aria-controls="mobile-more-submenu" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg font-semibold text-brand-black hover:bg-brand-subtle touch-target-44">
@@ -817,11 +827,11 @@ function upgradeAndInitMobileNavigationDrawer(): void {
               <svg class="w-4 h-4 text-brand-muted transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             <div id="mobile-more-submenu" class="hidden pl-4 pt-1 space-y-1 text-xs text-brand-muted">
-              <a href="#popular-activities-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Activities</a>
-              <a href="#sightseeing-tours-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Sightseeing Tours</a>
-              <a href="#rail-journeys-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Rails</a>
-              <a href="#cruises-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Cruises</a>
-              <a href="#travel-insurance-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Travel Insurance</a>
+              <a href="/activities" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Activities</a>
+              <a href="/sightseeing-tours" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Sightseeing Tours</a>
+              <a href="/rails" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Rails</a>
+              <a href="/cruises" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Cruises</a>
+              <a href="/travel-insurance" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Travel Insurance</a>
             </div>
           </div>
 
@@ -831,9 +841,14 @@ function upgradeAndInitMobileNavigationDrawer(): void {
               <svg class="w-4 h-4 text-brand-muted transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             <div id="mobile-resources-submenu" class="hidden pl-4 pt-1 space-y-1 text-xs text-brand-muted">
-              <a href="#seasonal-guide" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Seasonal Destination Guide</a>
-              <a href="#visa-assistance-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Visa Requirement Checker</a>
-              <a href="#travel-insurance-section" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Travel Insurance Guide</a>
+              <a href="/resources/travel-notes" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Travel Notes &amp; Blog</a>
+              <a href="/resources/destinations" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Destination Guides</a>
+              <a href="/resources/seasonal-guide" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Seasonal Travel Guide</a>
+              <a href="/resources/visa-requirements" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Visa Requirement Checker</a>
+              <a href="/resources/travel-insurance-guide" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Travel Insurance Guide</a>
+              <a href="/resources/travel-disruption" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Travel Disruption Guide</a>
+              <a href="/resources/trip-bucket-guide" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle hover:text-brand-black">Trip Bucket Guide</a>
+              <a href="/resources" class="block px-3 py-2 rounded-lg hover:bg-brand-subtle font-semibold text-brand-primary">View All Resources</a>
             </div>
           </div>
         </div>
@@ -1045,57 +1060,25 @@ function initNavigationLinkRouting(): void {
 
   allNavLinks.forEach(link => {
     const href = link.getAttribute('href') || '';
-    if (href.startsWith('tel:') || href.startsWith('mailto:')) return;
+    if (
+      href.startsWith('tel:') ||
+      href.startsWith('mailto:') ||
+      href.startsWith('http://') ||
+      href.startsWith('https://') ||
+      href.startsWith('#main-content') ||
+      href.startsWith('#site-header') ||
+      link.hasAttribute('data-legal-modal')
+    ) {
+      return;
+    }
 
     link.addEventListener('click', event => {
       event.preventDefault();
-      const rawLabel = (link.textContent || '').trim();
-      const normalized = rawLabel.toLowerCase();
-
       closeDesktopDropdowns(false);
       if (isMobileNavOpen()) {
         closeMobileNavDrawer(false);
       }
-
-      if (normalized === 'home' || link.getAttribute('aria-label') === 'Vacatina Homepage') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      const route = NAV_TEXT_TO_TAB_AND_SECTION[normalized];
-      if (route) {
-        const tabBtn = document.getElementById(`tab-${route.tab}`);
-        if (tabBtn) tabBtn.click();
-
-        const sectionEl = document.getElementById(route.sectionId);
-        if (sectionEl) {
-          sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          const scc = document.getElementById('search-command-center');
-          if (scc) scc.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        telemetry.track('navigation_route', { label: rawLabel, tab: route.tab });
-        return;
-      }
-
-      if (normalized.includes('trip bucket')) {
-        const headerBucketBtn = document.getElementById('header-trip-bucket-btn');
-        if (headerBucketBtn) headerBucketBtn.click();
-        return;
-      }
-
-      if (normalized.includes('seasonal')) {
-        const guideSection = document.querySelector('[aria-label="Decision Intelligence Stage"]');
-        if (guideSection) guideSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
-
-      openInfoOrSupportModal(
-        rawLabel,
-        'Vacatina Information & Resource Desk',
-        `<p>You selected <strong>${rawLabel}</strong>. In this interactive B2C prototype, all core discovery, search configuration, Favorites, and 8-State Trip Bucket orchestration flows are active on the main workspace.</p>`,
-        link
-      );
+      routerService.navigateTo(href);
     });
   });
 }

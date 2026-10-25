@@ -4,6 +4,16 @@
   "trailingSlash": false,
   "buildCommand": "node scripts/build.mjs",
   "outputDirectory": "dist-site",
+  "rewrites": [
+    {
+      "source": "/screen-04-states(.*)",
+      "destination": "/screen-04-states.html"
+    },
+    {
+      "source": "/((?!public/|dist/|assets/|.*\\..*).*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/dist/(.*)",

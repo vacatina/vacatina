@@ -91,6 +91,17 @@ export function filterSectionCards(
     emptyEl.classList.add('hidden');
   }
 
+  if (typeof window !== 'undefined') {
+    const url = new URL(window.location.href);
+    if (category === 'all') {
+      url.searchParams.delete('region');
+      url.searchParams.delete('category');
+    } else {
+      url.searchParams.set('region', category);
+    }
+    window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+  }
+
   telemetry.track('discovery_filter', { gridId, category, visibleCount });
   return visibleCount;
 }

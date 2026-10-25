@@ -34,6 +34,8 @@ while ((match = aRegex.exec(html)) !== null) {
     classification = 'WORKING'; // External verified links (social, canonical, etc.)
   } else if (href.startsWith('mailto:') || href.startsWith('tel:')) {
     classification = 'WORKING'; // Contact actions
+  } else if (href.startsWith('/')) {
+    classification = 'WORKING'; // Canonical internal routes (Click-to-Destination v1.0)
   } else if (href.startsWith('#main-content') || href.startsWith('#site-header')) {
     classification = 'WORKING'; // Skip-to-content and page anchors
   } else if (dataModal) {
@@ -41,7 +43,7 @@ while ((match = aRegex.exec(html)) !== null) {
   } else if (id === 'header-signin-btn' || id === 'hero-plan-btn' || attrs.includes('data-auth-trigger')) {
     classification = 'WORKING'; // Interactive auth/demo trigger
   } else if (href === '#' || href === '') {
-    classification = 'PROTOTYPE ROUTE'; // Prototype routes (handled via client JS / notification or prototype navigation)
+    classification = 'DEAD_END'; // Prohibited by Rule 1
   }
 
   links.push({
@@ -58,19 +60,33 @@ console.log(`[Link Audit] Found ${links.length} total anchor links.`);
 
 const byClass = {
   WORKING: links.filter(l => l.classification === 'WORKING'),
-  'PROTOTYPE ROUTE': links.filter(l => l.classification === 'PROTOTYPE ROUTE'),
+  DEAD_END: links.filter(l => l.classification === 'DEAD_END'),
   PLANNED: links.filter(l => l.classification === 'PLANNED'),
   BLOCKED: links.filter(l => l.classification === 'BLOCKED')
 };
 
-console.log(`- WORKING: ${byClass.WORKING.length}`);
-console.log(`- PROTOTYPE ROUTE: ${byClass['PROTOTYPE ROUTE'].length}`);
+console.log(`- WORKING (Verified / Canonical): ${byClass.WORKING.length}`);
+console.log(`- DEAD_END (# or empty): ${byClass.DEAD_END.length}`);
 console.log(`- PLANNED: ${byClass.PLANNED.length}`);
 console.log(`- BLOCKED: ${byClass.BLOCKED.length}`);
 
+if (byClass.DEAD_END.length > 0) {
+  console.warn(`[Link Audit WARNING] Detected ${byClass.DEAD_END.length} dead-end links:`);
+  byClass.DEAD_END.forEach(l => console.warn(`  - "${l.text}" (href="${l.href}")`));
+}
+
 fs.writeFileSync(
   path.join(ROOT_DIR, 'docs', 'LINK_AUDIT_REPORT.json'),
-  JSON.stringify({ total: links.length, summary: { WORKING: byClass.WORKING.length, PROTOTYPE_ROUTE: byClass['PROTOTYPE ROUTE'].length, PLANNED: byClass.PLANNED.length, BLOCKED: byClass.BLOCKED.length }, links }, null, 2),
+  JSON.stringify({
+    total: links.length,
+    summary: {
+      WORKING: byClass.WORKING.length,
+      DEAD_END: byClass.DEAD_END.length,
+      PLANNED: byClass.PLANNED.length,
+      BLOCKED: byClass.BLOCKED.length
+    },
+    links
+  }, null, 2),
   'utf8'
 );
 console.log('[Link Audit] Report written to docs/LINK_AUDIT_REPORT.json');

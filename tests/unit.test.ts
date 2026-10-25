@@ -233,4 +233,69 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.ok(fs.existsSync(path.join(siteDir, 'dist', 'vacatina.bundle.js')), 'dist-site/dist/vacatina.bundle.js must exist');
     assert.ok(fs.existsSync(path.join(siteDir, 'public', 'manifest.webmanifest')), 'dist-site/public/manifest.webmanifest must exist');
   });
+
+  it('enforces Canonical Click-to-Destination & Resource Architecture v1.0 specifications', () => {
+    const siteHtml = fs.readFileSync(path.resolve('dist-site', 'index.html'), 'utf8');
+
+    // Rule 1: Zero '#' links, zero dead-ends
+    const aRegex = /<a\s+([^>]*?)>([\s\S]*?)<\/a>/gi;
+    let match;
+    const deadEndLinks: string[] = [];
+    while ((match = aRegex.exec(siteHtml)) !== null) {
+      const attrs = match[1];
+      const hrefMatch = attrs.match(/href="([^"]*)"/i);
+      const href = hrefMatch ? hrefMatch[1] : '';
+      const dataModalMatch = attrs.match(/data-legal-modal="([^"]*)"/i);
+      if ((href === '#' || href === '') && !dataModalMatch) {
+        deadEndLinks.push(match[0]);
+      }
+    }
+    assert.equal(deadEndLinks.length, 0, `Prohibited dead-end links found: ${deadEndLinks.join(', ')}`);
+
+    // Rule 20: No public Alex Morgan demo identity in default guest view
+    assert.ok(!siteHtml.includes('Alex Morgan'), 'Default guest view must not display Alex Morgan');
+    assert.ok(!siteHtml.includes('alex.morgan@example.com'), 'Default guest view must not display alex.morgan@example.com');
+    assert.ok(siteHtml.includes('/auth/sign-in'), 'Header must provide canonical /auth/sign-in link');
+    assert.ok(siteHtml.includes('/auth/sign-up'), 'Header must provide canonical /auth/sign-up link');
+
+    // Rule 21 & 22: Canonical 8 Resources Items (No About Us, FAQ, Contact Us in Resources)
+    const canonicalResourceRoutes = [
+      '/resources/travel-notes',
+      '/resources/destinations',
+      '/resources/seasonal-guide',
+      '/resources/visa-requirements',
+      '/resources/travel-insurance-guide',
+      '/resources/travel-disruption',
+      '/resources/trip-bucket-guide',
+      '/resources'
+    ];
+    canonicalResourceRoutes.forEach(route => {
+      assert.ok(siteHtml.includes(route), `Site must contain canonical resource route: ${route}`);
+    });
+
+    // Check Resources menu does NOT contain About Us, FAQ, or Contact Us
+    const resourcesDropdownMatch = siteHtml.match(/id="resources-dropdown-menu"[\s\S]*?<\/div>\s*<\/div>/);
+    assert.ok(resourcesDropdownMatch, 'resources-dropdown-menu must exist');
+    const resourcesMenuHtml = resourcesDropdownMatch[0];
+    assert.ok(!resourcesMenuHtml.includes('/about'), 'Resources dropdown must not contain About Us');
+    assert.ok(!resourcesMenuHtml.includes('/help/faq'), 'Resources dropdown must not contain FAQ');
+    assert.ok(!resourcesMenuHtml.includes('/contact'), 'Resources dropdown must not contain Contact Us');
+
+    // Rule 24: "Review Protocols" renamed to "How We Compare Options"
+    assert.ok(siteHtml.includes('How We Compare Options'), 'Must contain How We Compare Options');
+    assert.ok(siteHtml.includes('/resources/booking-transparency'), 'Must link to /resources/booking-transparency');
+
+    // Rule 32: Vercel rewrites configuration
+    const vercelConfig = JSON.parse(fs.readFileSync(path.resolve('vercel.json'), 'utf8'));
+    assert.ok(Array.isArray(vercelConfig.rewrites), 'vercel.json must have rewrites array');
+    assert.ok(vercelConfig.rewrites.some((r: any) => r.destination === '/index.html'), 'vercel.json must rewrite SPA routes to /index.html');
+
+    // Check all 40 cards have canonical routes
+    const articles = siteHtml.match(/<article[\s\S]*?<\/article>/g) || [];
+    assert.equal(articles.length, 40, 'Site must contain exactly 40 product cards');
+    articles.forEach((art, idx) => {
+      assert.ok(art.includes('<h3') && art.includes('<a href="/'), `Card ${idx + 1} title must be wrapped in canonical <a> link`);
+      assert.ok(art.includes('<a href="/') && art.includes('class="w-full bg-brand-primary'), `Card ${idx + 1} primary CTA must be a canonical <a> link`);
+    });
+  });
 });
