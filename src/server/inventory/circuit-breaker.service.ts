@@ -178,13 +178,16 @@ export class CircuitBreakerService {
   public async executeWithBreaker<T>(
     supplierId: string,
     action: () => Promise<T>,
-    fallback: (reason: string) => Promise<T>
+    fallback?: (reason: string) => Promise<T>
   ): Promise<T> {
     const state = this.getState(supplierId);
     const config = this.getProviderConfig(supplierId);
 
     if (state === 'OPEN') {
-      return fallback(`Supplier '${supplierId}' circuit is OPEN (outage protection active)`);
+      if (fallback) {
+        return fallback(`Supplier '${supplierId}' circuit is OPEN (outage protection active)`);
+      }
+      throw new Error(`Supplier '${supplierId}' circuit is OPEN (outage protection active)`);
     }
 
     try {

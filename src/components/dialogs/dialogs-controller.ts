@@ -2029,7 +2029,7 @@ export function openAdminPortalModal(subpath = 'overview', triggerElement?: HTML
       overridePrice: (manualListingId: string) => {
         const listing = manualInventoryService.getListing(manualListingId);
         if (listing) {
-          const currentPrice = listing.pricing.calculatedCustomerPrice;
+          const currentPrice = listing.standardSellingPriceLkr;
           const adjusted = currentPrice - 5000;
           manualInventoryService.updateListingPricing(manualListingId, {
             manualOverrideAmount: adjusted,

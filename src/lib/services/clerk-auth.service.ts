@@ -64,6 +64,10 @@ export class ClerkAuthService {
     return this.isLoaded && typeof window !== 'undefined' && Boolean(window.Clerk);
   }
 
+  public isConfigured(): boolean {
+    return Boolean(this.config.publishableKey && this.config.publishableKey.startsWith('pk_'));
+  }
+
   public getCurrentUser(): ClerkUserSnapshot | null {
     return this.currentUser ? { ...this.currentUser } : null;
   }

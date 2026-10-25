@@ -4,7 +4,7 @@
  * - ANTIGRAVITY ULTRA MASTER INSTRUCTION (§11–§41)
  * - 01_PRODUCT_ARCHITECTURE.md (1440px breakpoint, More 5-item menu)
  * - Screen 03 Foundation v1.1 Locked (Recovered SVG Globe Locale Menu, Signed-In
- *   Alex M. Account Menu, and Complete Mobile Drawer with Quick Actions & Locale)
+ *   User Account Menu, and Complete Mobile Drawer with Quick Actions & Locale)
  * ============================================================================ */
 
 import type {
@@ -105,26 +105,18 @@ export function setSignedInState(
   announce = true,
   user?: { name?: string; email?: string }
 ): void {
-  authState.isSignedIn = signedIn;
-  if (signedIn) {
-    if (user?.email) {
-      const email = user.email.trim();
-      const derivedName = user.name?.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      const initials = derivedName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'VT';
-      authState.name = derivedName;
-      authState.shortName = derivedName.split(' ')[0];
-      authState.initials = initials;
-      authState.email = email;
-      authState.roleLabel = 'Verified B2C Traveller';
-    } else {
-      const isDev = checkIsDevMode();
-      authState.name = isDev ? 'Alex Morgan' : 'Verified Traveller';
-      authState.shortName = isDev ? 'Alex M.' : 'Traveller';
-      authState.initials = isDev ? 'AM' : 'VT';
-      authState.email = isDev ? 'alex.morgan@example.com' : 'traveller@vacatina.com';
-      authState.roleLabel = 'Verified B2C Traveller';
-    }
+  authState.isSignedIn = signedIn && Boolean(user?.email);
+  if (authState.isSignedIn && user?.email) {
+    const email = user.email.trim();
+    const derivedName = user.name?.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    const initials = derivedName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'VT';
+    authState.name = derivedName;
+    authState.shortName = derivedName.split(' ')[0];
+    authState.initials = initials;
+    authState.email = email;
+    authState.roleLabel = 'Verified B2C Traveller';
   } else {
+    authState.isSignedIn = false;
     authState.name = '';
     authState.shortName = '';
     authState.initials = '';
@@ -132,13 +124,13 @@ export function setSignedInState(
     authState.roleLabel = '';
   }
   syncAuthUiAcrossShell();
-  telemetry.track('auth_state_changed', { isSignedIn: signedIn });
+  telemetry.track('auth_state_changed', { isSignedIn: authState.isSignedIn });
   if (announce) {
     showToast(
-      signedIn
+      authState.isSignedIn
         ? `Signed in as ${authState.name} (${authState.email}).`
         : 'Signed out of Vacatina account. Session switched to Guest mode.',
-      signedIn ? 'success' : 'brand'
+      authState.isSignedIn ? 'success' : 'brand'
     );
   }
 }
@@ -717,28 +709,27 @@ function initHeaderAuthCluster(header: HTMLElement): void {
 }
 
 export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | null): void {
+  if (clerkAuthService.isConfigured()) {
+    if (modeLabel === 'Sign Up') {
+      clerkAuthService.openSignUp();
+    } else {
+      clerkAuthService.openSignIn();
+    }
+    return;
+  }
+
+  // Honest fallback when live Clerk credentials are not connected
   openInfoOrSupportModal(
-    `${modeLabel} to Vacatina Travel OS`,
-    'B2C Traveller Account & Trip Bucket Synchronization',
+    `${modeLabel} — Authentication Service`,
+    'Clerk Identity Provider: NOT_CONNECTED / MOCK',
     `
       <div class="space-y-4 text-xs">
-        <p class="text-brand-muted">Sign in to synchronize your Saved Favorites, passport profiles, visa checklists, and multi-product Trip Bucket dossiers across devices.</p>
-
-        <div>
-          <button
-            type="button"
-            id="clerk-sso-continue-btn"
-            onclick="window.__VACATINA_CLERK__?.openSignIn(); document.querySelector('[data-dialog-close=true]')?.click();"
-            class="w-full min-h-[44px] px-4 py-2.5 rounded-xl border border-brand-border bg-[#F8F9FA] hover:bg-gray-100 text-brand-black font-semibold text-xs flex items-center justify-center gap-2 transition-colors touch-target-44 shadow-sm"
-          >
-            <svg class="w-4 h-4 text-brand-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
-            <span>Continue with Clerk SSO &amp; Social</span>
-          </button>
-          <div class="relative flex py-2.5 items-center">
-            <div class="flex-grow border-t border-brand-border"></div>
-            <span class="flex-shrink mx-2 text-[10px] text-brand-muted uppercase font-bold tracking-wider">Or with Email</span>
-            <div class="flex-grow border-t border-brand-border"></div>
-          </div>
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900">
+          <p class="font-bold text-[11px] mb-1">Authentication Service: MOCK / NOT_CONNECTED</p>
+          <p class="text-[11px] leading-relaxed">
+            Live Clerk authentication requires <code class="bg-amber-100 px-1 py-0.5 rounded text-[10px]">NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code> in the environment.
+            For development and demonstration testing, you may simulate signing in with any email below.
+          </p>
         </div>
 
         <div class="space-y-2.5">
@@ -746,20 +737,16 @@ export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | nul
             <label for="auth-modal-email" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Email Address</label>
             <input id="auth-modal-email" type="email" placeholder="name@example.com" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black">
           </div>
-          <div>
-            <label for="auth-modal-password" class="block text-[10px] font-bold text-brand-muted uppercase mb-1">Password or One-Time Passcode</label>
-            <input id="auth-modal-password" type="password" placeholder="••••••••••••" class="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-brand-border text-xs font-semibold text-brand-black">
-          </div>
         </div>
 
         <div class="pt-2">
           <button
             type="button"
             id="auth-modal-signin-btn"
-            onclick="const mail = document.getElementById('auth-modal-email')?.value; window.__VACATINA_OS__.setSignedInState(true, true, mail ? { email: mail } : undefined); document.querySelector('[data-dialog-close=true]')?.click();"
+            onclick="const mail = document.getElementById('auth-modal-email')?.value; if (mail) { window.__VACATINA_OS__.setSignedInState(true, true, { email: mail }); document.querySelector('[data-dialog-close=true]')?.click(); } else { alert('Please enter an email address to simulate login.'); }"
             class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-brand-primary text-white font-semibold whitespace-nowrap hover:opacity-90 transition-opacity"
           >
-            ${modeLabel === 'Sign Up' ? 'Create Account' : 'Sign In'}
+            ${modeLabel === 'Sign Up' ? 'Create Simulated Session' : 'Sign In with Email'}
           </button>
         </div>
       </div>

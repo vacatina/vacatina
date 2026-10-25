@@ -26,7 +26,11 @@ import { CANONICAL_HYBRID_CATALOG } from '../mock-data/hybrid-catalog.ts';
 export interface SearchAggregationCriteria {
   productType?: TravelProductSlug;
   destinationQuery?: string;
+  destination?: string;
   originQuery?: string;
+  origin?: string;
+  dates?: string;
+  passengers?: unknown;
   sourceTypeFilter?: InventorySourceType;
   confirmationModeFilter?: ConfirmationMode;
   maxPriceLkr?: number;

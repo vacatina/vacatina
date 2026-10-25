@@ -6,12 +6,27 @@
 
 import { globalStorageEngine } from '../../server/db/storage.ts';
 import { manualInventoryService } from '../../lib/services/manual-inventory.service.ts';
+import { ProviderRegistryService } from '../../server/inventory/provider-registry.ts';
+import { clerkAuthService } from '../../lib/services/clerk-auth.service.ts';
 
 export function renderAdminPortalHtml(activeTab = 'overview'): string {
   const listings = manualInventoryService.getAllListings();
   const tickets = globalStorageEngine.getSupportTickets();
   const auditLogs = globalStorageEngine.getAuditLogs().slice(0, 10);
   const visaApps = globalStorageEngine.getVisaApplicationsByOrg();
+
+  // Dynamic Telemetry Calculation
+  const providers = ProviderRegistryService.getAllProviders();
+  const connectedProviders = providers.filter(p => p.credentialsConfigured).length;
+  const storageLifecycle = globalStorageEngine.storageLifecycle;
+  const currentUser = clerkAuthService.getCurrentUser();
+  const authRoleLabel = currentUser
+    ? `Signed In: ${currentUser.email} (${currentUser.roleLabel || 'OPERATOR'})`
+    : 'Local Operations Session (Unauthenticated Guest)';
+
+  const operationalLabel = connectedProviders > 0
+    ? `${connectedProviders} / ${providers.length} Upstream APIs Connected`
+    : `Candidate Architecture · ${providers.length} Providers Registered`;
 
   return `
     <div class="p-6 md:p-8 space-y-6 max-h-[85vh] overflow-y-auto">
@@ -20,14 +35,14 @@ export function renderAdminPortalHtml(activeTab = 'overview'): string {
         <div>
           <div class="flex items-center gap-2">
             <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-rose-600 text-white rounded-full">Global Operations</span>
-            <span class="text-xs text-brand-muted">Role: PLATFORM_ADMIN (MFA Verified)</span>
+            <span class="text-xs text-brand-muted">${authRoleLabel}</span>
           </div>
           <h2 class="text-2xl font-heading font-bold text-brand-black mt-1">Platform Control &amp; Operations Center</h2>
         </div>
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            All Services Operational
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            ${operationalLabel} (${storageLifecycle})
           </span>
         </div>
       </div>
@@ -51,8 +66,8 @@ export function renderAdminPortalHtml(activeTab = 'overview'): string {
         </div>
         <div class="p-4 rounded-2xl bg-brand-subtle border border-brand-border">
           <div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider">Audit Records</div>
-          <div class="text-2xl font-heading font-bold text-brand-primary mt-1">${auditLogs.length}+</div>
-          <div class="text-[11px] text-emerald-600 font-medium mt-1">✓ Immutable actor logs</div>
+          <div class="text-2xl font-heading font-bold text-brand-primary mt-1">${auditLogs.length}</div>
+          <div class="text-[11px] text-brand-muted font-medium mt-1">Runtime event buffer (${storageLifecycle})</div>
         </div>
       </div>
 

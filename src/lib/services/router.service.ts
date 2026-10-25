@@ -389,7 +389,10 @@ export class CanonicalRouterService {
 
     // 16c. Operations & Admin Backoffice
     if (path === '/admin' || path.startsWith('/admin/')) {
-      const subpath = path.replace('/admin', '').replace(/^\//, '') || 'overview';
+      let subpath = path.replace('/admin', '').replace(/^\//, '') || 'overview';
+      if (subpath === 'listings') {
+        subpath = 'inventory';
+      }
       openAdminPortalModal(subpath);
       return;
     }
@@ -706,27 +709,27 @@ export class CanonicalRouterService {
 
   private handleActivityRoute(slug: string): void {
     const title = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    openProductConfiguratorModal('activities', title, 'Selected Activity Location');
+    openProductConfiguratorModal('activities', `${title} · Selected Activity Location`);
   }
 
   private handleSightseeingRoute(slug: string): void {
     const title = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    openProductConfiguratorModal('sightseeing', title, 'Sightseeing Route');
+    openProductConfiguratorModal('sightseeing', `${title} · Sightseeing Route`);
   }
 
   private handleCruiseRoute(slug: string): void {
     const title = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    openProductConfiguratorModal('cruises', title, 'Maritime Itinerary');
+    openProductConfiguratorModal('cruises', `${title} · Maritime Itinerary`);
   }
 
   private handleRailJourneyRoute(journey: string): void {
     const title = journey.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    openProductConfiguratorModal('rails', title, 'Scenic Rail Route');
+    openProductConfiguratorModal('rails', `${title} · Scenic Rail Route`);
   }
 
   private handleInsurancePlanRoute(planSlug: string): void {
     const title = planSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    openProductConfiguratorModal('insurance', title, 'Worldwide Travel Cover');
+    openProductConfiguratorModal('insurance', `${title} · Worldwide Travel Cover`);
   }
 
   private handleResourcesRoute(path: string): void {

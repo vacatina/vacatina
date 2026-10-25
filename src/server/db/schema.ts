@@ -42,7 +42,12 @@ export type UserRole =
   | 'FINANCE_OPS'
   | 'CONTENT_MARKETING'
   | 'ANALYTICS'
-  | 'PLATFORM_ADMIN';
+  | 'PLATFORM_ADMIN'
+  | 'SUPER_ADMIN'
+  | 'B2B_AGENT'
+  | 'FINANCE_OFFICER'
+  | 'VISA_OFFICER'
+  | 'OPS_SUPERVISOR';
 
 export type OrganizationType = 'AGENCY' | 'CORPORATE' | 'SUPPLIER' | 'PLATFORM';
 
@@ -191,7 +196,18 @@ export interface FavoriteEntity {
 // 4. Offers & Manual Listing Management Domain
 // ----------------------------------------------------------------------------
 
-export type ManualListingStatus = 'DRAFT' | 'IN_REVIEW' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED';
+export type ManualListingStatus =
+  | 'DRAFT'
+  | 'REVIEW'
+  | 'IN_REVIEW'
+  | 'PUBLISHED'
+  | 'ACTIVE'
+  | 'PAUSED'
+  | 'EXPIRED'
+  | 'ARCHIVED'
+  | 'COMMERCIALLY_VERIFIED'
+  | 'VERIFICATION_PENDING'
+  | 'CONTRACT_PENDING';
 
 export interface ManualListingEntity {
   id: UUID;
@@ -209,10 +225,10 @@ export interface ManualListingEntity {
   contractReference: string;
   title: string;
   subtitle: string;
-  description: string;
+  description?: string;
   destinationCity: string;
   destinationCountry: string;
-  destinationCountryCode: string;
+  destinationCountryCode?: string;
   latitude?: number;
   longitude?: number;
   contractedNetCostMinor: number;
@@ -260,7 +276,6 @@ export interface ManualListingEntity {
   pinReason?: string;
   pinValidFrom?: ISODateString;
   pinValidUntil?: ISODateString;
-  contractReference?: string;
   sourceOwner?: {
     partnerId: string;
     partnerName: string;
@@ -388,7 +403,7 @@ export interface BookingGroupEntity {
   checkoutSessionId: string;
   totalSellingPriceMinor: number;
   currency: string;
-  paymentStatus: 'UNPAID' | 'AUTHORIZED' | 'SETTLED' | 'PARTIALLY_REFUNDED' | 'REFUNDED';
+  paymentStatus: 'UNPAID' | 'AUTHORIZED' | 'SETTLED' | 'PARTIALLY_REFUNDED' | 'REFUNDED' | 'VOIDED';
   overallFulfillmentStatus: BookingOverallStatus;
   createdAt: ISODateString;
   confirmedAt?: ISODateString;

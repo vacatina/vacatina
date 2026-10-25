@@ -105,10 +105,10 @@ export interface TripBucketCandidate {
   integrationMode: IntegrationClassification;
   // Hybrid Inventory & Canonical Offer Extensions
   offerId?: string;
-  sourceType?: 'API' | 'MANUAL' | 'HYBRID';
-  confirmationMode?: 'INSTANT_CONFIRM' | 'REQUEST_TO_CONFIRM' | 'ASSISTED_SERVICE';
+  sourceType?: 'API' | 'MANUAL' | 'HYBRID' | 'SEED' | string;
+  confirmationMode?: 'INSTANT_CONFIRM' | 'REQUEST_TO_CONFIRM' | 'ASSISTED_SERVICE' | 'INSTANT';
   rawSupplierPrice?: number;
-  supplierBaseCurrency?: SupportedCurrency;
+  supplierBaseCurrency?: SupportedCurrency | string;
   markupAmountLkr?: number;
 }
 

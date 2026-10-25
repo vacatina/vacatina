@@ -63,7 +63,7 @@ export function deactivateFocusTrap(modal: HTMLElement | null): void {
   }
 }
 
-export function setBackgroundInert(isInert: boolean): void {
+export function setBackgroundInert(isInert: boolean, modalToExclude?: HTMLElement | null): void {
   const targets = [
     document.getElementById('site-header'),
     document.getElementById('main-content'),

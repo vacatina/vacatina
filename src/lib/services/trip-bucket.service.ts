@@ -17,7 +17,8 @@
 import type {
   TripBucketCandidate,
   TripBucketItemState,
-  TripBucketSummary
+  TripBucketSummary,
+  TravelProductSlug
 } from '../domain/types.ts';
 import type { VacatinaNormalizedOffer } from '../domain/inventory-models.ts';
 import {
@@ -213,6 +214,35 @@ export class TripBucketService {
       this.items.push({ ...candidate });
     }
     this.emit();
+  }
+
+  public addItem(item: {
+    type?: string;
+    productType?: TravelProductSlug;
+    title: string;
+    route?: string;
+    subtitle?: string;
+    provider?: string;
+    supplierName?: string;
+    dates?: string;
+    dateSummary?: string;
+    priceLkr: number;
+    state?: string;
+  }): void {
+    const pType = (item.productType || (item.type === 'flight' ? 'flights' : item.type === 'hotel' ? 'hotels' : item.type === 'visa' ? 'visa' : 'packages')) as TravelProductSlug;
+    this.stageCandidate({
+      id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      productType: pType,
+      productLabel: pType.toUpperCase(),
+      title: item.title,
+      subtitle: item.subtitle || item.provider || item.route || '',
+      dateSummary: item.dateSummary || item.dates || 'Selected Dates',
+      travellerSummary: '2 Adults',
+      state: (item.state?.toLowerCase() === 'ready' ? 'ready' : 'needs_action') as any,
+      priceLkr: item.priceLkr,
+      supplierName: item.supplierName || item.provider || 'Vacatina Direct',
+      integrationMode: 'ADAPTER-READY'
+    });
   }
 
   /**

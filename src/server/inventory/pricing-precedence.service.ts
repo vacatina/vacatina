@@ -9,7 +9,7 @@
  * All operations execute in integer minor currency units (cents / cents of rupee).
  * ============================================================================ */
 
-import type { PricingLayersEntity, TravelProductSlug } from '../types.ts';
+import type { PricingLayersEntity, TravelProductSlug } from './types.ts';
 
 export interface CalculatePricingInput {
   productType: TravelProductSlug;

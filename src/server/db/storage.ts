@@ -38,10 +38,124 @@ import type {
   IdempotencyKeyEntity,
   OutboxEventEntity,
   AuditLogEntity,
-  UserRole
+  UserRole,
+  ManualListingStatus
 } from './schema.ts';
+import type { StorageLifecycle } from '../inventory/types.ts';
+
+export interface IPersistenceAdapter {
+  lifecycle: StorageLifecycle;
+  save<T>(collection: string, key: string, data: T): Promise<void>;
+  get<T>(collection: string, key: string): Promise<T | null>;
+  getAll<T>(collection: string): Promise<T[]>;
+  delete(collection: string, key: string): Promise<boolean>;
+  flush(): Promise<void>;
+}
+
+export class InMemoryPersistenceAdapter implements IPersistenceAdapter {
+  public readonly lifecycle: StorageLifecycle = 'IN_MEMORY_PROTOTYPE';
+  private store = new Map<string, Map<string, unknown>>();
+
+  public async save<T>(collection: string, key: string, data: T): Promise<void> {
+    if (!this.store.has(collection)) {
+      this.store.set(collection, new Map());
+    }
+    this.store.get(collection)!.set(key, data);
+  }
+
+  public async get<T>(collection: string, key: string): Promise<T | null> {
+    const col = this.store.get(collection);
+    if (!col) return null;
+    return (col.get(key) as T) || null;
+  }
+
+  public async getAll<T>(collection: string): Promise<T[]> {
+    const col = this.store.get(collection);
+    if (!col) return [];
+    return Array.from(col.values()) as T[];
+  }
+
+  public async delete(collection: string, key: string): Promise<boolean> {
+    const col = this.store.get(collection);
+    if (!col) return false;
+    return col.delete(key);
+  }
+
+  public async flush(): Promise<void> {
+    // In-memory data is ephemeral prototype state
+  }
+}
+
+export class FileBackedPersistenceAdapter implements IPersistenceAdapter {
+  public readonly lifecycle: StorageLifecycle = 'FILE_BACKED_PROTOTYPE';
+  private filePath: string;
+  private cache: Record<string, Record<string, unknown>> = {};
+  private isLoaded = false;
+
+  constructor(filePath: string = '.data/vacatina-storage.json') {
+    this.filePath = filePath;
+  }
+
+  private async load(): Promise<void> {
+    if (this.isLoaded) return;
+    try {
+      if (typeof process !== 'undefined' && typeof process.cwd === 'function') {
+        const fs = await import('node:fs/promises');
+        const content = await fs.readFile(this.filePath, 'utf-8');
+        this.cache = JSON.parse(content);
+      }
+    } catch {
+      this.cache = {};
+    }
+    this.isLoaded = true;
+  }
+
+  public async save<T>(collection: string, key: string, data: T): Promise<void> {
+    await this.load();
+    if (!this.cache[collection]) {
+      this.cache[collection] = {};
+    }
+    this.cache[collection][key] = data;
+    await this.flush();
+  }
+
+  public async get<T>(collection: string, key: string): Promise<T | null> {
+    await this.load();
+    return (this.cache[collection]?.[key] as T) || null;
+  }
+
+  public async getAll<T>(collection: string): Promise<T[]> {
+    await this.load();
+    const col = this.cache[collection];
+    if (!col) return [];
+    return Object.values(col) as T[];
+  }
+
+  public async delete(collection: string, key: string): Promise<boolean> {
+    await this.load();
+    if (!this.cache[collection] || !this.cache[collection][key]) return false;
+    delete this.cache[collection][key];
+    await this.flush();
+    return true;
+  }
+
+  public async flush(): Promise<void> {
+    try {
+      if (typeof process !== 'undefined' && typeof process.cwd === 'function') {
+        const fs = await import('node:fs/promises');
+        const path = await import('node:path');
+        const dir = path.dirname(this.filePath);
+        await fs.mkdir(dir, { recursive: true });
+        await fs.writeFile(this.filePath, JSON.stringify(this.cache, null, 2), 'utf-8');
+      }
+    } catch {
+      // Safe fallback in read-only / serverless container runtime
+    }
+  }
+}
 
 export class VacatinaStorageEngine {
+  private persistenceAdapter: IPersistenceAdapter;
   private users = new Map<UUID, UserEntity>();
   private organizations = new Map<UUID, OrganizationEntity>();
   private memberships = new Map<UUID, OrganizationMembershipEntity>();
@@ -66,8 +180,17 @@ export class VacatinaStorageEngine {
   private outboxEvents = new Map<UUID, OutboxEventEntity>();
   private auditLogs = new Map<UUID, AuditLogEntity>();
 
-  constructor() {
+  constructor(adapter?: IPersistenceAdapter) {
+    this.persistenceAdapter = adapter || new InMemoryPersistenceAdapter();
     this.seedDefaultPlatformEntities();
+  }
+
+  public get storageLifecycle(): StorageLifecycle {
+    return this.persistenceAdapter.lifecycle;
+  }
+
+  public getPersistenceAdapter(): IPersistenceAdapter {
+    return this.persistenceAdapter;
   }
 
   // --------------------------------------------------------------------------
@@ -462,7 +585,7 @@ export class VacatinaStorageEngine {
     const existing = this.manualListings.get(id);
     if (!existing) throw new Error(`ManualListing ${id} not found`);
 
-    const validTransitions: Record<ManualListingStatus, ManualListingStatus[]> = {
+    const validTransitions: Partial<Record<ManualListingStatus, ManualListingStatus[]>> = {
       DRAFT: ['IN_REVIEW', 'ARCHIVED'],
       IN_REVIEW: ['PUBLISHED', 'DRAFT', 'ARCHIVED'],
       PUBLISHED: ['PAUSED', 'ARCHIVED'],
@@ -498,7 +621,7 @@ export class VacatinaStorageEngine {
     const updated: ManualListingEntity = {
       ...existing,
       status: nextStatus,
-      publicationStatus: nextStatus,
+      publicationStatus: nextStatus as any,
       revisionNumber: nextRevision,
       reviewedBy: nextStatus === 'IN_REVIEW' ? actorUserId : existing.reviewedBy,
       approvedBy: nextStatus === 'PUBLISHED' ? approverUserId : existing.approvedBy,

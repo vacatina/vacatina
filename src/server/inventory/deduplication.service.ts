@@ -37,14 +37,14 @@ export class DeduplicationService {
       }
 
       case 'cars': {
-        const pickup = (meta.pickupLocation || offer.location.city).toLowerCase().replace(/[^a-z0-9]/g, '');
-        const vCat = (meta.vehicleCategory || 'SEDAN').toLowerCase();
+        const pickup = String(meta.pickupLocation || offer.location.city).toLowerCase().replace(/[^a-z0-9]/g, '');
+        const vCat = String(meta.vehicleCategory || 'SEDAN').toLowerCase();
         return `cr_${pickup}_${vCat}`;
       }
 
       case 'rails': {
-        const origin = (meta.originStation || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        const dest = (meta.destinationStation || offer.location.city).toLowerCase().replace(/[^a-z0-9]/g, '');
+        const origin = String(meta.originStation || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const dest = String(meta.destinationStation || offer.location.city).toLowerCase().replace(/[^a-z0-9]/g, '');
         const time = (meta.departureTime || '').toString().slice(0, 10);
         return `rl_${origin}_${dest}_${time}`;
       }

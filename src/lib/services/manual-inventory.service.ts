@@ -137,8 +137,8 @@ export interface ManualListingRecord {
   }[];
 
   // 19. Commercial Truth & Operational Evidence Dossier (Audit v2.3)
-  inventoryClass: InventoryCommercialClass;
-  readinessTier: OperationalReadinessTier;
+  inventoryClass?: InventoryCommercialClass;
+  readinessTier?: OperationalReadinessTier;
   commercialEvidence?: CommercialEvidenceDossier;
 }
 
@@ -390,6 +390,30 @@ export class ManualInventoryService {
     return this.listings.get(id);
   }
 
+  public getListing(id: string): ManualListingRecord | undefined {
+    return this.getListingById(id);
+  }
+
+  public updateListingStatus(
+    id: string,
+    newStatus: ManualListingStatus,
+    reason = 'Status changed via backoffice'
+  ): boolean {
+    return this.updateStatus(id, newStatus, { id: 'usr_admin_ops', name: 'Operations Admin' }, reason);
+  }
+
+  public updateListingPricing(
+    id: string,
+    pricingUpdate: { manualOverrideAmount?: number; overrideReason?: string }
+  ): boolean {
+    const listing = this.listings.get(id);
+    if (!listing) return false;
+    if (pricingUpdate.manualOverrideAmount !== undefined) {
+      listing.standardSellingPriceLkr = pricingUpdate.manualOverrideAmount;
+    }
+    return true;
+  }
+
   /**
    * Immediate operational Stop-Sell suspension toggle (GPT Audit v2.2)
    */
@@ -467,7 +491,7 @@ export class ManualInventoryService {
    */
   public normalizeManualListing(listing: ManualListingRecord): VacatinaNormalizedOffer {
     const baseOffer = InventoryNormalizerService.normalizeManualCmsListing({
-      cmsCollection: listing.collection,
+      cmsCollection: listing.collection as any,
       cmsListingId: listing.id,
       productType: listing.productType,
       partnerSupplierId: listing.partnerSupplierId,
@@ -567,13 +591,20 @@ export class ManualInventoryService {
    * Creates a new manual listing in DRAFT status with initial audit trail.
    */
   public createListing(
-    listingData: Omit<ManualListingRecord, 'status' | 'auditTrail' | 'createdAtIso' | 'updatedAtIso'>,
+    listingData: Omit<ManualListingRecord, 'status' | 'auditTrail' | 'createdAtIso' | 'updatedAtIso' | 'id' | 'slug'> & {
+      id?: string;
+      slug?: string;
+    },
     adminUser: { id: string; name: string }
   ): ManualListingRecord {
     const nowIso = new Date().toISOString();
+    const id = listingData.id || `lst_${listingData.productType}_${Date.now()}`;
+    const slug = listingData.slug || listingData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const isCommercial = Boolean(listingData.commercialEvidence?.isEvidenceVerified);
     const newListing: ManualListingRecord = {
       ...listingData,
+      id,
+      slug,
       status: 'DRAFT',
       inventoryClass: listingData.inventoryClass || (isCommercial ? 'REAL_CONTRACTED' : 'SAMPLE_INVENTORY'),
       readinessTier: listingData.readinessTier || {

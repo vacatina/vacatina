@@ -82,6 +82,7 @@ import {
   assertPackageAtomicCheckoutReady,
   toUnifiedCustomerOffer,
   isOfferEligibleForExclusivityBadge,
+  type CanonicalOfferEntity,
   type CanonicalInventorySourceType,
   type CanonicalSourceEnvironment,
   type CanonicalBookingMode,
@@ -2051,7 +2052,7 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
         assertDiscoveryContentCannotBeSold({
           ...discoveryItems[0],
           isLiveInventoryOffer: true as any,
-          sellability: 'BOOKABLE'
+          sellability: 'BOOKABLE' as any
         });
       },
       (err: any) => {
@@ -4028,13 +4029,13 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       pricing: {
         rawSupplierCostMinor: 7800000,
         rawCurrency: 'LKR',
-        platformMarkupPercent: 12,
         platformMarkupMinor: 1100000,
+        b2bAgencyMarginMinor: 0,
         finalSellingPriceMinor: 8900000,
         currency: 'LKR'
       },
-      taxesAndFees: { vatMinor: 0, tourismLevyMinor: 0, serviceChargeMinor: 0, totalTaxMinor: 0 },
-      freshness: { lastCheckedAtIso: new Date().toISOString(), ttlSeconds: 86400, expiresAtIso: new Date(Date.now() + 86400000).toISOString(), isStale: false },
+      taxesAndFees: { vatMinor: 0, tourismDirhamOrLevyMinor: 0, serviceChargeMinor: 0, totalTaxMinor: 0, isTaxInclusive: true },
+      freshness: { lastCheckedAtIso: new Date().toISOString(), ttlSeconds: 86400, expiresAtIso: new Date(Date.now() + 86400000).toISOString(), isStale: false, revalidationEndpoint: '/api/v1/offers/revalidate' },
       inclusions: ['Breakfast'],
       exclusions: [],
       cancellationPolicy: 'Free cancellation up to 48 hours prior',

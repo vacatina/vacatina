@@ -74,14 +74,35 @@ export type Sellability =
 
 /**
  * Dimension 7: Upstream Provider Integration Lifecycle
+ * 6-Tier Authoritative Lifecycle:
+ * - NOT_CONNECTED: No credentials, no active network connection
+ * - MOCK: In-memory simulation / deterministic fixture
+ * - SANDBOX_CONNECTED: Live sandbox test credentials connected and pinged
+ * - SANDBOX_CERTIFIED: Upstream provider compliance & certification test suite passed in sandbox
+ * - PRODUCTION_CONFIGURED: Production keys configured and validated
+ * - PRODUCTION_LIVE: Commercial contract signed, live credentials active, financial settlement enabled
  */
 export type ProviderLifecycle =
-  | 'PLANNED'         // Target provider identified, API documentation evaluated
-  | 'SCAFFOLD'        // Typed adapter scaffolded with mock/simulated contracts
-  | 'INTEGRATION_CANDIDATE' // Candidate integration undergoing technical and sandbox audit
-  | 'SANDBOX_ACTIVE'  // Live test API credentials connected and verified
-  | 'CERTIFIED'       // Upstream provider compliance & certification testing passed
-  | 'PRODUCTION_LIVE';// Commercial contract signed, live credentials active, financial settlement enabled
+  | 'NOT_CONNECTED'
+  | 'MOCK'
+  | 'SANDBOX_CONNECTED'
+  | 'SANDBOX_CERTIFIED'
+  | 'PRODUCTION_CONFIGURED'
+  | 'PRODUCTION_LIVE'
+  // Backward-compatibility aliases for existing subtests and specs
+  | 'PLANNED'
+  | 'SCAFFOLD'
+  | 'INTEGRATION_CANDIDATE'
+  | 'SANDBOX_ACTIVE'
+  | 'CERTIFIED';
+
+/**
+ * Storage & Persistence Lifecycle Architecture
+ */
+export type StorageLifecycle =
+  | 'IN_MEMORY_PROTOTYPE'
+  | 'FILE_BACKED_PROTOTYPE'
+  | 'PERSISTENT_DATABASE';
 
 // ----------------------------------------------------------------------------
 // Canonical Inventory Source Model & Verification Invariants (Architecture v2.0)
@@ -179,7 +200,8 @@ export type PublicationStatus =
   | 'IN_REVIEW'
   | 'PUBLISHED'
   | 'PAUSED'
-  | 'ARCHIVED';
+  | 'ARCHIVED'
+  | 'ACTIVE';
 
 export type DistributionScope =
   | 'B2C_ONLY'
@@ -252,12 +274,15 @@ export type AvailabilityState =
   | 'MANUAL_AVAILABLE'
   | 'ON_REQUEST'
   | 'SOLD_OUT'
-  | 'RATE_EXPIRED';
+  | 'RATE_EXPIRED'
+  | 'UNAVAILABLE'
+  | 'EXPIRED';
 
 export type ConfirmationMode =
   | 'INSTANT_CONFIRM'
   | 'REQUEST_TO_CONFIRM'
-  | 'ASSISTED_SERVICE';
+  | 'ASSISTED_SERVICE'
+  | 'INSTANT';
 
 export type BookingMode =
   | 'INSTANT_BOOK'
@@ -268,7 +293,7 @@ export type BookingMode =
 export interface StructuredLocation {
   city: string;
   country: string;
-  countryCode: string; // ISO 3166-1 alpha-2
+  countryCode?: string; // ISO 3166-1 alpha-2
   iataCode?: string;
   stationCode?: string;
   address?: string;
@@ -313,6 +338,7 @@ export interface PinAuditEntity {
   pinValidFrom?: string;
   pinValidUntil?: string;
   approverUserId?: string;
+  exclusivityEvidenceId?: string;
 }
 
 export interface PriceFreshnessEntity {
@@ -453,9 +479,9 @@ export interface CanonicalOfferEntity {
   providerLifecycle: ProviderLifecycle;
 
   // --- Publication & Distribution Scope (ADR-008) ---
-  publicationStatus: PublicationStatus;
-  distributionScope: DistributionScope;
-  bookingCapability: BookingCapability;
+  publicationStatus?: PublicationStatus;
+  distributionScope?: DistributionScope;
+  bookingCapability?: BookingCapability;
 
   // --- Canonical Unified Source Model & Verification (Audit v2.4) ---
   inventorySourceType?: CanonicalInventorySourceType;
@@ -495,27 +521,30 @@ export interface CanonicalOfferEntity {
   confirmationMode: ConfirmationMode;
   bookingMode: BookingMode;
   pricing: PricingLayersEntity;
-  taxesAndFees: TaxesAndFeesEntity;
+  taxesAndFees?: TaxesAndFeesEntity;
   b2bPricing?: B2BDistributionPricingEntity;
   productExtension?: ProductExtension;
-  freshness: PriceFreshnessEntity;
-  validFrom: string;
-  validUntil: string;
-  expiresAt: string;
-  lastCheckedAt: string;
-  requiresRevalidation: boolean;
+  freshness?: PriceFreshnessEntity;
+  validFrom?: string;
+  validUntil?: string;
+  expiresAt?: string;
+  lastCheckedAt?: string;
+  requiresRevalidation?: boolean;
   inclusions: string[];
   exclusions: string[];
   cancellationPolicy: string;
   pinAboveApi: boolean;             // Administrative priority ranking
   isExclusiveDeal?: boolean;        // Contractual exclusive rate badge eligibility
+  exclusiveOffer?: boolean;         // Alias for exclusivity eligibility
+  commercialEvidenceId?: string;    // Documented contract evidence ID
+  currency?: string;                // Currency code override
   pinAudit?: PinAuditEntity;        // Auditable pin justification
   deduplicationKey: string;         // Composite natural deduplication key
   isSandboxSimulated: boolean;      // Truthful flag: true if rendered by mock/sandbox adapter
   integrationLifecycle: IntegrationLifecycleStatus;
-  sourceMetadata: Record<string, unknown>;
+  sourceMetadata?: Record<string, unknown>;
   sourceProvenance?: SourceProvenanceEntity;
-  revalidationCapability: {
+  revalidationCapability?: {
     canRevalidateOnline: boolean;
     requiresSupplierPing: boolean;
     lastRevalidationResult?: 'UNCHANGED' | 'PRICE_CHANGED' | 'UNAVAILABLE';
@@ -523,11 +552,13 @@ export interface CanonicalOfferEntity {
 }
 
 export interface SearchQueryCriteria {
-  productType: TravelProductSlug;
+  productType?: TravelProductSlug;
   origin?: string;
   destination: string;
   departureDate?: string; // YYYY-MM-DD
   returnDate?: string;    // YYYY-MM-DD
+  checkInDate?: string;   // YYYY-MM-DD
+  checkOutDate?: string;  // YYYY-MM-DD
   adults?: number;
   children?: number;
   rooms?: number;
@@ -558,6 +589,7 @@ export interface CircuitBreakerTelemetry {
   nextRetryTime?: number;
   totalCalls: number;
   successfulCalls: number;
+  rollingWindowStart?: number;
 }
 
 // ----------------------------------------------------------------------------
@@ -974,7 +1006,12 @@ export function assertCandidateCannotBeProductionReady(offer: CanonicalOfferEnti
     offer.providerLifecycle === 'INTEGRATION_CANDIDATE' ||
     offer.providerLifecycle === 'SANDBOX_ACTIVE' ||
     offer.providerLifecycle === 'SCAFFOLD' ||
-    offer.providerLifecycle === 'PLANNED';
+    offer.providerLifecycle === 'PLANNED' ||
+    offer.providerLifecycle === 'NOT_CONNECTED' ||
+    offer.providerLifecycle === 'MOCK' ||
+    offer.providerLifecycle === 'SANDBOX_CONNECTED' ||
+    offer.providerLifecycle === 'SANDBOX_CERTIFIED' ||
+    offer.providerLifecycle === 'PRODUCTION_CONFIGURED';
 
   if (isCandidateOrSandbox) {
     if (
@@ -1358,7 +1395,7 @@ export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCust
     offer.environmentClass === 'PRODUCTION' &&
     (offer.providerLifecycle === 'PRODUCTION_LIVE' || offer.providerLifecycle === 'CERTIFIED');
 
-  let source: CanonicalInventorySourceType = offer.inventorySourceType || offer.canonicalSourceType || '';
+  let source: CanonicalInventorySourceType = (offer.inventorySourceType || offer.canonicalSourceType || '') as CanonicalInventorySourceType;
   if (!source) {
     if (offer.sourceType === 'MANUAL' || offer.sourceType === 'DIRECT_CONTRACT' || offer.inventorySource === 'DIRECT_CONTRACT') {
       source = 'MANUAL_DIRECT';
@@ -1464,8 +1501,8 @@ export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCust
     commission: offer.b2bPricing?.agencyCommissionMinor ? Math.round(offer.b2bPricing.agencyCommissionMinor / 100) : undefined,
 
     availabilityStatus: offer.availabilityStatus,
-    allotment: offer.productExtension?.type === 'hotels' ? 10 : undefined,
-    inventoryQuantity: offer.productExtension?.type === 'hotels' ? 10 : undefined,
+    allotment: offer.productExtension?.productType === 'hotels' ? 10 : undefined,
+    inventoryQuantity: offer.productExtension?.productType === 'hotels' ? 10 : undefined,
     lastCheckedAt: offer.freshness?.lastCheckedAtIso || offer.lastCheckedAt || new Date().toISOString(),
     offerExpiresAt: offer.freshness?.expiresAtIso || offer.validUntil,
 

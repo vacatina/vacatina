@@ -72,10 +72,15 @@ export type BookingMode =
 export type ManualListingStatus =
   | 'DRAFT'
   | 'REVIEW'
+  | 'IN_REVIEW'
   | 'PUBLISHED'
+  | 'ACTIVE'
   | 'PAUSED'
   | 'EXPIRED'
-  | 'ARCHIVED';
+  | 'ARCHIVED'
+  | 'COMMERCIALLY_VERIFIED'
+  | 'VERIFICATION_PENDING'
+  | 'CONTRACT_PENDING';
 
 /**
  * Three fundamental confirmation workflows.
@@ -83,7 +88,8 @@ export type ManualListingStatus =
 export type ConfirmationMode =
   | 'INSTANT_CONFIRM'      // Real-time API PNR / manual allocated quota
   | 'REQUEST_TO_CONFIRM'   // Supplier/concierge confirmation required within SLA
-  | 'ASSISTED_SERVICE';    // Consular/visa specialist application case
+  | 'ASSISTED_SERVICE'     // Consular/visa specialist application case
+  | 'INSTANT';
 
 /**
  * Customer-Facing Buying Condition.
@@ -143,7 +149,10 @@ export interface ManualPriceOverrideAudit {
  */
 export interface PricingLayers {
   supplierRawBasePrice: number;        // Raw supplier cost in supplierBaseCurrency
+  rawSupplierCost?: number;            // Alias
   supplierBaseCurrency: SupportedCurrency;
+  supplierCurrency?: string;           // Alias
+  markupAmountLkr?: number;            // Applied markup in LKR
   exchangeRateToBase: number;          // Rate from supplierBaseCurrency to LKR
   supplierBasePriceLkr: number;        // Converted base cost in LKR (raw * rate)
   vacatinaMarkup: MarkupSpecification; // Applied business rule markup
@@ -178,7 +187,7 @@ export interface BookingFulfillmentRouting {
 export interface StructuredLocation {
   city: string;
   country: string;
-  countryCode: string;
+  countryCode?: string;
   iataCode?: string;
   stationCode?: string;
   portCode?: string;
@@ -228,6 +237,11 @@ export interface ChangePolicyDetail {
  */
 export interface VacatinaNormalizedOffer {
   offerId: string; // Stable canonical ID, e.g. 'vct-fl-amadeus-cmb-dxb-001'
+  id?: string;     // Alias for offerId
+  partnerSupplierId?: string;
+  contractedBaseCost?: number;
+  costCurrency?: SupportedCurrency | string;
+  standardSellingPriceLkr?: number;
   productType: TravelProductSlug;
   sourceType: InventorySourceType;
   sourceSubtype?: InventorySourceSubtype;

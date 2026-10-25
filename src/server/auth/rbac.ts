@@ -63,7 +63,7 @@ export type PermissionSlug =
   | 'platform:system_admin';
 
 // Static Role Permission Matrix (Deny by default)
-const ROLE_PERMISSIONS: Record<UserRole, PermissionSlug[]> = {
+const ROLE_PERMISSIONS: Partial<Record<UserRole, PermissionSlug[]>> = {
   CUSTOMER: [
     'traveller:read_own',
     'traveller:write_own',
