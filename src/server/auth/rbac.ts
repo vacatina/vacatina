@@ -50,8 +50,10 @@ export type PermissionSlug =
   | 'visa:verify_documents'
   | 'visa:update_consular_status'
   
-  // CMS & Content
+  // CMS & Content (Separation of Duties - Directive 8 & Operational Governance)
   | 'cms:edit_listings'
+  | 'cms:verify_commercial'
+  | 'cms:approve_pricing'
   | 'cms:publish_listings'
   | 'cms:manage_promotions'
   
@@ -113,11 +115,11 @@ const ROLE_PERMISSIONS: Record<UserRole, PermissionSlug[]> = {
     'finance:view_ledger',
     'finance:authorize_refund',
     'finance:reconcile_gateway',
-    'ops:triage_queue'
+    'ops:triage_queue',
+    'cms:approve_pricing'
   ],
   CONTENT_MARKETING: [
     'cms:edit_listings',
-    'cms:publish_listings',
     'cms:manage_promotions'
   ],
   ANALYTICS: [
@@ -150,6 +152,8 @@ const ROLE_PERMISSIONS: Record<UserRole, PermissionSlug[]> = {
     'visa:verify_documents',
     'visa:update_consular_status',
     'cms:edit_listings',
+    'cms:verify_commercial',
+    'cms:approve_pricing',
     'cms:publish_listings',
     'cms:manage_promotions',
     'platform:full_audit',

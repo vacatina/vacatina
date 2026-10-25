@@ -754,21 +754,61 @@ export function assertDistributionScopeIntegrity(
 }
 
 /**
- * Invariant 7: Pinned Ranking Eligibility Rules (Rule 6)
+ * Invariant 7: Pinned Ranking & Exclusivity Eligibility Rules (Rule 6 & GPT Audit v2.5)
+ * Any "Pin Above API Results" or "Exclusive Vacatina Offer" functionality strictly requires:
+ * 1. Production environment and ACTIVE / PUBLISHED status
+ * 2. COMMERCIALLY_VERIFIED commercial status
+ * 3. Valid contract period (unexpired)
+ * 4. Current availability (not SOLD_OUT, RATE_EXPIRED, or UNAVAILABLE)
+ * 5. Pricing approval & positive margins
+ * 6. Documented evidence supporting any exclusivity claim
  */
 export function isOfferEligibleForPinOverride(offer: CanonicalOfferEntity): boolean {
   if (!offer.pinAboveApi) return false;
-  // Must be production and published
-  if (offer.environmentClass !== 'PRODUCTION' || offer.publicationStatus !== 'PUBLISHED') return false;
-  // Cannot be unavailable or expired
-  if (offer.availabilityStatus === 'SOLD_OUT' || offer.availabilityStatus === 'RATE_EXPIRED') return false;
-  // Must have an audit reason
-  if (!offer.pinAudit?.pinReason && !offer.pricing.overrideReason) return false;
-  // Check date bounds if provided
+  
+  // 1. Must be production, active/published
+  if (offer.environmentClass !== 'PRODUCTION') return false;
+  if (offer.publicationStatus && offer.publicationStatus !== 'PUBLISHED' && offer.publicationStatus !== 'ACTIVE') return false;
+
+  // 2. Must be COMMERCIALLY_VERIFIED
+  const isCommerciallyVerified =
+    offer.commercialStatus === 'COMMERCIALLY_VERIFIED' ||
+    offer.verificationStatus === 'VERIFIED_CONTRACT' ||
+    offer.verificationStatus === 'VERIFIED_INTERNAL' ||
+    offer.sourceEnvironment === 'LIVE_MANUAL_VERIFIED';
+  if (!isCommerciallyVerified) return false;
+
+  // 3. Current availability check
+  if (
+    offer.availabilityStatus === 'SOLD_OUT' ||
+    offer.availabilityStatus === 'RATE_EXPIRED' ||
+    offer.availabilityStatus === 'UNAVAILABLE'
+  ) return false;
+
+  // 4. Valid contract period
   const now = Date.now();
+  if (offer.validUntil && new Date(offer.validUntil).getTime() < now) return false;
+  if (offer.freshness?.expiresAtIso && new Date(offer.freshness.expiresAtIso).getTime() < now) return false;
+
+  // 5. Documented evidence & audit reason
+  const hasEvidence = Boolean(
+    offer.commercialEvidenceId ||
+    offer.pinAudit?.pinReason ||
+    offer.pinAudit?.exclusivityEvidenceId ||
+    offer.pricing?.overrideReason
+  );
+  if (!hasEvidence) return false;
+
+  // Check pin date bounds if provided
   if (offer.pinAudit?.pinValidFrom && new Date(offer.pinAudit.pinValidFrom).getTime() > now) return false;
   if (offer.pinAudit?.pinValidUntil && new Date(offer.pinAudit.pinValidUntil).getTime() < now) return false;
+
   return true;
+}
+
+export function isOfferEligibleForExclusivityBadge(offer: CanonicalOfferEntity): boolean {
+  if (!offer.exclusiveOffer) return false;
+  return isOfferEligibleForPinOverride(offer) && Boolean(offer.commercialEvidenceId || offer.pinAudit?.exclusivityEvidenceId);
 }
 
 /**

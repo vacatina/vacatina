@@ -21,7 +21,8 @@ import {
   manualInventoryService,
   ManualInventoryService,
   CANONICAL_MANUAL_LISTINGS,
-  assertListingIsProductionSellable
+  assertListingIsProductionSellable,
+  SeparationOfDutiesViolationError
 } from '../src/lib/services/manual-inventory.service.ts';
 import { CANONICAL_ROUTES, isCanonicalRoute, getRouteMeta } from '../src/lib/constants/routes.ts';
 import { VacatinaStorageEngine } from '../src/server/db/storage.ts';
@@ -72,6 +73,7 @@ import {
   assertProviderIsProductionSellable,
   assertPackageAtomicCheckoutReady,
   toUnifiedCustomerOffer,
+  isOfferEligibleForExclusivityBadge,
   type CanonicalInventorySourceType,
   type CanonicalSourceEnvironment,
   type CanonicalBookingMode,
@@ -81,6 +83,10 @@ import {
 import {
   AdminInventoryMonitoringService
 } from '../src/server/inventory/admin-monitoring.service.ts';
+import {
+  InventoryOrchestratorService,
+  globalInventoryOrchestrator
+} from '../src/server/inventory/inventory-orchestrator.service.ts';
 import {
   DiscoveryContentService,
   CANONICAL_DISCOVERY_CATALOG
@@ -3696,5 +3702,297 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     assert.equal(provenanceItem.customerSellingAmountMinor, 8900000);
     assert.equal(provenanceItem.settlementCurrency, 'LKR');
     assert.ok(provenanceItem.priceRevalidationTimestamp);
+  });
+
+  it('enforces Inventory Orchestrator Pre-Checkout Invariant Guards (Directive 1-6 Audit Verification)', () => {
+    const orchestrator = new InventoryOrchestratorService();
+
+    // 1. SAMPLE_INVENTORY strictly blocked from checkout
+    const sampleOffer = {
+      offerId: 'vct-demo-sample-01',
+      inventorySourceType: 'SAMPLE_INVENTORY' as const,
+      canonicalSourceType: 'SAMPLE_INVENTORY' as const,
+      availabilityStatus: 'LIVE' as const,
+      commercialStatus: 'SAMPLE_DEMO' as const,
+      sellable: false
+    };
+    assert.throws(() => {
+      orchestrator.assertOfferCheckoutReady(sampleOffer as any);
+    }, /Commercial Truth Guard: Offer 'vct-demo-sample-01' is classified as SAMPLE_INVENTORY and cannot enter checkout/, 'Sample inventory blocked from checkout');
+
+    // 2. DISCOVERY_ONLY strictly blocked from checkout
+    const discoveryCard = {
+      offerId: 'vct-disc-dubai-desert-safari',
+      inventorySourceType: 'API_SUPPLIER' as const,
+      sellability: 'DISCOVERY_ONLY',
+      isLiveInventoryOffer: false,
+      category: 'discovery',
+      availabilityStatus: 'LIVE' as const
+    };
+    assert.throws(() => {
+      orchestrator.assertOfferCheckoutReady(discoveryCard as any);
+    }, /Commercial Truth Guard: Offer 'vct-disc-dubai-desert-safari' is DISCOVERY_ONLY content and cannot enter checkout/, 'Discovery card blocked from checkout');
+
+    // 3. Unverified manual inventory strictly blocked from checkout
+    const unverifiedManualOffer = {
+      offerId: 'vct-ht-man-unverified-01',
+      inventorySourceType: 'MANUAL_DIRECT' as const,
+      commercialStatus: 'CANDIDATE_UNVERIFIED' as const,
+      availabilityStatus: 'MANUAL_AVAILABLE' as const,
+      sellable: false
+    };
+    assert.throws(() => {
+      orchestrator.assertOfferCheckoutReady(unverifiedManualOffer as any);
+    }, /Commercial Truth Guard: Manual direct offer 'vct-ht-man-unverified-01' lacks verified commercial contract evidence/, 'Unverified manual inventory blocked from checkout');
+
+    // 4. Uncertified candidate API provider strictly blocked from checkout
+    const uncertifiedApiOffer = {
+      offerId: 'vct-fl-duffel-candidate-01',
+      inventorySourceType: 'API_SUPPLIER' as const,
+      providerId: 'DUFFEL_NDC',
+      supplierId: 'DUFFEL_NDC',
+      availabilityStatus: 'LIVE' as const,
+      commercialStatus: 'CANDIDATE_UNVERIFIED' as const,
+      sellable: false
+    };
+    assert.throws(() => {
+      orchestrator.assertOfferCheckoutReady(uncertifiedApiOffer as any);
+    }, /Commercial Truth Guard: Provider 'DUFFEL_NDC' is in operationalState 'CANDIDATE_PROVIDER'. Live sales require LIVE_API_CERTIFIED/, 'Uncertified API supplier blocked from checkout');
+
+    // 5. Expired contracts strictly blocked from checkout
+    const expiredContractOffer = {
+      offerId: 'vct-ht-direct-expired-01',
+      inventorySourceType: 'MANUAL_DIRECT' as const,
+      commercialStatus: 'COMMERCIALLY_VERIFIED' as const,
+      availabilityStatus: 'MANUAL_AVAILABLE' as const,
+      offerExpiresAt: new Date(Date.now() - 3600000).toISOString(),
+      sellable: true
+    };
+    assert.throws(() => {
+      orchestrator.assertOfferCheckoutReady(expiredContractOffer as any);
+    }, /Freshness Guard: Offer 'vct-ht-direct-expired-01' expired at/, 'Expired contract blocked from checkout');
+
+    // 6. Unavailable / Sold Out inventory strictly blocked from checkout
+    const unavailableOffer = {
+      offerId: 'vct-ht-sold-out-01',
+      inventorySourceType: 'MANUAL_DIRECT' as const,
+      commercialStatus: 'COMMERCIALLY_VERIFIED' as const,
+      availabilityStatus: 'SOLD_OUT' as const,
+      sellable: false
+    };
+    assert.throws(() => {
+      orchestrator.assertOfferCheckoutReady(unavailableOffer as any);
+    }, /Availability Guard: Offer 'vct-ht-sold-out-01' has availabilityStatus 'SOLD_OUT' and cannot proceed to checkout/, 'Sold out inventory blocked from checkout');
+  });
+
+  it('enforces Inventory Orchestration Search Pipeline, Raw Schema Encapsulation & Recheck Freshness (Directives 1-4)', async () => {
+    const orchestrator = new InventoryOrchestratorService();
+
+    // 1. Execute end-to-end orchestration across products
+    const customerOffers = await orchestrator.orchestrateSearch({
+      productType: 'hotels',
+      destination: 'Dubai',
+      checkInDate: '2026-11-15',
+      checkOutDate: '2026-11-20'
+    });
+
+    assert.ok(customerOffers.length > 0, 'Orchestration returned offers');
+
+    // 2. Encapsulation: Every offer adheres strictly to UnifiedCustomerOffer interface
+    for (const offer of customerOffers) {
+      assert.ok(offer.offerId, 'Offer has canonical ID');
+      assert.ok(offer.productType, 'Offer has productType');
+      assert.ok(offer.inventorySourceType, 'Offer has inventorySourceType');
+      assert.equal(typeof offer.netPrice, 'number', 'Net price is integer numeric');
+      assert.equal(typeof offer.sellingPrice, 'number', 'Selling price is integer numeric');
+      assert.ok(offer.displayCurrency, 'Display currency defined');
+      assert.ok(offer.settlementCurrency, 'Settlement currency defined');
+
+      // Strict Encapsulation Guard: Raw supplier fields are NOT leaked to consumer offer
+      assert.equal((offer as any).rawSupplierResponse, undefined, 'No raw supplier response leaked');
+      assert.equal((offer as any).duffelRawData, undefined, 'No Duffel raw payload leaked');
+      assert.equal((offer as any).liteApiRawData, undefined, 'No LiteAPI raw payload leaked');
+    }
+
+    // 3. Pre-booking Recheck on Direct Contract
+    const manualRecheck = await orchestrator.revalidateOffer('vct-hotels-man-charter-cmb-mle-airtaxi');
+    assert.ok(manualRecheck);
+    assert.ok(manualRecheck.status);
+
+    // 4. Pre-booking Recheck on non-existent or expired item
+    const missingRecheck = await orchestrator.revalidateOffer('vct-hotels-man-non-existent-999');
+    assert.equal(missingRecheck.status, 'UNAVAILABLE');
+  });
+
+  it('enforces Admin Manual Inventory Separation of Duties (4-Eyes Principle) & 4-Stage Lifecycle Governance (Directive 8)', () => {
+    const service = new ManualInventoryService();
+
+    const dataEntryOperator = { id: 'usr_entry_01', name: 'Kasun Data Clerk', permissions: ['cms:edit_listings'] };
+    const commercialOfficer = { id: 'usr_comm_02', name: 'Nirosha Contracting Lead', permissions: ['cms:verify_commercial'] };
+    const pricingLead = { id: 'usr_price_03', name: 'Priyantha Finance Lead', permissions: ['cms:approve_pricing'] };
+    const publishingDirector = { id: 'usr_pub_04', name: 'Anoma Commercial Director', permissions: ['cms:publish_listings'] };
+
+    // Stage 1: Data Entry Operator creates DRAFT listing
+    const listing = service.createListing(
+      {
+        id: 'man-ht-bentota-boutique-01',
+        collection: 'manual-boutique-hotels',
+        productType: 'hotels',
+        partnerSupplierId: 'BENTOTA_RIVER_RESORT',
+        partnerName: 'Bentota River Resort Pvt Ltd',
+        supplierLegalName: 'Bentota River Resort Holdings PLC',
+        title: 'Bentota River Luxury Suite',
+        subtitle: 'Boutique riverfront luxury suite',
+        slug: 'bentota-river-luxury-suite',
+        location: { city: 'Bentota', country: 'Sri Lanka' },
+        contractReference: 'CNT-DIR-2026-BENTOTA-001',
+        contractedBaseCost: 28000,
+        standardSellingPriceLkr: 34500,
+        markupPercent: 23.2,
+        costCurrency: 'LKR',
+        sellingCurrency: 'LKR',
+        availableQuota: 5,
+        validFromIso: '2026-10-01T00:00:00Z',
+        validUntilIso: '2026-12-31T23:59:59Z',
+        effectiveFromIso: '2026-10-01T00:00:00Z',
+        effectiveToIso: '2026-12-31T23:59:59Z',
+        confirmationMode: 'INSTANT',
+        bookingMode: 'INSTANT_BOOK',
+        cancellationPolicy: 'Free cancellation up to 48 hours before check-in',
+        inclusions: ['Breakfast', 'River Safari'],
+        exclusions: ['Mini-bar']
+      },
+      dataEntryOperator
+    );
+
+    assert.equal(listing.status, 'DRAFT');
+    assert.equal(listing.readinessTier.productionSellable, false);
+
+    // Operator submits DRAFT for commercial verification
+    service.submitForVerification('man-ht-bentota-boutique-01', dataEntryOperator);
+    const pendingListing = service.getListingById('man-ht-bentota-boutique-01')!;
+    assert.equal(pendingListing.status, 'VERIFICATION_PENDING');
+
+    // 4-Eyes Check 1: Data Entry Operator CANNOT verify their own commercial contract!
+    const validEvidence = {
+      contractReference: 'CNT-DIR-2026-BENTOTA-001',
+      supplierLegalName: 'Bentota River Resort Holdings PLC',
+      commercialOwner: 'Kasun Data Clerk (usr_entry_01)',
+      signedDateIso: '2026-09-20T00:00:00Z',
+      effectiveFromIso: '2026-10-01T00:00:00Z',
+      effectiveToIso: '2026-12-31T23:59:59Z',
+      rateSource: 'BILATERAL_DIRECT_RATE_SHEET_Q4',
+      settlementTerms: 'NET_30_DAYS_BANK_TRANSFER',
+      cancellationTerms: 'Free cancellation up to 48 hours before check-in',
+      allotmentRule: 'DAILY_COMMITTED_5_KEYS',
+      operationalContact: 'contracts@bentotariver.com',
+      documentProofReference: 'DOC-VAULT-LK-2026-9921',
+      approvedBy: 'Legal Director',
+      approvalTimestampIso: '2026-09-22T10:00:00Z',
+      isEvidenceVerified: true
+    };
+
+    assert.throws(() => {
+      service.verifyCommercialContract('man-ht-bentota-boutique-01', dataEntryOperator, validEvidence);
+    }, SeparationOfDutiesViolationError, 'Creator strictly blocked from self-verifying commercial contract');
+
+    // Independent Commercial Officer verifies the contract
+    service.verifyCommercialContract('man-ht-bentota-boutique-01', commercialOfficer, validEvidence);
+    const verifiedListing = service.getListingById('man-ht-bentota-boutique-01')!;
+    assert.equal(verifiedListing.status, 'COMMERCIALLY_VERIFIED');
+    assert.equal(verifiedListing.readinessTier.commercialReady, true);
+    assert.equal(verifiedListing.readinessTier.productionSellable, false); // Still not sellable until published
+
+    // Stage 3: Pricing Approval by Finance Lead
+    service.approvePricingStructure('man-ht-bentota-boutique-01', pricingLead, {
+      markupPercent: 23.2,
+      standardSellingPriceLkr: 34500,
+      note: 'Pricing yield confirmed within target gross margin'
+    });
+    const pricedListing = service.getListingById('man-ht-bentota-boutique-01')!;
+    assert.equal(pricedListing.isPricingApproved, true);
+
+    // 4-Eyes Check 2: Verifier or Creator CANNOT independently publish to production!
+    assert.throws(() => {
+      service.publishListing('man-ht-bentota-boutique-01', commercialOfficer);
+    }, SeparationOfDutiesViolationError, 'Contract verifier strictly blocked from self-publishing listing');
+
+    assert.throws(() => {
+      service.publishListing('man-ht-bentota-boutique-01', dataEntryOperator);
+    }, SeparationOfDutiesViolationError, 'Creator strictly blocked from self-publishing listing');
+
+    // Independent Commercial Director publishes to production
+    service.publishListing('man-ht-bentota-boutique-01', publishingDirector);
+    const publishedListing = service.getListingById('man-ht-bentota-boutique-01')!;
+    assert.equal(publishedListing.status, 'ACTIVE');
+    assert.equal(publishedListing.readinessTier.productionSellable, true);
+    assert.doesNotThrow(() => {
+      assertListingIsProductionSellable(publishedListing);
+    }, 'Commercially verified, pricing-approved and published listing passes production sellability check');
+  });
+
+  it('enforces Pin-Above-API and Exclusivity Badge Rules (Only COMMERCIALLY_VERIFIED, ACTIVE, Unexpired with Documented Evidence can Pin)', () => {
+    // 1. Unverified offer with pinAboveApi = true MUST be rejected
+    const unverifiedPinnedOffer: any = {
+      canonicalOfferId: 'vct-ht-unverified-pin-01',
+      environmentClass: 'PRODUCTION',
+      publicationStatus: 'DRAFT',
+      commercialStatus: 'CANDIDATE_UNVERIFIED',
+      pinAboveApi: true,
+      availabilityStatus: 'LIVE'
+    };
+    assert.equal(isOfferEligibleForPinOverride(unverifiedPinnedOffer), false, 'Unverified draft offer cannot pin');
+
+    // 2. Expired contract with pinAboveApi = true MUST be rejected
+    const expiredPinnedOffer: any = {
+      canonicalOfferId: 'vct-ht-expired-pin-02',
+      environmentClass: 'PRODUCTION',
+      publicationStatus: 'PUBLISHED',
+      commercialStatus: 'COMMERCIALLY_VERIFIED',
+      pinAboveApi: true,
+      validUntil: new Date(Date.now() - 3600000).toISOString(),
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      commercialEvidenceId: 'DOC-VAULT-001'
+    };
+    assert.equal(isOfferEligibleForPinOverride(expiredPinnedOffer), false, 'Expired contract cannot pin');
+
+    // 3. Sold out offer with pinAboveApi = true MUST be rejected
+    const soldOutPinnedOffer: any = {
+      canonicalOfferId: 'vct-ht-sold-out-pin-03',
+      environmentClass: 'PRODUCTION',
+      publicationStatus: 'PUBLISHED',
+      commercialStatus: 'COMMERCIALLY_VERIFIED',
+      pinAboveApi: true,
+      availabilityStatus: 'SOLD_OUT',
+      commercialEvidenceId: 'DOC-VAULT-002'
+    };
+    assert.equal(isOfferEligibleForPinOverride(soldOutPinnedOffer), false, 'Sold out offer cannot pin');
+
+    // 4. Offer without documented commercial evidence MUST be rejected
+    const noEvidencePinnedOffer: any = {
+      canonicalOfferId: 'vct-ht-no-evidence-pin-04',
+      environmentClass: 'PRODUCTION',
+      publicationStatus: 'PUBLISHED',
+      commercialStatus: 'COMMERCIALLY_VERIFIED',
+      pinAboveApi: true,
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      validUntil: new Date(Date.now() + 86400000).toISOString()
+    };
+    assert.equal(isOfferEligibleForPinOverride(noEvidencePinnedOffer), false, 'Offer without evidence dossier cannot pin');
+
+    // 5. Genuine COMMERCIALLY_VERIFIED, ACTIVE, unexpired direct contract with evidence dossier passes pin check
+    const genuinePinnedOffer: any = {
+      canonicalOfferId: 'vct-ht-genuine-pin-05',
+      environmentClass: 'PRODUCTION',
+      publicationStatus: 'ACTIVE',
+      commercialStatus: 'COMMERCIALLY_VERIFIED',
+      pinAboveApi: true,
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      validUntil: new Date(Date.now() + 86400000).toISOString(),
+      commercialEvidenceId: 'DOC-VAULT-MIRISSA-0081',
+      exclusiveOffer: true
+    };
+    assert.equal(isOfferEligibleForPinOverride(genuinePinnedOffer), true, 'Genuine verified contract is eligible to pin');
+    assert.equal(isOfferEligibleForExclusivityBadge(genuinePinnedOffer), true, 'Genuine verified contract is eligible for Exclusive badge');
   });
 });

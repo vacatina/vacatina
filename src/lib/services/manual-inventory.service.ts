@@ -26,6 +26,13 @@ import type {
 } from '../../server/inventory/types.ts';
 import { ArchitecturalInvariantViolationError } from '../../server/inventory/types.ts';
 
+export class SeparationOfDutiesViolationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'SeparationOfDutiesViolationError';
+  }
+}
+
 export interface ManualListingRecord {
   // 1. Supplier Commercial Identity
   id: string; // e.g. 'man-ht-kandalama-direct-001'
@@ -112,8 +119,12 @@ export interface ManualListingRecord {
   // 17. Publishing Lifecycle
   status: ManualListingStatus;
 
-  // 18. Audit & Approver History
+  // 18. Audit & Approver History (Separation of Duties - Directive 8)
   createdBy?: string;
+  verifiedBy?: string;
+  pricingApprovedBy?: string;
+  publishedBy?: string;
+  isPricingApproved?: boolean;
   lastEditedBy?: string;
   approvedBy?: string;
   createdAtIso?: string;
@@ -505,6 +516,163 @@ export class ManualInventoryService {
     reason?: string
   ): boolean {
     return this.updateStatus(id, 'ARCHIVED', adminUser, reason || 'Archived listing');
+  }
+
+  /**
+   * Stage 1 -> 2: Operator submits DRAFT listing for commercial verification.
+   */
+  public submitForVerification(
+    id: string,
+    operator: { id: string; name: string; permissions?: string[] }
+  ): boolean {
+    const listing = this.listings.get(id);
+    if (!listing) return false;
+    if (listing.status !== 'DRAFT' && listing.status !== 'CONTRACT_PENDING') {
+      throw new Error(`Cannot submit listing in '${listing.status}' status for verification.`);
+    }
+
+    listing.status = 'VERIFICATION_PENDING';
+    listing.auditTrail.push({
+      action: 'SUBMITTED_FOR_COMMERCIAL_VERIFICATION',
+      changedBy: `${operator.name} (${operator.id})`,
+      timestampIso: new Date().toISOString(),
+      note: 'Listing and contract evidence submitted for independent commercial verification'
+    });
+    return true;
+  }
+
+  /**
+   * Stage 2: Commercial Verification by Contracting Officer / Commercial Risk Officer.
+   * Enforces 4-Eyes Principle: Listing creator cannot verify their own contract!
+   */
+  public verifyCommercialContract(
+    id: string,
+    verifier: { id: string; name: string; permissions?: string[] },
+    evidence: CommercialEvidenceDossier
+  ): boolean {
+    const listing = this.listings.get(id);
+    if (!listing) return false;
+
+    // Separation of Duties Invariant: Low-privilege creator cannot self-verify
+    const isCreator = listing.createdBy && (listing.createdBy.includes(verifier.id) || listing.createdBy === verifier.id);
+    const hasSuperAdmin = verifier.permissions?.includes('platform:system_admin');
+    if (isCreator && !hasSuperAdmin) {
+      throw new SeparationOfDutiesViolationError(
+        `Separation of Duties Violation: Operator '${verifier.id}' who created listing '${id}' cannot independently verify its commercial contract. Requires independent commercial officer.`
+      );
+    }
+
+    // Permission check
+    if (verifier.permissions && !verifier.permissions.includes('cms:verify_commercial') && !hasSuperAdmin) {
+      throw new Error(`Permission Denied: User lacks 'cms:verify_commercial' capability.`);
+    }
+
+    // Evidence completeness check
+    if (!evidence.contractReference || !evidence.supplierLegalName || !evidence.settlementTerms || !evidence.isEvidenceVerified) {
+      throw new Error(`Commercial Verification Invariant: Evidence dossier incomplete or unverified.`);
+    }
+
+    listing.commercialEvidence = { ...evidence };
+    listing.inventoryClass = 'REAL_CONTRACTED';
+    listing.verifiedBy = `${verifier.name} (${verifier.id})`;
+    listing.status = 'COMMERCIALLY_VERIFIED';
+    if (!listing.readinessTier) {
+      listing.readinessTier = { systemReady: true, sandboxReady: true, commercialReady: true, productionSellable: false };
+    } else {
+      listing.readinessTier.commercialReady = true;
+      listing.readinessTier.productionSellable = false; // Requires separate pricing approval & publishing
+    }
+
+    listing.auditTrail.push({
+      action: 'COMMERCIALLY_VERIFIED',
+      changedBy: `${verifier.name} (${verifier.id})`,
+      timestampIso: new Date().toISOString(),
+      note: `Contract ${evidence.contractReference} verified with legal name '${evidence.supplierLegalName}'.`
+    });
+    return true;
+  }
+
+  /**
+   * Stage 3: Pricing Approval by Finance / Pricing Lead.
+   */
+  public approvePricingStructure(
+    id: string,
+    approver: { id: string; name: string; permissions?: string[] },
+    pricingUpdate?: { markupPercent?: number; standardSellingPriceLkr?: number; note?: string }
+  ): boolean {
+    const listing = this.listings.get(id);
+    if (!listing) return false;
+
+    const hasSuperAdmin = approver.permissions?.includes('platform:system_admin');
+    if (approver.permissions && !approver.permissions.includes('cms:approve_pricing') && !hasSuperAdmin) {
+      throw new Error(`Permission Denied: User lacks 'cms:approve_pricing' capability.`);
+    }
+
+    if (pricingUpdate?.markupPercent !== undefined) {
+      listing.markupPercent = pricingUpdate.markupPercent;
+    }
+    if (pricingUpdate?.standardSellingPriceLkr !== undefined) {
+      listing.standardSellingPriceLkr = pricingUpdate.standardSellingPriceLkr;
+    }
+
+    listing.pricingApprovedBy = `${approver.name} (${approver.id})`;
+    listing.isPricingApproved = true;
+
+    listing.auditTrail.push({
+      action: 'PRICING_STRUCTURE_APPROVED',
+      changedBy: `${approver.name} (${approver.id})`,
+      timestampIso: new Date().toISOString(),
+      note: pricingUpdate?.note || `Pricing structure approved: base=${listing.contractedBaseCost}, selling=${listing.standardSellingPriceLkr}`
+    });
+    return true;
+  }
+
+  /**
+   * Stage 4: Publishing by Commercial Director / CMS Publisher.
+   * Enforces 4-Eyes Principle: Cannot be published by creator or verifier without super-admin override.
+   */
+  public publishListing(
+    id: string,
+    publisher: { id: string; name: string; permissions?: string[] }
+  ): boolean {
+    const listing = this.listings.get(id);
+    if (!listing) return false;
+
+    const hasSuperAdmin = publisher.permissions?.includes('platform:system_admin');
+
+    // Separation of Duties Invariant: Low-privilege creator or verifier cannot independently publish
+    const isCreator = listing.createdBy && (listing.createdBy.includes(publisher.id) || listing.createdBy === publisher.id);
+    const isVerifier = listing.verifiedBy && (listing.verifiedBy.includes(publisher.id) || listing.verifiedBy === publisher.id);
+    if ((isCreator || isVerifier) && !hasSuperAdmin) {
+      throw new SeparationOfDutiesViolationError(
+        `Separation of Duties Violation: Publisher '${publisher.id}' created or verified listing '${id}'. Final publishing requires independent publishing officer.`
+      );
+    }
+
+    if (publisher.permissions && !publisher.permissions.includes('cms:publish_listings') && !hasSuperAdmin) {
+      throw new Error(`Permission Denied: User lacks 'cms:publish_listings' capability.`);
+    }
+
+    // Verification and commercial checks
+    if (listing.status !== 'COMMERCIALLY_VERIFIED') {
+      throw new Error(`Publishing Invariant: Listing must be 'COMMERCIALLY_VERIFIED' before publishing. Current status: '${listing.status}'.`);
+    }
+    if (!listing.commercialEvidence?.isEvidenceVerified || !listing.readinessTier?.commercialReady) {
+      throw new Error(`Publishing Invariant: Commercial contract evidence is not verified.`);
+    }
+
+    // Set published
+    listing.publishedBy = `${publisher.name} (${publisher.id})`;
+    listing.status = 'ACTIVE';
+    listing.readinessTier.productionSellable = true;
+
+    listing.auditTrail.push({
+      action: 'LISTING_PUBLISHED_TO_PRODUCTION',
+      changedBy: `${publisher.name} (${publisher.id})`,
+      timestampIso: new Date().toISOString(),
+      note: 'Listing published to live production sales channel'
+    });
+    return true;
   }
 }
 
