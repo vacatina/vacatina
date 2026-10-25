@@ -111,11 +111,21 @@ export class UnifiedInventoryService {
       }
     }
 
-    // 4. Strict SEED Isolation & Sellability Filter (Rule 4 & 5)
+    // 4. Strict SEED Isolation, Sellability & Channel Distribution Filter (Rules 4, 5 & ADR-008)
     // SEED and DISCOVERY_ONLY content must NEVER enter live supplier search results
-    const eligibleOffers = collectedOffers.filter(
-      offer => offer.environmentClass !== 'SEED' && offer.sellability !== 'DISCOVERY_ONLY'
-    );
+    // B2C channel must NEVER leak B2B_ONLY or INTERNAL_ONLY inventory
+    // B2B channel must NEVER leak B2C_ONLY or INTERNAL_ONLY inventory
+    const channel = criteria.channel || 'B2C';
+    const eligibleOffers = collectedOffers.filter(offer => {
+      if (offer.environmentClass === 'SEED' || offer.sellability === 'DISCOVERY_ONLY') return false;
+      if (channel === 'B2C' && (offer.distributionScope === 'B2B_ONLY' || offer.distributionScope === 'INTERNAL_ONLY')) {
+        return false;
+      }
+      if (channel === 'B2B' && (offer.distributionScope === 'B2C_ONLY' || offer.distributionScope === 'INTERNAL_ONLY')) {
+        return false;
+      }
+      return true;
+    });
 
     // 5. Deduplicate and Apply Pin-Above-API / Best-Price Ranking
     const rankedOffers = DeduplicationService.deduplicateAndRank(eligibleOffers);

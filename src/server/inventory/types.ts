@@ -3,7 +3,7 @@
  * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md,
  *            docs/13_SUPPLIER_INTEGRATION_READINESS_MATRIX.md,
  *            docs/14_CANONICAL_INVENTORY_TAXONOMY_AND_ADMIN_CMS_SCHEMA.md,
- *            ADR-006 & ADR-007
+ *            ADR-006, ADR-007 & ADR-008
  * ============================================================================ */
 
 export type TravelProductSlug =
@@ -19,7 +19,7 @@ export type TravelProductSlug =
   | 'insurance';
 
 // ----------------------------------------------------------------------------
-// 1. The 7 Orthogonal Canonical Inventory Dimensions
+// 1. The 7 Orthogonal Canonical Inventory Dimensions (ADR-007 & ADR-008)
 // ----------------------------------------------------------------------------
 
 /**
@@ -82,6 +82,29 @@ export type ProviderLifecycle =
   | 'CERTIFIED'       // Upstream provider compliance & certification testing passed
   | 'PRODUCTION_LIVE';// Commercial contract signed, live credentials active, financial settlement enabled
 
+// ----------------------------------------------------------------------------
+// 2. Publication, Distribution & Booking Capabilities (ADR-008)
+// ----------------------------------------------------------------------------
+
+export type PublicationStatus =
+  | 'DRAFT'
+  | 'IN_REVIEW'
+  | 'PUBLISHED'
+  | 'PAUSED'
+  | 'ARCHIVED';
+
+export type DistributionScope =
+  | 'B2C_ONLY'
+  | 'B2B_ONLY'
+  | 'BOTH'
+  | 'INTERNAL_ONLY';
+
+export type BookingCapability =
+  | 'INSTANT_RESERVATION'
+  | 'HOLD_AND_CONFIRM'
+  | 'REQUEST_TO_BOOK'
+  | 'INQUIRY_ONLY';
+
 // Backward-compatible aliases for existing codebase and tests
 export type InventorySourceType =
   | 'API'
@@ -141,6 +164,34 @@ export interface PricingLayersEntity {
   currency: string;
 }
 
+export interface TaxesAndFeesEntity {
+  totalTaxMinor: number;
+  isTaxInclusive: boolean;
+  vatMinor?: number;
+  tourismDirhamOrLevyMinor?: number;
+  serviceChargeMinor?: number;
+  mandatoryLocalFeesText?: string;
+}
+
+export interface B2BDistributionPricingEntity {
+  distributionScope: DistributionScope;
+  b2bNetPriceMinor: number;
+  agencyMarkupPercent?: number;
+  agencyMarkupMinor?: number;
+  agencyCommissionPercent?: number;
+  agencyCommissionMinor?: number;
+  clientFacingPriceMinor?: number;
+  isCreditLineEligible?: boolean;
+}
+
+export interface PinAuditEntity {
+  isPinned: boolean;
+  pinReason?: string;
+  pinValidFrom?: string;
+  pinValidUntil?: string;
+  approverUserId?: string;
+}
+
 export interface PriceFreshnessEntity {
   lastCheckedAtIso: string;
   ttlSeconds: number;
@@ -167,9 +218,17 @@ export interface ComponentOfferIdentity {
   revalidationRequired: boolean;
 }
 
+/**
+ * Universal Canonical Offer Model (v2.0)
+ * Authority: ADR-008
+ */
 export interface CanonicalOfferEntity {
+  // Stable universal identifiers
   canonicalOfferId: string;         // Universal stable identifier, e.g. "vct-fl-duffel-cmb-dxb-98a7c2"
+  offerId?: string;                 // Explicit alias for canonicalOfferId
   productType: TravelProductSlug;
+  providerId?: string;              // Explicit alias for supplierId
+  providerOfferId?: string;         // Explicit alias for supplierOfferId
 
   // --- 7 Orthogonal Canonical Dimensions ---
   inventorySource: InventorySource;
@@ -179,6 +238,11 @@ export interface CanonicalOfferEntity {
   environmentClass: EnvironmentClass;
   sellability: Sellability;
   providerLifecycle: ProviderLifecycle;
+
+  // --- Publication & Distribution Scope (ADR-008) ---
+  publicationStatus: PublicationStatus;
+  distributionScope: DistributionScope;
+  bookingCapability: BookingCapability;
 
   // --- Backward Compatibility Alias ---
   sourceType: InventorySourceType;
@@ -197,11 +261,20 @@ export interface CanonicalOfferEntity {
   confirmationMode: ConfirmationMode;
   bookingMode: BookingMode;
   pricing: PricingLayersEntity;
+  taxesAndFees: TaxesAndFeesEntity;
+  b2bPricing?: B2BDistributionPricingEntity;
   freshness: PriceFreshnessEntity;
+  validFrom: string;
+  validUntil: string;
+  expiresAt: string;
+  lastCheckedAt: string;
+  requiresRevalidation: boolean;
   inclusions: string[];
   exclusions: string[];
   cancellationPolicy: string;
   pinAboveApi: boolean;             // Administrative priority ranking
+  isExclusiveDeal?: boolean;        // Contractual exclusive rate badge eligibility
+  pinAudit?: PinAuditEntity;        // Auditable pin justification
   deduplicationKey: string;         // Composite natural deduplication key
   isSandboxSimulated: boolean;      // Truthful flag: true if rendered by mock/sandbox adapter
   integrationLifecycle: IntegrationLifecycleStatus;
@@ -226,6 +299,8 @@ export interface SearchQueryCriteria {
   currency?: string;
   organizationId?: string; // For B2B agency tier pricing
   preferredSourceType?: InventorySourceType;
+  channel?: 'B2C' | 'B2B'; // Distribution channel context
+  distributionScope?: DistributionScope;
 }
 
 export interface RevalidationResult {
@@ -250,7 +325,7 @@ export interface CircuitBreakerTelemetry {
 }
 
 // ----------------------------------------------------------------------------
-// 2. Customer Badge Standards & Disclosure Safeguards (Rules 2 & 3)
+// 3. Customer Badge Standards & Disclosure Safeguards (Rules 2 & 5)
 // ----------------------------------------------------------------------------
 
 export type CustomerBadge =
@@ -262,30 +337,51 @@ export type CustomerBadge =
   | 'Exclusive Direct Deal';
 
 /**
- * Derives truthful, customer-facing commercial badges.
- * Statically prevents any internal technical taxonomy leakage to end-users.
+ * Derives truthful, customer-facing commercial badges strictly from verified system state.
+ * Never based on arbitrary marketing toggles.
  */
 export function deriveCustomerBadges(offer: CanonicalOfferEntity): CustomerBadge[] {
   const badges: CustomerBadge[] = [];
 
-  // 1. Live Availability: strictly only when live, fresh, and production
-  if (offer.availabilityStatus === 'LIVE' && !offer.freshness.isStale && offer.environmentClass === 'PRODUCTION') {
+  // 1. Live Availability: strictly only when production-live, real availability, and fresh
+  const isProdLive = offer.providerLifecycle === 'PRODUCTION_LIVE';
+  const isRealLive = offer.availabilityStatus === 'LIVE';
+  const isFresh = !offer.freshness.isStale;
+  const isProduction = offer.environmentClass === 'PRODUCTION';
+
+  if (isProdLive && isRealLive && isFresh && isProduction) {
     badges.push('Live Availability');
   }
 
-  // 2. Operational fulfillment badge
-  if (offer.fulfillmentMode === 'INSTANT' && offer.confirmationMode === 'INSTANT_CONFIRM') {
+  // 2. Operational fulfillment badge: strictly based on verified instant execution capability
+  if (
+    offer.fulfillmentMode === 'INSTANT' &&
+    (offer.bookingCapability === 'INSTANT_RESERVATION' || offer.confirmationMode === 'INSTANT_CONFIRM')
+  ) {
     badges.push('Instant Confirmation');
-  } else if (offer.fulfillmentMode === 'ON_REQUEST' || offer.confirmationMode === 'REQUEST_TO_CONFIRM') {
+  } else if (
+    offer.fulfillmentMode === 'ON_REQUEST' ||
+    offer.bookingCapability === 'REQUEST_TO_BOOK' ||
+    offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+  ) {
     badges.push('On Request');
-  } else if (offer.fulfillmentMode === 'MANUAL_CONFIRMATION' || offer.listingKind === 'SERVICE') {
+  } else if (
+    offer.fulfillmentMode === 'MANUAL_CONFIRMATION' ||
+    offer.listingKind === 'SERVICE' ||
+    offer.inventorySource === 'MANUAL_INTERNAL' ||
+    offer.confirmationMode === 'ASSISTED_SERVICE'
+  ) {
     badges.push('Vacatina Assisted');
   }
 
   // 3. Direct Commercial relationship badge
   if (offer.inventorySource === 'DIRECT_CONTRACT') {
     badges.push('Direct Rate');
-    if (offer.pinAboveApi) {
+
+    // Exclusive Direct Deal strictly requires verified exclusive contract flag + published + valid dates
+    const hasValidDate = !offer.validUntil || new Date(offer.validUntil).getTime() >= Date.now();
+    const isPublished = offer.publicationStatus === 'PUBLISHED';
+    if (offer.isExclusiveDeal && isPublished && hasValidDate) {
       badges.push('Exclusive Direct Deal');
     }
   }
@@ -310,7 +406,10 @@ export function validateNoTechnicalLeakInCustomerBadges(badges: string[]): boole
     'HYBRID',
     'SINGLE',
     'CURATED_PACKAGE',
-    'DYNAMIC_BUNDLE'
+    'DYNAMIC_BUNDLE',
+    'B2C_ONLY',
+    'B2B_ONLY',
+    'INTERNAL_ONLY'
   ];
   return !badges.some(badge =>
     technicalLeakPatterns.some(tech => badge.toUpperCase().includes(tech.toUpperCase()))
@@ -318,7 +417,7 @@ export function validateNoTechnicalLeakInCustomerBadges(badges: string[]): boole
 }
 
 // ----------------------------------------------------------------------------
-// 3. Invariant Architectural Safeguards (Rule 14)
+// 4. Invariant Architectural Safeguards (Rules 14 & ADR-008)
 // ----------------------------------------------------------------------------
 
 export class ArchitecturalInvariantViolationError extends Error {
@@ -375,7 +474,7 @@ export function assertScaffoldCannotCreateProductionBooking(provider: {
  * Invariant 4: Manual / Direct offers require PUBLISHED state to be BOOKABLE
  */
 export function assertManualOfferPublishedForBooking(listing: {
-  status: 'DRAFT' | 'IN_REVIEW' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED';
+  status: PublicationStatus;
   sellability: Sellability;
   title: string;
 }): void {
@@ -403,4 +502,43 @@ export function assertUnavailableOfferCannotBeReady(item: {
       `An item with availabilityStatus '${item.availabilityStatus}' cannot transition to Trip Bucket 'READY' state.`
     );
   }
+}
+
+/**
+ * Invariant 6: B2C vs B2B Distribution Scope Separation (Rule 4)
+ */
+export function assertDistributionScopeIntegrity(
+  offer: { distributionScope: DistributionScope; canonicalOfferId: string },
+  channel: 'B2C' | 'B2B'
+): void {
+  if (channel === 'B2C' && (offer.distributionScope === 'B2B_ONLY' || offer.distributionScope === 'INTERNAL_ONLY')) {
+    throw new ArchitecturalInvariantViolationError(
+      'B2C_DISTRIBUTION_LEAK',
+      `Offer '${offer.canonicalOfferId}' has distributionScope '${offer.distributionScope}' and cannot appear in B2C channel.`
+    );
+  }
+  if (channel === 'B2B' && (offer.distributionScope === 'B2C_ONLY' || offer.distributionScope === 'INTERNAL_ONLY')) {
+    throw new ArchitecturalInvariantViolationError(
+      'B2B_DISTRIBUTION_LEAK',
+      `Offer '${offer.canonicalOfferId}' has distributionScope '${offer.distributionScope}' and cannot appear in B2B channel.`
+    );
+  }
+}
+
+/**
+ * Invariant 7: Pinned Ranking Eligibility Rules (Rule 6)
+ */
+export function isOfferEligibleForPinOverride(offer: CanonicalOfferEntity): boolean {
+  if (!offer.pinAboveApi) return false;
+  // Must be production and published
+  if (offer.environmentClass !== 'PRODUCTION' || offer.publicationStatus !== 'PUBLISHED') return false;
+  // Cannot be unavailable or expired
+  if (offer.availabilityStatus === 'SOLD_OUT' || offer.availabilityStatus === 'RATE_EXPIRED') return false;
+  // Must have an audit reason
+  if (!offer.pinAudit?.pinReason && !offer.pricing.overrideReason) return false;
+  // Check date bounds if provided
+  const now = Date.now();
+  if (offer.pinAudit?.pinValidFrom && new Date(offer.pinAudit.pinValidFrom).getTime() > now) return false;
+  if (offer.pinAudit?.pinValidUntil && new Date(offer.pinAudit.pinValidUntil).getTime() < now) return false;
+  return true;
 }

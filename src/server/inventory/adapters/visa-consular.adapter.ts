@@ -109,7 +109,7 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
-    return offer;
+    return this.applyCanonicalContractDefaults(offer);
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {

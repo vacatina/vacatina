@@ -10,6 +10,7 @@
  * ============================================================================ */
 
 import type { CanonicalOfferEntity } from './types.ts';
+import { isOfferEligibleForPinOverride } from './types.ts';
 
 export class DeduplicationService {
   /**
@@ -60,10 +61,13 @@ export class DeduplicationService {
    * Deduplicates mixed API and Manual offers, applying tie-breaking & ranking rules.
    */
   public static deduplicateAndRank(offers: CanonicalOfferEntity[]): CanonicalOfferEntity[] {
+    // Strict Invariant (Rule 6): SEED data NEVER appears in live ranking
+    const cleanOffers = offers.filter(o => o.environmentClass !== 'SEED' && o.sourceType !== 'SEED');
+
     const grouped = new Map<string, CanonicalOfferEntity[]>();
 
     // 1. Group by natural composite deduplication key
-    for (const offer of offers) {
+    for (const offer of cleanOffers) {
       const key = offer.deduplicationKey || this.generateDeduplicationKey(offer);
       const existing = grouped.get(key) || [];
       existing.push(offer);
@@ -83,8 +87,8 @@ export class DeduplicationService {
       const isDirectInventory = (src: string) => ['DIRECT_CONTRACT', 'MANUAL_SERVICE', 'CURATED_PACKAGE', 'MANUAL'].includes(src);
 
       // Tie-Breaking Strategy:
-      // Priority A: Pin-Above-API (direct contract / manual offers with pinAboveApi === true)
-      const pinnedDirect = group.find(o => isDirectInventory(o.sourceType) && o.pinAboveApi);
+      // Priority A: Pin-Above-API strictly if eligible (published, audit reason, available, valid dates)
+      const pinnedDirect = group.find(o => isOfferEligibleForPinOverride(o));
       if (pinnedDirect) {
         consolidated.push(pinnedDirect);
         continue;
@@ -105,11 +109,21 @@ export class DeduplicationService {
     }
 
     // 3. Final Ordering:
-    // 1st: Pinned items
-    // 2nd: Best selling price
+    // 1st: Verified Pinned items (Rule 6)
+    // 2nd: Availability (Available beats Sold Out / Expired)
+    // 3rd: Best selling price
     return consolidated.sort((a, b) => {
-      if (a.pinAboveApi && !b.pinAboveApi) return -1;
-      if (!a.pinAboveApi && b.pinAboveApi) return 1;
+      const aPinned = isOfferEligibleForPinOverride(a);
+      const bPinned = isOfferEligibleForPinOverride(b);
+      if (aPinned && !bPinned) return -1;
+      if (!aPinned && bPinned) return 1;
+
+      // Available items rank strictly above sold out / expired items
+      const aAvailable = a.availabilityStatus !== 'SOLD_OUT' && a.availabilityStatus !== 'RATE_EXPIRED';
+      const bAvailable = b.availabilityStatus !== 'SOLD_OUT' && b.availabilityStatus !== 'RATE_EXPIRED';
+      if (aAvailable && !bAvailable) return -1;
+      if (!aAvailable && bAvailable) return 1;
+
       return a.pricing.finalSellingPriceMinor - b.pricing.finalSellingPriceMinor;
     });
   }

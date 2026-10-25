@@ -176,7 +176,7 @@ export class PackagesBundlerAdapter extends BaseSupplierAdapter<RawHybridPackage
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
-    return offer;
+    return this.applyCanonicalContractDefaults(offer);
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {

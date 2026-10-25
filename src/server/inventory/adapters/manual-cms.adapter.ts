@@ -13,13 +13,16 @@ import type {
   BookingHoldResult
 } from './base.adapter.ts';
 import type {
+  BookingCapability,
   CanonicalOfferEntity,
   CompositionType,
   ConfirmationMode,
+  DistributionScope,
   FulfillmentMode,
   InventorySource,
   InventorySourceType,
   ListingKind,
+  PublicationStatus,
   RevalidationResult,
   SearchQueryCriteria,
   Sellability,
@@ -158,18 +161,34 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
     let inventorySource: InventorySource = 'DIRECT_CONTRACT';
     let listingKind: ListingKind = 'SELLABLE_INVENTORY';
     let compositionType: CompositionType = 'SINGLE';
-    let fulfillmentMode: FulfillmentMode = raw.confirmationMode === 'INSTANT_CONFIRM' ? 'INSTANT' : 'ON_REQUEST';
+
+    // Item 2: Do not assume DIRECT_CONTRACT is INSTANT!
+    // INSTANT is permitted ONLY when Vacatina has confirmed atomic allotment and instant reservation capability
+    const hasAllotmentQuota = raw.availableQuota > 0;
+    const canAtomicReserve = (raw as any).canAtomicallyReserve === true || (raw.confirmationMode === 'INSTANT_CONFIRM' && hasAllotmentQuota);
+
+    let fulfillmentMode: FulfillmentMode = 'ON_REQUEST';
+    let bookingCapability: BookingCapability = 'REQUEST_TO_BOOK';
 
     if (raw.productType === 'visa') {
       canonicalSourceType = 'MANUAL_SERVICE';
       inventorySource = 'MANUAL_INTERNAL';
       listingKind = 'SERVICE';
       fulfillmentMode = 'MANUAL_CONFIRMATION';
+      bookingCapability = 'REQUEST_TO_BOOK';
     } else if (raw.productType === 'packages') {
       canonicalSourceType = 'CURATED_PACKAGE';
       inventorySource = 'DIRECT_CONTRACT';
       listingKind = 'PACKAGE';
       compositionType = 'CURATED_PACKAGE';
+      fulfillmentMode = canAtomicReserve ? 'INSTANT' : 'ON_REQUEST';
+      bookingCapability = canAtomicReserve ? 'INSTANT_RESERVATION' : 'REQUEST_TO_BOOK';
+    } else if (canAtomicReserve) {
+      fulfillmentMode = 'INSTANT';
+      bookingCapability = 'INSTANT_RESERVATION';
+    } else {
+      fulfillmentMode = 'ON_REQUEST';
+      bookingCapability = 'REQUEST_TO_BOOK';
     }
 
     const isPublished = raw.status === 'PUBLISHED';
@@ -177,13 +196,19 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
 
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
+      offerId,
       productType: raw.productType,
+      providerId: raw.partnerSupplierId,
+      providerOfferId: raw.id,
       inventorySource,
       listingKind,
       compositionType,
       fulfillmentMode,
       environmentClass: 'PRODUCTION',
       sellability,
+      publicationStatus: isPublished ? 'PUBLISHED' : (raw.status as any || 'DRAFT'),
+      distributionScope: (raw as any).distributionScope || 'BOTH',
+      bookingCapability,
       providerLifecycle: 'PRODUCTION_LIVE',
       sourceType: canonicalSourceType,
       supplierId: raw.partnerSupplierId,
@@ -196,6 +221,18 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
       confirmationMode: raw.confirmationMode,
       bookingMode: raw.confirmationMode === 'INSTANT_CONFIRM' ? 'INSTANT_BOOK' : 'REQUEST_TO_BOOK',
       pricing,
+      taxesAndFees: {
+        totalTaxMinor: 0,
+        isTaxInclusive: true,
+        serviceChargeMinor: 0
+      },
+      b2bPricing: {
+        distributionScope: (raw as any).distributionScope || 'BOTH',
+        b2bNetPriceMinor: raw.contractedBaseCostMinor,
+        agencyMarkupPercent: 8.0,
+        agencyCommissionPercent: 5.0,
+        clientFacingPriceMinor: pricing.finalSellingPriceMinor
+      },
       freshness: {
         lastCheckedAtIso: new Date().toISOString(),
         ttlSeconds: 86400, // Manual listings valid until updated
@@ -203,10 +240,23 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
         isStale: false,
         revalidationEndpoint: `/api/v1/offers/${offerId}/revalidate`
       },
+      validFrom: (raw as any).validFrom || new Date().toISOString(),
+      validUntil: (raw as any).validUntil || new Date(Date.now() + 86400000 * 180).toISOString(),
+      expiresAt: new Date(Date.now() + 86400000).toISOString(),
+      lastCheckedAt: new Date().toISOString(),
+      requiresRevalidation: false,
       inclusions: raw.inclusions,
       exclusions: raw.exclusions,
       cancellationPolicy: raw.cancellationPolicy,
       pinAboveApi: raw.pinAboveApi,
+      isExclusiveDeal: Boolean(raw.pinAboveApi || raw.manualOverridePriceMinor),
+      pinAudit: {
+        isPinned: Boolean(raw.pinAboveApi),
+        pinReason: raw.overrideReason || (raw.pinAboveApi ? 'Direct contractual rate priority' : undefined),
+        pinValidFrom: new Date().toISOString(),
+        pinValidUntil: new Date(Date.now() + 86400000 * 90).toISOString(),
+        approverUserId: 'usr_admin_ops_001'
+      },
       deduplicationKey: '',
       isSandboxSimulated: false,
       integrationLifecycle: 'SANDBOX_ACTIVE',
@@ -224,7 +274,7 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
-    return offer;
+    return this.applyCanonicalContractDefaults(offer);
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {

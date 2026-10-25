@@ -93,6 +93,46 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
   }
 
   /**
+   * Applies universal Canonical Offer v2.0 baseline fields (ADR-008).
+   * Ensures all required contract fields are guaranteed across every upstream adapter.
+   */
+  protected applyCanonicalContractDefaults(offer: CanonicalOfferEntity): CanonicalOfferEntity {
+    const nowIso = new Date().toISOString();
+    const expiresAtIso = offer.freshness?.expiresAtIso || new Date(Date.now() + 900000).toISOString();
+
+    if (!offer.offerId) offer.offerId = offer.canonicalOfferId;
+    if (!offer.providerId) offer.providerId = offer.supplierId || this.supplierId;
+    if (!offer.providerOfferId) offer.providerOfferId = offer.supplierOfferId;
+    if (!offer.publicationStatus) offer.publicationStatus = 'PUBLISHED';
+    if (!offer.distributionScope) offer.distributionScope = 'BOTH';
+    if (!offer.bookingCapability) {
+      offer.bookingCapability = offer.confirmationMode === 'INSTANT_CONFIRM' ? 'INSTANT_RESERVATION' : 'REQUEST_TO_BOOK';
+    }
+    if (!offer.taxesAndFees) {
+      offer.taxesAndFees = {
+        totalTaxMinor: 0,
+        isTaxInclusive: true
+      };
+    }
+    if (!offer.validFrom) offer.validFrom = nowIso;
+    if (!offer.validUntil) offer.validUntil = expiresAtIso;
+    if (!offer.expiresAt) offer.expiresAt = expiresAtIso;
+    if (!offer.lastCheckedAt) offer.lastCheckedAt = nowIso;
+    if (offer.requiresRevalidation === undefined) {
+      offer.requiresRevalidation = offer.inventorySource === 'API';
+    }
+    if (offer.isExclusiveDeal === undefined) {
+      offer.isExclusiveDeal = false;
+    }
+    if (!offer.pinAudit) {
+      offer.pinAudit = {
+        isPinned: Boolean(offer.pinAboveApi)
+      };
+    }
+    return offer;
+  }
+
+  /**
    * Dispatches search query to upstream supplier and normalizes into CanonicalOfferEntity[]
    */
   public abstract search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]>;

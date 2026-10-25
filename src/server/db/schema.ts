@@ -239,6 +239,37 @@ export interface ManualListingEntity {
   pinAboveApi: boolean;
   isB2BVisible: boolean;
   isB2CVisible: boolean;
+  publicationStatus?: 'DRAFT' | 'IN_REVIEW' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED';
+  distributionScope?: 'B2C_ONLY' | 'B2B_ONLY' | 'BOTH' | 'INTERNAL_ONLY';
+  editorUserId?: UUID;
+  approverUserId?: UUID;
+  effectiveFrom?: ISODateString;
+  effectiveTo?: ISODateString;
+  allottedQuota?: number;
+  heldQuota?: number;
+  bookedQuota?: number;
+  canAtomicallyReserve?: boolean;
+  isExclusiveDeal?: boolean;
+  pinReason?: string;
+  pinValidFrom?: ISODateString;
+  pinValidUntil?: ISODateString;
+  taxesAndFees?: {
+    totalTaxMinor: number;
+    isTaxInclusive: boolean;
+    vatMinor?: number;
+    tourismDirhamOrLevyMinor?: number;
+    serviceChargeMinor?: number;
+    mandatoryLocalFeesText?: string;
+  };
+  b2bPricing?: {
+    distributionScope: 'B2C_ONLY' | 'B2B_ONLY' | 'BOTH' | 'INTERNAL_ONLY';
+    b2bNetPriceMinor: number;
+    agencyMarkupPercent?: number;
+    agencyMarkupMinor?: number;
+    agencyCommissionPercent?: number;
+    agencyCommissionMinor?: number;
+    clientFacingPriceMinor?: number;
+  };
   status: ManualListingStatus;
   publishedByUserId?: UUID;
   publishedAt?: ISODateString;

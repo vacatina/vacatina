@@ -116,7 +116,7 @@ export class CruisesTraveltekAdapter extends BaseSupplierAdapter<RawCruiseSailin
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
-    return offer;
+    return this.applyCanonicalContractDefaults(offer);
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {

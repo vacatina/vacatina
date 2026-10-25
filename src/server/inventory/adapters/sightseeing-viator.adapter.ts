@@ -111,7 +111,7 @@ export class SightseeingViatorAdapter extends BaseSupplierAdapter<RawSightseeing
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
-    return offer;
+    return this.applyCanonicalContractDefaults(offer);
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {

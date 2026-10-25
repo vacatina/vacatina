@@ -148,7 +148,7 @@ export class FlightsDuffelAdapter extends BaseSupplierAdapter<RawDuffelFlightOff
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
-    return offer;
+    return this.applyCanonicalContractDefaults(offer);
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {

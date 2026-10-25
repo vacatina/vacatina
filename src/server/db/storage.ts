@@ -440,6 +440,66 @@ export class VacatinaStorageEngine {
     return updated;
   }
 
+  public transitionManualListingStatus(
+    id: UUID,
+    nextStatus: ManualListingStatus,
+    actorUserId: UUID,
+    approverUserId?: UUID,
+    reason: string = 'Status transition'
+  ): ManualListingEntity {
+    const existing = this.manualListings.get(id);
+    if (!existing) throw new Error(`ManualListing ${id} not found`);
+
+    const validTransitions: Record<ManualListingStatus, ManualListingStatus[]> = {
+      DRAFT: ['IN_REVIEW', 'ARCHIVED'],
+      IN_REVIEW: ['PUBLISHED', 'DRAFT', 'ARCHIVED'],
+      PUBLISHED: ['PAUSED', 'ARCHIVED'],
+      PAUSED: ['PUBLISHED', 'ARCHIVED'],
+      ARCHIVED: []
+    };
+
+    const allowed = validTransitions[existing.status] || [];
+    if (!allowed.includes(nextStatus)) {
+      throw new Error(`Invalid status transition from '${existing.status}' to '${nextStatus}'`);
+    }
+
+    if (nextStatus === 'PUBLISHED') {
+      if (!approverUserId) {
+        throw new Error(`ApproverUserId is required to publish listing '${existing.title}'`);
+      }
+      if (existing.contractedNetCostMinor <= 0 || existing.sellingPriceMinor <= 0) {
+        throw new Error(`Listing '${existing.title}' must have positive net cost and selling price to publish`);
+      }
+      if (!existing.isUnlimitedQuota && existing.availableQuota <= 0) {
+        throw new Error(`Listing '${existing.title}' must have quota > 0 to publish`);
+      }
+      if (!existing.cancellationPolicy) {
+        throw new Error(`Listing '${existing.title}' requires a cancellation policy to publish`);
+      }
+    }
+
+    const now = new Date().toISOString();
+    const updated: ManualListingEntity = {
+      ...existing,
+      status: nextStatus,
+      publicationStatus: nextStatus,
+      publishedByUserId: nextStatus === 'PUBLISHED' ? approverUserId : existing.publishedByUserId,
+      publishedAt: nextStatus === 'PUBLISHED' ? now : existing.publishedAt,
+      updatedAt: now
+    };
+
+    this.manualListings.set(id, updated);
+    this.recordManualListingAudit(
+      id,
+      actorUserId,
+      nextStatus === 'PUBLISHED' ? 'PUBLISHED' : nextStatus === 'PAUSED' ? 'PAUSED' : nextStatus === 'ARCHIVED' ? 'ARCHIVED' : 'UPDATED',
+      reason,
+      existing as any,
+      updated as any
+    );
+    return updated;
+  }
+
   public recordManualListingAudit(
     listingId: UUID,
     actorUserId: UUID,

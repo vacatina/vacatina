@@ -47,6 +47,8 @@ import {
   assertScaffoldCannotCreateProductionBooking,
   assertManualOfferPublishedForBooking,
   assertUnavailableOfferCannotBeReady,
+  assertDistributionScopeIntegrity,
+  isOfferEligibleForPinOverride,
   deriveCustomerBadges,
   validateNoTechnicalLeakInCustomerBadges,
   ArchitecturalInvariantViolationError
@@ -1609,5 +1611,260 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     assert.equal(ProviderRegistryService.canExecuteLiveBooking('VACATINA_CONSULAR_CONCIERGE'), true);
     assert.equal(ProviderRegistryService.canExecuteLiveBooking('DUFFEL_NDC'), false);
     assert.equal(ProviderRegistryService.canExecuteLiveBooking('AMADEUS_GDS'), false);
+  });
+
+  it('enforces Manual Listing Lifecycle, Direct Contract non-instant fallback, and Canonical Offer v2.0 (ADR-008, Rules 1-3)', () => {
+    const storage = new VacatinaStorageEngine();
+
+    // 1. Manual Listing Lifecycle (DRAFT -> IN_REVIEW -> PUBLISHED -> PAUSED -> ARCHIVED)
+    const draftListing = storage.createManualListing({
+      productType: 'hotels',
+      sourceType: 'DIRECT_CONTRACT',
+      partnerSupplierId: 'SIGIRIYA_BOUTIQUE',
+      partnerName: 'Sigiriya Rock Chalets',
+      contractReference: 'CTR-2026-SIG-001',
+      title: 'Sigiriya Luxury Rock View Chalet',
+      subtitle: 'Direct Contract Allotment',
+      description: 'Exclusive luxury chalets overlooking Sigiriya fortress',
+      destinationCity: 'Sigiriya',
+      destinationCountry: 'Sri Lanka',
+      destinationCountryCode: 'LK',
+      contractedNetCostMinor: 3800000,
+      costCurrency: 'LKR',
+      platformMarkupPercent: 15.0,
+      sellingPriceMinor: 4370000,
+      sellingCurrency: 'LKR',
+      availableQuota: 4,
+      isUnlimitedQuota: false,
+      blackoutDates: [],
+      minimumNoticeHours: 12,
+      validFrom: '2026-11-01T00:00:00Z',
+      validUntil: '2027-03-31T23:59:59Z',
+      confirmationMode: 'REQUEST_TO_CONFIRM',
+      inclusions: ['Breakfast', 'Free Sigiriya guide tour'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation up to 48 hours prior',
+      termsReference: 'https://vacatina.com/legal/terms',
+      heroImageUrl: '/cards/hotel_srilanka.jpg',
+      galleryImageUrls: [],
+      isFeatured: false,
+      pinAboveApi: false,
+      isB2BVisible: true,
+      isB2CVisible: true,
+      status: 'DRAFT'
+    }, 'usr_editor_001');
+
+    assert.equal(draftListing.status, 'DRAFT');
+
+    // Move to IN_REVIEW
+    const inReview = storage.transitionManualListingStatus(draftListing.id, 'IN_REVIEW', 'usr_editor_001', undefined, 'Submitted for operations review');
+    assert.equal(inReview.status, 'IN_REVIEW');
+
+    // Publishing without approver must fail
+    assert.throws(
+      () => storage.transitionManualListingStatus(draftListing.id, 'PUBLISHED', 'usr_editor_001', undefined, 'Attempt self-publish'),
+      /ApproverUserId is required/
+    );
+
+    // Publishing with approver succeeds
+    const published = storage.transitionManualListingStatus(draftListing.id, 'PUBLISHED', 'usr_editor_001', 'usr_approver_001', 'Approved by Operations Lead');
+    assert.equal(published.status, 'PUBLISHED');
+    assert.equal(published.publishedByUserId, 'usr_approver_001');
+    assert.ok(published.publishedAt);
+
+    // Pause listing
+    const paused = storage.transitionManualListingStatus(draftListing.id, 'PAUSED', 'usr_ops_001', undefined, 'Temporarily paused for refurbishment');
+    assert.equal(paused.status, 'PAUSED');
+
+    // Archive listing
+    const archived = storage.transitionManualListingStatus(draftListing.id, 'ARCHIVED', 'usr_ops_001', undefined, 'Contract season concluded');
+    assert.equal(archived.status, 'ARCHIVED');
+
+    // Transition from ARCHIVED (terminal) must fail
+    assert.throws(
+      () => storage.transitionManualListingStatus(draftListing.id, 'DRAFT', 'usr_ops_001'),
+      /Invalid status transition/
+    );
+
+    // 2. Direct Contract does NOT default to INSTANT (Rule 2)
+    const manualAdapter = new ManualCmsAdapter();
+
+    // Case A: Quota = 0 or Request to Confirm -> derives ON_REQUEST and REQUEST_TO_BOOK
+    const nonInstantOffer = manualAdapter.normalize({
+      id: 'cms_dir_ht_non_inst',
+      productType: 'hotels',
+      partnerSupplierId: 'BOUTIQUE_EXP',
+      partnerName: 'Ella Heritage Villa',
+      title: 'Ella Valley Villa',
+      subtitle: 'Mountain View Suite',
+      location: { city: 'Ella', country: 'Sri Lanka', countryCode: 'LK' },
+      confirmationMode: 'REQUEST_TO_CONFIRM',
+      availableQuota: 0, // No confirmed allotment quota
+      contractedBaseCostMinor: 2500000,
+      costCurrency: 'LKR',
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Non-refundable',
+      pinAboveApi: false,
+      status: 'PUBLISHED'
+    });
+
+    assert.equal(nonInstantOffer.fulfillmentMode, 'ON_REQUEST');
+    assert.equal(nonInstantOffer.bookingCapability, 'REQUEST_TO_BOOK');
+
+    // Case B: Confirmed Quota > 0 and Instant Confirm -> derives INSTANT and INSTANT_RESERVATION
+    const instantOffer = manualAdapter.normalize({
+      id: 'cms_dir_ht_inst',
+      productType: 'hotels',
+      partnerSupplierId: 'GALLE_HOTELS',
+      partnerName: 'Galle Fort Bungalow',
+      title: 'Galle Fort Suite',
+      subtitle: 'Luxury Suite',
+      location: { city: 'Galle', country: 'Sri Lanka', countryCode: 'LK' },
+      confirmationMode: 'INSTANT_CONFIRM',
+      availableQuota: 5, // Active allotment
+      contractedBaseCostMinor: 4500000,
+      costCurrency: 'LKR',
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation 48h',
+      pinAboveApi: true,
+      status: 'PUBLISHED'
+    });
+
+    assert.equal(instantOffer.fulfillmentMode, 'INSTANT');
+    assert.equal(instantOffer.bookingCapability, 'INSTANT_RESERVATION');
+
+    // 3. Canonical Offer Contract v2.0 Invariants (Rule 3)
+    assert.ok(instantOffer.canonicalOfferId);
+    assert.equal(instantOffer.offerId, instantOffer.canonicalOfferId);
+    assert.ok(instantOffer.providerId);
+    assert.ok(instantOffer.providerOfferId);
+    assert.equal(instantOffer.productType, 'hotels');
+    assert.equal(instantOffer.inventorySource, 'DIRECT_CONTRACT');
+    assert.equal(instantOffer.listingKind, 'SELLABLE_INVENTORY');
+    assert.equal(instantOffer.compositionType, 'SINGLE');
+    assert.equal(instantOffer.environmentClass, 'PRODUCTION');
+    assert.equal(instantOffer.sellability, 'BOOKABLE');
+    assert.equal(instantOffer.publicationStatus, 'PUBLISHED');
+    assert.equal(instantOffer.availabilityStatus, 'MANUAL_AVAILABLE');
+    assert.ok(instantOffer.pricing.finalSellingPriceMinor > 0);
+    assert.equal(instantOffer.pricing.currency, 'LKR');
+    assert.ok(instantOffer.taxesAndFees);
+    assert.equal(instantOffer.taxesAndFees.isTaxInclusive, true);
+    assert.ok(instantOffer.validFrom);
+    assert.ok(instantOffer.validUntil);
+    assert.ok(instantOffer.expiresAt);
+    assert.ok(instantOffer.lastCheckedAt);
+    assert.equal(instantOffer.requiresRevalidation, false);
+    assert.ok(instantOffer.cancellationPolicy);
+  });
+
+  it('enforces Distribution Scope, Derived Badges, Unified Ranking, and Certification Gates (ADR-008, Rules 4-7)', () => {
+    // 1. Distribution Scope Separation (Rule 4)
+    const b2bOnlyOffer = {
+      canonicalOfferId: 'vct-b2b-001',
+      distributionScope: 'B2B_ONLY' as const
+    };
+    const b2cOnlyOffer = {
+      canonicalOfferId: 'vct-b2c-001',
+      distributionScope: 'B2C_ONLY' as const
+    };
+
+    // B2C query cannot access B2B_ONLY
+    assert.throws(
+      () => assertDistributionScopeIntegrity(b2bOnlyOffer, 'B2C'),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'B2C_DISTRIBUTION_LEAK'
+    );
+
+    // B2B query cannot access B2C_ONLY
+    assert.throws(
+      () => assertDistributionScopeIntegrity(b2cOnlyOffer, 'B2B'),
+      (err: any) => err instanceof ArchitecturalInvariantViolationError && err.code === 'B2B_DISTRIBUTION_LEAK'
+    );
+
+    // 2. Customer Badges Derived 100% from Verified State (Rule 5)
+    const duffelAdapter = new FlightsDuffelAdapter('sandbox');
+    const scaffoldFlight = duffelAdapter.normalize({
+      id: 'off_sbox_001',
+      total_amount: '320.00',
+      total_currency: 'USD',
+      slices: [{
+        origin: { iata_code: 'CMB', city_name: 'Colombo' },
+        destination: { iata_code: 'DXB', city_name: 'Dubai' },
+        departure_datetime: '2026-11-20T10:00:00Z',
+        arrival_datetime: '2026-11-20T14:30:00Z',
+        duration: 'PT4H30M',
+        segments: [{
+          marketing_carrier: { iata_code: 'UL', name: 'SriLankan Airlines' },
+          marketing_carrier_flight_number: '225',
+          passengers: [{ cabin_class: 'economy' }]
+        }]
+      }],
+      expires_at: new Date(Date.now() + 900000).toISOString()
+    });
+
+    // Scaffold in sandbox must NEVER get "Live Availability" badge
+    const flightBadges = deriveCustomerBadges(scaffoldFlight);
+    assert.equal(flightBadges.includes('Live Availability'), false, 'Scaffold adapter in sandbox must not derive Live Availability badge');
+
+    // 3. Unified Ranking Rules (Rule 6)
+    const manualAdapter = new ManualCmsAdapter();
+
+    // Active published direct contract with audit reason -> Eligible for pin
+    const validPinnedDeal = manualAdapter.normalize({
+      id: 'cms_dir_galle_pin',
+      productType: 'hotels',
+      partnerSupplierId: 'CEYLON_HOTELS',
+      partnerName: 'Galle Fort Bungalow',
+      title: 'Galle Fort Bungalow',
+      subtitle: 'Luxury Suite',
+      location: { city: 'Galle', country: 'Sri Lanka', countryCode: 'LK' },
+      confirmationMode: 'INSTANT_CONFIRM',
+      availableQuota: 5,
+      contractedBaseCostMinor: 4500000,
+      costCurrency: 'LKR',
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation 48h',
+      pinAboveApi: true,
+      status: 'PUBLISHED'
+    });
+    assert.equal(isOfferEligibleForPinOverride(validPinnedDeal), true);
+
+    // Sold out deal CANNOT be pinned above valid offers
+    const soldOutDeal = {
+      ...validPinnedDeal,
+      canonicalOfferId: 'vct-ht-sold-out',
+      availabilityStatus: 'SOLD_OUT' as const
+    };
+    assert.equal(isOfferEligibleForPinOverride(soldOutDeal), false, 'Sold out deal must never be eligible for pin override');
+
+    // SEED item CANNOT rank in live search
+    const seedOffer = {
+      ...validPinnedDeal,
+      canonicalOfferId: 'vct-ht-seed-001',
+      environmentClass: 'SEED' as const,
+      sourceType: 'SEED' as const
+    };
+
+    const ranked = DeduplicationService.deduplicateAndRank([seedOffer, validPinnedDeal]);
+    assert.equal(ranked.some(o => o.canonicalOfferId === 'vct-ht-seed-001'), false, 'SEED offer must be excluded from live ranking');
+
+    // 4. Provider Certification Gates (Rule 7)
+    const duffelRecord = ProviderRegistryService.getProvider('DUFFEL_NDC');
+    assert.ok(duffelRecord);
+    const duffelAudit = ProviderRegistryService.evaluateCertificationGates(duffelRecord.certificationGates);
+    assert.equal(duffelAudit.isCertified, false);
+    assert.equal(duffelAudit.isProductionReady, false);
+    assert.ok(duffelAudit.pendingGates.length > 0);
+    assert.ok(duffelAudit.pendingGates.some(g => g.includes('Live credentials')));
+
+    const consularRecord = ProviderRegistryService.getProvider('VACATINA_CONSULAR_CONCIERGE');
+    assert.ok(consularRecord);
+    const consularAudit = ProviderRegistryService.evaluateCertificationGates(consularRecord.certificationGates);
+    assert.equal(consularAudit.isCertified, true);
+    assert.equal(consularAudit.isProductionReady, true);
+    assert.equal(consularAudit.clearedCount, 12);
   });
 });

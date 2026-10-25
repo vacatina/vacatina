@@ -124,7 +124,7 @@ export class HotelsLiteApiAdapter extends BaseSupplierAdapter<RawLiteApiHotelOff
     };
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
-    return offer;
+    return this.applyCanonicalContractDefaults(offer);
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {
