@@ -268,6 +268,34 @@ export interface ManualListingEntity {
   };
   revisionNumber?: number;
   refundEligibilityDescription?: string;
+  refundability?: 'NON_REFUNDABLE' | 'PARTIALLY_REFUNDABLE' | 'FULLY_REFUNDABLE';
+  confirmationDeadlineHours?: number;
+  timezone?: string;
+  supplierContact?: {
+    name: string;
+    email: string;
+    phone?: string;
+    emergencyPhone?: string;
+  };
+  fulfilmentChannel?: 'EMAIL' | 'PORTAL' | 'PHONE' | 'WHATSAPP' | 'AUTOMATED_WEBHOOK';
+  minTravellers?: number;
+  maxTravellers?: number;
+  childRules?: {
+    minAgeYears?: number;
+    infantFreeUnderYears?: number;
+    childDiscountPercent?: number;
+    note?: string;
+  };
+  inventoryHoldExpiryMinutes?: number;
+  mediaAssets?: {
+    heroUrl: string;
+    galleryUrls: string[];
+    brochurePdfUrl?: string;
+  };
+  bookingTerms?: string;
+  lastVerifiedAt?: ISODateString;
+  internalNotes?: string;
+  verificationStatus?: 'VERIFIED_CONTRACT' | 'VERIFIED_INTERNAL' | 'PARTNER_PENDING' | 'UNVERIFIED' | 'PROTOTYPE';
   createdBy?: UUID;
   reviewedBy?: UUID;
   approvedBy?: UUID;

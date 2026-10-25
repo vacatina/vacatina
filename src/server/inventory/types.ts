@@ -237,6 +237,47 @@ export interface PriceFreshnessEntity {
 }
 
 // ----------------------------------------------------------------------------
+// Granular Source & Integration Orthogonal Dimensions (GPT Audit v2.0)
+// ----------------------------------------------------------------------------
+
+export type SourceMode =
+  | 'CONTENT_ONLY'  // Non-bookable editorial, destination guides, inspiration cards
+  | 'MANUAL'        // Direct contracts, internal operations, or offline partner rate sheets
+  | 'API';          // Live or candidate external GDS/NDC/Bedbank aggregator
+
+export type IntegrationStatus =
+  | 'NOT_APPLICABLE' // Pure manual/internal service with no external API
+  | 'PLANNED'        // Target provider identified; no live credentials
+  | 'SANDBOX'        // Typed adapter scaffold active in test environment
+  | 'CERTIFIED_LIVE';// Live credentials verified and certified for production bookings
+
+export type ManualSourceType =
+  | 'DIRECT_CONTRACT' // Directly negotiated commercial agreement (allotment/rate sheet)
+  | 'MANUAL_INTERNAL' // In-house Vacatina operational product/service (e.g. Visa Concierge)
+  | 'PARTNER_MANUAL'  // External travel partner providing offline inventory/extranet
+  | null;
+
+export type VerificationStatus =
+  | 'VERIFIED_CONTRACT' // Signed commercial agreement with documented allotment
+  | 'VERIFIED_INTERNAL' // Internal operational desk with SLA capability
+  | 'PARTNER_PENDING'   // Partner agreement under negotiation/contracting
+  | 'UNVERIFIED'        // Unconfirmed rate/inventory
+  | 'PROTOTYPE';        // Design accelerator demo data (quarantined)
+
+export type CurrentAvailabilityMode =
+  | 'CONTENT_ONLY'         // No availability tracking; informational only
+  | 'ON_REQUEST'           // Subject to partner confirmation within SLA
+  | 'ALLOTMENT'            // Finite quota managed in Vacatina database
+  | 'MANUAL_CONFIRMATION'  // Human document/consular audit required
+  | 'LIVE_INSTANT';        // ONLY for verified CERTIFIED_LIVE supplier integrations!
+
+export type CurrentPricingMode =
+  | 'INDICATIVE'     // Starting from price for inspiration cards (*disclaimer required)
+  | 'FIXED_MANUAL'   // Guaranteed flat manual rate (e.g. visa concierge advisory)
+  | 'CONTRACTED'     // Negotiated contracted seasonal rate in minor integer units
+  | 'LIVE_DYNAMIC';  // ONLY for verified CERTIFIED_LIVE supplier integrations!
+
+// ----------------------------------------------------------------------------
 // Discovery Content vs Sellable Inventory Separation (Directive 1)
 // ----------------------------------------------------------------------------
 
@@ -332,6 +373,15 @@ export interface CanonicalOfferEntity {
 
   // --- Heterogeneous components (for dynamic bundles) ---
   components?: ComponentOfferIdentity[];
+
+  // --- Granular Source & Integration Separation (GPT Audit v2.0) ---
+  sourceMode?: SourceMode;
+  integrationStatus?: IntegrationStatus;
+  manualSourceType?: ManualSourceType;
+  verificationStatus?: VerificationStatus;
+  currentAvailabilityMode?: CurrentAvailabilityMode;
+  currentPricingMode?: CurrentPricingMode;
+  futureProvider?: string | null;
 
   supplierId: string;               // e.g. "DUFFEL_NDC", "AMADEUS", "LITEAPI", "PAYLOAD_CMS_DIRECT"
   supplierName: string;
@@ -713,4 +763,87 @@ export function assertProductionResponseSafety(
       );
     }
   }
+}
+
+/**
+ * Invariant 11: Multi-Criteria Source Selection Engine (Critical Issue #8)
+ * Does NOT blindly prefer API over manual. Considers:
+ * - availability status (available beats unavailable)
+ * - verification status (VERIFIED_CONTRACT / VERIFIED_INTERNAL beats UNVERIFIED)
+ * - net cost & selling margin
+ * - cancellation flexibility
+ * - SLA and fulfillment confidence
+ */
+export function computeOfferSourceScore(offer: CanonicalOfferEntity): number {
+  let score = 0;
+
+  // 1. Availability Score (0 - 30 pts)
+  if (offer.availabilityStatus === 'LIVE' || offer.availabilityStatus === 'MANUAL_AVAILABLE') {
+    score += 30;
+  } else if (offer.availabilityStatus === 'CACHED' || offer.availabilityStatus === 'ON_REQUEST') {
+    score += 18;
+  } else if (offer.availabilityStatus === 'SOLD_OUT' || offer.availabilityStatus === 'RATE_EXPIRED' || offer.availabilityStatus === 'UNAVAILABLE') {
+    return -1000; // Unsellable
+  }
+
+  // 2. Verification Status Score (0 - 25 pts)
+  if (offer.verificationStatus === 'VERIFIED_CONTRACT' || offer.verificationStatus === 'VERIFIED_INTERNAL') {
+    score += 25;
+  } else if (offer.verificationStatus === 'PARTNER_PENDING') {
+    score += 10;
+  } else if (offer.verificationStatus === 'PROTOTYPE') {
+    return -2000; // SEED prototype cannot beat real offers
+  } else {
+    score += 5; // UNVERIFIED
+  }
+
+  // 3. Selling Margin Score (0 - 20 pts)
+  const net = offer.pricing?.rawSupplierCostMinor || 1;
+  const selling = offer.pricing?.finalSellingPriceMinor || net;
+  const marginPercent = net > 0 ? ((selling - net) / net) * 100 : 0;
+  if (marginPercent >= 15) score += 20;
+  else if (marginPercent >= 10) score += 15;
+  else if (marginPercent >= 5) score += 10;
+  else score += 5;
+
+  // 4. Cancellation Flexibility Score (0 - 15 pts)
+  const policy = (offer.cancellationPolicy || '').toLowerCase();
+  if (policy.includes('free cancellation')) {
+    score += 15;
+  } else if (policy.includes('refundable')) {
+    score += 10;
+  } else {
+    score += 3;
+  }
+
+  // 5. Fulfilment SLA & Mode Score (0 - 10 pts)
+  if (offer.fulfillmentMode === 'INSTANT' && offer.bookingCapability === 'INSTANT_RESERVATION') {
+    score += 10;
+  } else if (offer.fulfillmentMode === 'MANUAL_CONFIRMATION') {
+    score += 8;
+  } else {
+    score += 5;
+  }
+
+  // 6. Pin override bonus (if legitimately eligible)
+  if (offer.pinAboveApi && isOfferEligibleForPinOverride(offer)) {
+    score += 50;
+  }
+
+  return score;
+}
+
+export function selectBestSourceOffer(candidates: CanonicalOfferEntity[]): CanonicalOfferEntity | undefined {
+  if (!candidates || candidates.length === 0) return undefined;
+  if (candidates.length === 1) return candidates[0];
+
+  const scored = candidates
+    .filter(o => o.environmentClass !== 'SEED' && o.sellability !== 'DISCOVERY_ONLY')
+    .map(offer => ({
+      offer,
+      score: computeOfferSourceScore(offer)
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  return scored.length > 0 ? scored[0].offer : candidates[0];
 }

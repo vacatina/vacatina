@@ -51,6 +51,8 @@ import {
   assertDiscoveryContentCannotBeSold,
   isPackageReadyForCheckout,
   assertProductionResponseSafety,
+  computeOfferSourceScore,
+  selectBestSourceOffer,
   isOfferEligibleForPinOverride,
   deriveCustomerBadges,
   validateNoTechnicalLeakInCustomerBadges,
@@ -2252,5 +2254,80 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     // 10. Audit History contains all logged transitions
     const audits = storage.getManualListingAudits(listing.id);
     assert.ok(audits.length >= 6);
+  });
+
+  it('enforces Granular Source Separation, Verification Status, and Multi-Criteria Source Selection (GPT Audit v2.0)', async () => {
+    // 1. Verify Uncertified Adapter truthfully derives SANDBOX, ON_REQUEST, and INDICATIVE
+    const duffel = new FlightsDuffelAdapter();
+    const flightOffers = await duffel.search({ origin: 'CMB', destination: 'DXB', departureDate: '2026-11-20' });
+    assert.ok(flightOffers.length > 0);
+    const flight = flightOffers[0];
+
+    assert.equal(flight.sourceMode, 'API');
+    assert.equal(flight.integrationStatus, 'SANDBOX');
+    assert.equal(flight.manualSourceType, null);
+    assert.notEqual(flight.currentAvailabilityMode, 'LIVE_INSTANT', 'Uncertified adapter must not claim LIVE_INSTANT');
+    assert.notEqual(flight.currentPricingMode, 'LIVE_DYNAMIC', 'Uncertified adapter must not claim LIVE_DYNAMIC');
+
+    // 2. Verify Internal Consular Desk derives VERIFIED_INTERNAL and FIXED_MANUAL
+    const visa = new VisaConsularAdapter();
+    const visaOffers = await visa.search({ destination: 'United Arab Emirates' });
+    assert.ok(visaOffers.length > 0);
+    const v = visaOffers[0];
+
+    assert.equal(v.sourceMode, 'MANUAL');
+    assert.equal(v.manualSourceType, 'MANUAL_INTERNAL');
+    assert.equal(v.verificationStatus, 'VERIFIED_INTERNAL');
+    assert.equal(v.currentAvailabilityMode, 'MANUAL_CONFIRMATION');
+    assert.equal(v.currentPricingMode, 'FIXED_MANUAL');
+
+    // 3. Multi-Criteria Source Selection: Manual Direct Contract beats Unverified Candidate
+    const directSafariOffer = {
+      ...flight,
+      canonicalOfferId: 'vct-act-safari-direct-001',
+      sourceMode: 'MANUAL' as const,
+      manualSourceType: 'DIRECT_CONTRACT' as const,
+      verificationStatus: 'VERIFIED_CONTRACT' as const,
+      availabilityStatus: 'LIVE' as const,
+      fulfillmentMode: 'INSTANT' as const,
+      bookingCapability: 'INSTANT_RESERVATION' as const,
+      cancellationPolicy: 'Free cancellation up to 24h before tour',
+      pricing: {
+        rawSupplierCostMinor: 6000,
+        rawCurrency: 'USD',
+        platformMarkupMinor: 1500,
+        b2bAgencyMarginMinor: 0,
+        finalSellingPriceMinor: 7500, // 25% margin
+        currency: 'USD'
+      }
+    };
+
+    const mockApiSafariOffer = {
+      ...flight,
+      canonicalOfferId: 'vct-act-safari-mockapi-002',
+      sourceMode: 'API' as const,
+      manualSourceType: null,
+      verificationStatus: 'PARTNER_PENDING' as const,
+      availabilityStatus: 'CACHED' as const,
+      fulfillmentMode: 'ON_REQUEST' as const,
+      bookingCapability: 'REQUEST_TO_BOOK' as const,
+      cancellationPolicy: 'Non-refundable penalty applies',
+      pricing: {
+        rawSupplierCostMinor: 7200,
+        rawCurrency: 'USD',
+        platformMarkupMinor: 300,
+        b2bAgencyMarginMinor: 0,
+        finalSellingPriceMinor: 7500, // 4% margin
+        currency: 'USD'
+      }
+    };
+
+    const scoreDirect = computeOfferSourceScore(directSafariOffer);
+    const scoreApi = computeOfferSourceScore(mockApiSafariOffer);
+
+    assert.ok(scoreDirect > scoreApi, `Direct verified offer score (${scoreDirect}) must beat unverified candidate API score (${scoreApi})`);
+
+    const bestOffer = selectBestSourceOffer([mockApiSafariOffer, directSafariOffer]);
+    assert.equal(bestOffer?.canonicalOfferId, 'vct-act-safari-direct-001', 'Multi-criteria engine must select verified direct deal over unverified candidate');
   });
 });

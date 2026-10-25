@@ -105,6 +105,54 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
     if (!offer.providerOfferId) offer.providerOfferId = offer.supplierOfferId;
     if (!offer.publicationStatus) offer.publicationStatus = 'PUBLISHED';
     if (!offer.distributionScope) offer.distributionScope = 'BOTH';
+
+    // Granular Source & Integration Separation (GPT Audit v2.0)
+    if (!offer.sourceMode) {
+      if (offer.listingKind === 'DISCOVERY_CONTENT') offer.sourceMode = 'CONTENT_ONLY';
+      else if (offer.inventorySource === 'API') offer.sourceMode = 'API';
+      else offer.sourceMode = 'MANUAL';
+    }
+    if (!offer.integrationStatus) {
+      if (this.integrationLifecycle === 'PRODUCTION_LIVE') offer.integrationStatus = 'CERTIFIED_LIVE';
+      else if (this.integrationLifecycle === 'PLANNED') offer.integrationStatus = 'PLANNED';
+      else offer.integrationStatus = 'SANDBOX';
+    }
+    if (offer.manualSourceType === undefined) {
+      if (offer.inventorySource === 'DIRECT_CONTRACT') offer.manualSourceType = 'DIRECT_CONTRACT';
+      else if (offer.inventorySource === 'MANUAL_INTERNAL') offer.manualSourceType = 'MANUAL_INTERNAL';
+      else if (offer.inventorySource === 'PARTNER_MANUAL') offer.manualSourceType = 'PARTNER_MANUAL';
+      else offer.manualSourceType = null;
+    }
+    if (!offer.verificationStatus) {
+      if (offer.environmentClass === 'SEED') offer.verificationStatus = 'PROTOTYPE';
+      else if (offer.inventorySource === 'MANUAL_INTERNAL') offer.verificationStatus = 'VERIFIED_INTERNAL';
+      else if (offer.inventorySource === 'DIRECT_CONTRACT' && (offer as any).contractReference) offer.verificationStatus = 'VERIFIED_CONTRACT';
+      else if (this.integrationLifecycle === 'PRODUCTION_LIVE') offer.verificationStatus = 'VERIFIED_CONTRACT';
+      else offer.verificationStatus = 'PARTNER_PENDING';
+    }
+    if (!offer.currentAvailabilityMode) {
+      if (offer.environmentClass === 'PRODUCTION' && this.integrationLifecycle === 'PRODUCTION_LIVE' && offer.fulfillmentMode === 'INSTANT') {
+        offer.currentAvailabilityMode = 'LIVE_INSTANT';
+      } else if (offer.fulfillmentMode === 'MANUAL_CONFIRMATION') {
+        offer.currentAvailabilityMode = 'MANUAL_CONFIRMATION';
+      } else if (offer.availabilityMode === 'ALLOTMENT') {
+        offer.currentAvailabilityMode = 'ALLOTMENT';
+      } else {
+        offer.currentAvailabilityMode = 'ON_REQUEST';
+      }
+    }
+    if (!offer.currentPricingMode) {
+      if (offer.environmentClass === 'PRODUCTION' && this.integrationLifecycle === 'PRODUCTION_LIVE' && offer.pricingMode === 'DYNAMIC') {
+        offer.currentPricingMode = 'LIVE_DYNAMIC';
+      } else if (offer.inventorySource === 'DIRECT_CONTRACT') {
+        offer.currentPricingMode = 'CONTRACTED';
+      } else if (offer.inventorySource === 'MANUAL_INTERNAL') {
+        offer.currentPricingMode = 'FIXED_MANUAL';
+      } else {
+        offer.currentPricingMode = 'INDICATIVE';
+      }
+    }
+
     if (!offer.availabilityMode) {
       offer.availabilityMode = offer.fulfillmentMode === 'INSTANT' ? 'INSTANT' : 'ON_REQUEST';
     }
