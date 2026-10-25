@@ -138,6 +138,57 @@ export function assertListingIsProductionSellable(listing: ManualListingRecord):
       `Commercial Truth Guard: Listing '${listing.id}' is classified as SAMPLE_INVENTORY. Sample listings are for system demonstration only and cannot be sold in production.`
     );
   }
+
+  // Required 11 Commercial Attributes Check (Directive 2)
+  if (!listing.partnerSupplierId) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_SUPPLIER_IDENTITY',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks verified supplier identity.`
+    );
+  }
+  if (!listing.contractReference) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_CONTRACT_REFERENCE',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks binding contract reference.`
+    );
+  }
+  if (!listing.effectiveFromIso || !listing.effectiveToIso) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_EFFECTIVE_DATES',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks effective validity dates.`
+    );
+  }
+  if (!listing.productType || !listing.title) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_PRODUCT_CONFIGURATION',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks product configuration.`
+    );
+  }
+  if (listing.contractedBaseCost <= 0 || listing.standardSellingPriceLkr <= 0) {
+    throw new ArchitecturalInvariantViolationError(
+      'INVALID_RATE_STRUCTURE',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks positive net cost or selling price.`
+    );
+  }
+  if (listing.availableQuota === undefined || listing.availableQuota < 0) {
+    throw new ArchitecturalInvariantViolationError(
+      'INVALID_ALLOTMENT_RULE',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks defined allotment quota.`
+    );
+  }
+  if (!listing.cancellationPolicy) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_CANCELLATION_POLICY',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks cancellation conditions.`
+    );
+  }
+  if (!listing.confirmationMode || !listing.bookingMode) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_CONFIRMATION_METHOD',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks confirmation or booking mode.`
+    );
+  }
+
   if (!listing.readinessTier || !listing.readinessTier.commercialReady) {
     throw new ArchitecturalInvariantViolationError(
       'MISSING_COMMERCIAL_EVIDENCE',
@@ -150,10 +201,16 @@ export function assertListingIsProductionSellable(listing: ManualListingRecord):
       `Commercial Truth Guard: Listing '${listing.id}' lacks verified commercialEvidence dossier (document reference, signed date, legal name, settlement terms).`
     );
   }
-  if (!listing.readinessTier.productionSellable) {
+  if (!listing.commercialEvidence.settlementTerms) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_SETTLEMENT_TERMS',
+      `Commercial Truth Guard: Listing '${listing.id}' lacks verified commercial settlement terms.`
+    );
+  }
+  if (!listing.readinessTier.productionSellable || (listing.status !== 'ACTIVE' && listing.status !== 'PUBLISHED')) {
     throw new ArchitecturalInvariantViolationError(
       'LISTING_NOT_PRODUCTION_SELLABLE',
-      `Commercial Truth Guard: Listing '${listing.id}' has productionSellable = false.`
+      `Commercial Truth Guard: Listing '${listing.id}' has productionSellable = false or status is not ACTIVE/PUBLISHED.`
     );
   }
 }
@@ -365,7 +422,10 @@ export class ManualInventoryService {
       };
     }
 
-    if (newStatus === 'PUBLISHED') {
+    if (newStatus === 'COMMERCIALLY_VERIFIED') {
+      listing.readinessTier.commercialReady = Boolean(listing.commercialEvidence?.isEvidenceVerified);
+      listing.readinessTier.productionSellable = false;
+    } else if (newStatus === 'ACTIVE' || newStatus === 'PUBLISHED') {
       listing.readinessTier.productionSellable = Boolean(
         listing.readinessTier.commercialReady && listing.commercialEvidence?.isEvidenceVerified
       );

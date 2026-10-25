@@ -414,6 +414,21 @@ export interface BookingItemEntity {
   failureReason?: string;
   compensationAction?: 'NONE' | 'CANCEL_VOID' | 'REFUND' | 'MANUAL_TRIAGE';
   confirmedAt?: ISODateString;
+
+  // --- Booking Provenance & Reconciliation (Audit v2.5 / Directive 5) ---
+  inventorySourceType?: 'MANUAL_DIRECT' | 'API_SUPPLIER' | 'INTERNAL_SERVICE' | 'DYNAMIC_PACKAGE' | 'SAMPLE_INVENTORY' | string;
+  providerId?: string;
+  sourceOfferId?: string;
+  sourceReference?: string;
+  commercialEvidenceId?: string;
+  originalNetMinor?: number;
+  taxesMinor?: number;
+  feesMinor?: number;
+  markupMinor?: number;
+  discountMinor?: number;
+  customerSellingAmountMinor?: number;
+  settlementCurrency?: string;
+  priceRevalidationTimestamp?: ISODateString;
 }
 
 export interface BookingStatusHistoryEntity {

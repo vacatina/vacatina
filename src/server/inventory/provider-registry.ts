@@ -12,6 +12,7 @@
 
 import type {
   ProviderLifecycle,
+  ProviderOperationalState,
   TravelProductSlug,
   CommercialEntityAuditRecord,
   OperationalReadinessTier
@@ -99,6 +100,7 @@ export interface ProviderRegistryRecord {
   certificationStatus: CertificationComplianceStatus;
   certificationGates: ProviderCertificationChecklist;
   readinessTier: OperationalReadinessTier;
+  operationalState?: ProviderOperationalState;
   bookingExecutionSupported: boolean;
   revalidationSupported: boolean;
   endpoints?: ProviderEndpointMap;
@@ -585,18 +587,23 @@ export const CANONICAL_PROVIDER_REGISTRY: ProviderRegistryRecord[] = [
     providerName: 'Vacatina Consular Concierge Desk',
     role: 'INTERNAL_SERVICE',
     targetProducts: ['visa'],
-    lifecycle: 'PRODUCTION_LIVE',
-    commercialStatus: 'OPERATIONAL_INTERNAL',
-    credentialsConfigured: true,
-    certificationStatus: 'NOT_APPLICABLE',
-    certificationGates: { ...OPERATIONAL_INTERNAL_GATES },
+    lifecycle: 'SCAFFOLD',
+    commercialStatus: 'UNDER_DISCUSSION',
+    credentialsConfigured: false,
+    certificationStatus: 'NOT_STARTED',
+    certificationGates: {
+      ...DEFAULT_UNVERIFIED_GATES,
+      searchContractVerified: true,
+      errorMappingVerified: true
+    },
+    operationalState: 'CANDIDATE_PROVIDER',
     readinessTier: {
       systemReady: true,
       sandboxReady: true,
-      commercialReady: true,
-      productionSellable: true
+      commercialReady: false,
+      productionSellable: false
     },
-    bookingExecutionSupported: true,
+    bookingExecutionSupported: false,
     revalidationSupported: true,
     endpoints: {
       searchEndpoint: '/api/v1/visa/catalog',
@@ -906,12 +913,12 @@ export const CANONICAL_COMMERCIAL_ENTITY_REGISTRY: CommercialEntityAuditRecord[]
     entityId: 'VACATINA_CONSULAR_CONCIERGE',
     commercialEntityName: 'Vacatina Consular Advisory & Visa Desk',
     category: 'visa',
-    classification: 'VERIFIED_CONTRACT',
-    legalContractVerified: true,
-    productionCredentialsVerified: true,
+    classification: 'CANDIDATE',
+    legalContractVerified: false,
+    productionCredentialsVerified: false,
     sandboxApproved: true,
-    canEnterProductionSellable: true,
-    auditNotes: 'Internal Vacatina operational advisory team. Production live manual review workflow with 24-48h SLA.'
+    canEnterProductionSellable: false,
+    auditNotes: 'Internal Vacatina operational advisory team prototype. Classified as CANDIDATE_UNVERIFIED and productionSellable = false until formal operations dispatch SLA is executed.'
   },
   {
     entityId: 'PAYLOAD_CMS_DIRECT',

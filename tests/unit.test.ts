@@ -70,6 +70,7 @@ import {
   assertCommercialEntitySellable,
   assertProviderCanExecuteLiveBooking,
   assertProviderIsProductionSellable,
+  assertPackageAtomicCheckoutReady,
   toUnifiedCustomerOffer,
   type CanonicalInventorySourceType,
   type CanonicalSourceEnvironment,
@@ -77,6 +78,9 @@ import {
   type CommercialEntityClassification,
   ArchitecturalInvariantViolationError
 } from '../src/server/inventory/types.ts';
+import {
+  AdminInventoryMonitoringService
+} from '../src/server/inventory/admin-monitoring.service.ts';
 import {
   DiscoveryContentService,
   CANONICAL_DISCOVERY_CATALOG
@@ -1635,9 +1639,9 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       }
     }
 
-    // 3. Only internal operational services support live execution
+    // 3. Only verified operational platform desks support live execution
     assert.equal(ProviderRegistryService.canExecuteLiveBooking('PAYLOAD_CMS_DIRECT'), true);
-    assert.equal(ProviderRegistryService.canExecuteLiveBooking('VACATINA_CONSULAR_CONCIERGE'), true);
+    assert.equal(ProviderRegistryService.canExecuteLiveBooking('VACATINA_CONSULAR_CONCIERGE'), false, 'Consular concierge cannot execute live bookings until operational SLA executed');
     assert.equal(ProviderRegistryService.canExecuteLiveBooking('DUFFEL_NDC'), false);
     assert.equal(ProviderRegistryService.canExecuteLiveBooking('AMADEUS_GDS'), false);
   });
@@ -1892,9 +1896,9 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     const consularRecord = ProviderRegistryService.getProvider('VACATINA_CONSULAR_CONCIERGE');
     assert.ok(consularRecord);
     const consularAudit = ProviderRegistryService.evaluateCertificationGates(consularRecord.certificationGates);
-    assert.equal(consularAudit.isCertified, true);
-    assert.equal(consularAudit.isProductionReady, true);
-    assert.equal(consularAudit.clearedCount, 12);
+    assert.equal(consularAudit.isCertified, false, 'Consular concierge is not yet certified pending physical SLA');
+    assert.equal(consularAudit.isProductionReady, false);
+    assert.ok(consularAudit.pendingGates.length > 0);
   });
 
   it('enforces ProductExtension Discriminated Union Schemas across all 10 Travel Products (Contract v1.0)', async () => {
@@ -3035,10 +3039,12 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       assert.equal(ex.canEnterProductionSellable, false, `Example ${ex.entityId} cannot enter production sellable`);
     }
 
-    // 3. Operational internal services
+    // 3. Operational internal services & verified platform desks
     const verifiedContracts = CANONICAL_COMMERCIAL_ENTITY_REGISTRY.filter(e => e.classification === 'VERIFIED_CONTRACT');
-    assert.ok(verifiedContracts.some(e => e.entityId === 'VACATINA_CONSULAR_CONCIERGE'), 'Consular Concierge is VERIFIED_CONTRACT');
     assert.ok(verifiedContracts.some(e => e.entityId === 'PAYLOAD_CMS_DIRECT'), 'Payload CMS is VERIFIED_CONTRACT');
+
+    const internalCandidates = CANONICAL_COMMERCIAL_ENTITY_REGISTRY.filter(e => e.classification === 'CANDIDATE');
+    assert.ok(internalCandidates.some(e => e.entityId === 'VACATINA_CONSULAR_CONCIERGE'), 'Consular Concierge is CANDIDATE until SLA sign-off');
 
     // 4. Test assertCommercialEntitySellable guard
     assert.throws(() => {
@@ -3270,11 +3276,11 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       assertProviderCanExecuteLiveBooking(liteapi);
     }, /Provider Certification Invariant: Provider 'LITEAPI'/, 'LiteAPI candidate blocked from live booking');
 
-    // 2. Operational In-house providers ARE permitted
+    // 2. Operational In-house providers: Consular Concierge is CANDIDATE_UNVERIFIED until operational SLA is certified
     const consular = ProviderRegistryService.getProvider('VACATINA_CONSULAR_CONCIERGE')!;
-    assert.doesNotThrow(() => {
+    assert.throws(() => {
       assertProviderCanExecuteLiveBooking(consular);
-    }, 'Consular concierge permitted for live operational execution');
+    }, /Provider Certification Invariant: Provider 'VACATINA_CONSULAR_CONCIERGE'/, 'Consular concierge correctly blocked until operational SLA is certified');
 
     const payloadCms = ProviderRegistryService.getProvider('PAYLOAD_CMS_DIRECT')!;
     assert.doesNotThrow(() => {
@@ -3328,10 +3334,11 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     assert.equal(amadeus.readinessTier.commercialReady, false, 'Amadeus is not COMMERCIAL_READY');
     assert.equal(liteapi.readinessTier.commercialReady, false, 'LiteAPI is not COMMERCIAL_READY');
     assert.equal(payloadCms.readinessTier.commercialReady, true, 'Payload CMS direct contracts desk is COMMERCIAL_READY');
-    assert.equal(consular.readinessTier.commercialReady, true, 'Consular Concierge is COMMERCIAL_READY');
+    assert.equal(consular.readinessTier.commercialReady, false, 'Consular Concierge is not COMMERCIAL_READY until signed SLA');
+    assert.equal(consular.readinessTier.productionSellable, false, 'Consular Concierge is not PRODUCTION_SELLABLE');
 
     // Tier 4: PRODUCTION_SELLABLE requires both COMMERCIAL_READY and cleared certification gates
-    // Uncertified API providers MUST throw when checked for production sellability
+    // Uncertified API providers and unverified internal services MUST throw when checked for production sellability
     assert.throws(() => {
       assertProviderIsProductionSellable(duffel);
     }, /Commercial Truth Guard: Provider 'DUFFEL_NDC' is not COMMERCIAL_READY/, 'Duffel blocked from production selling');
@@ -3344,16 +3351,15 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       assertProviderIsProductionSellable(liteapi);
     }, /Commercial Truth Guard: Provider 'LITEAPI' is not COMMERCIAL_READY/, 'LiteAPI blocked from production selling');
 
+    // Consular Concierge is CANDIDATE_UNVERIFIED until operational SLA sign-off
+    assert.throws(() => {
+      assertProviderIsProductionSellable(consular);
+    }, /Commercial Truth Guard: Provider 'VACATINA_CONSULAR_CONCIERGE' is not COMMERCIAL_READY/, 'Consular blocked until physical SLA filed');
+
     // Payload CMS platform itself is PLATFORM_CAPABILITY, not an individual sellable offer
     assert.throws(() => {
       assertProviderIsProductionSellable(payloadCms);
     }, /Commercial Truth Guard: Provider 'PAYLOAD_CMS_DIRECT' is not PRODUCTION_SELLABLE/, 'Payload CMS platform blocked as whole provider');
-
-    // Only VACATINA_CONSULAR_CONCIERGE is commercially and operationally certified for live sales
-    assert.equal(consular.readinessTier.productionSellable, true);
-    assert.doesNotThrow(() => {
-      assertProviderIsProductionSellable(consular);
-    }, 'Consular concierge clears production sellability check');
   });
 
   it('enforces Commercial Evidence Dossier Validation on Manual Listings & Blocks Sample Inventory (Commercial Truth Gate 2)', () => {
@@ -3505,10 +3511,22 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
       'providerId',
       'supplierId',
       'title',
+      'netPrice',
+      'taxes',
+      'fees',
+      'markup',
+      'discount',
+      'sellingPrice',
       'price',
       'currency',
+      'displayCurrency',
+      'settlementCurrency',
       'availabilityStatus',
       'lastCheckedAt',
+      'cancellationPolicy',
+      'refundability',
+      'bookingMode',
+      'confirmationMode',
       'commercialStatus',
       'sellable'
     ];
@@ -3534,5 +3552,149 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     const discoveryCard = CANONICAL_DISCOVERY_CATALOG[0];
     assert.equal(discoveryCard.isLiveInventoryOffer, false, 'Homepage card is never live inventory');
     assert.equal(discoveryCard.sellability, 'DISCOVERY_ONLY', 'Homepage card is DISCOVERY_ONLY');
+  });
+
+  it('enforces Dynamic Package Transaction Safety and Admin Operational Monitoring Telemetry (Directives 7 & 11)', () => {
+    // 1. Dynamic Package Atomic Checkout Safety Guard
+    const validPackage: any = {
+      canonicalOfferId: 'vct-pkg-sri-lanka-signature-01',
+      productType: 'packages',
+      components: [
+        { componentId: 'comp-fl-01', productType: 'flights', componentStatus: 'AVAILABLE', lastRevalidationResult: 'VALID' },
+        { componentId: 'comp-ht-01', productType: 'hotels', componentStatus: 'AVAILABLE', lastRevalidationResult: 'VALID' }
+      ]
+    };
+    assert.doesNotThrow(() => {
+      assertPackageAtomicCheckoutReady(validPackage);
+    }, 'Package with all available components passes atomic check');
+
+    const expiredComponentPackage: any = {
+      canonicalOfferId: 'vct-pkg-dubai-desert-escape-02',
+      productType: 'packages',
+      components: [
+        { componentId: 'comp-fl-02', productType: 'flights', componentStatus: 'AVAILABLE', lastRevalidationResult: 'VALID' },
+        { componentId: 'comp-ht-02', productType: 'hotels', componentStatus: 'EXPIRED', lastRevalidationResult: 'EXPIRED' }
+      ]
+    };
+    assert.throws(() => {
+      assertPackageAtomicCheckoutReady(expiredComponentPackage);
+    }, /Dynamic Package Safety Guard: Component 'comp-ht-02' \(hotels\) has status 'EXPIRED'/, 'Package with expired hotel component blocked from checkout');
+
+    // 2. Admin Operational Monitoring Telemetry
+    const healthSummaries = AdminInventoryMonitoringService.getSupplierOperationalHealth();
+    assert.ok(healthSummaries.length >= 11, 'Health monitored across all 11 providers');
+    const duffelHealth = healthSummaries.find(h => h.providerId === 'DUFFEL_NDC')!;
+    assert.ok(duffelHealth);
+    assert.equal(duffelHealth.circuitState, 'CLOSED');
+    assert.equal(duffelHealth.isProductionReady, false);
+
+    const manualAlerts = AdminInventoryMonitoringService.getManualInventoryAlerts(CANONICAL_MANUAL_LISTINGS);
+    assert.ok(manualAlerts.length > 0, 'Generates alerts for unverified sample inventory');
+    assert.ok(manualAlerts.some(a => a.alertType === 'UNVERIFIED_EVIDENCE'));
+
+    const freshnessAlerts = AdminInventoryMonitoringService.getPriceFreshnessAlerts([
+      {
+        canonicalOfferId: 'vct-fl-stale-01',
+        productType: 'flights',
+        supplierId: 'DUFFEL_NDC',
+        freshness: {
+          lastCheckedAtIso: new Date(Date.now() - 3600 * 1000).toISOString(),
+          ttlSeconds: 900,
+          expiresAtIso: new Date(Date.now() - 2700 * 1000).toISOString(),
+          isStale: true
+        }
+      } as any
+    ]);
+    assert.equal(freshnessAlerts.length, 1);
+    assert.equal(freshnessAlerts[0].isStale, true);
+    assert.equal(freshnessAlerts[0].requiresRecheck, true);
+  });
+
+  it('enforces Provider-Neutral Adapter Pluggability & End-to-End Booking Item Provenance Ledger (Directives 1 & 5)', async () => {
+    // 1. Provider-Neutral Schema Pluggability: Swapping LiteAPI for a hypothetical alternative provider
+    const liteApiOffer: any = {
+      canonicalOfferId: 'vct-ht-liteapi-001',
+      productType: 'hotels',
+      inventorySourceType: 'API_SUPPLIER',
+      providerId: 'LITEAPI',
+      supplierId: 'LITEAPI',
+      title: 'Marina Bay Sands',
+      pricing: { rawSupplierCostMinor: 5000000, platformMarkupMinor: 500000, finalSellingPriceMinor: 5500000, currency: 'LKR' },
+      availabilityStatus: 'LIVE',
+      freshness: { lastCheckedAtIso: new Date().toISOString(), ttlSeconds: 1800, isStale: false },
+      environmentClass: 'SANDBOX',
+      sourceEnvironment: 'CANDIDATE',
+      sellability: 'BOOKABLE',
+      providerLifecycle: 'INTEGRATION_CANDIDATE'
+    };
+
+    const altHotelbedsOffer: any = {
+      canonicalOfferId: 'vct-ht-hotelbeds-001',
+      productType: 'hotels',
+      inventorySourceType: 'API_SUPPLIER',
+      providerId: 'HOTELBEDS_BEDBANK',
+      supplierId: 'HOTELBEDS',
+      title: 'Marina Bay Sands',
+      pricing: { rawSupplierCostMinor: 4900000, platformMarkupMinor: 600000, finalSellingPriceMinor: 5500000, currency: 'LKR' },
+      availabilityStatus: 'LIVE',
+      freshness: { lastCheckedAtIso: new Date().toISOString(), ttlSeconds: 1800, isStale: false },
+      environmentClass: 'SANDBOX',
+      sourceEnvironment: 'CANDIDATE',
+      sellability: 'BOOKABLE',
+      providerLifecycle: 'INTEGRATION_CANDIDATE'
+    };
+
+    const unifiedLite = toUnifiedCustomerOffer(liteApiOffer);
+    const unifiedAlt = toUnifiedCustomerOffer(altHotelbedsOffer);
+
+    // Schema parity guarantee: consumer application receives identical shape regardless of supplier
+    assert.deepEqual(Object.keys(unifiedLite).sort(), Object.keys(unifiedAlt).sort());
+    assert.equal(unifiedLite.sellingPrice, unifiedAlt.sellingPrice);
+    assert.equal(unifiedLite.inventorySourceType, 'API_SUPPLIER');
+    assert.equal(unifiedAlt.inventorySourceType, 'API_SUPPLIER');
+
+    // 2. Booking Provenance Ledger Integrity: BookingSaga preserves originating financial breakdown
+    const storage = new VacatinaStorageEngine();
+    const saga = new BookingSagaService(storage);
+
+    const bucket = storage.getOrCreateTripBucket('sess_provenance_audit_01');
+    storage.addTripBucketItem({
+      tripBucketId: bucket.id,
+      canonicalOfferId: 'vct-ht-direct-sigiriya-001',
+      productType: 'hotels',
+      sourceType: 'MANUAL',
+      bookingMode: 'INSTANT_BOOK',
+      title: 'Heritance Sigiriya Boutique Villa',
+      configuration: { roomType: 'Deluxe' },
+      travellerManifest: { adults: 2 },
+      unitSellingPriceMinor: 8900000,
+      currency: 'LKR',
+      state: 'READY'
+    });
+
+    const sagaResult = await saga.executeBookingSaga({
+      tripBucketId: bucket.id,
+      customerEmail: 'ops.audit@vacatina.com',
+      customerName: 'Ops Auditor',
+      checkoutSessionId: 'cs_prov_001',
+      idempotencyKey: 'idemp_prov_001'
+    });
+
+    assert.ok(sagaResult);
+    const bookingItems = storage.getBookingItems(sagaResult.bookingGroupId);
+    assert.equal(bookingItems.length, 1);
+
+    const provenanceItem = bookingItems[0];
+    assert.equal(provenanceItem.inventorySourceType, 'MANUAL_DIRECT');
+    assert.equal(provenanceItem.providerId, 'PAYLOAD_CMS_DIRECT');
+    assert.equal(provenanceItem.sourceOfferId, 'vct-ht-direct-sigiriya-001');
+    assert.equal(provenanceItem.commercialEvidenceId, 'EVID-CMS-VERIFIED');
+    assert.ok(provenanceItem.originalNetMinor! > 0);
+    assert.ok(provenanceItem.taxesMinor! > 0);
+    assert.ok(provenanceItem.feesMinor! > 0);
+    assert.ok(provenanceItem.markupMinor! > 0);
+    assert.equal(provenanceItem.customerSellingAmountMinor, 8900000);
+    assert.equal(provenanceItem.settlementCurrency, 'LKR');
+    assert.ok(provenanceItem.priceRevalidationTimestamp);
   });
 });

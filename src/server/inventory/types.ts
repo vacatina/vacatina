@@ -1201,20 +1201,57 @@ export function assertProviderIsProductionSellable(provider: {
 }
 
 // ----------------------------------------------------------------------------
-// 17. Unified Customer Offer Pattern (Audit v2.4 Final)
+// 17. Provider Operational States (Directive 1)
+// ----------------------------------------------------------------------------
+
+export type ProviderOperationalState =
+  | 'CANDIDATE_PROVIDER'
+  | 'SANDBOX_CONNECTED'
+  | 'MAPPING_VALIDATED'
+  | 'BOOKING_CERTIFIED'
+  | 'LIVE_API_CERTIFIED'
+  | 'SUSPENDED';
+
+// ----------------------------------------------------------------------------
+// 18. Expanded Unified Customer Offer Pattern (Directive 4)
 // ----------------------------------------------------------------------------
 
 export interface UnifiedCustomerOffer {
+  // 1. Identity & Provenance
   offerId: string;
   productType: TravelProductSlug;
   inventorySourceType: CanonicalInventorySourceType;
   providerId: string;
   supplierId: string;
+  sourceOfferId?: string;
+  sourceReference?: string;
   title: string;
-  price: number;
-  currency: string;
+
+  // 2. Granular Financial Breakdown (Never collapsed into one ambiguous price)
+  netPrice: number;
+  taxes: number;
+  fees: number;
+  markup: number;
+  discount: number;
+  sellingPrice: number;
+  price: number; // Backward-compatible alias for sellingPrice
+  displayCurrency: string;
+  currency: string; // Backward-compatible alias for displayCurrency
+  settlementCurrency: string;
+  commission?: number;
+
+  // 3. Operational Availability & Quotas
   availabilityStatus: AvailabilityState;
+  allotment?: number;
+  inventoryQuantity?: number;
   lastCheckedAt: string;
+  offerExpiresAt?: string;
+
+  // 4. Policies & Fulfillment Conditions
+  cancellationPolicy: string;
+  refundability: 'NON_REFUNDABLE' | 'REFUNDABLE' | 'PARTIALLY_REFUNDABLE';
+  bookingMode: BookingMode;
+  confirmationMode: ConfirmationMode;
   commercialStatus: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED';
   sellable: boolean;
 }
@@ -1238,18 +1275,89 @@ export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCust
     commStatus = 'CANDIDATE_UNVERIFIED';
   }
 
+  const rawNetMinor = offer.pricing?.rawSupplierCostMinor || 0;
+  const markupMinor = offer.pricing?.platformMarkupMinor || 0;
+  const sellingMinor = offer.pricing?.finalSellingPriceMinor || (rawNetMinor + markupMinor);
+  const taxesMinor = offer.taxesAndFees?.totalTaxMinor || 0;
+  const feesMinor = offer.taxesAndFees?.serviceChargeMinor || 0;
+
+  const netPrice = Math.round(rawNetMinor / 100);
+  const taxes = Math.round(taxesMinor / 100);
+  const fees = Math.round(feesMinor / 100);
+  const markup = Math.round(markupMinor / 100);
+  const sellingPrice = Math.round(sellingMinor / 100);
+
+  const displayCurrency = offer.pricing?.currency || offer.currency || 'LKR';
+  const settlementCurrency = offer.pricing?.rawCurrency || offer.pricing?.currency || displayCurrency;
+
+  const refundability: 'NON_REFUNDABLE' | 'REFUNDABLE' | 'PARTIALLY_REFUNDABLE' =
+    offer.cancellationPolicy?.toLowerCase().includes('free cancellation') ||
+    offer.cancellationPolicy?.toLowerCase().includes('full refund')
+      ? 'REFUNDABLE'
+      : offer.cancellationPolicy?.toLowerCase().includes('non-refundable')
+      ? 'NON_REFUNDABLE'
+      : 'PARTIALLY_REFUNDABLE';
+
   return {
     offerId: offer.canonicalOfferId || offer.offerId || '',
     productType: offer.productType,
     inventorySourceType: source,
     providerId: offer.providerId || offer.supplierId,
     supplierId: offer.supplierId,
+    sourceOfferId: offer.sourceOfferId || offer.manualListingId,
+    sourceReference: offer.sourceOfferId || offer.manualListingId || offer.canonicalOfferId,
     title: offer.title,
-    price: offer.pricing?.finalSellingPriceMinor ? Math.round(offer.pricing.finalSellingPriceMinor / 100) : (offer.price || 0),
-    currency: offer.pricing?.currency || offer.currency || 'LKR',
+
+    netPrice,
+    taxes,
+    fees,
+    markup,
+    discount: 0,
+    sellingPrice,
+    price: sellingPrice,
+    displayCurrency,
+    currency: displayCurrency,
+    settlementCurrency,
+    commission: offer.b2bPricing?.agencyCommissionMinor ? Math.round(offer.b2bPricing.agencyCommissionMinor / 100) : undefined,
+
     availabilityStatus: offer.availabilityStatus,
+    allotment: offer.productExtension?.type === 'hotels' ? 10 : undefined,
+    inventoryQuantity: offer.productExtension?.type === 'hotels' ? 10 : undefined,
     lastCheckedAt: offer.freshness?.lastCheckedAtIso || offer.lastCheckedAt || new Date().toISOString(),
+    offerExpiresAt: offer.freshness?.expiresAtIso || offer.validUntil,
+
+    cancellationPolicy: offer.cancellationPolicy || 'Standard supplier cancellation terms apply.',
+    refundability,
+    bookingMode: offer.bookingMode || 'REQUEST_TO_BOOK',
+    confirmationMode: offer.confirmationMode || 'REQUEST_TO_CONFIRM',
     commercialStatus: offer.commercialStatus || commStatus,
     sellable: offer.sellable !== undefined ? offer.sellable : isProdSellable
   };
+}
+
+// ----------------------------------------------------------------------------
+// 19. Dynamic Package Transaction Safety Guard (Directive 7)
+// ----------------------------------------------------------------------------
+
+export function assertPackageAtomicCheckoutReady(pkgOffer: CanonicalOfferEntity): void {
+  if (pkgOffer.productType !== 'packages') return;
+  if (!pkgOffer.components || pkgOffer.components.length === 0) {
+    throw new ArchitecturalInvariantViolationError(
+      'EMPTY_PACKAGE_COMPONENTS',
+      `Dynamic Package '${pkgOffer.canonicalOfferId}' has no components defined.`
+    );
+  }
+  for (const component of pkgOffer.components) {
+    if (
+      component.componentStatus === 'EXPIRED' ||
+      component.componentStatus === 'UNAVAILABLE' ||
+      component.componentStatus === 'NEEDS_ACTION' ||
+      component.lastRevalidationResult === 'UNAVAILABLE'
+    ) {
+      throw new ArchitecturalInvariantViolationError(
+        'PACKAGE_COMPONENT_UNAVAILABLE',
+        `Dynamic Package Safety Guard: Component '${component.componentId}' (${component.productType}) has status '${component.componentStatus}'. Package checkout cannot proceed.`
+      );
+    }
+  }
 }

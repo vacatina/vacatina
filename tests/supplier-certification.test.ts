@@ -44,14 +44,14 @@ describe('Vacatina Upstream Provider Certification & UAT Suite', () => {
       assert.ok(audit.pendingGates.length > 0);
     }
 
-    // Contrast with fully certified internal consular desk
+    // Internal consular desk is truthful CANDIDATE_PROVIDER pending physical SLA execution
     const consularRecord = ProviderRegistryService.getProvider('VACATINA_CONSULAR_CONCIERGE');
     assert.ok(consularRecord);
-    assert.equal(consularRecord.lifecycle, 'PRODUCTION_LIVE');
+    assert.equal(consularRecord.lifecycle, 'SCAFFOLD');
+    assert.equal(consularRecord.operationalState, 'CANDIDATE_PROVIDER');
     const consularAudit = ProviderRegistryService.evaluateCertificationGates(consularRecord.certificationGates);
-    assert.equal(consularAudit.isCertified, true);
-    assert.equal(consularAudit.isProductionReady, true);
-    assert.equal(consularAudit.clearedCount, 12);
+    assert.equal(consularAudit.isCertified, false);
+    assert.equal(consularAudit.isProductionReady, false);
   });
 
   it('Gate 3: Normalization Integrity across Candidate Adapters (Search & Details Mapping)', async () => {

@@ -207,6 +207,10 @@ export class CircuitBreakerService {
   public getTelemetry(supplierId: string): CircuitBreakerTelemetry {
     return { ...this.getOrCreate(supplierId) };
   }
+
+  public static getCircuit(supplierId: string): CircuitBreakerTelemetry {
+    return globalCircuitBreaker.getTelemetry(supplierId);
+  }
 }
 
 export const globalCircuitBreaker = new CircuitBreakerService();

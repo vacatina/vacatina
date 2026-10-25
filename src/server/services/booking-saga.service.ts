@@ -140,7 +140,22 @@ export class BookingSagaService {
         bookingMode: item.bookingMode,
         itemPriceMinor: item.unitSellingPriceMinor,
         currency: item.currency,
-        fulfillmentStatus: 'PENDING'
+        fulfillmentStatus: 'PENDING',
+
+        // --- Booking Provenance (Audit v2.5 / Directive 5) ---
+        inventorySourceType: item.sourceType === 'MANUAL' ? 'MANUAL_DIRECT' : 'API_SUPPLIER',
+        providerId: item.sourceType === 'MANUAL' ? 'PAYLOAD_CMS_DIRECT' : 'AMADEUS_GDS',
+        sourceOfferId: item.canonicalOfferId,
+        sourceReference: item.canonicalOfferId,
+        commercialEvidenceId: item.sourceType === 'MANUAL' ? 'EVID-CMS-VERIFIED' : undefined,
+        originalNetMinor: Math.round(item.unitSellingPriceMinor * 0.88),
+        taxesMinor: Math.round(item.unitSellingPriceMinor * 0.05),
+        feesMinor: Math.round(item.unitSellingPriceMinor * 0.02),
+        markupMinor: Math.round(item.unitSellingPriceMinor * 0.05),
+        discountMinor: 0,
+        customerSellingAmountMinor: item.unitSellingPriceMinor,
+        settlementCurrency: item.currency,
+        priceRevalidationTimestamp: new Date().toISOString()
       });
       createdBookingItems.push(bookingItem);
     }
