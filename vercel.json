@@ -11,7 +11,7 @@
     },
     {
       "source": "/((?!public/|dist/|assets/|.*\\..*).*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [

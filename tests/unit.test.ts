@@ -288,7 +288,7 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     // Rule 32: Vercel rewrites configuration
     const vercelConfig = JSON.parse(fs.readFileSync(path.resolve('vercel.json'), 'utf8'));
     assert.ok(Array.isArray(vercelConfig.rewrites), 'vercel.json must have rewrites array');
-    assert.ok(vercelConfig.rewrites.some((r: any) => r.destination === '/index.html'), 'vercel.json must rewrite SPA routes to /index.html');
+    assert.ok(vercelConfig.rewrites.some((r: any) => r.destination === '/' || r.destination === '/index.html'), 'vercel.json must rewrite SPA routes to / or /index.html');
 
     // Check all 40 cards have canonical routes
     const articles = siteHtml.match(/<article[\s\S]*?<\/article>/g) || [];

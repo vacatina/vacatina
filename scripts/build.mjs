@@ -495,9 +495,6 @@ export function buildProject() {
         continue: true
       },
       {
-        handle: 'filesystem'
-      },
-      {
         src: '^/(.*)$',
         headers: {
           'x-content-type-options': 'nosniff',
@@ -505,6 +502,17 @@ export function buildProject() {
           'referrer-policy': 'strict-origin-when-cross-origin'
         },
         continue: true
+      },
+      {
+        handle: 'filesystem'
+      },
+      {
+        src: '^/screen-04-states(.*)$',
+        dest: '/screen-04-states.html'
+      },
+      {
+        src: '^/(.*)$',
+        dest: '/'
       }
     ]
   };
