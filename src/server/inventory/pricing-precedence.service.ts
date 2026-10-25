@@ -25,7 +25,14 @@ export interface CalculatePricingInput {
 
 export class PricingPrecedenceService {
   /**
-   * Default platform markup percentages by product category (Layer 2)
+   * Configurable commercial markup policies (Layer 2).
+   * Controlled dynamically by authorized Admin / Finance roles without redeploying code.
+   */
+  private static dynamicMarkupRules: Partial<Record<TravelProductSlug, number>> = {};
+  private static dynamicFixedFees: Record<string, number> = {};
+
+  /**
+   * Baseline default platform markup percentages by product category (Fallback defaults).
    */
   private static readonly PLATFORM_MARKUP_PERCENT: Record<TravelProductSlug, number> = {
     flights: 5.5,
@@ -41,11 +48,53 @@ export class PricingPrecedenceService {
   };
 
   /**
-   * Fixed fee minor units for products with flat service rates
+   * Baseline default fixed fee minor units for products with flat service rates.
    */
   private static readonly FIXED_FEE_MINOR: Record<string, number> = {
     visa_service_fee_minor: 1250000 // LKR 12,500.00 minor
   };
+
+  /**
+   * Sets a dynamic commercial markup percentage for a product vertical.
+   */
+  public static setCommercialMarkupPolicy(productType: TravelProductSlug, percent: number): void {
+    if (percent < 0 || percent > 100) {
+      throw new Error(`Invalid markup percentage: ${percent}. Must be between 0 and 100.`);
+    }
+    this.dynamicMarkupRules[productType] = percent;
+  }
+
+  /**
+   * Sets a dynamic fixed fee in minor currency units for flat service products.
+   */
+  public static setCommercialFixedFeePolicy(feeKey: string, feeMinor: number): void {
+    if (feeMinor < 0) {
+      throw new Error(`Invalid fee minor: ${feeMinor}. Cannot be negative.`);
+    }
+    this.dynamicFixedFees[feeKey] = feeMinor;
+  }
+
+  /**
+   * Resets dynamic policies to baseline defaults (used in testing/staging).
+   */
+  public static resetCommercialPolicies(): void {
+    this.dynamicMarkupRules = {};
+    this.dynamicFixedFees = {};
+  }
+
+  /**
+   * Retrieves active commercial policy rate for transparency and auditing.
+   */
+  public static getActiveCommercialPolicy(productType: TravelProductSlug): {
+    markupPercent: number;
+    isDynamicOverride: boolean;
+  } {
+    const isDynamic = this.dynamicMarkupRules[productType] !== undefined;
+    const markupPercent = isDynamic
+      ? this.dynamicMarkupRules[productType]!
+      : (this.PLATFORM_MARKUP_PERCENT[productType] || 8.0);
+    return { markupPercent, isDynamicOverride: isDynamic };
+  }
 
   /**
    * B2B preferential tier commission discount percentage (Layer 3)
@@ -61,12 +110,12 @@ export class PricingPrecedenceService {
     const rawSupplierCostMinor = Math.round(input.rawSupplierCostMinor);
     const currency = input.targetCurrency || input.rawCurrency || 'LKR';
 
-    // Layer 2: Platform Base B2C Margin
+    // Layer 2: Platform Base B2C Margin (Evaluates dynamic Finance policy before baseline default)
     let platformMarkupMinor = 0;
     if (input.productType === 'visa') {
-      platformMarkupMinor = this.FIXED_FEE_MINOR.visa_service_fee_minor;
+      platformMarkupMinor = this.dynamicFixedFees.visa_service_fee_minor ?? this.FIXED_FEE_MINOR.visa_service_fee_minor;
     } else {
-      const markupRate = this.PLATFORM_MARKUP_PERCENT[input.productType] || 8.0;
+      const markupRate = this.dynamicMarkupRules[input.productType] ?? (this.PLATFORM_MARKUP_PERCENT[input.productType] || 8.0);
       platformMarkupMinor = Math.round(rawSupplierCostMinor * (markupRate / 100));
     }
 

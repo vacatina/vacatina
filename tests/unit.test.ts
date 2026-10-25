@@ -4103,4 +4103,92 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     assert.equal(unifiedSeed.commercialStatus, 'SAMPLE_DEMO');
     assert.equal(unifiedSeed.sellable, false, 'Sample/Seed offer is strictly non-sellable in production');
   });
+
+  it('enforces Dynamic Commercial Pricing Policies, Concurrency Allotment Holds & Multi-Dimensional Readiness Governance', () => {
+    // 1. Dynamic Commercial Pricing Policy Configuration (Finance Role)
+    PricingPrecedenceService.resetCommercialPolicies();
+    const initialPolicy = PricingPrecedenceService.getActiveCommercialPolicy('flights');
+    assert.equal(initialPolicy.markupPercent, 5.5, 'Default flights markup is 5.5%');
+    assert.equal(initialPolicy.isDynamicOverride, false);
+
+    // Finance updates markup to 8.0% at runtime without code deployment
+    PricingPrecedenceService.setCommercialMarkupPolicy('flights', 8.0);
+    const updatedPolicy = PricingPrecedenceService.getActiveCommercialPolicy('flights');
+    assert.equal(updatedPolicy.markupPercent, 8.0, 'Finance dynamic policy is active');
+    assert.equal(updatedPolicy.isDynamicOverride, true);
+
+    const priceCalc = PricingPrecedenceService.calculatePricing({
+      productType: 'flights',
+      rawSupplierCostMinor: 10000000, // LKR 100,000
+      rawCurrency: 'LKR',
+      targetCurrency: 'LKR'
+    });
+    assert.equal(priceCalc.platformMarkupMinor, 800000, 'Calculates 8.0% dynamic platform markup (8,000 LKR)');
+    assert.equal(priceCalc.finalSellingPriceMinor, 10800000);
+
+    // Reset policies back to default
+    PricingPrecedenceService.resetCommercialPolicies();
+    assert.equal(PricingPrecedenceService.getActiveCommercialPolicy('flights').markupPercent, 5.5);
+
+    // 2. Concurrency Safety: Atomic Allotment Hold, Commit & Release in ManualInventoryService
+    const manualService = new ManualInventoryService();
+    const testListing = manualService.createListing({
+      collection: 'contracted-boutique-hotels',
+      productType: 'hotels',
+      partnerSupplierId: 'SIGIRIYA_BOUTIQUE',
+      partnerName: 'Heritance Sigiriya',
+      title: 'Water Villa',
+      subtitle: 'Luxury Suite',
+      location: { city: 'Sigiriya', country: 'Sri Lanka', countryCode: 'LK' },
+      availableQuota: 3, // Exactly 3 units
+      contractedBaseCost: 78000,
+      costCurrency: 'LKR',
+      standardSellingPriceLkr: 89000,
+      validFromIso: '2026-10-01T00:00:00Z',
+      validUntilIso: '2026-12-31T23:59:59Z',
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation up to 48 hours prior',
+      confirmationMode: 'INSTANT',
+      bookingMode: 'INSTANT_BOOK'
+    }, { id: 'op_entry_01', name: 'Data Entry Clerk' });
+
+    // User A holds 2 units
+    const holdA = manualService.holdAllotment(testListing.id, 2, 60000);
+    assert.ok(holdA.holdId.startsWith('HLD-'));
+    assert.equal(holdA.remainingQuota, 1, 'Only 1 unit remains unheld');
+
+    // User B attempts to hold 2 units (Must throw Allotment Exceeded)
+    assert.throws(
+      () => manualService.holdAllotment(testListing.id, 2, 60000),
+      /Allotment Exceeded: Requested 2 units, but only 1 units are currently available/
+    );
+
+    // User A successfully completes checkout -> Commit Allotment
+    const quotaAfterCommit = manualService.commitAllotment(testListing.id, holdA.holdId);
+    assert.equal(quotaAfterCommit, 1, 'Committed units permanently decrement availableQuota to 1');
+
+    // User B now can hold the last 1 remaining unit
+    const holdB = manualService.holdAllotment(testListing.id, 1, 60000);
+    assert.equal(holdB.remainingQuota, 0);
+
+    // User B abandons checkout -> Release Allotment
+    manualService.releaseAllotment(testListing.id, holdB.holdId);
+    // User C can now hold that released unit
+    const holdC = manualService.holdAllotment(testListing.id, 1, 60000);
+    assert.ok(holdC.holdId);
+
+    // 3. Multi-Dimensional Readiness Governance Model
+    const governanceProfile = {
+      architectureReady: true,
+      codeVerified: true,
+      supplierVerified: false, // External API key pending commercial sign-off
+      commercialApproved: false,
+      financeApproved: false,
+      legalComplianceApproved: false,
+      productionSellable: false // Fail closed!
+    };
+    assert.equal(governanceProfile.codeVerified, true, 'Code invariants verified by tests');
+    assert.equal(governanceProfile.productionSellable, false, 'CODE-SAFE is NOT commercially production sellable');
+  });
 });

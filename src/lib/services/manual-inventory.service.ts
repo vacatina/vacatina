@@ -228,9 +228,100 @@ export function assertListingIsProductionSellable(listing: ManualListingRecord):
 
 export class ManualInventoryService {
   private listings: Map<string, ManualListingRecord> = new Map();
+  private activeHolds: Map<string, { listingId: string; quantity: number; expiresAt: number }> = new Map();
 
   constructor(initialSeed: ManualListingRecord[] = []) {
     initialSeed.forEach(listing => this.listings.set(listing.id, listing));
+  }
+
+  /**
+   * Holds allotment atomically with a TTL (e.g. 15 minutes during checkout wizard).
+   * Prevents two concurrent users from booking the last available room/seat.
+   */
+  public holdAllotment(
+    listingId: string,
+    quantity: number,
+    holdDurationMs: number = 900000 // 15 mins default
+  ): { holdId: string; expiresAtIso: string; remainingQuota: number } {
+    const listing = this.listings.get(listingId);
+    if (!listing) {
+      throw new Error(`Listing '${listingId}' not found.`);
+    }
+
+    // Clean up expired holds for this listing
+    const now = Date.now();
+    for (const [holdId, hold] of this.activeHolds.entries()) {
+      if (hold.listingId === listingId && hold.expiresAt <= now) {
+        this.activeHolds.delete(holdId);
+      }
+    }
+
+    // Calculate currently active held units
+    let totalHeld = 0;
+    for (const hold of this.activeHolds.values()) {
+      if (hold.listingId === listingId) {
+        totalHeld += hold.quantity;
+      }
+    }
+
+    const availableUnits = listing.availableQuota - totalHeld;
+    if (availableUnits < quantity) {
+      throw new Error(
+        `Allotment Exceeded: Requested ${quantity} units, but only ${Math.max(0, availableUnits)} units are currently available (Total Quota: ${listing.availableQuota}, Active Holds: ${totalHeld}).`
+      );
+    }
+
+    const holdId = `HLD-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
+    const expiresAt = now + holdDurationMs;
+    this.activeHolds.set(holdId, { listingId, quantity, expiresAt });
+
+    return {
+      holdId,
+      expiresAtIso: new Date(expiresAt).toISOString(),
+      remainingQuota: availableUnits - quantity
+    };
+  }
+
+  /**
+   * Commits an active hold upon payment confirmation, permanently decrementing availableQuota.
+   */
+  public commitAllotment(listingId: string, holdId: string): number {
+    const hold = this.activeHolds.get(holdId);
+    if (!hold || hold.listingId !== listingId) {
+      throw new Error(`Active allotment hold '${holdId}' for listing '${listingId}' not found or already expired.`);
+    }
+    if (hold.expiresAt <= Date.now()) {
+      this.activeHolds.delete(holdId);
+      throw new Error(`Allotment hold '${holdId}' has expired.`);
+    }
+
+    const listing = this.listings.get(listingId);
+    if (!listing) {
+      throw new Error(`Listing '${listingId}' not found.`);
+    }
+
+    listing.availableQuota = Math.max(0, listing.availableQuota - hold.quantity);
+    listing.updatedAtIso = new Date().toISOString();
+    this.activeHolds.delete(holdId);
+
+    listing.auditTrail.push({
+      action: 'ALLOTMENT_COMMITTED',
+      changedBy: 'Booking System',
+      timestampIso: new Date().toISOString(),
+      note: `Committed ${hold.quantity} units via hold '${holdId}'. Remaining quota: ${listing.availableQuota}.`
+    });
+
+    return listing.availableQuota;
+  }
+
+  /**
+   * Releases an allotment hold (e.g. user abandons checkout or payment fails).
+   */
+  public releaseAllotment(listingId: string, holdId: string): void {
+    const hold = this.activeHolds.get(holdId);
+    if (hold && hold.listingId === listingId) {
+      this.activeHolds.delete(holdId);
+    }
   }
 
   /**

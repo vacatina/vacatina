@@ -1213,14 +1213,36 @@ export function assertProviderCanExecuteLiveBooking(provider: {
 }
 
 // ----------------------------------------------------------------------------
-// 16. Four-Tier Commercial Truth & Operational Status Model (Audit v2.3)
+// 16. Seven-Stage Multi-Dimensional Governance & Operational Readiness (Architecture v2.0)
 // ----------------------------------------------------------------------------
 
-export interface OperationalReadinessTier {
+/**
+ * Authoritative 7-Stage Multi-Dimensional Governance Lifecycle:
+ * Explicit separation between Code Safety, Commercial Authority, and Legal Compliance.
+ *
+ * 1. ARCHITECTURE_READY: Canonical schema, route mapping, and pipeline designed
+ * 2. CODE_VERIFIED: Typed adapter, normalization, invariants, and automated tests passing (e.g. 72/72 tests)
+ * 3. SUPPLIER_VERIFIED: Upstream supplier connection, live API sandbox/production handshake verified
+ * 4. COMMERCIAL_APPROVED: Bilateral commercial contract, rate sheet, and margin structure signed off
+ * 5. FINANCE_APPROVED: Settlement currency, payout terms, reconciliation, and payment gateway approved
+ * 6. LEGAL_COMPLIANCE_APPROVED: Regulatory compliance, consumer protection, and insurance/visa licensing approved
+ * 7. PRODUCTION_SELLABLE: ALL 6 preceding gates cleared; offer is authorized to transact real customer money
+ */
+export interface MultiDimensionalReadinessGovernance {
+  architectureReady: boolean;
+  codeVerified: boolean;
+  supplierVerified: boolean;
+  commercialApproved: boolean;
+  financeApproved: boolean;
+  legalComplianceApproved: boolean;
+  productionSellable: boolean;
+}
+
+export interface OperationalReadinessTier extends Partial<MultiDimensionalReadinessGovernance> {
   systemReady: boolean;        // Schemas, normalizers, deduplication, pricing, backoffice CRUD & tests pass
   sandboxReady: boolean;       // Sandbox/simulated adapter can execute supported search/recheck/order flows
   commercialReady: boolean;    // Signed contract, rate sheet, allotment agreement, settlement terms & legal approval
-  productionSellable: boolean; // Both commercialReady = true AND all 12 operational certification gates cleared
+  productionSellable: boolean; // Both commercialReady = true AND all certification gates cleared
 }
 
 export type InventoryCommercialClass =
