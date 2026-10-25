@@ -5,6 +5,7 @@
 
 import type {
   CanonicalOfferEntity,
+  IntegrationLifecycleStatus,
   RevalidationResult,
   SearchQueryCriteria,
   TravelProductSlug
@@ -20,7 +21,7 @@ export interface SupplierAdapterConfig {
   apiKey?: string;
   apiSecret?: string;
   timeoutMs: number;
-  integrationLifecycle?: 'PLANNED' | 'SCAFFOLD' | 'SANDBOX_ACTIVE' | 'CERTIFIED' | 'PRODUCTION_LIVE';
+  integrationLifecycle?: IntegrationLifecycleStatus;
 }
 
 export interface BookingHoldResult {
@@ -73,7 +74,7 @@ export abstract class BaseSupplierAdapter<TRaw = unknown> {
     return this.config.environment === 'production';
   }
 
-  public get integrationLifecycle(): 'PLANNED' | 'SCAFFOLD' | 'SANDBOX_ACTIVE' | 'CERTIFIED' | 'PRODUCTION_LIVE' {
+  public get integrationLifecycle(): IntegrationLifecycleStatus {
     return this.config.integrationLifecycle || 'SCAFFOLD';
   }
 

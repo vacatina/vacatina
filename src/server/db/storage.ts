@@ -28,6 +28,8 @@ import type {
   PaymentOrderEntity,
   PaymentWebhookEventEntity,
   VisaApplicationEntity,
+  ManualListingEntity,
+  ManualListingAuditLogEntity,
   ClientEntity,
   MarkupRuleEntity,
   CommissionLedgerEntity,
@@ -58,6 +60,8 @@ export class VacatinaStorageEngine {
   private commissionLedgers = new Map<UUID, CommissionLedgerEntity>();
   private packages = new Map<UUID, PackageEntity>();
   private supportTickets = new Map<UUID, SupportTicketEntity>();
+  private manualListings = new Map<UUID, ManualListingEntity>();
+  private manualListingAudits = new Map<UUID, ManualListingAuditLogEntity>();
   private idempotencyKeys = new Map<string, IdempotencyKeyEntity>();
   private outboxEvents = new Map<UUID, OutboxEventEntity>();
   private auditLogs = new Map<UUID, AuditLogEntity>();
@@ -386,6 +390,80 @@ export class VacatinaStorageEngine {
     };
     this.supportTickets.set(record.id, record);
     return record;
+  }
+
+  // --------------------------------------------------------------------------
+  // Manual Inventory & Direct Contracts Domain (Payload CMS / PostgreSQL)
+  // --------------------------------------------------------------------------
+  public createManualListing(listing: Omit<ManualListingEntity, 'id' | 'createdAt' | 'updatedAt'>, actorUserId?: UUID): ManualListingEntity {
+    const now = new Date().toISOString();
+    const id = generateUUID();
+    const record: ManualListingEntity = {
+      ...listing,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    this.manualListings.set(id, record);
+
+    if (actorUserId) {
+      this.recordManualListingAudit(id, actorUserId, 'CREATED', `Created ${listing.productType} direct contract listing: ${listing.title}`, undefined, record as any);
+    }
+    return record;
+  }
+
+  public getManualListing(id: UUID): ManualListingEntity | undefined {
+    return this.manualListings.get(id);
+  }
+
+  public getManualListings(filter?: { productType?: string; status?: string; destination?: string }): ManualListingEntity[] {
+    let list = Array.from(this.manualListings.values());
+    if (filter?.productType) list = list.filter(l => l.productType === filter.productType);
+    if (filter?.status) list = list.filter(l => l.status === filter.status);
+    if (filter?.destination) {
+      const d = filter.destination.toLowerCase();
+      list = list.filter(l => l.destinationCity.toLowerCase().includes(d) || l.destinationCountry.toLowerCase().includes(d));
+    }
+    return list;
+  }
+
+  public updateManualListing(id: UUID, updates: Partial<ManualListingEntity>, actorUserId: UUID, changeReason: string): ManualListingEntity {
+    const existing = this.manualListings.get(id);
+    if (!existing) throw new Error(`ManualListing ${id} not found`);
+    const updated: ManualListingEntity = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    this.manualListings.set(id, updated);
+    this.recordManualListingAudit(id, actorUserId, 'UPDATED', changeReason, existing as any, updated as any);
+    return updated;
+  }
+
+  public recordManualListingAudit(
+    listingId: UUID,
+    actorUserId: UUID,
+    action: ManualListingAuditLogEntity['action'],
+    changeSummary: string,
+    prevState?: Record<string, unknown>,
+    newState: Record<string, unknown> = {}
+  ): ManualListingAuditLogEntity {
+    const audit: ManualListingAuditLogEntity = {
+      id: generateUUID(),
+      listingId,
+      actorUserId,
+      action,
+      changeSummary,
+      previousStateSnapshot: prevState,
+      newStateSnapshot: newState,
+      createdAt: new Date().toISOString()
+    };
+    this.manualListingAudits.set(audit.id, audit);
+    return audit;
+  }
+
+  public getManualListingAudits(listingId: UUID): ManualListingAuditLogEntity[] {
+    return Array.from(this.manualListingAudits.values()).filter(a => a.listingId === listingId);
   }
 }
 

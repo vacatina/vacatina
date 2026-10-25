@@ -146,10 +146,18 @@ export class ManualCmsAdapter extends BaseSupplierAdapter<RawPayloadCmsListing> 
 
     const offerId = `vct-man-${raw.productType.slice(0, 2)}-${raw.id.slice(-6)}`;
 
+    // Resolve canonical source type according to product nature
+    let canonicalSourceType: InventorySourceType = 'DIRECT_CONTRACT';
+    if (raw.productType === 'visa') {
+      canonicalSourceType = 'MANUAL_SERVICE';
+    } else if (raw.productType === 'packages') {
+      canonicalSourceType = 'CURATED_PACKAGE';
+    }
+
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: raw.productType,
-      sourceType: 'MANUAL',
+      sourceType: canonicalSourceType,
       supplierId: raw.partnerSupplierId,
       supplierName: raw.partnerName,
       manualListingId: raw.id,

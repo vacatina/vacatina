@@ -40,7 +40,7 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
       sandboxBaseUrl: 'http://localhost:3000/api',
       productionBaseUrl: 'https://vacatina-nu.vercel.app/api',
       timeoutMs: 3000,
-      integrationLifecycle: 'PRODUCTION_LIVE'
+      integrationLifecycle: 'OPERATIONALLY_LIVE_MANUAL'
     });
   }
 
@@ -57,7 +57,7 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
       productType: 'visa',
-      sourceType: 'MANUAL',
+      sourceType: 'MANUAL_SERVICE',
       supplierId: this.supplierId,
       supplierName: 'Vacatina Consular Advisory Service',
       supplierOfferId: raw.visaServiceId,
@@ -89,7 +89,7 @@ export class VisaConsularAdapter extends BaseSupplierAdapter<RawVisaProductOffer
       pinAboveApi: true,
       deduplicationKey: '',
       isSandboxSimulated: false,
-      integrationLifecycle: 'PRODUCTION_LIVE',
+      integrationLifecycle: 'OPERATIONALLY_LIVE_MANUAL',
       sourceMetadata: {
         visaServiceId: raw.visaServiceId,
         processingSlaDays: raw.processingSlaDays

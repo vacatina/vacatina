@@ -15,7 +15,22 @@ export type TravelProductSlug =
   | 'sightseeing'
   | 'insurance';
 
-export type InventorySourceType = 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+export type InventorySourceType =
+  | 'API'
+  | 'DIRECT_CONTRACT'
+  | 'MANUAL_SERVICE'
+  | 'CURATED_PACKAGE'
+  | 'HYBRID'
+  | 'SEED'
+  | 'MANUAL'; // Backward-compatible alias for DIRECT_CONTRACT / MANUAL_SERVICE
+
+export type IntegrationLifecycleStatus =
+  | 'PLANNED'
+  | 'SCAFFOLD'
+  | 'SANDBOX_ACTIVE'
+  | 'CERTIFIED'
+  | 'OPERATIONALLY_LIVE_MANUAL'
+  | 'PRODUCTION_LIVE';
 
 export type AvailabilityState =
   | 'LIVE'
@@ -88,7 +103,7 @@ export interface CanonicalOfferEntity {
   pinAboveApi: boolean;             // Administrative priority ranking
   deduplicationKey: string;         // Composite natural deduplication key
   isSandboxSimulated: boolean;      // Truthful flag: true if rendered by mock/sandbox adapter
-  integrationLifecycle: 'PLANNED' | 'SCAFFOLD' | 'SANDBOX_ACTIVE' | 'CERTIFIED' | 'PRODUCTION_LIVE';
+  integrationLifecycle: IntegrationLifecycleStatus;
   sourceMetadata: Record<string, unknown>;
   revalidationCapability: {
     canRevalidateOnline: boolean;

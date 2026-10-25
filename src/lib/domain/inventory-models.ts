@@ -24,10 +24,11 @@ import type { SupportedCurrency, TravelProductSlug } from './types.ts';
 export type InventorySourceType =
   | 'API'
   | 'DIRECT_CONTRACT'
-  | 'MANUAL'
+  | 'MANUAL_SERVICE'
   | 'CURATED_PACKAGE'
   | 'HYBRID'
-  | 'SEED';
+  | 'SEED'
+  | 'MANUAL';
 
 /**
  * Four canonical booking modes (Locked Part 8).

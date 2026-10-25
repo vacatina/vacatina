@@ -1161,8 +1161,8 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
     const combined = [apiFlight, manualFlight];
     const ranked = DeduplicationService.deduplicateAndRank(combined);
 
-    // Pinned manual flight must rank first
-    assert.equal(ranked[0].sourceType, 'MANUAL');
+    // Pinned direct contract flight must rank first
+    assert.equal(ranked[0].sourceType, 'DIRECT_CONTRACT');
     assert.equal(ranked[0].pinAboveApi, true);
     assert.equal(ranked[0].title, 'Colombo to Kandy Scenic Amphibian Flight');
   });
@@ -1327,10 +1327,133 @@ describe('Vacatina Domain & Validation Unit Tests', () => {
       const offer = results[0];
       assert.equal(offer.productType, p);
       assert.ok(offer.canonicalOfferId.startsWith('vct-'));
-      assert.ok(['API', 'MANUAL', 'HYBRID'].includes(offer.sourceType));
+      assert.ok(['API', 'DIRECT_CONTRACT', 'MANUAL_SERVICE', 'CURATED_PACKAGE', 'HYBRID', 'MANUAL'].includes(offer.sourceType));
       assert.ok(typeof offer.isSandboxSimulated === 'boolean');
-      assert.ok(['SCAFFOLD', 'SANDBOX_ACTIVE', 'PRODUCTION_LIVE'].includes(offer.integrationLifecycle));
+      assert.ok(['SCAFFOLD', 'SANDBOX_ACTIVE', 'OPERATIONALLY_LIVE_MANUAL', 'PRODUCTION_LIVE'].includes(offer.integrationLifecycle));
       assert.ok(offer.pricing.finalSellingPriceMinor > 0);
     }
+  });
+
+  it('enforces the Canonical 6-Source Inventory Taxonomy and Admin Manual CMS Schema (ADR-006 & Doc 14)', () => {
+    // 1. Verify Visa Consular Adapter classification
+    const visaAdapter = new VisaConsularAdapter();
+    const visaOffer = visaAdapter.normalize({
+      visaServiceId: 'vs_dxb_01',
+      countryName: 'United Arab Emirates',
+      countryCode: 'AE',
+      visaType: 'Tourist e-Visa Assistance',
+      durationDays: 60,
+      consularBaseCostMinor: 3500000,
+      currency: 'LKR',
+      processingSlaDays: 2
+    });
+    assert.equal(visaOffer.sourceType, 'MANUAL_SERVICE');
+    assert.equal(visaOffer.integrationLifecycle, 'OPERATIONALLY_LIVE_MANUAL');
+    assert.equal(visaOffer.isSandboxSimulated, false);
+
+    // 2. Verify Manual CMS Adapter taxonomy mapping
+    const manualAdapter = new ManualCmsAdapter();
+    const hotelOffer = manualAdapter.normalize({
+      id: 'cms_dir_ht_001',
+      productType: 'hotels',
+      partnerSupplierId: 'CEYLON_HOTELS',
+      partnerName: 'Galle Heritage',
+      title: 'Galle Fort Bungalow',
+      subtitle: 'Luxury Suite',
+      location: { city: 'Galle', country: 'Sri Lanka', countryCode: 'LK' },
+      confirmationMode: 'INSTANT_CONFIRM',
+      availableQuota: 5,
+      contractedBaseCostMinor: 4500000,
+      costCurrency: 'LKR',
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation 48h',
+      pinAboveApi: true,
+      status: 'PUBLISHED'
+    });
+    assert.equal(hotelOffer.sourceType, 'DIRECT_CONTRACT');
+
+    const pkgOffer = manualAdapter.normalize({
+      id: 'cms_pkg_001',
+      productType: 'packages',
+      partnerSupplierId: 'VACATINA_EXP',
+      partnerName: 'Ceylon Horizons',
+      title: 'Sri Lanka Cultural Escape',
+      subtitle: '7-day fixed package',
+      location: { city: 'Kandy', country: 'Sri Lanka', countryCode: 'LK' },
+      confirmationMode: 'REQUEST_TO_CONFIRM',
+      availableQuota: 12,
+      contractedBaseCostMinor: 85000000,
+      costCurrency: 'LKR',
+      inclusions: ['Full itinerary'],
+      exclusions: [],
+      cancellationPolicy: 'Standard terms',
+      pinAboveApi: true,
+      status: 'PUBLISHED'
+    });
+    assert.equal(pkgOffer.sourceType, 'CURATED_PACKAGE');
+
+    // 3. Verify Storage Engine Manual Listing CRUD & Audit Trail
+    const storage = new VacatinaStorageEngine();
+    const createdListing = storage.createManualListing({
+      productType: 'hotels',
+      sourceType: 'DIRECT_CONTRACT',
+      partnerSupplierId: 'HERITAGE_VILLAS',
+      partnerName: 'Bentota Beach Villa',
+      contractReference: 'AGR-2026-BENTOTA-004',
+      title: 'Bentota Luxury Beach Villa Allotment',
+      subtitle: 'Direct Contract Allotment · 6 Villas',
+      description: 'Directly contracted private pool villas in Bentota',
+      destinationCity: 'Bentota',
+      destinationCountry: 'Sri Lanka',
+      destinationCountryCode: 'LK',
+      contractedNetCostMinor: 5500000, // LKR 55,000.00
+      costCurrency: 'LKR',
+      platformMarkupPercent: 12.0,
+      sellingPriceMinor: 6160000,
+      sellingCurrency: 'LKR',
+      availableQuota: 6,
+      isUnlimitedQuota: false,
+      blackoutDates: ['2026-12-25', '2026-12-31'],
+      minimumNoticeHours: 24,
+      validFrom: '2026-11-01T00:00:00Z',
+      validUntil: '2027-04-30T23:59:59Z',
+      confirmationMode: 'INSTANT_CONFIRM',
+      inclusions: ['Daily breakfast', 'Private pool access'],
+      exclusions: ['Minibar'],
+      cancellationPolicy: 'Free cancellation up to 72 hours prior to arrival',
+      termsReference: 'https://vacatina.com/legal/direct-contracts/bentota',
+      heroImageUrl: '/cards/hotel_srilanka.jpg',
+      galleryImageUrls: ['/cards/hotel_srilanka.jpg'],
+      isFeatured: true,
+      pinAboveApi: true,
+      isB2BVisible: true,
+      isB2CVisible: true,
+      status: 'PUBLISHED'
+    }, 'usr_admin_ops_001');
+
+    assert.ok(createdListing.id);
+    assert.equal(createdListing.sourceType, 'DIRECT_CONTRACT');
+    assert.equal(createdListing.availableQuota, 6);
+
+    // Verify initial audit log created
+    const audits = storage.getManualListingAudits(createdListing.id);
+    assert.equal(audits.length, 1);
+    assert.equal(audits[0].action, 'CREATED');
+    assert.equal(audits[0].actorUserId, 'usr_admin_ops_001');
+
+    // Update listing with promotional override and audit reason
+    const updated = storage.updateManualListing(
+      createdListing.id,
+      { manualOverridePriceMinor: 5800000, overrideReason: 'Winter Early Bird Promo' },
+      'usr_admin_ops_001',
+      'Applied seasonal promotional rate override'
+    );
+    assert.equal(updated.manualOverridePriceMinor, 5800000);
+
+    const updatedAudits = storage.getManualListingAudits(createdListing.id);
+    assert.equal(updatedAudits.length, 2);
+    assert.equal(updatedAudits[1].action, 'UPDATED');
+    assert.equal(updatedAudits[1].changeSummary, 'Applied seasonal promotional rate override');
   });
 });

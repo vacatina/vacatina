@@ -79,11 +79,14 @@ export class DeduplicationService {
         continue;
       }
 
+      // Helper to identify direct Vacatina inventory
+      const isDirectInventory = (src: string) => ['DIRECT_CONTRACT', 'MANUAL_SERVICE', 'CURATED_PACKAGE', 'MANUAL'].includes(src);
+
       // Tie-Breaking Strategy:
-      // Priority A: Pin-Above-API (manual offers with pinAboveApi === true)
-      const pinnedManual = group.find(o => o.sourceType === 'MANUAL' && o.pinAboveApi);
-      if (pinnedManual) {
-        consolidated.push(pinnedManual);
+      // Priority A: Pin-Above-API (direct contract / manual offers with pinAboveApi === true)
+      const pinnedDirect = group.find(o => isDirectInventory(o.sourceType) && o.pinAboveApi);
+      if (pinnedDirect) {
+        consolidated.push(pinnedDirect);
         continue;
       }
 
@@ -93,8 +96,8 @@ export class DeduplicationService {
       );
       const bestPriceOffer = sortedByPrice[0];
 
-      // If best price is a Manual Direct Contract, enrich with direct deal badge
-      if (bestPriceOffer.sourceType === 'MANUAL' && sortedByPrice.some(o => o.sourceType === 'API')) {
+      // If best price is a Direct Contract, enrich with direct deal badge
+      if (isDirectInventory(bestPriceOffer.sourceType) && sortedByPrice.some(o => o.sourceType === 'API')) {
         bestPriceOffer.subtitle = `${bestPriceOffer.subtitle} · Exclusive Direct Deal`;
       }
 

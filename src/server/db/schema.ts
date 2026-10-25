@@ -157,7 +157,7 @@ export interface TripBucketItemEntity {
   tripBucketId: UUID;
   canonicalOfferId: string;
   productType: string;
-  sourceType: 'API' | 'DIRECT_CONTRACT' | 'MANUAL' | 'CURATED_PACKAGE' | 'HYBRID' | 'SEED';
+  sourceType: 'API' | 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE' | 'HYBRID' | 'SEED' | 'MANUAL';
   bookingMode: 'INSTANT_BOOK' | 'REQUEST_TO_BOOK' | 'REQUEST_AVAILABILITY' | 'INQUIRY_ONLY';
   title: string;
   configuration: Record<string, unknown>;
@@ -182,8 +182,68 @@ export interface FavoriteEntity {
 }
 
 // ----------------------------------------------------------------------------
-// 4. Offers Domain
+// 4. Offers & Manual Listing Management Domain
 // ----------------------------------------------------------------------------
+
+export type ManualListingStatus = 'DRAFT' | 'IN_REVIEW' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED';
+
+export interface ManualListingEntity {
+  id: UUID;
+  organizationId?: UUID;
+  productType: string;
+  sourceType: 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE';
+  partnerSupplierId: string;
+  partnerName: string;
+  contractReference: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  destinationCity: string;
+  destinationCountry: string;
+  destinationCountryCode: string;
+  latitude?: number;
+  longitude?: number;
+  contractedNetCostMinor: number;
+  costCurrency: string;
+  platformMarkupPercent: number;
+  manualOverridePriceMinor?: number;
+  overrideReason?: string;
+  sellingPriceMinor: number;
+  sellingCurrency: string;
+  availableQuota: number;
+  isUnlimitedQuota: boolean;
+  blackoutDates: string[]; // ISO YYYY-MM-DD
+  minimumNoticeHours: number;
+  validFrom: ISODateString;
+  validUntil: ISODateString;
+  confirmationMode: 'INSTANT_CONFIRM' | 'REQUEST_TO_CONFIRM' | 'ASSISTED_SERVICE';
+  inclusions: string[];
+  exclusions: string[];
+  cancellationPolicy: string;
+  termsReference: string;
+  heroImageUrl: string;
+  galleryImageUrls: string[];
+  isFeatured: boolean;
+  pinAboveApi: boolean;
+  isB2BVisible: boolean;
+  isB2CVisible: boolean;
+  status: ManualListingStatus;
+  publishedByUserId?: UUID;
+  publishedAt?: ISODateString;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export interface ManualListingAuditLogEntity {
+  id: UUID;
+  listingId: UUID;
+  actorUserId: UUID;
+  action: 'CREATED' | 'UPDATED' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED' | 'PRICE_OVERRIDDEN';
+  changeSummary: string;
+  previousStateSnapshot?: Record<string, unknown>;
+  newStateSnapshot: Record<string, unknown>;
+  createdAt: ISODateString;
+}
 
 export interface OfferSnapshotEntity {
   id: UUID;
