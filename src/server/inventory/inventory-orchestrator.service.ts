@@ -184,13 +184,47 @@ export class InventoryOrchestratorService {
       console.warn(`[InventoryOrchestrator] Non-fatal API retrieval error: ${err.message}`);
     }
 
-    // --- Step 3: Normalization & Strict Taxonomy Enforcement ---
+    // --- Step 3: Normalization & Strict Taxonomy Enforcement (2-Tier Architecture) ---
     for (const offer of rawCollectedOffers) {
+      // 1. Resolve Top-Level 4-Source Type ('API' | 'MANUAL' | 'HYBRID' | 'SEED')
+      if (offer.environmentClass === 'SEED' || offer.sourceEnvironment === 'DEMO_ONLY' || offer.sourceType === 'SEED') {
+        offer.sourceType = 'SEED';
+        offer.sourceSubtype = 'PROTOTYPE_SAMPLE';
+      } else if (offer.sourceType === 'HYBRID' || offer.compositionType === 'DYNAMIC_BUNDLE') {
+        offer.sourceType = 'HYBRID';
+        offer.sourceSubtype = 'DYNAMIC_PACKAGE';
+      } else if (
+        offer.sourceType === 'MANUAL' ||
+        offer.sourceType === 'DIRECT_CONTRACT' ||
+        offer.sourceType === 'MANUAL_SERVICE' ||
+        offer.sourceType === 'CURATED_PACKAGE' ||
+        offer.manualListingId ||
+        offer.inventorySourceType === 'MANUAL_DIRECT' ||
+        offer.inventorySourceType === 'INTERNAL_SERVICE'
+      ) {
+        const prev = offer.sourceType;
+        offer.sourceType = 'MANUAL';
+        if (offer.sourceSubtype) {
+          // preserve already assigned subtype
+        } else if (prev === 'MANUAL_SERVICE' || offer.productType === 'visa' || offer.inventorySourceType === 'INTERNAL_SERVICE') {
+          offer.sourceSubtype = 'MANUAL_SERVICE';
+        } else if (prev === 'CURATED_PACKAGE' || offer.compositionType === 'CURATED_PACKAGE') {
+          offer.sourceSubtype = 'CURATED_PACKAGE';
+        } else {
+          offer.sourceSubtype = 'DIRECT_CONTRACT';
+        }
+      } else {
+        offer.sourceType = 'API';
+        offer.sourceSubtype = 'SUPPLIER_FEED';
+      }
+
+      // 2. Ensure backward-compatible inventorySourceType mapping
       if (!offer.inventorySourceType) {
         if (offer.sourceType === 'API') offer.inventorySourceType = 'API_SUPPLIER';
-        else if (offer.sourceType === 'DIRECT_CONTRACT' || offer.sourceType === 'MANUAL') offer.inventorySourceType = 'MANUAL_DIRECT';
-        else if (offer.productType === 'visa') offer.inventorySourceType = 'INTERNAL_SERVICE';
-        else if (offer.productType === 'packages') offer.inventorySourceType = 'DYNAMIC_PACKAGE';
+        else if (offer.sourceType === 'MANUAL') {
+          offer.inventorySourceType = offer.sourceSubtype === 'MANUAL_SERVICE' ? 'INTERNAL_SERVICE' : 'MANUAL_DIRECT';
+        } else if (offer.sourceType === 'HYBRID') offer.inventorySourceType = 'DYNAMIC_PACKAGE';
+        else if (offer.sourceType === 'SEED') offer.inventorySourceType = 'SAMPLE_INVENTORY';
         else offer.inventorySourceType = 'API_SUPPLIER';
       }
     }

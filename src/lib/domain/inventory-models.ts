@@ -18,17 +18,43 @@
 import type { SupportedCurrency, TravelProductSlug } from './types.ts';
 
 /**
- * Canonical inventory source modes (Locked Part 5 & 6).
+ * Authoritative 2-Tier Inventory Source Taxonomy (Architecture v2.0):
+ * Top-Level Source Type: Exactly 4 Provenance Categories
+ * - 'API': External live supplier (Duffel flight, LiteAPI hotel, Viator activity)
+ * - 'MANUAL': Vacatina direct commercial inventory, services, or curated packages
+ * - 'HYBRID': Multi-source components (e.g. Flight API + Direct Hotel + Transfer)
+ * - 'SEED': Development, test, demo fixtures & sample cards (Strictly non-sellable)
+ */
+export type TopLevelInventorySource = 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+
+/**
+ * Secondary Subtypes for fine-grained provenance:
+ * - For MANUAL:
+ *   - 'DIRECT_CONTRACT': Directly negotiated commercial agreements (hotels, chauffeur, villas)
+ *   - 'MANUAL_SERVICE': In-house Vacatina operational service (consular visa assistance, concierge)
+ *   - 'CURATED_PACKAGE': Pre-assembled fixed itinerary holiday package created by Vacatina
+ * - For API:
+ *   - 'SUPPLIER_FEED': Direct API integration feed (NDC flight, GDS, Bedbank rate)
+ * - For HYBRID:
+ *   - 'DYNAMIC_PACKAGE': Dynamic bundle composed of API + Manual components
+ * - For SEED:
+ *   - 'PROTOTYPE_SAMPLE': Sample/demo cards for UI layout testing
+ */
+export type ManualSourceSubtype = 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE';
+
+export type InventorySourceSubtype =
+  | ManualSourceSubtype
+  | 'SUPPLIER_FEED'
+  | 'DYNAMIC_PACKAGE'
+  | 'PROTOTYPE_SAMPLE';
+
+/**
+ * Canonical inventory source modes (Backward-compatible union).
  * SEED represents development/prototype content that cannot enter production checkout as Ready.
  */
 export type InventorySourceType =
-  | 'API'
-  | 'DIRECT_CONTRACT'
-  | 'MANUAL_SERVICE'
-  | 'CURATED_PACKAGE'
-  | 'HYBRID'
-  | 'SEED'
-  | 'MANUAL';
+  | TopLevelInventorySource
+  | ManualSourceSubtype;
 
 /**
  * Four canonical booking modes (Locked Part 8).
@@ -204,6 +230,7 @@ export interface VacatinaNormalizedOffer {
   offerId: string; // Stable canonical ID, e.g. 'vct-fl-amadeus-cmb-dxb-001'
   productType: TravelProductSlug;
   sourceType: InventorySourceType;
+  sourceSubtype?: InventorySourceSubtype;
   inventorySourceType?: 'MANUAL_DIRECT' | 'API_SUPPLIER' | 'INTERNAL_SERVICE' | 'DYNAMIC_PACKAGE' | 'SAMPLE_INVENTORY' | InventorySourceType;
   providerId?: string;             // Upstream platform provider ID alias
   supplierId: string;              // e.g. 'AMADEUS', 'DUFFEL', 'PAYLOAD_CMS', 'LOCAL_CHAUFFEUR_LK'

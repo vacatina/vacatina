@@ -84,8 +84,39 @@ export type ProviderLifecycle =
   | 'PRODUCTION_LIVE';// Commercial contract signed, live credentials active, financial settlement enabled
 
 // ----------------------------------------------------------------------------
-// Canonical Inventory Source Model & Verification Invariants (GPT Audit v2.1)
+// Canonical Inventory Source Model & Verification Invariants (Architecture v2.0)
 // ----------------------------------------------------------------------------
+
+/**
+ * Authoritative 2-Tier Inventory Source Taxonomy:
+ * Top-Level Source Type: Exactly 4 Provenance Categories
+ * - 'API': External live supplier / GDS / NDC / Bedbank (e.g. Duffel, LiteAPI, Viator)
+ * - 'MANUAL': Vacatina direct commercial inventory, assisted services, or curated packages
+ * - 'HYBRID': Multi-source components (e.g. Flight API + Direct Hotel + Transfer)
+ * - 'SEED': Development, test, demo fixtures & sample cards (Strictly non-sellable)
+ */
+export type TopLevelInventorySource = 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+
+/**
+ * Secondary Subtypes for fine-grained provenance:
+ * - For MANUAL:
+ *   - 'DIRECT_CONTRACT': Directly negotiated commercial agreements (hotels, chauffeur, villas)
+ *   - 'MANUAL_SERVICE': In-house Vacatina operational service (consular visa assistance, concierge)
+ *   - 'CURATED_PACKAGE': Pre-assembled fixed itinerary holiday package created by Vacatina
+ * - For API:
+ *   - 'SUPPLIER_FEED': Direct API integration feed (NDC flight, GDS, Bedbank rate)
+ * - For HYBRID:
+ *   - 'DYNAMIC_PACKAGE': Dynamic bundle composed of API + Manual components
+ * - For SEED:
+ *   - 'PROTOTYPE_SAMPLE': Sample/demo cards for UI layout testing
+ */
+export type ManualSourceSubtype = 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE';
+
+export type InventorySourceSubtype =
+  | ManualSourceSubtype
+  | 'SUPPLIER_FEED'
+  | 'DYNAMIC_PACKAGE'
+  | 'PROTOTYPE_SAMPLE';
 
 /**
  * Authoritative 5 Canonical Inventory Source Types (Audit v2.4):
@@ -435,8 +466,9 @@ export interface CanonicalOfferEntity {
   sourceEnvironment?: CanonicalSourceEnvironment;
   canonicalBookingMode?: CanonicalBookingMode;
 
-  // --- Backward Compatibility Alias ---
-  sourceType: InventorySourceType;
+  // --- Authoritative 2-Tier Source Taxonomy (Architecture v2.0) ---
+  sourceType: TopLevelInventorySource | InventorySourceType;
+  sourceSubtype?: InventorySourceSubtype;
 
   // --- Heterogeneous components (for dynamic bundles) ---
   components?: ComponentOfferIdentity[];
@@ -1257,9 +1289,11 @@ export type ProviderOperationalState =
 // ----------------------------------------------------------------------------
 
 export interface UnifiedCustomerOffer {
-  // 1. Identity & Provenance
+  // 1. Identity & Provenance (Authoritative 2-Tier Architecture)
   offerId: string;
   productType: TravelProductSlug;
+  sourceType: TopLevelInventorySource;        // 'API' | 'MANUAL' | 'HYBRID' | 'SEED'
+  sourceSubtype?: InventorySourceSubtype;     // 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE' | ...
   inventorySourceType: CanonicalInventorySourceType;
   providerId: string;
   supplierId: string;
@@ -1302,11 +1336,56 @@ export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCust
     offer.environmentClass === 'PRODUCTION' &&
     (offer.providerLifecycle === 'PRODUCTION_LIVE' || offer.providerLifecycle === 'CERTIFIED');
 
-  let source: CanonicalInventorySourceType = offer.inventorySourceType || offer.canonicalSourceType || 'API_SUPPLIER';
+  let source: CanonicalInventorySourceType = offer.inventorySourceType || offer.canonicalSourceType || '';
+  if (!source) {
+    if (offer.sourceType === 'MANUAL' || offer.sourceType === 'DIRECT_CONTRACT' || offer.inventorySource === 'DIRECT_CONTRACT') {
+      source = 'MANUAL_DIRECT';
+    } else if (offer.sourceType === 'MANUAL_SERVICE' || offer.inventorySource === 'MANUAL_INTERNAL' || offer.productType === 'visa') {
+      source = 'INTERNAL_SERVICE';
+    } else if (offer.sourceType === 'HYBRID' || offer.compositionType === 'DYNAMIC_BUNDLE') {
+      source = 'DYNAMIC_PACKAGE';
+    } else if (offer.sourceType === 'SEED' || offer.environmentClass === 'SEED') {
+      source = 'SAMPLE_INVENTORY';
+    } else {
+      source = 'API_SUPPLIER';
+    }
+  }
   if (source === 'SUPPLIER_API') source = 'API_SUPPLIER';
   if (source === 'MANUAL_CONTRACT') source = 'MANUAL_DIRECT';
   if (source === 'MANUAL_SERVICE') source = 'INTERNAL_SERVICE';
   if (source === 'ACCELERATOR_SEED') source = 'SAMPLE_INVENTORY';
+
+  let topSource: TopLevelInventorySource = 'API';
+  let subSource: InventorySourceSubtype | undefined = undefined;
+
+  if (offer.sourceType === 'SEED' || offer.environmentClass === 'SEED' || source === 'SAMPLE_INVENTORY' || offer.verificationStatus === 'PROTOTYPE') {
+    topSource = 'SEED';
+    subSource = 'PROTOTYPE_SAMPLE';
+  } else if (offer.sourceType === 'HYBRID' || source === 'DYNAMIC_PACKAGE' || offer.compositionType === 'DYNAMIC_BUNDLE') {
+    topSource = 'HYBRID';
+    subSource = 'DYNAMIC_PACKAGE';
+  } else if (
+    offer.sourceType === 'MANUAL' ||
+    offer.sourceType === 'DIRECT_CONTRACT' ||
+    offer.sourceType === 'MANUAL_SERVICE' ||
+    offer.sourceType === 'CURATED_PACKAGE' ||
+    source === 'MANUAL_DIRECT' ||
+    source === 'INTERNAL_SERVICE'
+  ) {
+    topSource = 'MANUAL';
+    if (offer.sourceSubtype) {
+      subSource = offer.sourceSubtype;
+    } else if (offer.sourceType === 'MANUAL_SERVICE' || source === 'INTERNAL_SERVICE' || offer.productType === 'visa') {
+      subSource = 'MANUAL_SERVICE';
+    } else if (offer.sourceType === 'CURATED_PACKAGE' || offer.compositionType === 'CURATED_PACKAGE') {
+      subSource = 'CURATED_PACKAGE';
+    } else {
+      subSource = 'DIRECT_CONTRACT';
+    }
+  } else {
+    topSource = 'API';
+    subSource = 'SUPPLIER_FEED';
+  }
 
   let commStatus: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED' = 'COMMERCIALLY_VERIFIED';
   if (offer.environmentClass === 'SEED' || source === 'SAMPLE_INVENTORY') {
@@ -1341,6 +1420,8 @@ export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCust
   return {
     offerId: offer.canonicalOfferId || offer.offerId || '',
     productType: offer.productType,
+    sourceType: topSource,
+    sourceSubtype: subSource,
     inventorySourceType: source,
     providerId: offer.providerId || offer.supplierId,
     supplierId: offer.supplierId,

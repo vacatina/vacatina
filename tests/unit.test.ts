@@ -3995,4 +3995,112 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     assert.equal(isOfferEligibleForPinOverride(genuinePinnedOffer), true, 'Genuine verified contract is eligible to pin');
     assert.equal(isOfferEligibleForExclusivityBadge(genuinePinnedOffer), true, 'Genuine verified contract is eligible for Exclusive badge');
   });
+
+  it('enforces the Final Two-Tier Source Taxonomy (API, MANUAL, HYBRID, SEED) and Fulfillment Routing Split (Architecture v2.0)', () => {
+    // 1. Two-Tier Provenance Mapping Integrity
+    const sampleDirectHotel: CanonicalOfferEntity = {
+      canonicalOfferId: 'vct-ht-direct-sigiriya-001',
+      productType: 'hotels',
+      sourceType: 'DIRECT_CONTRACT',
+      inventorySource: 'DIRECT_CONTRACT',
+      listingKind: 'SELLABLE_INVENTORY',
+      compositionType: 'SINGLE',
+      fulfillmentMode: 'INSTANT',
+      environmentClass: 'PRODUCTION',
+      sellability: 'BOOKABLE',
+      providerLifecycle: 'PRODUCTION_LIVE',
+      supplierId: 'SIGIRIYA_BOUTIQUE',
+      supplierName: 'Heritance Sigiriya',
+      title: 'Water Villa',
+      subtitle: 'Luxury Suite',
+      location: { city: 'Sigiriya', country: 'Sri Lanka', countryCode: 'LK' },
+      availabilityStatus: 'MANUAL_AVAILABLE',
+      confirmationMode: 'INSTANT_CONFIRM',
+      bookingMode: 'INSTANT_BOOK',
+      pricing: {
+        rawSupplierCostMinor: 7800000,
+        rawCurrency: 'LKR',
+        platformMarkupPercent: 12,
+        platformMarkupMinor: 1100000,
+        finalSellingPriceMinor: 8900000,
+        currency: 'LKR'
+      },
+      taxesAndFees: { vatMinor: 0, tourismLevyMinor: 0, serviceChargeMinor: 0, totalTaxMinor: 0 },
+      freshness: { lastCheckedAtIso: new Date().toISOString(), ttlSeconds: 86400, expiresAtIso: new Date(Date.now() + 86400000).toISOString(), isStale: false },
+      inclusions: ['Breakfast'],
+      exclusions: [],
+      cancellationPolicy: 'Free cancellation up to 48 hours prior',
+      pinAboveApi: true,
+      deduplicationKey: 'ht-sigiriya-001',
+      isSandboxSimulated: false,
+      integrationLifecycle: 'OPERATIONALLY_LIVE_MANUAL'
+    };
+
+    const unifiedDirect = toUnifiedCustomerOffer(sampleDirectHotel);
+    // Verifies Top-Level is strictly MANUAL, and Subtype is DIRECT_CONTRACT
+    assert.equal(unifiedDirect.sourceType, 'MANUAL', 'Top level must be clean MANUAL');
+    assert.equal(unifiedDirect.sourceSubtype, 'DIRECT_CONTRACT', 'Subtype must be DIRECT_CONTRACT');
+    assert.equal(unifiedDirect.inventorySourceType, 'MANUAL_DIRECT', 'Backward compatibility view preserved');
+    assert.equal(unifiedDirect.confirmationMode, 'INSTANT_CONFIRM', 'Manual inventory can have instant confirmation with quota');
+
+    // 2. Visa Consular Manual Service Mapping
+    const sampleVisaDesk: CanonicalOfferEntity = {
+      ...sampleDirectHotel,
+      canonicalOfferId: 'vct-vs-consular-uae-60d',
+      productType: 'visa',
+      sourceType: 'MANUAL_SERVICE',
+      inventorySource: 'MANUAL_INTERNAL',
+      listingKind: 'SERVICE',
+      confirmationMode: 'ASSISTED_SERVICE',
+      fulfillmentMode: 'MANUAL_CONFIRMATION',
+      bookingMode: 'REQUEST_TO_BOOK'
+    };
+    const unifiedVisa = toUnifiedCustomerOffer(sampleVisaDesk);
+    assert.equal(unifiedVisa.sourceType, 'MANUAL', 'Visa top-level must be MANUAL');
+    assert.equal(unifiedVisa.sourceSubtype, 'MANUAL_SERVICE', 'Visa subtype must be MANUAL_SERVICE');
+    assert.equal(unifiedVisa.confirmationMode, 'ASSISTED_SERVICE', 'Visa confirmation mode is ASSISTED_SERVICE, never fake API');
+
+    // 3. API Flight Mapping
+    const sampleApiFlight: CanonicalOfferEntity = {
+      ...sampleDirectHotel,
+      canonicalOfferId: 'vct-fl-duffel-cmb-dxb',
+      productType: 'flights',
+      sourceType: 'API',
+      inventorySource: 'API',
+      listingKind: 'SELLABLE_INVENTORY',
+      confirmationMode: 'REQUEST_TO_CONFIRM', // Cached rate requiring revalidation
+      fulfillmentMode: 'ON_REQUEST',
+      bookingMode: 'INSTANT_BOOK'
+    };
+    const unifiedApiFlight = toUnifiedCustomerOffer(sampleApiFlight);
+    assert.equal(unifiedApiFlight.sourceType, 'API', 'Flight top-level must be API');
+    assert.equal(unifiedApiFlight.sourceSubtype, 'SUPPLIER_FEED', 'Flight subtype is SUPPLIER_FEED');
+    assert.equal(unifiedApiFlight.confirmationMode, 'REQUEST_TO_CONFIRM', 'API offer can require confirmation recheck');
+
+    // 4. Multi-Source Trip Bucket Fulfillment Dispatch Simulation
+    const tripBucket = [unifiedApiFlight, unifiedDirect, unifiedVisa];
+    const fulfillmentQueues = {
+      supplierApiDispatch: tripBucket.filter(i => i.sourceType === 'API'),
+      manualAllotmentDeduction: tripBucket.filter(i => i.sourceType === 'MANUAL' && i.sourceSubtype === 'DIRECT_CONTRACT'),
+      consularDeskWorkflow: tripBucket.filter(i => i.sourceType === 'MANUAL' && i.sourceSubtype === 'MANUAL_SERVICE')
+    };
+
+    assert.equal(fulfillmentQueues.supplierApiDispatch.length, 1, '1 item routed to Duffel/API GDS worker');
+    assert.equal(fulfillmentQueues.manualAllotmentDeduction.length, 1, '1 item routed to Vacatina Direct Hotel allotment ledger');
+    assert.equal(fulfillmentQueues.consularDeskWorkflow.length, 1, '1 item routed to Consular Visa Case Management desk');
+
+    // 5. SEED / Prototype Isolation Guard
+    const prototypeCard: CanonicalOfferEntity = {
+      ...sampleDirectHotel,
+      canonicalOfferId: 'vct-demo-card-01',
+      sourceType: 'SEED',
+      environmentClass: 'SEED',
+      verificationStatus: 'PROTOTYPE'
+    };
+    const unifiedSeed = toUnifiedCustomerOffer(prototypeCard);
+    assert.equal(unifiedSeed.sourceType, 'SEED');
+    assert.equal(unifiedSeed.sourceSubtype, 'PROTOTYPE_SAMPLE');
+    assert.equal(unifiedSeed.commercialStatus, 'SAMPLE_DEMO');
+    assert.equal(unifiedSeed.sellable, false, 'Sample/Seed offer is strictly non-sellable in production');
+  });
 });
