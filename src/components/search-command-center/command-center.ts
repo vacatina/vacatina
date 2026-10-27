@@ -865,7 +865,32 @@ function initSearchSubmitButtons(): void {
       let destRoute = canonicalSearchRoutes[tabMeta.id];
       if (destRoute) {
         if (tabMeta.id === 'flights') {
-          destRoute += `?from=${encodeURIComponent(state.flights.from)}&to=${encodeURIComponent(state.flights.to)}`;
+          const flights = state.flights;
+          const tripType =
+            flights.tripType === 'one-way'
+              ? 'one_way'
+              : flights.tripType === 'multi-city'
+                ? 'multi_city'
+                : 'round_trip';
+          const flightParams = new URLSearchParams();
+          flightParams.set('tripType', tripType);
+          flightParams.set('origin', flights.from);
+          flightParams.set('destination', flights.to);
+          flightParams.set('departureDate', flights.departureDate);
+          if (tripType === 'round_trip' && flights.returnDate) {
+            flightParams.set('returnDate', flights.returnDate);
+          }
+          flightParams.set('adults', String(state.travellers.adults));
+          flightParams.set('children', String(state.travellers.children));
+          flightParams.set('infants', String(state.travellers.infants));
+          flightParams.set('cabinClass', state.travellers.cabin || 'Economy');
+          if (flights.directOnly) flightParams.set('directOnly', 'true');
+
+          // Multi-city needs its additional legs entered on the dedicated hub.
+          destRoute =
+            tripType === 'multi_city'
+              ? `/flights?${flightParams.toString()}`
+              : `/flights/search?${flightParams.toString()}`;
         } else if (tabMeta.id === 'hotels') {
           destRoute += `?destination=${encodeURIComponent(state.hotels.destination)}`;
         } else if (tabMeta.id === 'visa') {

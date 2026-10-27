@@ -124,6 +124,8 @@ class CdpSession {
     await this.send('Page.enable');
     await this.send('Runtime.enable');
     await this.send('DOM.enable');
+    await this.send('Network.enable');
+    await this.send('Network.setCacheDisabled', { cacheDisabled: true });
   }
 
   send(method, params = {}) {
@@ -239,6 +241,19 @@ async function runVerification() {
 
     await cdp.send('Page.navigate', { url: `http://127.0.0.1:${SERVER_PORT}/index.html` });
     await sleep(1800);
+
+    // This static harness has no API, so the honest server-backed bootstrap leaves
+    // the browser workspace empty. Seed the canonical demo baseline so responsive
+    // layout, dock and Trip Bucket assertions exercise a populated bucket.
+    await cdp.evaluate(`(async () => {
+      for (let i = 0; i < 100 && !window.__VACATINA_OS__; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      if (!window.__VACATINA_OS__) throw new Error('Vacatina app did not bootstrap');
+      window.__VACATINA_OS__.tripBucketService.resetToCanonicalBaseline();
+      window.__VACATINA_OS__.updateTripControlsVisibility();
+    })()`);
+    await sleep(150);
 
     if (cdp.pageExceptions.length > 0 || cdp.consoleErrors.length > 0) {
       console.error('[CDP Page Exceptions]', cdp.pageExceptions);
@@ -489,6 +504,9 @@ async function runVerification() {
       const visaCountry = document.getElementById('visa-country-display').textContent;
 
       // Journey E: AI Trip Prompt & Build Your Bundle Draft Staging
+      // The app starts with an empty browser workspace by design (server-backed),
+      // so seed the canonical demo baseline before testing draft exclusion.
+      window.__VACATINA_OS__.tripBucketService.resetToCanonicalBaseline();
       const draftBtn = document.getElementById('bundle-stage-draft-btn');
       draftBtn.click();
       const summaryWithDraft = window.__VACATINA_OS__.tripBucketService.getSummary();
@@ -519,6 +537,8 @@ async function runVerification() {
       return {
         visaCountry,
         draftCount: summaryWithDraft.draftCount,
+        draftReadySubtotal: summaryWithDraft.readySubtotalLkr,
+        draftPills: summaryWithDraft.itemPillsSummary,
         draftExcludedFromReady: summaryWithDraft.readySubtotalLkr === 505000,
         carServiceType,
         visibleRailOvernight,
@@ -538,7 +558,7 @@ async function runVerification() {
         journeysCtoG.visibleInsFamily === 2 &&
         journeysCtoG.railFavPressed &&
         journeysCtoG.bucketSubtotalUnchanged,
-      `draftCount=${journeysCtoG.draftCount}, carMode="${journeysCtoG.carServiceType}", railOvernight=${journeysCtoG.visibleRailOvernight}`
+      `draftCount=${journeysCtoG.draftCount}, draftReady=${journeysCtoG.draftReadySubtotal}, draftPills="${journeysCtoG.draftPills}", carMode="${journeysCtoG.carServiceType}", railOvernight=${journeysCtoG.visibleRailOvernight}, visa="${journeysCtoG.visaCountry}", draftExcluded=${journeysCtoG.draftExcludedFromReady}, insFamily=${journeysCtoG.visibleInsFamily}, railFav=${journeysCtoG.railFavPressed}, bucketUnchanged=${journeysCtoG.bucketSubtotalUnchanged}`
     );
     report.journeysVerified.push(
       'Journey C — Visa Discovery to Visa Check',
@@ -866,6 +886,11 @@ async function runVerification() {
       const hubHeading = hubMount ? hubMount.querySelector('h1')?.textContent || '' : '';
       const hasHubTitle = hubHeading.includes('Flight') || hubHeading.includes('Find');
       const mainHiddenDuringFlights = document.getElementById('main-content')?.classList.contains('hidden');
+      const hubOriginValue = hubMount?.querySelector('#hub-flight-origin')?.value || '';
+      const hubDestValue = hubMount?.querySelector('#hub-flight-dest')?.value || '';
+      const hubDepValue = hubMount?.querySelector('#hub-dep-date')?.value || '';
+      const hubRetValue = hubMount?.querySelector('#hub-ret-date')?.value || '';
+      const hubTravellerText = hubMount?.querySelector('#hub-travellers-label')?.textContent || '';
 
       // 2. Navigate to Flights Search Results (CMB to DXB Round Trip)
       window.__VACATINA_ROUTER__.navigateTo('/flights/search?tripType=round_trip&origin=CMB&destination=DXB&departureDate=2026-11-15&returnDate=2026-11-22&adults=1&cabinClass=economy');
@@ -926,6 +951,11 @@ async function runVerification() {
         hubVisible,
         hasHubTitle,
         mainHiddenDuringFlights,
+        hubOriginValue,
+        hubDestValue,
+        hubDepValue,
+        hubRetValue,
+        hubTravellerText,
         hasCards,
         countText,
         modalOpen,
@@ -947,7 +977,7 @@ async function runVerification() {
         journeyM.stagedInBucket &&
         journeyM.mainRestored &&
         journeyM.hubHiddenAfterHome,
-      `hubVisible=${journeyM.hubVisible}, hubTitle="${journeyM.hasHubTitle}", hasCards=${journeyM.hasCards}, modalOpen=${journeyM.modalOpen}, stagedInBucket=${journeyM.stagedInBucket}, mainRestored=${journeyM.mainRestored}`
+      `hubVisible=${journeyM.hubVisible}, hubTitle="${journeyM.hasHubTitle}", origin="${journeyM.hubOriginValue}", dep="${journeyM.hubDepValue}", travellers="${journeyM.hubTravellerText}", hasCards=${journeyM.hasCards}, modalOpen=${journeyM.modalOpen}, stagedInBucket=${journeyM.stagedInBucket}, mainRestored=${journeyM.mainRestored}`
     );
     report.journeysVerified.push('Journey M — Complete Flights B2C Flow');
 
@@ -981,6 +1011,374 @@ async function runVerification() {
       window.__VACATINA_ROUTER__.navigateTo('/');
     })()`);
     await sleep(150);
+
+    // =========================================================================
+    // Journey M2 — Flights Phase 5 Customer Journey Truth, Review & Responsive Gates
+    // =========================================================================
+    const flightsPhase5 = await cdp.evaluate(`(async () => {
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      const bucket = window.__VACATINA_OS__.tripBucketService;
+
+      bucket.replaceCandidates([]);
+      const openDrawerBeforeReset = document.getElementById('trip-bucket-drawer-container');
+      if (openDrawerBeforeReset && !openDrawerBeforeReset.classList.contains('hidden')) {
+        document.getElementById('trip-bucket-close')?.click();
+      }
+
+      // A. Hub controls: traveller popover, date fields and canonical submission
+      window.__VACATINA_ROUTER__.navigateTo('/flights');
+      await wait(180);
+      const hub = document.getElementById('flights-view-mount');
+      const travellerTrigger = hub?.querySelector('#btn-hub-travellers-trigger');
+      const depDate = hub?.querySelector('#hub-dep-date');
+      const retDate = hub?.querySelector('#hub-ret-date');
+      const dateFields = Boolean(depDate && retDate);
+      const dateUsable = Boolean(
+        depDate &&
+        retDate &&
+        depDate.type === 'date' &&
+        retDate.type === 'date' &&
+        !depDate.disabled &&
+        !retDate.disabled
+      );
+
+      travellerTrigger?.click();
+      await wait(80);
+      const travellerPopover = hub?.querySelector('#hub-traveller-popover');
+      const travellerOpened = Boolean(
+        travellerPopover &&
+        !travellerPopover.classList.contains('hidden') &&
+        travellerTrigger?.getAttribute('aria-expanded') === 'true'
+      );
+      travellerPopover?.querySelector('#btn-inc-adults')?.click();
+      await wait(80);
+      const adultValue = travellerPopover?.querySelector('#val-adults')?.textContent?.trim() || '';
+      const travellerLabel = hub?.querySelector('#hub-travellers-label')?.textContent?.trim() || '';
+      travellerPopover?.querySelector('#btn-traveller-apply')?.click();
+      await wait(80);
+      const travellerClosed = Boolean(
+        travellerPopover &&
+        travellerPopover.classList.contains('hidden') &&
+        travellerTrigger?.getAttribute('aria-expanded') === 'false'
+      );
+
+      if (depDate && retDate) {
+        depDate.value = '2026-12-05';
+        depDate.dispatchEvent(new Event('change', { bubbles: true }));
+        retDate.value = '2026-12-12';
+        retDate.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      hub?.querySelector('#btn-hub-search-submit')?.click();
+      await wait(380);
+      const submittedUrl = window.location.pathname + window.location.search;
+      const canonicalSubmit =
+        submittedUrl.startsWith('/flights/search') &&
+        submittedUrl.includes('departureDate=2026-12-05') &&
+        submittedUrl.includes('returnDate=2026-12-12') &&
+        submittedUrl.includes('adults=2') &&
+        submittedUrl.includes('cabinClass=economy');
+
+      // B. Invalid offer route must explain the failure without inventing a hold
+      window.__VACATINA_ROUTER__.navigateTo('/flights/offer/phase5-missing-offer');
+      await wait(320);
+      const invalidDialog = document.getElementById('flight-offer-invalid-dialog');
+      const invalidText = invalidDialog?.textContent || '';
+      const invalidDialogGood = Boolean(
+        invalidDialog &&
+        invalidDialog.getAttribute('role') === 'alertdialog' &&
+        invalidDialog.getAttribute('aria-modal') === 'true' &&
+        invalidDialog.contains(document.activeElement) &&
+        invalidText.includes('phase5-missing-offer') &&
+        invalidText.includes('No reservation, seat hold, price, or booking has been created')
+      );
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await wait(160);
+      const invalidClosed = !document.getElementById('flight-offer-invalid-dialog');
+
+      // C. Manual request-to-book offer truth and staging
+      window.__VACATINA_ROUTER__.navigateTo('/flights/offer/man-flt-cmb-dxb-ek651');
+      await wait(340);
+      const manualModal = document.getElementById('flight-offer-detail-modal');
+      const manualText = manualModal?.textContent || '';
+      const manualAddText = manualModal?.querySelector('#btn-modal-add-trip')?.textContent?.trim() || '';
+      const manualTruth = Boolean(
+        manualModal &&
+        manualModal.getAttribute('data-inventory-mode') === 'manual_request' &&
+        manualModal.getAttribute('role') === 'dialog' &&
+        manualModal.contains(document.activeElement) &&
+        manualText.includes('Manual request-to-book') &&
+        manualText.includes('Schedule, carrier and baggage pending desk confirmation') &&
+        manualText.includes('Request to book — desk confirmation required') &&
+        manualText.includes('not a live supplier quote') &&
+        !/live supplier fare/i.test(manualText) &&
+        /request to book/i.test(manualAddText)
+      );
+
+      manualModal?.querySelector('#btn-modal-add-trip')?.click();
+      await wait(520);
+
+      const stagedManual = bucket.getItems().find(item => item.offerId === 'man-flt-cmb-dxb-ek651');
+      const drawer = document.getElementById('trip-bucket-drawer-container');
+      const drawerText = drawer?.textContent || '';
+      const drawerOpen = Boolean(drawer && !drawer.classList.contains('hidden'));
+      const drawerTruth = Boolean(
+        stagedManual &&
+        stagedManual.inventoryMode === 'manual_request' &&
+        stagedManual.state === 'needs_action' &&
+        stagedManual.confirmationMode === 'REQUEST_TO_CONFIRM' &&
+        stagedManual.revalidationStatus === 'UNCHANGED' &&
+        /manual request-to-book/i.test(stagedManual.inventoryLabel || '') &&
+        /on request|no live seat hold/i.test((stagedManual.holdStatusText || '') + ' ' + (stagedManual.actionRequiredText || '')) &&
+        drawerOpen &&
+        drawerText.includes('Inventory source') &&
+        drawerText.includes('Manual request-to-book') &&
+        drawerText.includes('Schedule status') &&
+        drawerText.includes('Revalidation') &&
+        !/live supplier fare/i.test(drawerText)
+      );
+
+      // D. Trip Bucket -> local /trip/review handoff and checkout gate
+      document.getElementById('drawer-review-trip-cta')?.click();
+      await wait(380);
+      const review = document.getElementById('trip-review-workspace');
+      const reviewText = review?.textContent || '';
+      const reviewItem = review?.querySelector('[data-review-item-id]');
+      const checkout = review?.querySelector('#btn-review-checkout');
+      const reviewPath = window.location.pathname;
+      const reviewTruth = Boolean(
+        review &&
+        reviewItem &&
+        reviewItem.getAttribute('data-inventory-mode') === 'manual_request' &&
+        reviewText.includes('Manual request-to-book') &&
+        reviewText.includes('Inventory source') &&
+        reviewText.includes('Provider') &&
+        reviewText.includes('Schedule status') &&
+        reviewText.includes('Search route') &&
+        reviewText.includes('Before this item can be booked') &&
+        reviewText.includes('Checkout is gated') &&
+        reviewText.includes('No live supplier, payment, or ticketing is activated in this build.') &&
+        checkout &&
+        checkout.disabled === true &&
+        checkout.getAttribute('aria-disabled') === 'true'
+      );
+
+      // E. A customer request action must not promote manual inventory
+      review?.querySelector('[data-review-request]')?.click();
+      await wait(240);
+      const afterRequest = bucket.getItems().find(item => item.offerId === 'man-flt-cmb-dxb-ek651');
+      const rerenderedCheckout = document.getElementById('trip-review-workspace')?.querySelector('#btn-review-checkout');
+      const manualStaysNeedsAction = Boolean(
+        afterRequest &&
+        afterRequest.state === 'needs_action' &&
+        /request-to-book/i.test(afterRequest.actionRequiredText || '') &&
+        rerenderedCheckout &&
+        rerenderedCheckout.disabled === true
+      );
+
+      // F. Honest no-results state
+      window.__VACATINA_ROUTER__.navigateTo('/flights/search?tripType=round_trip&origin=CMB&destination=NRT&departureDate=2026-12-05&returnDate=2026-12-12&adults=1&cabinClass=economy');
+      await wait(480);
+      const noResultsMount = document.getElementById('flights-view-mount');
+      const noResultsText = noResultsMount?.textContent || '';
+      const noResultsHonest =
+        (noResultsMount?.querySelector('#flights-results-count')?.getAttribute('data-results-count') || '') === '0' &&
+        noResultsText.includes('No flights match your exact criteria') &&
+        noResultsText.includes('We could not find matching flights');
+
+      return {
+        hubControlsUsable:
+          dateFields &&
+          dateUsable &&
+          travellerOpened &&
+          adultValue === '2' &&
+          travellerLabel.includes('2 Adults') &&
+          travellerClosed,
+        canonicalSubmit,
+        invalidDialogGood,
+        invalidClosed,
+        manualTruth,
+        drawerTruth,
+        reviewTruth,
+        manualStaysNeedsAction,
+        noResultsHonest,
+        submittedUrl,
+        reviewPath
+      };
+    })()`);
+
+    assertCheck(
+      'Flights Phase 5 — Hub traveller/date controls and canonical search submission',
+      flightsPhase5.hubControlsUsable && flightsPhase5.canonicalSubmit,
+      `controls=${flightsPhase5.hubControlsUsable}, url=${flightsPhase5.submittedUrl}`
+    );
+    report.journeysVerified.push('Flights Phase 5 — Hub Controls & Canonical Submission');
+
+    assertCheck(
+      'Flights Phase 5 — Invalid offer dialog, honest no-results and manual request-to-book truth',
+      flightsPhase5.invalidDialogGood &&
+        flightsPhase5.invalidClosed &&
+        flightsPhase5.manualTruth &&
+        flightsPhase5.noResultsHonest,
+      `invalid=${flightsPhase5.invalidDialogGood}, invalidClosed=${flightsPhase5.invalidClosed}, manual=${flightsPhase5.manualTruth}, noResults=${flightsPhase5.noResultsHonest}`
+    );
+    report.journeysVerified.push('Flights Phase 5 — Invalid Offer & Truthful Empty State');
+
+    assertCheck(
+      'Flights Phase 5 — Manual inventory stays Needs Action through Trip Bucket, review handoff and request action',
+      flightsPhase5.drawerTruth && flightsPhase5.reviewTruth && flightsPhase5.manualStaysNeedsAction,
+      `drawer=${flightsPhase5.drawerTruth}, review=${flightsPhase5.reviewTruth}, reviewPath=${flightsPhase5.reviewPath}, guard=${flightsPhase5.manualStaysNeedsAction}`
+    );
+    report.journeysVerified.push('Flights Phase 5 — Trip Bucket → Review Handoff & Manual State Guard');
+
+    // Responsive checks at the three required widths for every Flights surface.
+    const flightsResponsive = {};
+    for (const viewport of [
+      { width: 1440, height: 900, mobile: false },
+      { width: 768, height: 1024, mobile: true },
+      { width: 360, height: 800, mobile: true }
+    ]) {
+      await cdp.setViewport(viewport.width, viewport.height, viewport.mobile);
+      await sleep(220);
+
+      flightsResponsive[`${viewport.width}x${viewport.height}`] = await cdp.evaluate(`(async () => {
+        const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+        const measurements = {};
+        const measure = (key, extra) => {
+          measurements[key] = {
+            scrollWidth: document.documentElement.scrollWidth,
+            clientWidth: document.documentElement.clientWidth,
+            noOverflow: document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1,
+            ...extra
+          };
+        };
+
+        window.__VACATINA_ROUTER__.navigateTo('/flights');
+        await wait(200);
+        measure('hub');
+
+        window.__VACATINA_ROUTER__.navigateTo('/flights/search?tripType=round_trip&origin=CMB&destination=DXB&departureDate=2026-12-05&returnDate=2026-12-12&adults=2&cabinClass=economy');
+        let searchCards = 0;
+        for (let i = 0; i < 20; i++) {
+          await wait(60);
+          searchCards = document.querySelectorAll('#flights-view-mount [data-offer-id]').length;
+          if (searchCards > 0) break;
+        }
+        measure('search', { cards: searchCards });
+
+        window.__VACATINA_ROUTER__.navigateTo('/flights/offer/man-flt-cmb-dxb-ek651');
+        await wait(340);
+        const modalPanel = document.getElementById('flight-offer-panel');
+        const panelRect = modalPanel?.getBoundingClientRect();
+        measure('offer', {
+          panelInside: Boolean(
+            panelRect &&
+            panelRect.left >= -1 &&
+            panelRect.right <= window.innerWidth + 1 &&
+            panelRect.width <= window.innerWidth + 1
+          ),
+          panelScrollFits: Boolean(modalPanel && modalPanel.scrollWidth <= modalPanel.clientWidth + 1)
+        });
+        document.getElementById('btn-modal-close')?.click();
+        await wait(140);
+
+        window.__VACATINA_ROUTER__.navigateTo('/trip/review');
+        await wait(300);
+        const reviewMount = document.getElementById('trip-review-workspace');
+        const reviewCheckout = reviewMount?.querySelector('#btn-review-checkout');
+        measure('review', {
+          items: reviewMount?.querySelectorAll('[data-review-item-id]').length || 0,
+          checkoutDisabled: Boolean(reviewCheckout && reviewCheckout.disabled)
+        });
+
+        document.getElementById('header-trip-bucket-btn')?.click();
+        await wait(260);
+        const drawerPanel = document.getElementById('trip-bucket-drawer');
+        const drawerRect = drawerPanel?.getBoundingClientRect();
+        const reviewCta = document.getElementById('drawer-review-trip-cta');
+        const reviewCtaRect = reviewCta?.getBoundingClientRect();
+        const dock = document.getElementById('floating-trip-dock');
+        const drawerContainer = document.getElementById('trip-bucket-drawer-container');
+        measurements.drawer = {
+          open: Boolean(drawerContainer && !drawerContainer.classList.contains('hidden')),
+          scrollWidth: document.documentElement.scrollWidth,
+          insideViewport: Boolean(
+            drawerRect &&
+            drawerRect.left >= -1 &&
+            drawerRect.right <= window.innerWidth + 1 &&
+            drawerRect.width <= window.innerWidth + 1
+          ),
+          ctaInsideViewport: Boolean(
+            reviewCtaRect &&
+            reviewCtaRect.left >= -1 &&
+            reviewCtaRect.right <= window.innerWidth + 1
+          ),
+          dockPointerEvents: dock ? dock.style.pointerEvents : 'missing',
+          noOverflow: document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1
+        };
+        document.getElementById('trip-bucket-close')?.click();
+        await wait(200);
+
+        return { width: window.innerWidth, measurements };
+      })()`);
+    }
+
+    for (const [label, result] of Object.entries(flightsResponsive)) {
+      const m = result.measurements;
+      assertCheck(
+        `Flights Phase 5 — Zero horizontal overflow & usable Trip Bucket @ ${label}`,
+        m.hub.noOverflow &&
+          m.search.noOverflow &&
+          m.search.cards > 0 &&
+          m.offer.noOverflow &&
+          m.offer.panelInside &&
+          m.offer.panelScrollFits &&
+          m.review.noOverflow &&
+          m.review.items === 1 &&
+          m.review.checkoutDisabled &&
+          m.drawer.open &&
+          m.drawer.noOverflow &&
+          m.drawer.insideViewport &&
+          m.drawer.ctaInsideViewport &&
+          m.drawer.dockPointerEvents === 'none',
+        `hub=${m.hub.scrollWidth}/${m.hub.clientWidth}, search=${m.search.scrollWidth}/${m.search.clientWidth}, offer=${m.offer.scrollWidth}/${m.offer.clientWidth}, panelInside=${m.offer.panelInside}, panelFits=${m.offer.panelScrollFits}, review=${m.review.scrollWidth}/${m.review.clientWidth}, drawer=${m.drawer.scrollWidth || 'n/a'} inside=${m.drawer.insideViewport}, cta=${m.drawer.ctaInsideViewport}, dock=${m.drawer.dockPointerEvents}`
+      );
+      report.journeysVerified.push(`Flights Phase 5 — Responsive Flights & Trip Bucket ${label}`);
+    }
+
+    // Capture final Flights Phase 5 visual artifacts.
+    await cdp.setViewport(1440, 900, false);
+    await sleep(220);
+    await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/flights/offer/man-flt-cmb-dxb-ek651');`);
+    await sleep(320);
+    const shotManualOffer = await cdp.captureScreenshot('vacatina_flights_manual_offer_1440px.png');
+    report.screenshots.push(shotManualOffer);
+
+    await cdp.evaluate(`(() => {
+      document.getElementById('btn-modal-close')?.click();
+      window.__VACATINA_ROUTER__.navigateTo('/trip/review');
+    })()`);
+    await sleep(300);
+    const shotReview1440 = await cdp.captureScreenshot('vacatina_flights_review_1440px.png');
+    report.screenshots.push(shotReview1440);
+
+    await cdp.setViewport(768, 1024, true);
+    await sleep(220);
+    await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/flights/search?tripType=round_trip&origin=CMB&destination=DXB&departureDate=2026-12-05&returnDate=2026-12-12&adults=2&cabinClass=economy');`);
+    await sleep(420);
+    const shotSearch768 = await cdp.captureScreenshot('vacatina_flights_search_768px.png');
+    report.screenshots.push(shotSearch768);
+
+    await cdp.setViewport(360, 800, true);
+    await sleep(220);
+    await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/trip/review');`);
+    await sleep(300);
+    const shotReview360 = await cdp.captureScreenshot('vacatina_flights_review_360px.png');
+    report.screenshots.push(shotReview360);
+
+    await cdp.setViewport(1440, 900, false);
+    await sleep(220);
+    await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/');`);
+    await sleep(180);
 
     // =========================================================================
     // Journey N — Full B2C Hotels Product Experience: Hub, Search, Details & Trip Bucket Staging (Phase 3.2)

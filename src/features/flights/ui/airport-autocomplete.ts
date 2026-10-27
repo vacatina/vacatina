@@ -64,7 +64,7 @@ export function initAirportAutocomplete(options: AirportAutocompleteOptions): ()
               ${loc.airportCode}
             </span>
             <div>
-              <div class="text-sm font-semibold text-brand-dark">${loc.city}, ${loc.country}</div>
+              <div class="text-sm font-semibold text-brand-black">${loc.city}, ${loc.country}</div>
               <div class="text-xs text-brand-muted truncate max-w-[200px] sm:max-w-xs">${loc.airportName}</div>
             </div>
           </div>

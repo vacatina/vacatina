@@ -144,6 +144,28 @@ export interface TripBucketCandidate {
   rawSupplierPrice?: number;
   supplierBaseCurrency?: SupportedCurrency | string;
   markupAmountLkr?: number;
+  // Flight configuration, provenance and revalidation truth (Phase 5)
+  canonicalOfferId?: string;
+  sourceId?: string;
+  providerName?: string;
+  inventoryMode?: 'demo_fixture' | 'manual_request' | 'live_supplier' | string;
+  inventoryLabel?: string;
+  truthDisclosure?: string;
+  scheduleStatus?: string;
+  fareFamilyCode?: string;
+  fareFamilyName?: string;
+  travellerCounts?: { adults: number; children: number; infants: number };
+  searchContext?: {
+    searchId?: string;
+    tripType?: string;
+    origin?: string;
+    destination?: string;
+    departureDate?: string;
+    returnDate?: string;
+  };
+  currency?: string;
+  revalidationStatus?: string;
+  revalidatedAt?: string;
 }
 
 export interface TripBucketSummary {

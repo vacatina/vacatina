@@ -19,10 +19,24 @@ import type {
 } from './flight-adapter.interface.ts';
 import { SUPPLIER_FLIGHT_FIXTURES } from '../data/supplier-fixtures.ts';
 
+const DEMO_PROVIDER_NAME = 'Vacatina Flight Fixtures (demo, non-production)';
+
+/**
+ * All supplier records in this phase are local fixtures. Mark them explicitly
+ * so no UI, Trip Bucket item, or revalidation message can imply live inventory.
+ */
+function asDemoFixture(offer: CanonicalFlightOffer): CanonicalFlightOffer {
+  return {
+    ...offer,
+    inventoryMode: 'demo_fixture',
+    sourceProvider: DEMO_PROVIDER_NAME
+  };
+}
+
 export class SupplierApiFlightAdapter implements IFlightAdapter {
   public readonly adapterId = 'adapter-supplier-api-flights';
   public readonly sourceType = 'supplier_api' as const;
-  public readonly providerName = 'Vacatina External Flight GDS / NDC Gateway';
+  public readonly providerName = DEMO_PROVIDER_NAME;
   public readonly capabilities: FlightAdapterCapabilities = {
     supportsRealtimeFareRules: true,
     supportsAncillaries: true,
@@ -74,7 +88,7 @@ export class SupplierApiFlightAdapter implements IFlightAdapter {
         adapterId: this.adapterId,
         sourceType: this.sourceType,
         providerName: this.providerName,
-        offers: matched,
+        offers: matched.map(asDemoFixture),
         status: 'ok'
       };
     } catch (err) {
@@ -91,7 +105,7 @@ export class SupplierApiFlightAdapter implements IFlightAdapter {
 
   public async getOfferById(offerId: string): Promise<CanonicalFlightOffer | null> {
     const found = SUPPLIER_FLIGHT_FIXTURES.find(o => o.offerId === offerId);
-    return found || null;
+    return found ? asDemoFixture(found) : null;
   }
 
   public async revalidateOffer(
@@ -196,7 +210,7 @@ export class SupplierApiFlightAdapter implements IFlightAdapter {
       newPriceMinor: totalMinor,
       priceDeltaMinor: totalMinor - offer.price.totalMinor,
       currency: offer.price.currency,
-      message: 'Live supplier fare and seat availability confirmed.',
+      message: 'Demo fixture fare revalidated locally. No live airline inventory, seat hold, or supplier booking was queried.',
       updatedOffer: {
         ...offer,
         price: {

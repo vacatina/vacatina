@@ -49,7 +49,7 @@ export function renderTravellerSelectorPopover(
   const total = state.adults + state.children + state.infants;
 
   container.innerHTML = `
-    <div class="p-4 space-y-4 text-left text-brand-dark">
+    <div class="p-4 space-y-4 text-left text-brand-black">
       <div class="flex items-center justify-between border-b border-gray-100 pb-2">
         <span class="text-xs font-bold uppercase tracking-wider text-brand-muted">Travellers</span>
         <span class="text-xs text-brand-muted" id="traveller-max-notice">${total} of 9 Max</span>

@@ -67,6 +67,10 @@ export function setBackgroundInert(isInert: boolean, modalToExclude?: HTMLElemen
   const targets = [
     document.getElementById('site-header'),
     document.getElementById('main-content'),
+    document.getElementById('flights-view-mount'),
+    document.getElementById('hotels-view-mount'),
+    document.getElementById('visa-view-mount'),
+    document.getElementById('journey-view-mount'),
     document.getElementById('floating-trip-dock'),
     document.getElementById('mobile-summary-bar'),
     document.querySelector('footer')

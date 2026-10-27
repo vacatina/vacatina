@@ -19,7 +19,6 @@ import {
   openInfoOrSupportModal,
   openProductConfiguratorModal,
   openSavedFavoritesDrawer,
-  openTripDossierReviewModal,
   openSearchResultsModal,
   openFlightOfferModal,
   openHotelPropertyModal,
@@ -50,6 +49,11 @@ import { visaSearchView } from '../../features/visa/ui/visa-search-view.ts';
 import { openCanonicalVisaApplicationModal } from '../../features/visa/ui/visa-application-modal.ts';
 import { findJourneyProduct } from '../../features/journeys/domain/journey-models.ts';
 import { productWorkspace } from '../../features/journeys/ui/product-workspace.ts';
+import {
+  isDedicatedFlightsPath,
+  flightOfferIdFromPath
+} from '../../features/flights/domain/flight-routes.ts';
+import { renderTripReviewWorkspace } from '../../features/trip-review/trip-review-workspace.ts';
 import { bundleWorkspace } from '../../features/bundle/bundle-workspace.ts';
 import { renderCheckoutWorkspace, renderManageBookingWorkspace } from '../../features/booking/booking-workspace.ts';
 
@@ -282,8 +286,16 @@ export class CanonicalRouterService {
       return;
     }
 
+    // Local, browser-side Trip Review for the Flights journey. This must not
+    // fall through to server checkout, which only knows server-persisted items.
+    if (path === '/trip/review') {
+      renderTripReviewWorkspace(showJourneyWorkspace());
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     // Server-backed journeys take precedence over legacy demonstration modals.
-    if (path === '/checkout' || path.startsWith('/checkout/') || path === '/trip/review') {
+    if (path === '/checkout' || path.startsWith('/checkout/')) {
       renderCheckoutWorkspace(showJourneyWorkspace());
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -298,7 +310,8 @@ export class CanonicalRouterService {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    const journeyProduct = findJourneyProduct(path);
+    // The dedicated Flights product owns /flights and every /flights/* route.
+    const journeyProduct = isDedicatedFlightsPath(path) ? undefined : findJourneyProduct(path);
     if (journeyProduct) {
       const suffix = path.slice(journeyProduct.route.length);
       const detailPrefix = ['/offer/', '/property/', '/apply/'].find(prefix => suffix.startsWith(prefix));
@@ -315,11 +328,7 @@ export class CanonicalRouterService {
 
     // 2. Flights Functional Product Hub & Search Routes (§2, §9, §14)
     if (path === '/flights') {
-      const from = query.get('from');
-      const to = query.get('to');
-      if (from || to) {
-        flightsHubView.prefill(from || undefined, to || undefined);
-      }
+      flightsHubView.prefillFromQuery(query);
       const mount = showFlightsView();
       flightsHubView.render(mount);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -348,8 +357,18 @@ export class CanonicalRouterService {
     }
 
     if (path.startsWith('/flights/offer/')) {
-      const offerId = path.replace('/flights/offer/', '');
-      openCanonicalFlightDetailModal(offerId);
+      const offerId = flightOfferIdFromPath(path);
+      if (!offerId) {
+        showToast('This flight option link is incomplete. Please search again.', 'warning');
+        this.navigateTo('/flights');
+        return;
+      }
+      const mount = showFlightsView();
+      if (!mount.querySelector('#flights-hub-page') && !mount.querySelector('[data-offer-id]')) {
+        const lastSearch = new URLSearchParams(window.location.search);
+        void flightsSearchView.loadFromQuery(lastSearch, mount);
+      }
+      void openCanonicalFlightDetailModal(offerId);
       return;
     }
 
@@ -413,11 +432,6 @@ export class CanonicalRouterService {
 
     if (path === '/favorites') {
       openSavedFavoritesDrawer();
-      return;
-    }
-
-    if (path === '/trip/review') {
-      openTripDossierReviewModal();
       return;
     }
 
@@ -652,11 +666,7 @@ export class CanonicalRouterService {
       return;
     }
 
-    // 16. Trip Bucket Review & Workspace
-    if (path === '/trip/review' || path === '/checkout' || path.startsWith('/checkout/')) {
-      openTripDossierReviewModal();
-      return;
-    }
+    // 16. Trip Bucket Workspace
     if (path === '/trip-bucket' || path === '/trip') {
       openTripBucketDrawer();
       return;

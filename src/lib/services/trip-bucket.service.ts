@@ -403,6 +403,27 @@ export class TripBucketService {
   public resolveNeedsAction(id: string, metadata?: Record<string, unknown>): TripBucketCandidate | null {
     const item = this.items.find(i => i.id === id);
     if (!item) return null;
+
+    // Request-to-book, demo and manual inventory cannot become Ready through a
+    // generic resolver. Only an explicit desk-confirmed allocation may promote it.
+    if (
+      item.inventoryMode === 'demo_fixture' ||
+      item.inventoryMode === 'manual_request' ||
+      item.confirmationMode === 'REQUEST_TO_CONFIRM'
+    ) {
+      item.state = 'needs_action';
+      item.holdStatusText = 'On request · No live supplier confirmation received';
+      item.actionRequiredText =
+        item.inventoryMode === 'demo_fixture'
+          ? 'Demo fixture inventory — no supplier request or seat hold was created.'
+          : 'Request-to-book: the Vacatina desk must confirm carrier, schedule, baggage and fare before ticketing.';
+      if (metadata) {
+        (item as any).metadata = { ...((item as any).metadata || {}), ...metadata };
+      }
+      this.emit();
+      return { ...item };
+    }
+
     item.state = 'ready';
     item.holdStatusText = 'Requirements satisfied · Ready for checkout';
     delete item.actionRequiredText;
@@ -495,6 +516,24 @@ export class TripBucketService {
       return { ...item };
     }
 
+    // Request-to-book, demo and manual inventory stay Needs Action even when a
+    // customer reviews the fare. No live supplier message is sent by this build.
+    if (
+      item.inventoryMode === 'demo_fixture' ||
+      item.inventoryMode === 'manual_request' ||
+      item.confirmationMode === 'REQUEST_TO_CONFIRM'
+    ) {
+      item.state = 'needs_action';
+      item.holdStatusText = 'On request · No live supplier confirmation received';
+      item.actionRequiredText =
+        item.inventoryMode === 'demo_fixture'
+          ? 'Demo fixture inventory — no supplier request or seat hold was created. Request a desk quote before booking.'
+          : 'Request-to-book: the Vacatina desk must confirm carrier, schedule, baggage and fare before ticketing.';
+      item.primaryActionLabel = 'Request Desk Confirmation';
+      this.emit();
+      return { ...item };
+    }
+
     switch (item.state) {
       case 'draft':
         item.state = 'ready';
@@ -505,13 +544,6 @@ export class TripBucketService {
         delete item.actionRequiredText;
         break;
       case 'needs_action':
-        // Integrity Guard: Request-to-confirm items cannot become ready without partner approval
-        if (item.confirmationMode === 'REQUEST_TO_CONFIRM') {
-          item.state = 'needs_action';
-          item.holdStatusText = 'Supplier confirmation requested · Awaiting partner response';
-          item.actionRequiredText = 'Partner confirmation pending. You will be notified within SLA.';
-          break;
-        }
         item.state = 'ready';
         item.holdStatusText = 'Passport details uploaded · Ready for submission';
         delete item.actionRequiredText;

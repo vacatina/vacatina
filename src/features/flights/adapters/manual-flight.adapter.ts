@@ -135,6 +135,7 @@ function mapListingToCanonicalFlightOffer(listing: ProductionManualListingEntity
   return {
     offerId: listing.canonicalEntityId,
     sourceType: 'manual',
+    inventoryMode: 'manual_request',
     sourceProvider: listing.operatorName || listing.partnerName,
     supplierId: listing.partnerSupplierId,
     sourceOfferId: listing.listingId,
@@ -201,6 +202,78 @@ function mapListingToCanonicalFlightOffer(listing: ProductionManualListingEntity
   };
 }
 
+/**
+ * Static catalog fixtures predate the manual listing contract and contain
+ * illustrative carrier/schedule/fare detail. Strip that fabricated truth at the
+ * adapter boundary so customers only see request-to-book placeholders.
+ */
+function toHonestStaticManualOffer(offer: CanonicalFlightOffer): CanonicalFlightOffer {
+  const carrier: FlightAirline = {
+    code: 'MANUAL',
+    name: offer.sourceProvider || 'Vacatina Manual Flight Desk'
+  };
+  const baggage: StructuredBaggage = {
+    cabin: { pieces: 0, description: 'Cabin allowance not supplied - confirm with the Vacatina flight desk' },
+    checked: { pieces: 0, description: 'Checked allowance not supplied - confirm with the Vacatina flight desk' },
+    isSupplied: false
+  };
+  const honestSegment = (segment: FlightSegment): FlightSegment => ({
+    ...segment,
+    marketingCarrier: carrier,
+    operatingCarrier: carrier,
+    flightNumber: 'PENDING',
+    durationMinutes: 0,
+    baggage
+  });
+  const segments = offer.segments.map(honestSegment);
+  const segmentsById = new Map(segments.map(segment => [segment.segmentId, segment]));
+  const slices = offer.slices.map(slice => ({
+    ...slice,
+    durationMinutes: 0,
+    stopCount: 0,
+    segments: slice.segments.map(segment => segmentsById.get(segment.segmentId) || honestSegment(segment))
+  }));
+
+  return {
+    ...offer,
+    inventoryMode: 'manual_request',
+    marketingCarrier: carrier,
+    operatingCarrier: carrier,
+    airlines: [carrier],
+    flightNumber: 'PENDING',
+    aircraft: undefined,
+    durationMinutes: 0,
+    stopCount: 0,
+    stopAirports: [],
+    segments,
+    slices,
+    baggage,
+    fareBasis: undefined,
+    bookingClass: undefined,
+    fareFamily: 'Request to book',
+    fareFamiliesAvailable: [],
+    mealInformation: undefined,
+    seatAvailability: undefined,
+    availabilityStatus: 'ON_REQUEST',
+    changeRules: {
+      allowed: false,
+      description: 'Change conditions pending confirmation by the Vacatina flight desk.'
+    },
+    refundRules: {
+      refundable: false,
+      description: 'Refund conditions pending confirmation by the Vacatina flight desk.'
+    },
+    includedServices: [],
+    manualInventoryMetadata: {
+      commercialState: offer.bookability === 'informational' ? 'informational' : 'request_to_book',
+      scheduleStatus: 'PENDING_OPERATOR_CONFIRMATION',
+      quotaRemaining: offer.seatAvailability,
+      contactDeskNote:
+        'Carrier, flight number, schedule, baggage and fare rules must be confirmed by the Vacatina flight desk before ticketing.'
+    }
+  };
+}
+
 export class ManualFlightAdapter implements IFlightAdapter {
   public readonly adapterId = 'adapter-vacatina-manual-flights';
   public readonly sourceType = 'manual' as const;
@@ -241,7 +314,9 @@ export class ManualFlightAdapter implements IFlightAdapter {
       ]);
       const activeOffers = [
         ...dbOffers,
-        ...staticOffers.filter(o => !seenIds.has(o.offerId) && !seenIds.has(o.sourceOfferId))
+        ...staticOffers
+          .filter(o => !seenIds.has(o.offerId) && !seenIds.has(o.sourceOfferId))
+          .map(toHonestStaticManualOffer)
       ];
 
       const originCode = request.origin.airportCode.toUpperCase();
@@ -297,7 +372,7 @@ export class ManualFlightAdapter implements IFlightAdapter {
     }
 
     const found = MANUAL_FLIGHT_OFFERS.find(o => o.offerId === offerId || o.sourceOfferId === offerId);
-    return found || null;
+    return found ? toHonestStaticManualOffer(found) : null;
   }
 
   public async revalidateOffer(
@@ -364,7 +439,7 @@ export class ManualFlightAdapter implements IFlightAdapter {
         lastCheckedAt: now
       },
       revalidatedAt: now,
-      requiresUserAction: false
+      requiresUserAction: true
     };
   }
 

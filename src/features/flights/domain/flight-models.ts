@@ -5,6 +5,13 @@
 
 export type FlightSourceType = 'manual' | 'supplier_api';
 
+/**
+ * Runtime inventory truth for the current Phase 5 build.
+ * `demo_fixture` and `manual_request` must never be presented as live,
+ * instantly confirmable airline inventory.
+ */
+export type FlightInventoryMode = 'demo_fixture' | 'manual_request' | 'live_supplier';
+
 export type FlightCommercialState = 'informational' | 'request_to_book' | 'live_bookable';
 
 export type FlightOfferStatus = 'active' | 'paused' | 'expired' | 'draft';
@@ -170,6 +177,11 @@ export interface CanonicalFlightOffer {
   sourceProvider: string;
   supplierId: string;
   sourceOfferId: string;
+  /**
+   * Explicit runtime inventory mode. Adapters set this so the UI never has to
+   * infer live status from a provider name.
+   */
+  inventoryMode?: FlightInventoryMode;
   status: FlightOfferStatus;
   bookability: FlightCommercialState;
 

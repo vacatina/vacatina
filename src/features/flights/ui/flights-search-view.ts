@@ -16,8 +16,16 @@ import { flightTripBucketService } from '../services/flight-trip-bucket.service.
 import {
   findAirportByCode,
   formatAirportDisplay,
-  formatAirportShort
+  formatAirportShort,
+  parseAirportFromInput
 } from '../data/airports.ts';
+import {
+  buildFlightSearchQuery,
+  normalizeFlightDate,
+  parseFlightSearchQuery
+} from '../domain/flight-search-query.ts';
+import { resolveFlightInventoryTruth } from '../domain/flight-inventory-truth.ts';
+import { rememberFlightSearchQuery } from '../domain/flight-search-context.ts';
 import { routerService } from '../../../lib/services/router.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
 import { showToast } from '../../../components/ui/toast.ts';
@@ -30,43 +38,45 @@ export class FlightsSearchView {
   private currentFilters: FlightFilterCriteria = {};
   private isLoading = false;
   private errorMessage: string | null = null;
+  private validationErrors: Record<string, string> = {};
   private isModifyOpen = false;
 
   public async loadFromQuery(query: URLSearchParams, container: HTMLElement): Promise<void> {
-    const tripType = (query.get('tripType') as any) || 'round_trip';
-    const fromCode = query.get('from') || 'CMB';
-    const toCode = query.get('to') || 'DXB';
-    const depDate = query.get('dep') || new Date().toISOString().split('T')[0];
-    const retDate = query.get('ret') || undefined;
-    const adults = parseInt(query.get('adults') || '1', 10);
-    const children = parseInt(query.get('children') || '0', 10);
-    const infants = parseInt(query.get('infants') || '0', 10);
-    const cabin = (query.get('cabin') as any) || 'economy';
-    const directOnly = query.get('directOnly') === 'true';
+    const parsed = parseFlightSearchQuery(query);
+    this.currentRequest = parsed.request;
+    this.currentResponse = null;
+    this.currentSort = 'recommended';
+    this.currentFilters = {};
+    this.errorMessage = null;
 
-    const origin = findAirportByCode(fromCode) || findAirportByCode('CMB')!;
-    const destination = findAirportByCode(toCode) || findAirportByCode('DXB')!;
+    const validation = flightSearchService.validateSearchRequest(this.currentRequest);
+    this.validationErrors = { ...parsed.errors, ...validation.errors };
 
-    this.currentRequest = {
-      searchId: `srch-${Date.now()}`,
-      tripType,
-      origin,
-      destination,
-      departureDate: depDate,
-      returnDate: retDate,
-      travellers: { adults, children, infants },
-      cabinClass: cabin,
-      directFlightsOnly: directOnly,
-      nearbyAirports: false,
-      displayCurrency: 'LKR',
-      locale: 'en',
-      createdAt: new Date().toISOString()
-    };
+    if (Object.keys(this.validationErrors).length > 0) {
+      this.isLoading = false;
+      this.render(container);
+      return;
+    }
 
+    rememberFlightSearchQuery(buildFlightSearchQuery(this.currentRequest));
+    flightTripBucketService.rememberSearchContext(this.currentRequest);
     await this.executeSearch(container);
   }
 
   public async executeSearch(container: HTMLElement): Promise<void> {
+    const validation = flightSearchService.validateSearchRequest(this.currentRequest);
+    this.validationErrors = { ...validation.errors };
+
+    if (Object.keys(this.validationErrors).length > 0) {
+      this.isLoading = false;
+      this.errorMessage = null;
+      this.currentResponse = null;
+      this.render(container);
+      return;
+    }
+
+    rememberFlightSearchQuery(buildFlightSearchQuery(this.currentRequest));
+    flightTripBucketService.rememberSearchContext(this.currentRequest);
     this.isLoading = true;
     this.errorMessage = null;
     this.render(container);
@@ -97,6 +107,11 @@ export class FlightsSearchView {
 
     const req = this.currentRequest;
     const resp = this.currentResponse;
+    const validationEntries = Object.entries(this.validationErrors);
+    const hasValidationErrors = validationEntries.length > 0;
+    const demoCount = resp ? resp.offers.filter(o => resolveFlightInventoryTruth(o).isDemo).length : 0;
+    const manualCount = resp ? resp.offers.filter(o => resolveFlightInventoryTruth(o).isManual).length : 0;
+    const liveCount = resp ? resp.offers.filter(o => resolveFlightInventoryTruth(o).isLive).length : 0;
 
     const fromLabel = formatAirportShort(req.origin);
     const toLabel = formatAirportShort(req.destination);
@@ -106,17 +121,17 @@ export class FlightsSearchView {
     const paxSummary = `${req.travellers.adults} Adult${req.travellers.adults > 1 ? 's' : ''}${req.travellers.children > 0 ? `, ${req.travellers.children} Child` : ''} · ${req.cabinClass.charAt(0).toUpperCase() + req.cabinClass.slice(1)}`;
 
     container.innerHTML = `
-      <div id="flights-search-results-page" class="w-full bg-brand-surface min-h-screen text-brand-dark pb-20">
+      <div id="flights-search-results-page" class="w-full bg-brand-surface min-h-screen text-brand-black pb-20">
         <!-- Sticky Top Summary & Modify Bar -->
         <header class="bg-white border-b border-gray-200 sticky top-16 z-30 shadow-xs">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-              <button type="button" id="btn-back-to-hub" class="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-brand-dark transition-colors" aria-label="Back to Flights Product Hub">
+              <button type="button" id="btn-back-to-hub" class="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-brand-black transition-colors" aria-label="Back to Flights Product Hub">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
               </button>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="text-base sm:text-lg font-bold font-display text-brand-dark">${fromLabel} → ${toLabel}</span>
+                  <span class="text-base sm:text-lg font-bold font-display text-brand-black">${fromLabel} → ${toLabel}</span>
                   <span class="text-xs px-2 py-0.5 rounded-md bg-brand-primary/10 text-brand-primary font-semibold uppercase tracking-wider">${req.tripType.replace('_', ' ')}</span>
                 </div>
                 <div class="text-xs text-brand-muted flex items-center gap-2">
@@ -128,7 +143,7 @@ export class FlightsSearchView {
             </div>
 
             <div class="flex items-center gap-3">
-              <button type="button" id="btn-toggle-modify-search" class="px-4 py-2 rounded-xl text-xs font-bold border border-gray-300 hover:border-brand-primary text-brand-dark hover:text-brand-primary transition-colors flex items-center gap-1.5">
+              <button type="button" id="btn-toggle-modify-search" class="px-4 py-2 rounded-xl text-xs font-bold border border-gray-300 hover:border-brand-primary text-brand-black hover:text-brand-primary transition-colors flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 <span>${this.isModifyOpen ? 'Close Editor' : 'Modify Search'}</span>
               </button>
@@ -159,19 +174,34 @@ export class FlightsSearchView {
           </div>
         </header>
 
-        <!-- Freshness Notice Banner -->
-        <div class="bg-blue-50/80 border-b border-blue-100 px-4 py-2 text-center text-xs text-blue-900 flex items-center justify-center gap-2">
-          <svg class="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span>Transparent Pricing: Fares include all mandatory airport taxes &amp; carrier surcharges. Seat availability rechecked in real-time.</span>
+        <!-- Inventory Truth Notice Banner -->
+        <div class="bg-amber-50/80 border-b border-amber-100 px-4 py-2.5 text-center text-xs text-amber-950 flex items-center justify-center gap-2">
+          <svg class="w-3.5 h-3.5 text-amber-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span><strong>Inventory disclosure:</strong> demo fixture and request-to-book inventory is not live airline availability. No seat hold, reservation or payment is created by browsing or staging an option.</span>
         </div>
 
         <!-- Main Results Layout -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          ${
+            resp && resp.offers.length > 0 && (demoCount > 0 || manualCount > 0 || liveCount > 0)
+              ? `
+            <div id="flights-inventory-disclosure" role="note" class="mb-4 p-3 rounded-xl border border-gray-200 bg-white text-[11px] text-brand-muted leading-relaxed">
+              <strong class="text-brand-black">Result sources:</strong>
+              ${demoCount > 0 ? `${demoCount} demo fixture${demoCount === 1 ? '' : 's'} (illustrative, non-production)` : ''}
+              ${demoCount > 0 && (manualCount > 0 || liveCount > 0) ? ' · ' : ''}
+              ${manualCount > 0 ? `${manualCount} manual request-to-book` : ''}
+              ${manualCount > 0 && liveCount > 0 ? ' · ' : ''}
+              ${liveCount > 0 ? `${liveCount} live supplier fare${liveCount === 1 ? '' : 's'}` : ''}
+              . Demo and manual options require a Vacatina desk quote or confirmation before booking.
+            </div>
+          `
+              : ''
+          }
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <!-- Sidebar Filters (Desktop) -->
             <aside class="hidden lg:block lg:col-span-3 bg-white p-5 rounded-2xl border border-gray-200 space-y-6">
               <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                <h3 class="text-sm font-bold font-display uppercase tracking-wider text-brand-dark">Filters</h3>
+                <h3 class="text-sm font-bold font-display uppercase tracking-wider text-brand-black">Filters</h3>
                 <button type="button" id="btn-clear-all-filters" class="text-xs font-bold text-brand-primary hover:underline">Clear all</button>
               </div>
 
@@ -247,10 +277,12 @@ export class FlightsSearchView {
             <section class="lg:col-span-9 space-y-4">
               <!-- Controls Header: Count & Sort -->
               <div class="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl border border-gray-200">
-                <div class="text-xs sm:text-sm font-bold text-brand-dark">
+                <div id="flights-results-count" data-results-count="${resp ? resp.filteredCount : 0}" aria-live="polite" class="text-xs sm:text-sm font-bold text-brand-black">
                   ${
                     this.isLoading
-                      ? 'Searching available flight schedules…'
+                      ? 'Searching available flight options…'
+                      : hasValidationErrors
+                      ? 'Search needs attention'
                       : resp
                       ? `Showing ${resp.filteredCount} flight option${resp.filteredCount === 1 ? '' : 's'}`
                       : 'Flight search results'
@@ -260,7 +292,7 @@ export class FlightsSearchView {
                 <!-- Sort Control -->
                 <div class="flex items-center gap-2">
                   <label for="sort-flights-select" class="text-xs font-bold text-brand-muted uppercase tracking-wider">Sort by:</label>
-                  <select id="sort-flights-select" class="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-brand-dark outline-none focus:border-brand-primary">
+                  <select id="sort-flights-select" class="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-brand-black outline-none focus:border-brand-primary">
                     <option value="recommended" ${this.currentSort === 'recommended' ? 'selected' : ''}>Recommended (Best value &amp; duration)</option>
                     <option value="price_asc" ${this.currentSort === 'price_asc' ? 'selected' : ''}>Lowest Price</option>
                     <option value="duration_asc" ${this.currentSort === 'duration_asc' ? 'selected' : ''}>Shortest Duration</option>
@@ -269,6 +301,35 @@ export class FlightsSearchView {
                   </select>
                 </div>
               </div>
+
+              <!-- Invalid Search State -->
+              ${
+                hasValidationErrors
+                  ? `
+                <div id="flights-invalid-search" role="alert" class="p-6 sm:p-8 bg-white rounded-2xl border border-amber-300 text-left space-y-4">
+                  <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg shrink-0">!</div>
+                    <div class="min-w-0">
+                      <h3 class="text-base font-bold text-brand-black">Check your search details</h3>
+                      <p class="text-xs text-brand-muted mt-1">No search was run. Correct the items below and try again.</p>
+                    </div>
+                  </div>
+                  <ul class="list-disc pl-5 text-xs text-amber-950 space-y-1">
+                    ${validationEntries
+                      .map(
+                        ([field, message]) =>
+                          `<li><strong>${field.replace(/_/g, ' ')}:</strong> ${message}</li>`
+                      )
+                      .join('')}
+                  </ul>
+                  <div class="flex flex-wrap items-center gap-3 pt-1">
+                    <button type="button" id="btn-invalid-adjust-search" class="px-4 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-opacity-95">Adjust search</button>
+                    <button type="button" id="btn-invalid-return-hub" class="px-4 py-2 rounded-xl border border-gray-300 text-xs font-bold text-brand-black hover:bg-gray-50">Return to Flights Hub</button>
+                  </div>
+                </div>
+              `
+                  : ''
+              }
 
               <!-- Loading Skeleton State -->
               ${
@@ -292,11 +353,11 @@ export class FlightsSearchView {
 
               <!-- Error State -->
               ${
-                this.errorMessage
+                this.errorMessage && !hasValidationErrors
                   ? `
                 <div class="p-8 bg-white rounded-2xl border border-red-200 text-center space-y-3">
                   <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center font-bold text-lg">!</div>
-                  <h3 class="text-base font-bold text-brand-dark">Search Unavailable</h3>
+                  <h3 class="text-base font-bold text-brand-black">Search Unavailable</h3>
                   <p class="text-xs text-brand-muted max-w-md mx-auto">${this.errorMessage}</p>
                   <button type="button" id="btn-retry-search" class="px-5 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-opacity-95">Retry Search</button>
                 </div>
@@ -306,18 +367,18 @@ export class FlightsSearchView {
 
               <!-- Empty State -->
               ${
-                !this.isLoading && !this.errorMessage && resp && resp.offers.length === 0
+                !this.isLoading && !this.errorMessage && !hasValidationErrors && resp && resp.offers.length === 0
                   ? `
                 <div class="p-10 bg-white rounded-2xl border border-gray-200 text-center space-y-4">
                   <div class="w-14 h-14 rounded-full bg-brand-primary/10 text-brand-primary mx-auto flex items-center justify-center">
                     <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                   </div>
-                  <h3 class="text-base font-bold text-brand-dark font-display">No flights match your exact criteria</h3>
+                  <h3 class="text-base font-bold text-brand-black font-display">No flights match your exact criteria</h3>
                   <p class="text-xs text-brand-muted max-w-md mx-auto">
                     We could not find matching flights for ${fromLabel} → ${toLabel} with your current filter selections. Try clearing filters or selecting flexible travel dates.
                   </p>
                   <div class="flex items-center justify-center gap-3 pt-2">
-                    <button type="button" id="btn-empty-clear-filters" class="px-4 py-2 rounded-xl text-xs font-bold border border-gray-300 text-brand-dark hover:bg-gray-50">Clear Filters</button>
+                    <button type="button" id="btn-empty-clear-filters" class="px-4 py-2 rounded-xl text-xs font-bold border border-gray-300 text-brand-black hover:bg-gray-50">Clear Filters</button>
                     <button type="button" id="btn-empty-return-hub" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-primary text-white hover:bg-opacity-95">Return to Flights Hub</button>
                   </div>
                 </div>
@@ -327,7 +388,7 @@ export class FlightsSearchView {
 
               <!-- Results Cards List -->
               ${
-                !this.isLoading && !this.errorMessage && resp && resp.offers.length > 0
+                !this.isLoading && !this.errorMessage && !hasValidationErrors && resp && resp.offers.length > 0
                   ? `
                 <div class="space-y-4" id="flights-cards-container">
                   ${resp.offers.map(offer => this.renderFlightCard(offer)).join('')}
@@ -346,47 +407,58 @@ export class FlightsSearchView {
 
   private renderFlightCard(offer: CanonicalFlightOffer): string {
     const isSaved = flightFavoritesService.isOfferFavorite(offer.offerId);
-    const depTime = new Date(offer.departureAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const arrTime = new Date(offer.arrivalAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const truth = resolveFlightInventoryTruth(offer);
+    const depTime = truth.isManual
+      ? 'TBC'
+      : new Date(offer.departureAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const arrTime = truth.isManual
+      ? 'TBC'
+      : new Date(offer.arrivalAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const durationHours = Math.floor(offer.durationMinutes / 60);
     const durationMins = offer.durationMinutes % 60;
-    const durationText = `${durationHours}h ${durationMins}m`;
+    const durationText = truth.isManual
+      ? 'Schedule pending'
+      : `${durationHours}h ${durationMins}m`;
 
-    const stopLabel =
-      offer.stopCount === 0
+    const stopLabel = truth.isManual
+      ? 'Carrier & routing pending desk confirmation'
+      : offer.stopCount === 0
         ? 'Direct'
         : `${offer.stopCount} Stop${offer.stopCount > 1 ? 's' : ''} (${offer.stopAirports.join(', ')})`;
 
-    const baggageDesc =
-      offer.baggage.checked.pieces > 0
+    const baggageDesc = truth.isManual
+      ? 'Baggage not supplied — confirm with desk'
+      : offer.baggage.checked.pieces > 0
         ? `${offer.baggage.checked.description}`
         : 'Cabin baggage only';
 
-    const isManual = offer.sourceType === 'manual';
-    const ctaLabel = isManual
-      ? offer.bookability === 'request_to_book'
-        ? 'Check Availability'
-        : 'View Fare'
-      : 'View Flight';
+    const ctaLabel = truth.isLive ? 'View Flight' : 'View details';
 
     return `
-      <article class="bg-white rounded-2xl border border-gray-200 hover:border-brand-primary/40 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between" data-offer-id="${offer.offerId}">
+      <article class="bg-white rounded-2xl border border-gray-200 hover:border-brand-primary/40 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0" data-offer-id="${offer.offerId}" data-inventory-mode="${truth.mode}">
         <div>
           <!-- Header Bar: Airline, Fare Family & Favorite -->
-          <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
-            <div class="flex items-center gap-2.5">
-              <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-brand-primary/10 text-brand-primary font-bold text-xs tracking-wider">
-                ${offer.marketingCarrier.code}
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-100 pb-3 mb-4">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="inline-flex shrink-0 items-center justify-center min-w-8 h-8 px-2 rounded-lg bg-brand-primary/10 text-brand-primary font-bold text-xs tracking-wider">
+                ${truth.isManual ? '?' : offer.marketingCarrier.code}
               </span>
-              <div>
-                <span class="text-sm font-bold text-brand-dark">${offer.marketingCarrier.name}</span>
+              <div class="min-w-0">
+                <span class="text-sm font-bold text-brand-black break-words">${offer.marketingCarrier.name}</span>
                 <span class="text-xs text-brand-muted ml-1.5 font-mono">${offer.flightNumber}</span>
               </div>
             </div>
 
-            <div class="flex items-center gap-2">
-              <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 text-brand-dark">
-                ${offer.fareFamily}
+            <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+              ${
+                truth.isManual
+                  ? ''
+                  : `<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 text-brand-black">
+                      ${offer.fareFamily}
+                    </span>`
+              }
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${truth.badgeClasses}">
+                ${truth.shortLabel}
               </span>
               <button type="button" data-favorite-offer="${offer.offerId}" class="w-8 h-8 rounded-full border border-gray-200 hover:border-red-300 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors" aria-label="Save flight to favorites">
                 <svg class="w-4 h-4 ${isSaved ? 'text-red-500 fill-current' : 'fill-none'}" viewBox="0 0 24 24" stroke="currentColor">
@@ -400,8 +472,8 @@ export class FlightsSearchView {
           <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
             <!-- Origin & Departure -->
             <div class="md:col-span-3">
-              <div class="text-2xl font-black font-display text-brand-dark tabular-nums">${depTime}</div>
-              <div class="text-xs font-bold text-brand-dark">${offer.origin.airportCode}</div>
+              <div class="text-2xl font-black font-display text-brand-black tabular-nums">${depTime}</div>
+              <div class="text-xs font-bold text-brand-black">${offer.origin.airportCode}</div>
               <div class="text-[11px] text-brand-muted truncate">${offer.origin.city}</div>
             </div>
 
@@ -419,8 +491,8 @@ export class FlightsSearchView {
 
             <!-- Destination & Arrival -->
             <div class="md:col-span-4 text-right">
-              <div class="text-2xl font-black font-display text-brand-dark tabular-nums">${arrTime}</div>
-              <div class="text-xs font-bold text-brand-dark">${offer.destination.airportCode}</div>
+              <div class="text-2xl font-black font-display text-brand-black tabular-nums">${arrTime}</div>
+              <div class="text-xs font-bold text-brand-black">${offer.destination.airportCode}</div>
               <div class="text-[11px] text-brand-muted truncate">${offer.destination.city}</div>
             </div>
           </div>
@@ -439,22 +511,26 @@ export class FlightsSearchView {
                 : ''
             }
           </div>
+
+          <div class="mt-3 text-[10px] leading-snug rounded-lg px-2.5 py-2 ${truth.panelClasses}">
+            ${truth.disclosure}
+          </div>
         </div>
 
         <!-- Footer Actions Bar: Transparent Price & CTA -->
-        <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
-          <div>
-            <span class="text-[10px] uppercase font-bold tracking-wider text-brand-muted block">Total Price (All taxes incl.)</span>
-            <div class="flex items-baseline gap-1">
-              <span class="text-xl sm:text-2xl font-black font-display text-brand-dark tabular-nums">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-5 pt-4 border-t border-gray-100">
+          <div class="min-w-0">
+            <span class="text-[10px] uppercase font-bold tracking-wider text-brand-muted block">${truth.priceLabel}</span>
+            <div class="flex items-baseline gap-1 flex-wrap">
+              <span class="text-xl sm:text-2xl font-black font-display text-brand-black tabular-nums">
                 LKR ${(offer.price.totalMinor / 100).toLocaleString()}
               </span>
               <span class="text-xs text-brand-muted">/ itinerary</span>
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <button type="button" data-quick-add-trip="${offer.offerId}" class="px-3.5 py-2.5 rounded-xl border border-gray-300 hover:border-brand-primary text-brand-dark hover:text-brand-primary text-xs font-bold transition-colors">
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" data-quick-add-trip="${offer.offerId}" class="px-3.5 py-2.5 rounded-xl border border-gray-300 hover:border-brand-primary text-brand-black hover:text-brand-primary text-xs font-bold transition-colors">
               Add to Trip
             </button>
             <button type="button" data-view-offer="${offer.offerId}" class="px-5 py-2.5 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-opacity-95 transition-all shadow-sm">
@@ -488,19 +564,38 @@ export class FlightsSearchView {
       const toInput = container.querySelector<HTMLInputElement>('#mod-to-input');
       const depInput = container.querySelector<HTMLInputElement>('#mod-dep-input');
 
-      if (fromInput && toInput && depInput) {
-        const fromFound = findAirportByCode(fromInput.value.trim()) || this.currentRequest.origin;
-        const toFound = findAirportByCode(toInput.value.trim()) || this.currentRequest.destination;
+      if (!fromInput || !toInput || !depInput) return;
 
-        this.currentRequest = {
-          ...this.currentRequest,
-          origin: fromFound,
-          destination: toFound,
-          departureDate: depInput.value || this.currentRequest.departureDate
-        };
-        this.isModifyOpen = false;
-        this.executeSearch(container);
+      const errors: Record<string, string> = {};
+      const fromFound = parseAirportFromInput(fromInput.value);
+      const toFound = parseAirportFromInput(toInput.value);
+      const departureDate = normalizeFlightDate(depInput.value);
+
+      if (!fromFound) errors.origin = 'Please select a valid departure airport.';
+      if (!toFound) errors.destination = 'Please select a valid arrival airport.';
+      if (fromFound && toFound && fromFound.airportCode === toFound.airportCode) {
+        errors.destination = 'Origin and destination airports cannot be identical.';
       }
+      if (!departureDate) errors.departureDate = 'Please enter a valid departure date.';
+
+      if (Object.keys(errors).length > 0) {
+        this.validationErrors = errors;
+        this.currentResponse = null;
+        this.isModifyOpen = false;
+        this.render(container);
+        return;
+      }
+
+      this.currentRequest = {
+        ...this.currentRequest,
+        origin: fromFound!,
+        destination: toFound!,
+        departureDate: departureDate!
+      };
+      this.validationErrors = {};
+      this.isModifyOpen = false;
+      rememberFlightSearchQuery(buildFlightSearchQuery(this.currentRequest));
+      this.executeSearch(container);
     });
 
     // 4. Sort Dropdown
@@ -590,8 +685,32 @@ export class FlightsSearchView {
         if (offerId && this.currentResponse) {
           const offer = this.currentResponse.offers.find(o => o.offerId === offerId);
           if (offer) {
-            flightTripBucketService.addFlightToTripBucket(offer, undefined, this.currentRequest);
-            showToast(`Added ${offer.marketingCarrier.name} flight to your Trip Bucket.`, 'success');
+            const recommendedFamily =
+              offer.fareFamiliesAvailable.find(f => f.isRecommended)?.familyCode ||
+              offer.fareFamiliesAvailable[0]?.familyCode;
+            const candidate = flightTripBucketService.addFlightToTripBucket(
+              offer,
+              recommendedFamily
+                ? {
+                    offerId: offer.offerId,
+                    selectedFareFamilyCode: recommendedFamily,
+                    selectedCabinClass: offer.cabinClass,
+                    selectedOptionalServiceIds: []
+                  }
+                : undefined,
+              this.currentRequest
+            );
+
+            if (candidate.state === 'needs_action') {
+              showToast(
+                candidate.inventoryMode === 'demo_fixture'
+                  ? 'Demo fare staged. No live seat hold was created — request a desk quote to book.'
+                  : 'Flight request staged. The Vacatina desk must confirm schedule, baggage and fare before booking.',
+                'brand'
+              );
+            } else {
+              showToast(`Added ${offer.marketingCarrier.name} flight to your Trip Bucket.`, 'success');
+            }
           }
         }
       });
@@ -616,6 +735,16 @@ export class FlightsSearchView {
     // 12. Retry button
     container.querySelector('#btn-retry-search')?.addEventListener('click', () => {
       this.executeSearch(container);
+    });
+
+    // 13. Invalid search recovery
+    container.querySelector('#btn-invalid-adjust-search')?.addEventListener('click', () => {
+      this.isModifyOpen = true;
+      this.validationErrors = {};
+      this.render(container);
+    });
+    container.querySelector('#btn-invalid-return-hub')?.addEventListener('click', () => {
+      routerService.navigateTo('/flights');
     });
   }
 }

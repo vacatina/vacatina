@@ -594,12 +594,12 @@ function renderBundleConfigurator(
 }
 
 /**
- * 3. Unified Trip Dossier Review & Checkout
- * Superseded by the server-backed /checkout workspace. The browser must never
- * read or mutate the operational store directly.
+ * 3. Unified Trip Review entry
+ * Routed to the local /trip/review workspace, which shows browser-staged
+ * inventory truth and gates checkout. It never reads the operational store.
  */
 export function openTripDossierReviewModal(_triggerElement?: HTMLElement | null): void {
-  navigateToWorkspace('/checkout');
+  navigateToWorkspace('/trip/review');
 }
 
 /**

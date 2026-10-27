@@ -348,6 +348,36 @@ function syncDrawerContents(
             <!-- Expandable Inline Details (Recovered from Screen 03 Foundation v1.1) -->
             <div class="${isExpanded ? 'block' : 'hidden'} mt-2.5 p-2.5 rounded-lg bg-brand-canvas border border-brand-border text-[11px] text-brand-muted space-y-1" data-bucket-details-panel="${item.id}">
               <div><strong class="text-brand-black">Traveller Config:</strong> ${item.travellerSummary}</div>
+              ${
+                item.inventoryLabel
+                  ? `<div><strong class="text-brand-black">Inventory source:</strong> ${item.inventoryLabel}</div>`
+                  : ''
+              }
+              ${
+                item.providerName
+                  ? `<div><strong class="text-brand-black">Provider:</strong> ${item.providerName}</div>`
+                  : ''
+              }
+              ${
+                item.scheduleStatus
+                  ? `<div><strong class="text-brand-black">Schedule status:</strong> ${item.scheduleStatus.replace(/_/g, ' ')}</div>`
+                  : ''
+              }
+              ${
+                item.fareFamilyName
+                  ? `<div><strong class="text-brand-black">Fare family:</strong> ${item.fareFamilyName}</div>`
+                  : ''
+              }
+              ${
+                item.searchContext?.origin && item.searchContext?.destination
+                  ? `<div><strong class="text-brand-black">Search route:</strong> ${item.searchContext.origin} → ${item.searchContext.destination}</div>`
+                  : ''
+              }
+              ${
+                item.revalidationStatus
+                  ? `<div><strong class="text-brand-black">Revalidation:</strong> ${item.revalidationStatus.replace(/_/g, ' ')}${item.revalidatedAt ? ` · ${new Date(item.revalidatedAt).toLocaleString()}` : ''}</div>`
+                  : ''
+              }
               <div><strong class="text-brand-black">Booking Channel:</strong> Vacatina Coordinated Itinerary</div>
               <div><strong class="text-brand-black">Tariff Protection:</strong> ${
                 isReady
@@ -470,10 +500,17 @@ function syncDrawerContents(
           const resolved = tripBucketService.resolveItemAction(id);
           if (resolved) {
             telemetry.track('resolve_bucket_item', { id, title: resolved.title });
-            showToast(
-              `"${resolved.title}" is now Ready and included in your Ready items estimate.`,
-              'success'
-            );
+            if (resolved.state === 'ready') {
+              showToast(
+                `"${resolved.title}" is now Ready and included in your Ready items estimate.`,
+                'success'
+              );
+            } else {
+              showToast(
+                'Requirement recorded locally. No supplier message or seat hold was sent for this demo item.',
+                'brand'
+              );
+            }
           }
         }
       });
@@ -511,7 +548,7 @@ function syncDrawerContents(
     if (revalBtn) {
       revalBtn.addEventListener('click', () => {
         tripBucketService.revalidateAllReadyItems(() => {
-          showToast('Live holds revalidated across Ready items.', 'success');
+          showToast('Local fare fixtures rechecked. No live supplier inventory was queried.', 'brand');
         });
       });
     }

@@ -12,7 +12,7 @@ import type {
 import {
   findAirportByCode,
   formatAirportDisplay,
-  searchAirports
+  parseAirportFromInput
 } from '../data/airports.ts';
 import { flightSearchService } from '../services/flight-search.service.ts';
 import {
@@ -21,6 +21,7 @@ import {
   type TravellerSelectorState
 } from './reusable-traveller-selector.ts';
 import { initAirportAutocomplete } from './airport-autocomplete.ts';
+import { normalizeFlightDate } from '../domain/flight-search-query.ts';
 import { routerService } from '../../../lib/services/router.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
 import { showToast } from '../../../components/ui/toast.ts';
@@ -77,6 +78,60 @@ export class FlightsHubView {
     }
   }
 
+  /** Hydrates the hub from the same canonical query names used by search. */
+  public prefillFromQuery(query: URLSearchParams): void {
+    const from = query.get('origin') || query.get('from');
+    const to = query.get('destination') || query.get('to');
+    if (from) {
+      const found = parseAirportFromInput(from);
+      if (found) this.originLocation = found;
+    }
+    if (to) {
+      const found = parseAirportFromInput(to);
+      if (found) this.destinationLocation = found;
+    }
+
+    const rawTripType = (query.get('tripType') || query.get('trip') || '').toLowerCase();
+    if (rawTripType === 'one_way' || rawTripType === 'one-way') this.currentTripType = 'one_way';
+    else if (rawTripType === 'multi_city' || rawTripType === 'multi-city') this.currentTripType = 'multi_city';
+    else if (rawTripType === 'round_trip' || rawTripType === 'round-trip') this.currentTripType = 'round_trip';
+
+    const departure = normalizeFlightDate(query.get('departureDate') || query.get('dep') || '');
+    if (departure) this.departureDate = departure;
+    const returnValue = normalizeFlightDate(query.get('returnDate') || query.get('ret') || '');
+    if (returnValue) this.returnDate = returnValue;
+
+    const adults = Number(query.get('adults'));
+    const children = Number(query.get('children'));
+    const infants = Number(query.get('infants'));
+    if (Number.isInteger(adults) && adults > 0) this.travellerState.adults = adults;
+    if (Number.isInteger(children) && children >= 0) this.travellerState.children = children;
+    if (Number.isInteger(infants) && infants >= 0) this.travellerState.infants = infants;
+
+    const rawCabin = (query.get('cabinClass') || query.get('cabin') || '').trim().toLowerCase();
+    if (rawCabin.includes('business')) this.travellerState.cabinClass = 'business';
+    else if (rawCabin.includes('first')) this.travellerState.cabinClass = 'first';
+    else if (rawCabin.includes('premium')) this.travellerState.cabinClass = 'premium_economy';
+    else if (rawCabin) this.travellerState.cabinClass = 'economy';
+
+    this.directOnly = ['true', '1', 'yes'].includes((query.get('directOnly') || '').toLowerCase());
+    this.nearbyAirports = ['true', '1', 'yes'].includes((query.get('nearbyAirports') || '').toLowerCase());
+
+    this.multiCityLegs[0] = {
+      legIndex: 0,
+      origin: this.originLocation,
+      destination: this.destinationLocation,
+      departureDate: this.departureDate
+    };
+    if (this.multiCityLegs.length > 1) {
+      this.multiCityLegs[1] = {
+        ...this.multiCityLegs[1],
+        legIndex: 1,
+        departureDate: this.returnDate >= this.departureDate ? this.returnDate : this.departureDate
+      };
+    }
+  }
+
   public render(container: HTMLElement): void {
     telemetry.track('flights_hub_viewed', {
       origin: this.originLocation.airportCode,
@@ -84,7 +139,7 @@ export class FlightsHubView {
     });
 
     container.innerHTML = `
-      <div id="flights-hub-page" class="w-full bg-white text-brand-dark pb-16">
+      <div id="flights-hub-page" class="w-full bg-white text-brand-black pb-16">
         <!-- Hero Header -->
         <section class="bg-brand-primary text-white pt-10 pb-16 px-4 sm:px-6 lg:px-8">
           <div class="max-w-6xl mx-auto">
@@ -94,13 +149,17 @@ export class FlightsHubView {
                   <svg class="w-3.5 h-3.5 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                   </svg>
-                  Vacatina Flights Operating System
+                  Flights · Demo &amp; request-to-book preview
                 </span>
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-display">
                   Find &amp; Configure Your Ideal Flight
                 </h1>
                 <p class="mt-2 text-sm sm:text-base text-white/80 max-w-2xl font-sans">
-                  Compare real-time schedules, transparent baggage allowances, and flexible fare conditions across scheduled passenger carriers.
+                  Compare illustrative demo schedules and manual request-to-book options with clear baggage and fare conditions. Live airline supplier inventory is not activated in this build.
+                </p>
+                <p class="mt-3 inline-flex items-start gap-2 text-xs text-white/75 max-w-2xl">
+                  <span class="mt-0.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-200/20 text-amber-100 border border-amber-200/40 shrink-0">Disclosure</span>
+                  <span>Demo fixtures are illustrative, not live airline data. Manual options remain on request until the Vacatina flight desk confirms carrier, schedule, baggage and fare. No seat hold or ticketing is created by searching or staging.</span>
                 </p>
               </div>
               <div class="hidden md:flex items-center gap-3">
@@ -112,7 +171,7 @@ export class FlightsHubView {
             </div>
 
             <!-- Search Command Panel Container -->
-            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-2xl text-brand-dark border border-gray-100">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-2xl text-brand-black border border-gray-100">
               <!-- Trip Type Selector -->
               <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-5">
                 <div class="inline-flex p-1 bg-gray-100 rounded-xl" role="radiogroup" aria-label="Trip type selection">
@@ -123,7 +182,7 @@ export class FlightsHubView {
 
                 <!-- Traveller & Cabin Trigger -->
                 <div class="relative">
-                  <button type="button" id="btn-hub-travellers-trigger" class="px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 text-brand-dark flex items-center gap-2 transition-colors" aria-haspopup="true" aria-expanded="false">
+                  <button type="button" id="btn-hub-travellers-trigger" class="px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 text-brand-black flex items-center gap-2 transition-colors" aria-haspopup="true" aria-expanded="false">
                     <svg class="w-4 h-4 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span id="hub-travellers-label">${formatTravellerSummaryText(this.travellerState)}</span>
                     <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -139,7 +198,7 @@ export class FlightsHubView {
                 <!-- Origin -->
                 <div class="md:col-span-4" id="origin-container">
                   <label for="hub-flight-origin" class="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-1">From (Origin)</label>
-                  <input type="text" id="hub-flight-origin" value="${formatAirportDisplay(this.originLocation)}" class="w-full h-12 px-3.5 rounded-xl border border-gray-200 text-sm font-semibold text-brand-dark focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all" placeholder="City or airport code">
+                  <input type="text" id="hub-flight-origin" value="${formatAirportDisplay(this.originLocation)}" class="w-full h-12 px-3.5 rounded-xl border border-gray-200 text-sm font-semibold text-brand-black focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all" placeholder="City or airport code">
                 </div>
 
                 <!-- Swap Button -->
@@ -154,7 +213,7 @@ export class FlightsHubView {
                 <!-- Destination -->
                 <div class="md:col-span-4" id="dest-container">
                   <label for="hub-flight-dest" class="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-1">To (Destination)</label>
-                  <input type="text" id="hub-flight-dest" value="${formatAirportDisplay(this.destinationLocation)}" class="w-full h-12 px-3.5 rounded-xl border border-gray-200 text-sm font-semibold text-brand-dark focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all" placeholder="City or airport code">
+                  <input type="text" id="hub-flight-dest" value="${formatAirportDisplay(this.destinationLocation)}" class="w-full h-12 px-3.5 rounded-xl border border-gray-200 text-sm font-semibold text-brand-black focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all" placeholder="City or airport code">
                 </div>
 
                 <!-- Dates -->
@@ -162,11 +221,11 @@ export class FlightsHubView {
                   <div class="grid grid-cols-2 gap-2">
                     <div>
                       <label for="hub-dep-date" class="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-1">Departure</label>
-                      <input type="date" id="hub-dep-date" value="${this.departureDate}" class="w-full h-12 px-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm font-semibold text-brand-dark focus:border-brand-primary outline-none">
+                      <input type="date" id="hub-dep-date" value="${this.departureDate}" class="w-full h-12 px-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm font-semibold text-brand-black focus:border-brand-primary outline-none">
                     </div>
                     <div id="hub-ret-col" class="${this.currentTripType === 'one_way' ? 'opacity-40 pointer-events-none' : ''}">
                       <label for="hub-ret-date" class="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-1">Return</label>
-                      <input type="date" id="hub-ret-date" value="${this.returnDate}" class="w-full h-12 px-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm font-semibold text-brand-dark focus:border-brand-primary outline-none">
+                      <input type="date" id="hub-ret-date" value="${this.returnDate}" class="w-full h-12 px-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm font-semibold text-brand-black focus:border-brand-primary outline-none">
                     </div>
                   </div>
                 </div>
@@ -210,8 +269,8 @@ export class FlightsHubView {
         <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold font-display text-brand-dark">Popular Scheduled Flights from Colombo</h2>
-              <p class="text-xs sm:text-sm text-brand-muted">Direct connections &amp; verified scheduled routes from Bandaranaike (CMB).</p>
+              <h2 class="text-xl sm:text-2xl font-bold font-display text-brand-black">Popular demo routes from Colombo</h2>
+              <p class="text-xs sm:text-sm text-brand-muted">Illustrative route cards for this build. Schedules, carriers and fares shown here are demo only.</p>
             </div>
             <a href="/flights/explore" class="text-xs font-bold text-brand-primary hover:underline flex items-center gap-1">
               View all routes &rarr;
@@ -222,17 +281,17 @@ export class FlightsHubView {
             <!-- Card 1: Dubai -->
             <div class="p-4 rounded-2xl border border-gray-200 hover:border-brand-primary/40 hover:shadow-md transition-all bg-white flex flex-col justify-between">
               <div>
-                <div class="flex items-center justify-between text-xs text-brand-muted mb-2">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → DXB</span>
-                  <span class="font-bold text-brand-primary">Non-Stop · 4h 45m</span>
+                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop · 4h 45m</span>
                 </div>
-                <div class="text-base font-bold text-brand-dark">Dubai, UAE</div>
+                <div class="text-base font-bold text-brand-black">Dubai, UAE</div>
                 <div class="text-xs text-brand-muted mt-1">Emirates, Flydubai, SriLankan</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Indicative fare from</span>
-                  <span class="text-sm font-extrabold text-brand-dark tabular-nums">LKR 98,500</span>
+                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 98,500</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-DXB" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
                   Select
@@ -243,17 +302,17 @@ export class FlightsHubView {
             <!-- Card 2: Maldives -->
             <div class="p-4 rounded-2xl border border-gray-200 hover:border-brand-primary/40 hover:shadow-md transition-all bg-white flex flex-col justify-between">
               <div>
-                <div class="flex items-center justify-between text-xs text-brand-muted mb-2">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → MLE</span>
-                  <span class="font-bold text-brand-primary">Non-Stop · 1h 25m</span>
+                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop · 1h 25m</span>
                 </div>
-                <div class="text-base font-bold text-brand-dark">Malé, Maldives</div>
+                <div class="text-base font-bold text-brand-black">Malé, Maldives</div>
                 <div class="text-xs text-brand-muted mt-1">SriLankan, Emirates, Maldivian</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Indicative fare from</span>
-                  <span class="text-sm font-extrabold text-brand-dark tabular-nums">LKR 78,000</span>
+                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 78,000</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-MLE" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
                   Select
@@ -264,17 +323,17 @@ export class FlightsHubView {
             <!-- Card 3: Singapore -->
             <div class="p-4 rounded-2xl border border-gray-200 hover:border-brand-primary/40 hover:shadow-md transition-all bg-white flex flex-col justify-between">
               <div>
-                <div class="flex items-center justify-between text-xs text-brand-muted mb-2">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → SIN</span>
-                  <span class="font-bold text-brand-primary">Non-Stop · 4h 05m</span>
+                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop · 4h 05m</span>
                 </div>
-                <div class="text-base font-bold text-brand-dark">Singapore</div>
+                <div class="text-base font-bold text-brand-black">Singapore</div>
                 <div class="text-xs text-brand-muted mt-1">Singapore Airlines, SriLankan</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Indicative fare from</span>
-                  <span class="text-sm font-extrabold text-brand-dark tabular-nums">LKR 68,500</span>
+                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 68,500</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-SIN" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
                   Select
@@ -285,17 +344,17 @@ export class FlightsHubView {
             <!-- Card 4: London -->
             <div class="p-4 rounded-2xl border border-gray-200 hover:border-brand-primary/40 hover:shadow-md transition-all bg-white flex flex-col justify-between">
               <div>
-                <div class="flex items-center justify-between text-xs text-brand-muted mb-2">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → LHR</span>
-                  <span class="font-bold text-brand-primary">Non-Stop &amp; 1-Stop</span>
+                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop &amp; 1-Stop</span>
                 </div>
-                <div class="text-base font-bold text-brand-dark">London, UK</div>
+                <div class="text-base font-bold text-brand-black">London, UK</div>
                 <div class="text-xs text-brand-muted mt-1">SriLankan, Qatar, Emirates</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Indicative fare from</span>
-                  <span class="text-sm font-extrabold text-brand-dark tabular-nums">LKR 248,500</span>
+                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 248,500</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-LHR" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
                   Select
@@ -305,27 +364,28 @@ export class FlightsHubView {
           </div>
         </section>
 
-        <!-- Fare Transparency & Guidance Module -->
+        <!-- Inventory Truth & Guidance Module -->
         <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
           <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-200">
-            <h3 class="text-lg font-bold font-display text-brand-dark mb-4">The Vacatina Calm Fare Promise</h3>
+            <h3 class="text-lg font-bold font-display text-brand-black mb-1">How this build handles flight inventory</h3>
+            <p class="text-xs text-brand-muted mb-4">No live supplier, seat hold, payment or ticketing is activated in this phase.</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div class="space-y-1">
-                <div class="text-sm font-bold text-brand-primary">Transparent Baggage</div>
+                <div class="text-sm font-bold text-brand-primary">Demo fixtures are labelled</div>
                 <p class="text-xs text-brand-muted leading-relaxed">
-                  Every result displays explicit cabin and checked bag allowances. No surprise fees at airport check-in desks.
+                  Schedules, fares, baggage and fare-family benefits from demo fixtures are illustrative only. They are never presented as live airline inventory.
                 </p>
               </div>
               <div class="space-y-1">
-                <div class="text-sm font-bold text-brand-primary">Pre-Booking Revalidation</div>
+                <div class="text-sm font-bold text-brand-primary">Request-to-book stays on request</div>
                 <p class="text-xs text-brand-muted leading-relaxed">
-                  Fares and seat rules are rechecked with upstream carriers before staging in your Trip Bucket. Never accept silent price hikes.
+                  Manual options remain Needs Action in your Trip Bucket. The Vacatina flight desk must confirm carrier, schedule, baggage and fare before any ticketing.
                 </p>
               </div>
               <div class="space-y-1">
-                <div class="text-sm font-bold text-brand-primary">Multi-Source Normalization</div>
+                <div class="text-sm font-bold text-brand-primary">No silent bookings</div>
                 <p class="text-xs text-brand-muted leading-relaxed">
-                  Negotiated direct inventory and external GDS feeds are standardized into one unified, readable booking offer.
+                  Staging an option creates no reservation or seat hold. Review every item and its inventory source in the Trip Bucket before deciding what to request.
                 </p>
               </div>
             </div>
@@ -475,14 +535,27 @@ export class FlightsHubView {
       submitBtn.addEventListener('click', (e) => {
         e.stopPropagation();
 
+        if (this.currentTripType === 'multi_city') {
+          this.syncMultiCityLegsFromInputs(container);
+          this.multiCityLegs.forEach((leg, index) => { leg.legIndex = index; });
+        }
+
+        const legs =
+          this.currentTripType === 'multi_city'
+            ? this.multiCityLegs.map((leg, index) => ({ ...leg, legIndex: index }))
+            : undefined;
+        const primaryOrigin = legs?.[0]?.origin || this.originLocation;
+        const primaryDestination = legs?.[legs.length - 1]?.destination || this.destinationLocation;
+        const primaryDepartureDate = legs?.[0]?.departureDate || this.departureDate;
+
         const searchReq: Partial<FlightSearchRequest> = {
           searchId: `srch-${Date.now()}`,
           tripType: this.currentTripType,
-          origin: this.originLocation,
-          destination: this.destinationLocation,
-          departureDate: this.departureDate,
+          origin: primaryOrigin,
+          destination: primaryDestination,
+          departureDate: primaryDepartureDate,
           returnDate: this.currentTripType === 'round_trip' ? this.returnDate : undefined,
-          legs: this.currentTripType === 'multi_city' ? this.multiCityLegs : undefined,
+          legs,
           travellers: {
             adults: this.travellerState.adults,
             children: this.travellerState.children,
@@ -509,30 +582,59 @@ export class FlightsHubView {
 
         if (alertEl) alertEl.classList.add('hidden');
 
-        // Construct search query string
+        // Construct the canonical replayable search query.
         const params = new URLSearchParams();
         params.set('tripType', this.currentTripType);
-        params.set('from', this.originLocation.airportCode);
-        params.set('to', this.destinationLocation.airportCode);
-        params.set('dep', this.departureDate);
+        params.set('origin', primaryOrigin.airportCode);
+        params.set('destination', primaryDestination.airportCode);
+        params.set('departureDate', primaryDepartureDate);
         if (this.currentTripType === 'round_trip' && this.returnDate) {
-          params.set('ret', this.returnDate);
+          params.set('returnDate', this.returnDate);
+        }
+        if (legs) {
+          legs.forEach(leg => {
+            params.append(
+              'leg',
+              `${leg.origin.airportCode}-${leg.destination.airportCode}-${leg.departureDate}`
+            );
+          });
         }
         params.set('adults', String(this.travellerState.adults));
         params.set('children', String(this.travellerState.children));
         params.set('infants', String(this.travellerState.infants));
-        params.set('cabin', this.travellerState.cabinClass);
+        params.set('cabinClass', this.travellerState.cabinClass);
         if (this.directOnly) params.set('directOnly', 'true');
+        if (this.nearbyAirports) params.set('nearbyAirports', 'true');
 
         telemetry.track('flight_search_submitted', {
           tripType: this.currentTripType,
-          origin: this.originLocation.airportCode,
-          destination: this.destinationLocation.airportCode
+          origin: primaryOrigin.airportCode,
+          destination: primaryDestination.airportCode
         });
 
         routerService.navigateTo(`/flights/search?${params.toString()}`);
       });
     }
+  }
+
+  private syncMultiCityLegsFromInputs(container: HTMLElement): void {
+    const list = container.querySelector<HTMLElement>('#hub-mc-legs-list');
+    if (!list) return;
+
+    list.querySelectorAll<HTMLInputElement>('[data-mc-origin]').forEach(input => {
+      const idx = parseInt(input.getAttribute('data-mc-origin') || '0', 10);
+      const parsed = parseAirportFromInput(input.value);
+      if (parsed) this.multiCityLegs[idx].origin = parsed;
+    });
+    list.querySelectorAll<HTMLInputElement>('[data-mc-dest]').forEach(input => {
+      const idx = parseInt(input.getAttribute('data-mc-dest') || '0', 10);
+      const parsed = parseAirportFromInput(input.value);
+      if (parsed) this.multiCityLegs[idx].destination = parsed;
+    });
+    list.querySelectorAll<HTMLInputElement>('[data-mc-date]').forEach(input => {
+      const idx = parseInt(input.getAttribute('data-mc-date') || '0', 10);
+      if (input.value) this.multiCityLegs[idx].departureDate = input.value;
+    });
   }
 
   private renderMultiCityLegs(container: HTMLElement): void {
@@ -545,13 +647,13 @@ export class FlightsHubView {
         <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
           <div class="md:col-span-1 text-xs font-bold text-brand-primary">Leg ${idx + 1}</div>
           <div class="md:col-span-4">
-            <input type="text" data-mc-origin="${idx}" value="${formatAirportDisplay(leg.origin)}" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold" placeholder="Origin">
+            <input type="text" data-mc-origin="${idx}" value="${formatAirportDisplay(leg.origin)}" aria-label="Leg ${idx + 1} origin airport" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold" placeholder="Origin city or code">
           </div>
           <div class="md:col-span-4">
-            <input type="text" data-mc-dest="${idx}" value="${formatAirportDisplay(leg.destination)}" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold" placeholder="Destination">
+            <input type="text" data-mc-dest="${idx}" value="${formatAirportDisplay(leg.destination)}" aria-label="Leg ${idx + 1} destination airport" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold" placeholder="Destination city or code">
           </div>
           <div class="md:col-span-2">
-            <input type="date" data-mc-date="${idx}" value="${leg.departureDate}" class="w-full h-10 px-2 rounded-lg border border-gray-200 text-xs font-semibold">
+            <input type="date" data-mc-date="${idx}" value="${leg.departureDate}" aria-label="Leg ${idx + 1} departure date" class="w-full h-10 px-2 rounded-lg border border-gray-200 text-xs font-semibold">
           </div>
           <div class="md:col-span-1 text-right">
             ${
@@ -565,6 +667,44 @@ export class FlightsHubView {
       )
       .join('');
 
+    // Wire leg field edits (airport parsing + date sync)
+    list.querySelectorAll<HTMLInputElement>('[data-mc-origin]').forEach(input => {
+      input.addEventListener('change', () => {
+        const idx = parseInt(input.getAttribute('data-mc-origin') || '0', 10);
+        const parsed = parseAirportFromInput(input.value);
+        if (!parsed) {
+          input.setAttribute('aria-invalid', 'true');
+          showToast(`Leg ${idx + 1}: choose a recognised origin airport from the suggestions.`, 'warning');
+          return;
+        }
+        input.removeAttribute('aria-invalid');
+        this.multiCityLegs[idx].origin = parsed;
+        input.value = formatAirportDisplay(parsed);
+      });
+    });
+
+    list.querySelectorAll<HTMLInputElement>('[data-mc-dest]').forEach(input => {
+      input.addEventListener('change', () => {
+        const idx = parseInt(input.getAttribute('data-mc-dest') || '0', 10);
+        const parsed = parseAirportFromInput(input.value);
+        if (!parsed) {
+          input.setAttribute('aria-invalid', 'true');
+          showToast(`Leg ${idx + 1}: choose a recognised destination airport from the suggestions.`, 'warning');
+          return;
+        }
+        input.removeAttribute('aria-invalid');
+        this.multiCityLegs[idx].destination = parsed;
+        input.value = formatAirportDisplay(parsed);
+      });
+    });
+
+    list.querySelectorAll<HTMLInputElement>('[data-mc-date]').forEach(input => {
+      input.addEventListener('change', () => {
+        const idx = parseInt(input.getAttribute('data-mc-date') || '0', 10);
+        if (input.value) this.multiCityLegs[idx].departureDate = input.value;
+      });
+    });
+
     // Wire Remove Leg
     list.querySelectorAll<HTMLButtonElement>('button[data-remove-mc-leg]').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -572,6 +712,7 @@ export class FlightsHubView {
         const idx = parseInt(btn.getAttribute('data-remove-mc-leg') || '0', 10);
         if (this.multiCityLegs.length > 2) {
           this.multiCityLegs.splice(idx, 1);
+          this.multiCityLegs.forEach((leg, index) => { leg.legIndex = index; });
           this.renderMultiCityLegs(container);
         }
       });
