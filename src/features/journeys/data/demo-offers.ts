@@ -29,6 +29,13 @@ export const JOURNEY_DEMO_OFFERS: JourneyOffer[] = [
         { title: 'Departure planning', summary: 'Review the proposed return arrangements before accepting a future quote.' }
       ]
     }
+  }),
+  demoOffer('cars', 'Dubai ground transport planning example', 'Dubai', {
+    car: {
+      serviceTypes: ['transfer', 'car-hire'],
+      vehicleCategories: [{ id: 'STANDARD_REQUEST', label: 'Standard vehicle request · Allocation pending' }, { id: 'ACCESS_REQUEST', label: 'Accessibility requirements · Operator review' }],
+      confirmationNotes: 'Vehicle, passenger/luggage capacity, driver assignment, hire eligibility and return arrangements require operator confirmation. No vehicle is reserved.'
+    }
   })
 ];
 

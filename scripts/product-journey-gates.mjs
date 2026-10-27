@@ -1,6 +1,7 @@
 /** Browser gates added incrementally at each local product checkpoint. */
 export const GENERIC_PHASES = [
-  { phase: 8, product: 'packages', route: '/holiday-packages', destination: 'Dubai' }
+  { phase: 8, product: 'packages', route: '/holiday-packages', destination: 'Dubai' },
+  { phase: 9, product: 'cars', route: '/cars-transfers', destination: 'Dubai' }
 ];
 
 export async function verifyProductPhase(cdp, assertCheck, definition) {
@@ -12,7 +13,7 @@ export async function verifyProductPhase(cdp, assertCheck, definition) {
       const navigate = url => window.__VACATINA_ROUTER__.navigateTo(url);
       const fits = () => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
       document.getElementById('trip-bucket-close')?.click();
-      const params = new URLSearchParams({ inventory:'demo',destination:definition.destination,origin:'Colombo',departureDate:'2027-02-01',returnDate:'2027-02-05',adults:'2',children:'0',infants:'0',rooms:'1',pickup:'Airport pickup request',dropoff:'Hotel drop-off request',pickupTime:'14:30',travellerAges:'32,30',residenceCountry:'LK',cabinClass:'standard',durationDays:'5' });
+      const params = new URLSearchParams({ inventory:'demo',destination:definition.destination,origin:'Colombo',departureDate:'2027-02-01',returnDate:'2027-02-05',returnTime:'15:30',adults:'2',children:'0',infants:'0',rooms:'1',pickup:'Airport pickup request',dropoff:'Hotel drop-off request',pickupTime:'14:30',travellerAges:'32,30',residenceCountry:'LK',cabinClass:'standard',durationDays:'5' });
       navigate(definition.route + '?' + params); await wait(100);
       const hub = !!document.getElementById('journey-search-form') && fits();
       const searchForm = document.getElementById('journey-search-form');

@@ -27,9 +27,12 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
   if (product === 'flights') fields += journeySelect(config, 'tripType', 'Journey type', [['round_trip', 'Return'], ['one_way', 'One way']]);
   if (product === 'rails' || product === 'flights') fields += journeyInput(config, 'origin', product === 'flights' ? 'Departure airport (IATA code)' : 'Departure station', 'text', 'required maxlength="160"');
   fields += journeyInput(config, 'destination', product === 'rails' ? 'Arrival station' : 'Destination', 'text', 'required maxlength="160"');
-  if (product === 'cars') fields += journeySelect(config, 'serviceType', 'Service', [['transfer', 'Airport / city transfer'], ['car-hire', 'Car hire']]);
+  if (product === 'cars') {
+    fields += journeySelect(config, 'serviceType', 'Service', [['transfer', 'Airport / city transfer'], ['car-hire', 'Car hire']]);
+    if (config.serviceType === 'transfer') fields += journeySelect(config, 'tripType', 'Transfer journey', [['one_way', 'One way'], ['round_trip', 'Return transfer']]);
+  }
   fields += journeyInput(config, 'departureDate', product === 'hotels' ? 'Check-in' : 'Travel date', 'date', 'required');
-  if (['packages', 'hotels', 'insurance', 'cruises'].includes(product) || (product === 'flights' && config.tripType === 'round_trip') || (product === 'cars' && config.serviceType === 'car-hire')) fields += journeyInput(config, 'returnDate', product === 'hotels' ? 'Check-out' : 'End date', 'date', ['packages', 'hotels', 'insurance', 'cars', 'flights'].includes(product) ? 'required' : '');
+  if (['packages', 'hotels', 'insurance', 'cruises'].includes(product) || (product === 'flights' && config.tripType === 'round_trip') || (product === 'cars' && (config.serviceType === 'car-hire' || config.tripType === 'round_trip'))) fields += journeyInput(config, 'returnDate', product === 'hotels' ? 'Check-out' : 'End date', 'date', ['packages', 'hotels', 'insurance', 'cars', 'flights'].includes(product) ? 'required' : '');
   fields += journeyInput(config, 'adults', 'Adults', 'number', 'min="1" max="9" step="1" required');
   fields += journeyInput(config, 'children', 'Children', 'number', 'min="0" max="8" step="1"');
   fields += journeyInput(config, 'infants', 'Infants', 'number', 'min="0" max="8" step="1"');
@@ -39,6 +42,7 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
     fields += journeyInput(config, 'pickup', 'Pickup location', 'text', 'required maxlength="300"');
     fields += journeyInput(config, 'dropoff', 'Drop-off / return location', 'text', 'required maxlength="300"');
     fields += journeyInput(config, 'pickupTime', 'Pickup time (local)', 'time', 'required');
+    if (config.serviceType === 'transfer' && config.tripType === 'round_trip') fields += journeyInput(config, 'returnTime', 'Return pickup time (local)', 'time', detail ? 'required' : '');
     fields += journeyInput(config, 'luggage', 'Luggage pieces', 'number', 'min="0" max="20" step="1"');
     if (config.serviceType === 'car-hire') fields += journeyInput(config, 'driverAge', 'Lead driver age', 'number', 'min="18" max="100" step="1" required');
   }
@@ -125,7 +129,8 @@ function journeyPublishedFacts(offer: JourneyOffer): string {
     ['vehicleModel', 'Vehicle'], ['vehicleCategory', 'Vehicle category'], ['passengerCapacity', 'Passenger capacity'], ['luggageCapacity', 'Luggage capacity'],
     ['shipName', 'Ship'], ['cabinGrade', 'Cabin grade'], ['trainNumber', 'Train'], ['originStation', 'Departure station'], ['destinationStation', 'Arrival station'],
     ['meetingPointAddress', 'Meeting point'], ['durationHours', 'Duration (hours)'], ['guideLanguage', 'Guide language'], ['visaType', 'Service category'],
-    ['processingSlaBusinessDays', 'Published processing estimate (business days)'], ['underwriterName', 'Underwriter'], ['planTier', 'Plan'], ['coverageRegion', 'Coverage region']
+    ['processingSlaBusinessDays', 'Published processing estimate (business days)'], ['underwriterName', 'Underwriter'], ['planTier', 'Plan'], ['coverageRegion', 'Coverage region'],
+    ['confirmationNotes', 'Operator confirmation required'], ['packageTheme', 'Package style'], ['itineraryDays', 'Illustrative itinerary days'], ['itineraryNights', 'Illustrative itinerary nights']
   ];
   for (const [key, label] of keys) if (extension[key] !== undefined && extension[key] !== '') rows.push([label, extension[key]]);
   const segments = Array.isArray(extension.segments) ? extension.segments as Array<Record<string, unknown>> : [];
@@ -272,6 +277,7 @@ export class ProductWorkspace {
       this.render();
     }));
     const configure = this.host.querySelector<HTMLFormElement>('#journey-configure-form');
+    for (const key of ['serviceType', 'tripType']) configure?.querySelector<HTMLSelectElement>(`[name="${key}"]`)?.addEventListener('change', () => { this.config = readJourneyForm(configure!, this.config); this.render(); });
     if (configure && ['flights', 'hotels'].includes(this.product.productType)) {
       for (const key of ['origin', 'destination', 'departureDate', 'returnDate', 'adults', 'children', 'infants', 'rooms', 'tripType', 'cabinClass']) {
         const input = configure.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${key}"]`);

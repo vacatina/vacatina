@@ -6,11 +6,22 @@ import { journeyConfigurationFromQuery, journeyProductDetails, journeyOfferId, v
 import { tripBucketService } from '../src/lib/services/trip-bucket.service.ts';
 import { evaluateTripReviewHandoff } from '../src/features/trip-review/trip-review-workspace.ts';
 
+test('Cars Phase 9: car hire and return transfers retain distinct mandatory logistics', () => {
+  const config = journeyConfigurationFromQuery(new URLSearchParams('destination=Dubai&departureDate=2027-02-01&returnDate=2027-02-05&pickup=DXB&dropoff=Marina&pickupTime=14:30&returnTime=16:00&adults=2'));
+  assert.deepEqual(validateJourneyConfiguration('cars', config, true), {});
+  assert.ok(validateJourneyConfiguration('cars', { ...config, returnTime: '' }, true).returnTime);
+  assert.ok(validateJourneyConfiguration('cars', { ...config, pickup: '' }, true).pickup);
+  assert.ok(validateJourneyConfiguration('cars', { ...config, dropoff: '' }, true).dropoff);
+  assert.ok(validateJourneyConfiguration('cars', { ...config, serviceType: 'car-hire', driverAge: 17 }, true).driverAge);
+  assert.deepEqual(validateJourneyConfiguration('cars', { ...config, serviceType: 'car-hire', driverAge: 30 }, true), {});
+  assert.deepEqual(validateJourneyConfiguration('cars', { ...config, tripType: 'one_way', returnDate: '', returnTime: '' }, true), {});
+});
+
 for (const offer of JOURNEY_DEMO_OFFERS) {
   test(`${offer.productType} B2C phase: validation, search, canonical configuration, provenance, revalidation and review`, async () => {
     let calls = 0;
     const service = new JourneyService(async () => { calls++; throw new Error('Demo journeys must not call a supplier or server booking API'); });
-    const config = journeyConfigurationFromQuery(new URLSearchParams({ destination: offer.location?.city || '', origin: 'Colombo', departureDate: '2027-02-01', returnDate: '2027-02-05', adults: '2', rooms: '1', pickup: 'Airport pickup request', dropoff: 'Hotel drop-off request', pickupTime: '14:30', travellerAges: '32,30', residenceCountry: 'LK', cabinClass: 'standard', durationDays: '5' }));
+    const config = journeyConfigurationFromQuery(new URLSearchParams({ destination: offer.location?.city || '', origin: 'Colombo', departureDate: '2027-02-01', returnDate: '2027-02-05', returnTime: '15:30', adults: '2', rooms: '1', pickup: 'Airport pickup request', dropoff: 'Hotel drop-off request', pickupTime: '14:30', travellerAges: '32,30', residenceCountry: 'LK', cabinClass: 'standard', durationDays: '5' }));
     assert.deepEqual(validateJourneyConfiguration(offer.productType, config), {});
     await assert.rejects(service.search(offer.productType, { ...config, departureDate: 'invalid' }, 'demo_fixture'));
     const response = await service.search(offer.productType, config, 'demo_fixture');

@@ -64,6 +64,7 @@ export interface JourneyConfiguration {
   ticketType?: string;
   departurePort?: string;
   coverageOption?: string;
+  returnTime?: string;
   acceptedPriceMinor?: number;
   optionId?: string;
 }
@@ -116,7 +117,7 @@ export function journeyConfigurationFromQuery(query: URLSearchParams): JourneyCo
     citizenshipCountry: query.get('citizenshipCountry') || query.get('citizenship') || '', purpose: query.get('purpose') || 'tourism',
     tripType: (query.get('tripType') || 'round_trip').replace(/-/g, '_')
     , durationDays: number('durationDays', 0), packageStyle: query.get('packageStyle') || '', accommodationTier: query.get('accommodationTier') || '',
-    vehicleCategory: query.get('vehicleCategory') || '', ticketType: query.get('ticketType') || '', departurePort: query.get('departurePort') || '', coverageOption: query.get('coverageOption') || '', optionId: query.get('optionId') || ''
+    vehicleCategory: query.get('vehicleCategory') || '', ticketType: query.get('ticketType') || '', departurePort: query.get('departurePort') || '', coverageOption: query.get('coverageOption') || '', optionId: query.get('optionId') || '', returnTime: query.get('returnTime') || ''
   };
 }
 
@@ -138,11 +139,16 @@ export function validateJourneyConfiguration(product: TravelProductSlug, config:
   }
   if (['packages', 'hotels'].includes(product) && (!Number.isInteger(config.rooms) || config.rooms < 1 || config.rooms > 9)) errors.rooms = 'Choose 1–9 rooms.';
   if (product === 'cars') {
+    if (!['transfer', 'car-hire'].includes(config.serviceType)) errors.serviceType = 'Choose transfer or car hire.';
     if (!config.pickup.trim()) errors.pickup = 'Enter a pickup location.';
     if (!config.dropoff.trim()) errors.dropoff = 'Enter a drop-off or return location.';
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(config.pickupTime)) errors.pickupTime = 'Choose your pickup time.';
     if (!Number.isInteger(config.luggage) || config.luggage < 0 || config.luggage > 20) errors.luggage = 'Choose a luggage count from 0 to 20.';
     if (config.serviceType === 'car-hire' && (!Number.isInteger(config.driverAge) || config.driverAge < 18 || config.driverAge > 100)) errors.driverAge = 'Enter the lead driver’s age (18–100). Supplier eligibility still applies.';
+    if (detail && config.tripType === 'round_trip' && config.serviceType === 'transfer') {
+      if (!isJourneyDate(config.returnDate) || config.returnDate < config.departureDate) errors.returnDate = 'Choose a valid return transfer date.';
+      if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(config.returnTime || '')) errors.returnTime = 'Choose the return pickup time.';
+    }
   }
   if (product === 'rails' && !config.origin.trim()) errors.origin = 'Enter your departure station.';
   if (product === 'flights') {
