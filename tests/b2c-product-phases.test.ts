@@ -6,6 +6,19 @@ import { journeyConfigurationFromQuery, journeyProductDetails, journeyOfferId, v
 import { tripBucketService } from '../src/lib/services/trip-bucket.service.ts';
 import { evaluateTripReviewHandoff } from '../src/features/trip-review/trip-review-workspace.ts';
 
+test('Rails Phase 12: station identity, class validation and no fabricated train, seat or schedule', async () => {
+  const rail = JOURNEY_DEMO_OFFERS.find(o => o.productType === 'rails'); assert.ok(rail);
+  const details = journeyProductDetails(rail);
+  for (const key of ['trainNumber', 'seatNumber', 'departureTimeIso', 'arrivalTimeIso']) assert.equal(details[key], undefined);
+  const config = journeyConfigurationFromQuery(new URLSearchParams('origin=Colombo&destination=Kandy&departureDate=2027-02-01&cabinClass=standard&adults=2'));
+  assert.deepEqual(validateJourneyConfiguration('rails', config), {});
+  assert.ok(validateJourneyConfiguration('rails', { ...config, origin: 'Kandy' }).destination);
+  assert.ok(validateJourneyConfiguration('rails', { ...config, cabinClass: 'invented' }).cabinClass);
+  const service = new JourneyService();
+  assert.equal((await service.search('rails', { ...config, origin: 'Unserved Station' }, 'demo_fixture')).offers.length, 0);
+  await assert.rejects(service.stage(rail, { ...config, origin: 'Unserved Station' }));
+});
+
 test('Activities and Sightseeing Phase 11 retain distinct taxonomy and guided-route context', () => {
   const activity = JOURNEY_DEMO_OFFERS.find(o => o.productType === 'activities');
   const tour = JOURNEY_DEMO_OFFERS.find(o => o.productType === 'sightseeing');

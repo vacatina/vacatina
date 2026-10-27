@@ -50,7 +50,7 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
     fields += journeyInput(config, 'travellerAges', 'Traveller ages (e.g. 32, 30, 7)', 'text', 'required maxlength="100"');
     fields += journeyInput(config, 'residenceCountry', 'Country of residence (two-letter code)', 'text', 'required maxlength="2"');
   }
-  if (product === 'rails') fields += journeySelect(config, 'cabinClass', 'Travel class', [['standard', 'Standard'], ['first', 'First']]);
+  if (product === 'rails') fields += journeySelect(config, 'cabinClass', 'Requested travel class · Availability unverified', [['standard', 'Standard preference'], ['first', 'First preference']]);
   if (product === 'flights') fields += journeySelect(config, 'cabinClass', 'Cabin class', [['economy', 'Economy'], ['premium_economy', 'Premium Economy'], ['business', 'Business'], ['first', 'First']]);
   if (product === 'visa') {
     fields += journeyInput(config, 'citizenshipCountry', 'Passport nationality', 'text', 'required maxlength="100"');

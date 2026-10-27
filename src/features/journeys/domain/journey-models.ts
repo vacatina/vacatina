@@ -150,7 +150,11 @@ export function validateJourneyConfiguration(product: TravelProductSlug, config:
       if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(config.returnTime || '')) errors.returnTime = 'Choose the return pickup time.';
     }
   }
-  if (product === 'rails' && !config.origin.trim()) errors.origin = 'Enter your departure station.';
+  if (product === 'rails') {
+    if (!config.origin.trim()) errors.origin = 'Enter your departure station.';
+    if (config.origin.trim().toLowerCase() === config.destination.trim().toLowerCase()) errors.destination = 'Choose different departure and arrival stations.';
+    if (!['standard', 'first'].includes(config.cabinClass)) errors.cabinClass = 'Choose a published class preference.';
+  }
   if (product === 'flights') {
     if (!config.origin.trim()) errors.origin = 'Enter your departure airport.';
     if (!['one_way', 'round_trip'].includes(config.tripType)) errors.tripType = 'Choose a one-way or return journey. For multiple cities, search each leg separately.';

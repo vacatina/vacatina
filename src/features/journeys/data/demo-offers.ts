@@ -55,6 +55,13 @@ export const JOURNEY_DEMO_OFFERS: JourneyOffer[] = [
       languages: [{ id: 'LANGUAGE_TO_CONFIRM', label: 'Guide language to confirm' }],
       confirmationNotes: 'Guide, language, route, meeting point, admission and tour departure require operator confirmation. No tour slot or guide is assigned.'
     }
+  }),
+  demoOffer('rails', 'Colombo to Kandy rail planning example', 'Kandy', {
+    rail: {
+      originStation: 'Colombo', destinationStation: 'Kandy',
+      travelClasses: [{ id: 'standard', label: 'Standard class request' }, { id: 'first', label: 'First class request' }],
+      confirmationNotes: 'Train number, schedule, fare conditions, class availability and seat assignment are not supplied. Operator confirmation is required; no rail seat is held.'
+    }
   })
 ];
 
@@ -64,5 +71,12 @@ export function getDemoJourneyOffer(id: string): JourneyOffer | null {
 }
 export function searchDemoJourneyOffers(product: TravelProductSlug, configuration: JourneyConfiguration): JourneyOffer[] {
   const destination = configuration.destination.toLowerCase().trim();
-  return JOURNEY_DEMO_OFFERS.filter(o => o.productType === product && !!destination && `${o.location?.city || ''} ${o.location?.country || ''}`.toLowerCase().includes(destination)).map(o => structuredClone(o));
+  return JOURNEY_DEMO_OFFERS.filter(o => {
+    if (o.productType !== product || !destination || !`${o.location?.city || ''} ${o.location?.country || ''}`.toLowerCase().includes(destination)) return false;
+    if (product === 'rails') {
+      const rail = o.productExtension?.rail as Record<string, unknown> | undefined;
+      if (String(rail?.originStation || '').toLowerCase() !== configuration.origin.toLowerCase().trim()) return false;
+    }
+    return true;
+  }).map(o => structuredClone(o));
 }

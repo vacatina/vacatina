@@ -62,6 +62,7 @@ export class JourneyService {
       const canonical = getDemoJourneyOffer(journeyOfferId(offer));
       if (!canonical || canonical.productType !== offer.productType) throw new Error('Choose a canonical demo option for this product.');
       if (!`${canonical.location?.city || ''} ${canonical.location?.country || ''}`.toLowerCase().includes(configuration.destination.toLowerCase().trim())) throw new Error('The destination does not match this option. Search again.');
+      if (canonical.productType === 'rails' && String(journeyProductDetails(canonical).originStation || '').toLowerCase() !== configuration.origin.toLowerCase().trim()) throw new Error('The departure station does not match this rail option. Search again.');
       validatePublishedJourneySelection(canonical, configuration);
       const candidate: TripBucketCandidate = {
         id: `tb-${journeyOfferId(canonical)}`, offerId: journeyOfferId(canonical), canonicalOfferId: journeyOfferId(canonical),
@@ -98,7 +99,7 @@ export const journeyService = new JourneyService();
 /** Only a published option can be selected; a text value is not proof of availability. */
 export function validatePublishedJourneySelection(offer: JourneyOffer, config: JourneyConfiguration): void {
   const details = journeyProductDetails(offer);
-  for (const [source, key] of [['packageStyles', 'packageStyle'], ['accommodationTiers', 'accommodationTier'], ['vehicleCategories', 'vehicleCategory'], ['ticketTypes', 'ticketType'], ['timeSlots', 'timeSlot'], ['languages', 'language'], ['cabinCategories', 'cabinType'], ['coverageOptions', 'coverageOption']] as const) {
+  for (const [source, key] of [['packageStyles', 'packageStyle'], ['accommodationTiers', 'accommodationTier'], ['vehicleCategories', 'vehicleCategory'], ['ticketTypes', 'ticketType'], ['timeSlots', 'timeSlot'], ['languages', 'language'], ['cabinCategories', 'cabinType'], ['coverageOptions', 'coverageOption'], ['travelClasses', 'cabinClass']] as const) {
     const options = details[source];
     if (!Array.isArray(options) || !options.length) continue;
     const ids = options.map(value => typeof value === 'string' ? value : String(value.id || value.code || value.value));
