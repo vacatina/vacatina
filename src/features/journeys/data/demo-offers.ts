@@ -62,6 +62,12 @@ export const JOURNEY_DEMO_OFFERS: JourneyOffer[] = [
       travelClasses: [{ id: 'standard', label: 'Standard class request' }, { id: 'first', label: 'First class request' }],
       confirmationNotes: 'Train number, schedule, fare conditions, class availability and seat assignment are not supplied. Operator confirmation is required; no rail seat is held.'
     }
+  }),
+  demoOffer('cruises', 'Mediterranean cruise planning example', 'Mediterranean', {
+    cruise: {
+      cabinCategories: [{ id: 'INTERIOR_REQUEST', label: 'Interior cabin preference · Allocation pending' }, { id: 'BALCONY_REQUEST', label: 'Balcony cabin preference · Allocation pending' }],
+      confirmationNotes: 'Ship, sailing, embarkation port, ports of call, itinerary, cabin inventory and fare conditions have not been supplied. This is an operator request, not a cabin reservation.'
+    }
   })
 ];
 

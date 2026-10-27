@@ -4,7 +4,8 @@ export const GENERIC_PHASES = [
   { phase: 9, product: 'cars', route: '/cars-transfers', destination: 'Dubai' },
   { phase: 10, product: 'activities', route: '/activities', destination: 'Dubai' },
   { phase: 11, product: 'sightseeing', route: '/sightseeing-tours', destination: 'London' },
-  { phase: 12, product: 'rails', route: '/rails', destination: 'Kandy' }
+  { phase: 12, product: 'rails', route: '/rails', destination: 'Kandy' },
+  { phase: 13, product: 'cruises', route: '/cruises', destination: 'Mediterranean' }
 ];
 
 export async function verifyProductPhase(cdp, assertCheck, definition) {
@@ -17,6 +18,7 @@ export async function verifyProductPhase(cdp, assertCheck, definition) {
       const fits = () => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
       document.getElementById('trip-bucket-close')?.click();
       const params = new URLSearchParams({ inventory:'demo',destination:definition.destination,origin:'Colombo',departureDate:'2027-02-01',returnDate:'2027-02-05',returnTime:'15:30',adults:'2',children:'0',infants:'0',rooms:'1',pickup:'Airport pickup request',dropoff:'Hotel drop-off request',pickupTime:'14:30',travellerAges:'32,30',residenceCountry:'LK',cabinClass:'standard',durationDays:'5' });
+      params.set('departurePort', 'Port preference for operator review');
       navigate(definition.route + '?' + params); await wait(100);
       const hub = !!document.getElementById('journey-search-form') && fits();
       const searchForm = document.getElementById('journey-search-form');

@@ -27,11 +27,12 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
   if (product === 'flights') fields += journeySelect(config, 'tripType', 'Journey type', [['round_trip', 'Return'], ['one_way', 'One way']]);
   if (product === 'rails' || product === 'flights') fields += journeyInput(config, 'origin', product === 'flights' ? 'Departure airport (IATA code)' : 'Departure station', 'text', 'required maxlength="160"');
   fields += journeyInput(config, 'destination', product === 'rails' ? 'Arrival station' : 'Destination', 'text', 'required maxlength="160"');
+  if (product === 'cruises') fields += journeyInput(config, 'departurePort', 'Preferred departure port · Not confirmed', 'text', 'required maxlength="160"');
   if (product === 'cars') {
     fields += journeySelect(config, 'serviceType', 'Service', [['transfer', 'Airport / city transfer'], ['car-hire', 'Car hire']]);
     if (config.serviceType === 'transfer') fields += journeySelect(config, 'tripType', 'Transfer journey', [['one_way', 'One way'], ['round_trip', 'Return transfer']]);
   }
-  fields += journeyInput(config, 'departureDate', product === 'hotels' ? 'Check-in' : 'Travel date', 'date', 'required');
+  fields += journeyInput(config, 'departureDate', product === 'hotels' ? 'Check-in' : product === 'cruises' ? 'Requested sailing date' : 'Travel date', 'date', 'required');
   if (['packages', 'hotels', 'insurance', 'cruises'].includes(product) || (product === 'flights' && config.tripType === 'round_trip') || (product === 'cars' && (config.serviceType === 'car-hire' || config.tripType === 'round_trip'))) fields += journeyInput(config, 'returnDate', product === 'hotels' ? 'Check-out' : 'End date', 'date', ['packages', 'hotels', 'insurance', 'cars', 'flights'].includes(product) ? 'required' : '');
   fields += journeyInput(config, 'adults', 'Adults', 'number', 'min="1" max="9" step="1" required');
   fields += journeyInput(config, 'children', 'Children', 'number', 'min="0" max="8" step="1"');

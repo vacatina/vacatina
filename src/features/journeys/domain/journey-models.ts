@@ -167,6 +167,7 @@ export function validateJourneyConfiguration(product: TravelProductSlug, config:
   }
   if (detail && ['activities', 'sightseeing'].includes(product) && !config.timeSlot) errors.timeSlot = 'Select an available session.';
   if (detail && product === 'cruises' && !config.cabinType) errors.cabinType = 'Select a published cabin category.';
+  if (product === 'cruises' && !config.departurePort?.trim()) errors.departurePort = 'Enter a preferred departure port for operator review.';
   if (product === 'insurance') {
     const ages = config.travellerAges.split(',').map(v => v.trim()).filter(Boolean);
     if (ages.length !== config.adults + config.children + config.infants || ages.some(v => !/^\d{1,3}$/.test(v) || Number(v) > 120)) errors.travellerAges = 'Enter one age for every traveller, separated by commas.';

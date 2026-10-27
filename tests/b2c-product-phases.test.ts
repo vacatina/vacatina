@@ -47,6 +47,7 @@ for (const offer of JOURNEY_DEMO_OFFERS) {
     let calls = 0;
     const service = new JourneyService(async () => { calls++; throw new Error('Demo journeys must not call a supplier or server booking API'); });
     const config = journeyConfigurationFromQuery(new URLSearchParams({ destination: offer.location?.city || '', origin: 'Colombo', departureDate: '2027-02-01', returnDate: '2027-02-05', returnTime: '15:30', adults: '2', rooms: '1', pickup: 'Airport pickup request', dropoff: 'Hotel drop-off request', pickupTime: '14:30', travellerAges: '32,30', residenceCountry: 'LK', cabinClass: 'standard', durationDays: '5' }));
+    config.departurePort = 'Port preference for operator review';
     assert.deepEqual(validateJourneyConfiguration(offer.productType, config), {});
     await assert.rejects(service.search(offer.productType, { ...config, departureDate: 'invalid' }, 'demo_fixture'));
     const response = await service.search(offer.productType, config, 'demo_fixture');
@@ -83,3 +84,12 @@ for (const offer of JOURNEY_DEMO_OFFERS) {
     assert.equal(calls, 0);
   });
 }
+
+test('Cruises Phase 13: port and cabin requests never fabricate sailing or inventory', () => {
+  const offer = JOURNEY_DEMO_OFFERS.find(o => o.productType === 'cruises'); assert.ok(offer);
+  const details = journeyProductDetails(offer);
+  for (const key of ['shipName', 'portsOfCall', 'cabinNumber', 'availableCabins', 'sailingDate']) assert.equal(details[key], undefined);
+  const config = journeyConfigurationFromQuery(new URLSearchParams('destination=Mediterranean&departureDate=2027-02-01&adults=2'));
+  assert.ok(validateJourneyConfiguration('cruises', config, true).departurePort);
+  assert.ok(validateJourneyConfiguration('cruises', config, true).cabinType);
+});
