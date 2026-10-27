@@ -214,6 +214,9 @@ export class TripBucketService {
   }
 
   public stageCandidate(candidate: TripBucketCandidate): void {
+    if ((candidate.inventoryMode === 'demo_fixture' || candidate.inventoryMode === 'manual_request') && candidate.state === 'ready') {
+      candidate = { ...candidate, state: 'needs_action', confirmationMode: 'REQUEST_TO_CONFIRM' };
+    }
     const existingIdx = this.items.findIndex(i => i.id === candidate.id);
     if (existingIdx >= 0) {
       this.items[existingIdx] = { ...candidate };
@@ -585,7 +588,7 @@ export class TripBucketService {
   }
 
   public revalidateAllReadyItems(onComplete?: () => void): void {
-    const readyIds = this.items.filter(i => i.state === 'ready' || i.state === 'recheck_required').map(i => i.id);
+    const readyIds = this.items.filter(i => (i.state === 'ready' || i.state === 'recheck_required') && i.inventoryMode !== 'demo_fixture' && i.inventoryMode !== 'manual_request' && i.confirmationMode !== 'REQUEST_TO_CONFIRM').map(i => i.id);
     for (const item of this.items) {
       if (readyIds.includes(item.id)) {
         item.state = 'refreshing_price';

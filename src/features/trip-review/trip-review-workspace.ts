@@ -17,6 +17,7 @@ import { showToast } from '../../components/ui/toast.ts';
 import { openTripBucketDrawer } from '../../components/trip-bucket/trip-bucket-ui.ts';
 import { routerService } from '../../lib/services/router.service.ts';
 import { getLastFlightSearchQuery } from '../flights/domain/flight-search-context.ts';
+import { findJourneyProduct } from '../journeys/domain/journey-models.ts';
 
 function escapeReviewText(value: unknown): string {
   return String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -73,7 +74,7 @@ function blockersFor(item: TripBucketCandidate): string[] {
   if (isNonLiveItem(item)) {
     blockers.push(
       item.inventoryMode === 'demo_fixture'
-        ? 'Demo fixture — no live airline inventory or seat hold'
+        ? 'Demo fixture — no live supplier inventory or reservation hold'
         : item.inventoryMode === 'manual_request'
           ? 'Manual request-to-book — desk confirmation required'
           : 'Not confirmed as live supplier inventory'
@@ -90,6 +91,17 @@ function metadataRows(item: TripBucketCandidate): Array<[string, string]> {
   if (item.inventoryLabel) rows.push(['Inventory source', item.inventoryLabel]);
   else if (item.sourceType) rows.push(['Inventory source', item.sourceType]);
   if (item.providerName) rows.push(['Provider', item.providerName]);
+  if (item.offerId) rows.push(['Canonical offer', item.offerId]);
+  if (item.propertyId) rows.push(['Property', item.propertyId]);
+  if (item.roomId) rows.push(['Room', item.roomId]);
+  if (item.ratePlanId) rows.push(['Rate plan', item.ratePlanId]);
+  if (item.availabilityStatus) rows.push(['Availability', item.availabilityStatus]);
+  if (item.validUntil) rows.push(['Fixture valid until', item.validUntil]);
+  if (item.configuration) {
+    for (const [key, value] of Object.entries(item.configuration)) {
+      if (typeof value === 'string' || typeof value === 'number') rows.push([key.replace(/([A-Z])/g, ' $1'), String(value)]);
+    }
+  }
   if (item.scheduleStatus) rows.push(['Schedule status', item.scheduleStatus.replace(/_/g, ' ')]);
   if (item.fareFamilyName) rows.push(['Fare family', item.fareFamilyName]);
   if (item.travellerCounts) {
@@ -190,7 +202,9 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
               ${
                 item.productType === 'flights' && item.offerId
                   ? `<a href="/flights/offer/${encodeURIComponent(item.offerId)}" class="min-h-[40px] inline-flex items-center px-3 rounded-xl border border-gray-300 text-[11px] font-bold text-brand-black hover:bg-gray-50">View flight</a>`
-                  : ''
+                  : item.offerId && findJourneyProduct(item.productType)
+                    ? `<a href="${findJourneyProduct(item.productType)!.route}/${item.productType === 'hotels' ? 'property' : item.productType === 'visa' ? 'apply' : 'offer'}/${encodeURIComponent(item.propertyId || item.offerId)}" class="min-h-[44px] inline-flex items-center px-3 rounded-xl border border-gray-300 text-xs font-bold">View selection</a>`
+                    : ''
               }
               ${
                 item.state !== 'ready'
@@ -288,7 +302,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
     });
 
     container.querySelector('#btn-review-continue-shopping')?.addEventListener('click', () => {
-      routerService.navigateTo('/flights');
+              routerService.navigateTo('/');
     });
 
     container.querySelector('#btn-review-checkout')?.addEventListener('click', () => {

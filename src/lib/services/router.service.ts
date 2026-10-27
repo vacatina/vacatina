@@ -43,7 +43,7 @@ import { flightsSearchView } from '../../features/flights/ui/flights-search-view
 import { openCanonicalFlightDetailModal } from '../../features/flights/ui/flights-offer-detail-modal.ts';
 import { hotelsHubView } from '../../features/hotels/ui/hotels-hub-view.ts';
 import { hotelsSearchView } from '../../features/hotels/ui/hotels-search-view.ts';
-import { openCanonicalHotelDetailModal } from '../../features/hotels/ui/hotels-offer-detail-modal.ts';
+import { openCanonicalHotelDetailModal, closeCanonicalHotelModal } from '../../features/hotels/ui/hotels-offer-detail-modal.ts';
 import { visaHubView } from '../../features/visa/ui/visa-hub-view.ts';
 import { visaSearchView } from '../../features/visa/ui/visa-search-view.ts';
 import { openCanonicalVisaApplicationModal } from '../../features/visa/ui/visa-application-modal.ts';
@@ -274,6 +274,7 @@ export class CanonicalRouterService {
   public dispatchRoute(pathname: string, search: string, userInitiated = true): void {
     const query = new URLSearchParams(search);
     const path = pathname.replace(/\/$/, '') || '/';
+    closeCanonicalHotelModal();
 
     telemetry.track('canonical_navigation', { path, search });
 
@@ -311,7 +312,7 @@ export class CanonicalRouterService {
       return;
     }
     // The dedicated Flights product owns /flights and every /flights/* route.
-    const journeyProduct = isDedicatedFlightsPath(path) ? undefined : findJourneyProduct(path);
+    const journeyProduct = isDedicatedFlightsPath(path) || path === '/hotels' || path.startsWith('/hotels/') ? undefined : findJourneyProduct(path);
     if (journeyProduct) {
       const suffix = path.slice(journeyProduct.route.length);
       const detailPrefix = ['/offer/', '/property/', '/apply/'].find(prefix => suffix.startsWith(prefix));
@@ -374,6 +375,7 @@ export class CanonicalRouterService {
 
     // 2.2 Hotels Functional Product Hub & Search Routes (Phase 3.2)
     if (path === '/hotels') {
+      hotelsHubView.prefillFromQuery(query);
       const dest = query.get('destination') || query.get('to');
       if (dest) {
         hotelsHubView.prefill(dest);
@@ -397,7 +399,15 @@ export class CanonicalRouterService {
     if (path.startsWith('/hotels/property/')) {
       const remaining = path.replace('/hotels/property/', '');
       const propertyId = remaining.split('/')[0];
-      openCanonicalHotelDetailModal(propertyId);
+      const mount = showHotelsView();
+      if (!mount.querySelector('.hotels-search-view-root')) hotelsHubView.render(mount);
+      void openCanonicalHotelDetailModal(propertyId, query.size ? {
+        checkInDate: query.get('checkIn') || undefined,
+        checkOutDate: query.get('checkOut') || undefined,
+        rooms: Number(query.get('rooms') || 1),
+        adults: Number(query.get('adults') || 2),
+        children: Number(query.get('children') || 0)
+      } : undefined);
       return;
     }
 

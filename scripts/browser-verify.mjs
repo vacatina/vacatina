@@ -25,6 +25,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { buildProject } from './build.mjs';
+import { verifyHotels } from './product-journey-gates.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1493,6 +1494,13 @@ async function runVerification() {
     // =========================================================================
     // Journey O - Full B2C Consular Visa Assistance: Hub, Search, Intake & Staging (Phase 3.3)
     // =========================================================================
+    await verifyHotels(cdp, assertCheck);
+    if (process.env.VACATINA_E2E_THROUGH === '6') {
+      assertCheck('Checkpoint 6 — no uncaught browser exceptions', cdp.pageExceptions.length === 0, JSON.stringify(cdp.pageExceptions));
+      cdp.close();
+      console.log('[Vacatina E2E] Focused checkpoint through Phase 6 passed; later phases not run.');
+      return;
+    }
     const journeyO = await cdp.evaluate(`(async () => {
       // 1. Navigate to Visa Hub
       window.__VACATINA_ROUTER__.navigateTo('/visa-assistance');

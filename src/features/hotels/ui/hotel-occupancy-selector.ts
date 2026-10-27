@@ -22,7 +22,9 @@ export function renderOccupancySelectorPopover(
 
   const popover = document.createElement('div');
   popover.className =
-    'absolute top-full right-0 mt-2 w-72 bg-white rounded-2xl border border-gray-200 shadow-2xl p-4 z-50 text-xs space-y-4';
+    'absolute top-full right-0 mt-2 w-72 max-w-full bg-white rounded-2xl border border-gray-200 shadow-2xl p-4 z-50 text-xs space-y-4';
+  popover.setAttribute('role', 'group');
+  popover.setAttribute('aria-label', 'Guests and rooms');
 
   const updateUI = () => {
     popover.innerHTML = `
@@ -75,6 +77,7 @@ export function renderOccupancySelectorPopover(
     `;
 
     // Wire buttons
+    popover.querySelectorAll<HTMLButtonElement>('button[data-field]').forEach(button => button.setAttribute('aria-label', `${button.dataset.dir === '1' ? 'Increase' : 'Decrease'} ${button.dataset.field}`));
     popover.querySelectorAll<HTMLButtonElement>('button[data-field]').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
@@ -91,6 +94,7 @@ export function renderOccupancySelectorPopover(
         }
 
         updateUI();
+        popover.querySelector<HTMLButtonElement>(`button[data-field="${field}"][data-dir="${dir}"]`)?.focus();
         onChange({ ...state });
       });
     });

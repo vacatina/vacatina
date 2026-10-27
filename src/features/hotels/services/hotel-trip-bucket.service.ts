@@ -19,6 +19,7 @@ import type {
 } from '../domain/hotel-models.ts';
 import { hotelSearchService } from './hotel-search.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
+import { HOTEL_DEMO_DISCLOSURE, validateHotelConfiguration } from '../domain/hotel-journey.ts';
 
 export class HotelTripBucketService {
   public mapHotelOfferToTripCandidate(
@@ -56,6 +57,12 @@ export class HotelTripBucketService {
       holdStatusText = 'Sold out';
     }
 
+    if (hotel.inventoryMode && hotel.inventoryMode !== 'live_supplier') {
+      if (state === 'ready' || state === 'draft') state = 'needs_action';
+      holdStatusText = 'Local fixture check only · No room hold';
+      actionRequiredText = 'Request a verified room/rate quote and hotel confirmation before booking.';
+      primaryActionLabel = 'Review hotel request';
+    }
     return {
       id: `tb-${hotel.canonicalOfferId}-${config.roomId}-${config.planId}`,
       productType: 'hotels',
@@ -73,7 +80,22 @@ export class HotelTripBucketService {
       integrationMode: hotel.sourceType === 'MANUAL' ? 'ADAPTER-READY' : 'MOCK',
       offerId: hotel.canonicalOfferId,
       sourceType: hotel.sourceType,
-      confirmationMode: 'INSTANT_CONFIRM',
+      confirmationMode: hotel.inventoryMode ? 'REQUEST_TO_CONFIRM' : 'INSTANT_CONFIRM',
+      canonicalOfferId: hotel.canonicalOfferId,
+      sourceId: hotel.providerId,
+      propertyId: hotel.hotelId,
+      roomId: config.roomId,
+      ratePlanId: config.planId,
+      inventoryMode: hotel.inventoryMode,
+      inventoryLabel: hotel.inventoryMode ? 'Canonical hotel demo fixture' : undefined,
+      truthDisclosure: hotel.inventoryMode ? HOTEL_DEMO_DISCLOSURE : undefined,
+      providerName: `${hotel.supplierName}${hotel.inventoryMode ? ' (fixture reference only)' : ''}`,
+      currency: config.currency,
+      configuration: { ...config },
+      availabilityStatus: hotel.inventoryMode ? 'ON_REQUEST' : hotel.availabilityStatus,
+      lastCheckedAt: hotel.lastCheckedAt,
+      validUntil: hotel.validUntil,
+      revalidationStatus: 'NOT_REVALIDATED',
       rawSupplierPrice: config.nightlyRateMinor / 100,
       supplierBaseCurrency: config.currency
     };
@@ -83,6 +105,8 @@ export class HotelTripBucketService {
     hotel: CanonicalHotelOffer,
     config: HotelSelectedConfiguration
   ): Promise<{ candidate: TripBucketCandidate; success: boolean }> {
+    validateHotelConfiguration(hotel, config);
+    hotel = { ...hotel, inventoryMode: hotel.inventoryMode || 'demo_fixture' };
     // 1. Mandatory Pre-Staging Revalidation Guard
     const reval = await hotelSearchService.revalidate(
       hotel.hotelId,
@@ -90,16 +114,19 @@ export class HotelTripBucketService {
       config.planId
     );
 
-    let state: TripBucketItemState = 'ready';
+    let state: TripBucketItemState = 'needs_action';
+    const checkedTotal = reval.newPriceMinor * config.nights * config.roomsCount;
     if (!reval.isAvailable) {
       state = reval.status === 'EXPIRED' ? 'offer_expired' : 'unavailable';
-    } else if (reval.newPriceMinor !== config.totalPriceMinor) {
+    } else if (checkedTotal !== config.totalPriceMinor) {
       state = 'price_changed';
-      config.totalPriceMinor = reval.newPriceMinor;
+      config = { ...config, totalPriceMinor: checkedTotal };
     }
 
     const candidate = this.mapHotelOfferToTripCandidate(hotel, config, state);
-    tripBucketService.addItem(candidate);
+    candidate.revalidationStatus = `LOCAL_FIXTURE_${reval.status}`;
+    candidate.revalidatedAt = reval.revalidatedAt;
+    tripBucketService.stageCandidate(candidate);
 
     telemetry.track('hotel_room_staged_in_trip_bucket', {
       hotelId: hotel.hotelId,
@@ -109,7 +136,7 @@ export class HotelTripBucketService {
       state
     });
 
-    return { candidate, success: state === 'ready' };
+    return { candidate, success: reval.isAvailable };
   }
 }
 

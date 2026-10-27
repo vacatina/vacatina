@@ -892,7 +892,7 @@ function initSearchSubmitButtons(): void {
               ? `/flights?${flightParams.toString()}`
               : `/flights/search?${flightParams.toString()}`;
         } else if (tabMeta.id === 'hotels') {
-          destRoute += `?destination=${encodeURIComponent(state.hotels.destination)}`;
+          destRoute += `?${new URLSearchParams({ destination: state.hotels.destination, checkIn: state.hotels.checkIn, checkOut: state.hotels.checkOut, rooms: String(state.travellers.rooms), adults: String(state.travellers.adults), children: String(state.travellers.children) })}`;
         } else if (tabMeta.id === 'visa') {
           destRoute += `?country=${encodeURIComponent(state.visa.country)}`;
         } else if (tabMeta.id === 'packages') {

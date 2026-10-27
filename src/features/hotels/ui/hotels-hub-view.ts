@@ -18,6 +18,8 @@ import {
 } from './hotel-occupancy-selector.ts';
 import { routerService } from '../../../lib/services/router.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
+import { HOTEL_DEMO_DISCLOSURE, hotelEscape, parseHotelQuery, validateHotelSearch } from '../domain/hotel-journey.ts';
+import { showToast } from '../../../components/ui/toast.ts';
 
 export class HotelsHubView {
   private selectedDestination: string = 'Bentota';
@@ -45,7 +47,16 @@ export class HotelsHubView {
     }
   }
 
+  public prefillFromQuery(query: URLSearchParams): void {
+    const request = parseHotelQuery(query);
+    this.selectedDestination = request.destination;
+    this.checkInDate = request.checkInDate;
+    this.checkOutDate = request.checkOutDate;
+    this.occupancyState = request.occupancy;
+  }
+
   public render(container: HTMLElement): void {
+    this.cleanup();
     container.innerHTML = `
       <div class="hotels-hub-root min-h-screen bg-brand-canvas text-brand-black pb-24">
         <!-- Hero Section with Search Command Bar -->
@@ -63,13 +74,13 @@ export class HotelsHubView {
             <!-- Title & Value Prop -->
             <div class="space-y-2 max-w-2xl">
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 text-[#C5A880] border border-white/15">
-                ★ Vacatina Direct & Global Bedbank Stays
+                Canonical demo stays · Not live inventory
               </span>
               <h1 class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold tracking-tight text-white leading-tight">
-                Handpicked Luxury Stays, Negotiated Direct Rates.
+                Hotels & stays for your next journey.
               </h1>
               <p class="text-sm sm:text-base text-white/80 leading-relaxed">
-                From private oceanfront villas in Bentota and Galle to iconic sky suites in Dubai and overwater sanctuaries in the Maldives.
+                Explore room and rate examples, configure your dates and guests, and review what needs confirmation.
               </p>
             </div>
 
@@ -79,7 +90,7 @@ export class HotelsHubView {
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
                   <!-- Destination Input with Autocomplete -->
                   <div class="md:col-span-5 relative" id="hotel-dest-container">
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-brand-muted mb-1">
+                      <label for="hotel-hub-dest-input" class="block text-[11px] font-bold uppercase tracking-wider text-brand-muted mb-1">
                       Destination or Property
                     </label>
                     <div class="relative flex items-center">
@@ -87,7 +98,7 @@ export class HotelsHubView {
                       <input 
                         type="text" 
                         id="hotel-hub-dest-input" 
-                        value="${this.selectedDestination}" 
+                        value="${hotelEscape(this.selectedDestination)}"
                         placeholder="e.g. Bentota, Dubai, Galle, Maldives"
                         required
                         class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-300 bg-gray-50/50 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white transition-all text-brand-black"
@@ -98,7 +109,7 @@ export class HotelsHubView {
                   <!-- Dates -->
                   <div class="md:col-span-4 grid grid-cols-2 gap-2">
                     <div>
-                      <label class="block text-[11px] font-bold uppercase tracking-wider text-brand-muted mb-1">Check-in</label>
+                      <label for="hotel-hub-checkin" class="block text-[11px] font-bold uppercase tracking-wider text-brand-muted mb-1">Check-in</label>
                       <input 
                         type="date" 
                         id="hotel-hub-checkin" 
@@ -108,7 +119,7 @@ export class HotelsHubView {
                       />
                     </div>
                     <div>
-                      <label class="block text-[11px] font-bold uppercase tracking-wider text-brand-muted mb-1">Check-out</label>
+                      <label for="hotel-hub-checkout" class="block text-[11px] font-bold uppercase tracking-wider text-brand-muted mb-1">Check-out</label>
                       <input 
                         type="date" 
                         id="hotel-hub-checkout" 
@@ -124,7 +135,8 @@ export class HotelsHubView {
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-brand-muted mb-1">Guests & Rooms</label>
                     <button 
                       type="button" 
-                      id="hotel-hub-occupancy-btn"
+                       id="hotel-hub-occupancy-btn"
+                       aria-expanded="false" aria-label="Choose guests and rooms"
                       class="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-gray-50/50 text-xs font-semibold text-left flex items-center justify-between hover:bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary transition-all text-brand-black"
                     >
                       <span id="hotel-hub-occupancy-label" class="truncate">${formatOccupancySummaryText(this.occupancyState)}</span>
@@ -136,20 +148,19 @@ export class HotelsHubView {
                 <!-- Submit Button Bar -->
                 <div class="flex items-center justify-between pt-2 border-t border-gray-100">
                   <div class="flex items-center gap-4 text-[11px] text-brand-muted hidden sm:flex">
-                    <span>✓ Best Rate Guarantee</span>
-                    <span>✓ Free Cancellation Available</span>
-                    <span>✓ Direct Hotel Allotments</span>
+                    <span>Demo prices · No room hold · Confirmation required</span>
                   </div>
                   <button 
                     type="submit" 
                     id="hotel-hub-search-btn"
                     class="w-full sm:w-auto px-8 py-3 rounded-xl bg-brand-primary text-white font-bold text-xs hover:opacity-90 transition-all shadow-md flex items-center justify-center gap-2"
                   >
-                    <span>Search Available Stays</span>
+                    <span>Search Stay Examples</span>
                     <span>→</span>
                   </button>
                 </div>
               </form>
+              <p class="text-xs text-brand-muted mt-4 leading-relaxed">${HOTEL_DEMO_DISCLOSURE}</p>
             </div>
           </div>
         </section>
@@ -158,11 +169,11 @@ export class HotelsHubView {
         <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <span class="text-[10px] font-bold text-[#C5A880] uppercase tracking-wider">Tier 1 Direct Allotments</span>
-              <h2 class="text-xl sm:text-2xl font-heading font-bold text-brand-black">Vacatina Direct Exclusive Stays</h2>
+              <span class="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Illustrative catalog</span>
+              <h2 class="text-xl sm:text-2xl font-heading font-bold text-brand-black">Explore demo stays</h2>
             </div>
             <a href="/hotels/search?directOnly=true" class="text-xs font-bold text-brand-primary hover:underline">
-              View All Direct Contracts →
+              View examples →
             </a>
           </div>
 
@@ -178,14 +189,14 @@ export class HotelsHubView {
                   />
                   <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
                     <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#1B1464] text-white shadow-sm">
-                      ${hotel.featuredBadge || 'Direct Contract'}
+                      Demo property · Not verified
                     </span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C5A880] text-brand-black">
                       ${hotel.starRating}★
                     </span>
                   </div>
                   <div class="absolute bottom-3 right-3 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold">
-                    ★ ${hotel.guestRatingScore} (${hotel.guestReviewCount})
+                    Illustrative rating ${hotel.guestRatingScore}
                   </div>
                 </div>
 
@@ -204,7 +215,7 @@ export class HotelsHubView {
 
                   <div class="pt-3 border-t border-brand-border/60 flex items-center justify-between">
                     <div>
-                      <div class="text-[10px] text-brand-muted">Starting from</div>
+                      <div class="text-[10px] text-brand-muted">Illustrative price from</div>
                       <div class="text-base font-bold text-brand-black">
                         LKR ${(hotel.startingFromPriceMinor / 100).toLocaleString()}
                         <span class="text-[10px] font-normal text-brand-muted">/ night</span>
@@ -234,7 +245,7 @@ export class HotelsHubView {
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
             ${HOTEL_DESTINATIONS.slice(0, 8).map(dest => `
-              <div 
+              <button type="button"
                 data-dest-click="${dest.city}"
                 class="destination-card relative h-40 rounded-2xl overflow-hidden cursor-pointer group shadow-sm hover:shadow-lg transition-all"
               >
@@ -247,9 +258,9 @@ export class HotelsHubView {
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
                 <div class="absolute bottom-3 left-3 right-3 text-white">
                   <div class="text-sm font-bold truncate">${dest.city}</div>
-                  <div class="text-[11px] text-white/80 truncate">${dest.popularPropertyCount} Verified Stays</div>
+                  <div class="text-[11px] text-white/80 truncate">Explore stay examples</div>
                 </div>
-              </div>
+              </button>
             `).join('')}
           </div>
         </section>
@@ -260,22 +271,22 @@ export class HotelsHubView {
             <div class="flex items-start gap-4">
               <span class="w-10 h-10 rounded-xl bg-brand-primary/10 text-brand-primary flex items-center justify-center text-lg font-bold shrink-0">🤝</span>
               <div>
-                <h4 class="font-bold text-sm text-brand-black">Directly Negotiated Hotel Contracts</h4>
-                <p class="text-xs text-brand-muted mt-1 leading-relaxed">We contract directly with villa owners and luxury resorts, passing verified allotments and transparent rates without hidden booking markups.</p>
+                <h4 class="font-bold text-sm text-brand-black">Understand your stay</h4>
+                <p class="text-xs text-brand-muted mt-1 leading-relaxed">Review the selected room, guests and rate conditions before requesting confirmation.</p>
               </div>
             </div>
             <div class="flex items-start gap-4">
               <span class="w-10 h-10 rounded-xl bg-brand-primary/10 text-brand-primary flex items-center justify-center text-lg font-bold shrink-0">🌐</span>
               <div>
-                <h4 class="font-bold text-sm text-brand-black">Global Bedbank Integration</h4>
-                <p class="text-xs text-brand-muted mt-1 leading-relaxed">Integrated with LiteAPI Nuitee Connect v3.0, granting real-time access to over 2 million verified properties worldwide.</p>
+                <h4 class="font-bold text-sm text-brand-black">No live supplier connected</h4>
+                <p class="text-xs text-brand-muted mt-1 leading-relaxed">This catalog uses local canonical examples, not a live hotel feed.</p>
               </div>
             </div>
             <div class="flex items-start gap-4">
               <span class="w-10 h-10 rounded-xl bg-brand-primary/10 text-brand-primary flex items-center justify-center text-lg font-bold shrink-0">🛡️</span>
               <div>
                 <h4 class="font-bold text-sm text-brand-black">Transparent Cancellation & Recheck</h4>
-                <p class="text-xs text-brand-muted mt-1 leading-relaxed">Real-time allotment and rate hold checks prevent expired fares and over-selling before payment hold is initiated.</p>
+                <p class="text-xs text-brand-muted mt-1 leading-relaxed">Fixture checks cannot verify rooms or hold rates. A supplier must confirm the actual terms before booking.</p>
               </div>
             </div>
           </div>
@@ -322,17 +333,26 @@ export class HotelsHubView {
         });
 
         occupancyContainer.appendChild(pop.element);
-        this.occupancyCleanup = pop.cleanup;
+        occupancyBtn.setAttribute('aria-expanded', 'true');
+        const close = () => {
+          pop.cleanup();
+          this.occupancyCleanup = undefined;
+          occupancyBtn.setAttribute('aria-expanded', 'false');
+          document.removeEventListener('click', closeOnOut);
+          document.removeEventListener('keydown', onKey);
+        };
+        this.occupancyCleanup = close;
 
         // Auto close on outside click
         const closeOnOut = (evt: MouseEvent) => {
           if (!occupancyContainer.contains(evt.target as Node)) {
-            pop.cleanup();
-            this.occupancyCleanup = undefined;
-            document.removeEventListener('click', closeOnOut);
+            close();
           }
         };
-        setTimeout(() => document.addEventListener('click', closeOnOut), 0);
+        const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { close(); occupancyBtn.focus(); } };
+        pop.element.addEventListener('click', event => { if ((event.target as HTMLElement).id === 'occupancy-apply-btn') { close(); occupancyBtn.focus(); } });
+        document.addEventListener('click', closeOnOut);
+        document.addEventListener('keydown', onKey);
       });
     }
 
@@ -344,6 +364,8 @@ export class HotelsHubView {
         const dest = destInput?.value.trim() || this.selectedDestination;
         const cin = (container.querySelector<HTMLInputElement>('#hotel-hub-checkin'))?.value || this.checkInDate;
         const cout = (container.querySelector<HTMLInputElement>('#hotel-hub-checkout'))?.value || this.checkOutDate;
+        const errors = validateHotelSearch({ searchId: '', destination: dest, checkInDate: cin, checkOutDate: cout, occupancy: this.occupancyState });
+        if (errors.length) { showToast(errors.join(' '), 'warning'); return; }
 
         const params = new URLSearchParams({
           destination: dest,

@@ -55,6 +55,7 @@ export interface HotelRoomCategory {
 }
 
 export interface CanonicalHotelOffer {
+  inventoryMode?: 'demo_fixture' | 'manual_request' | 'live_supplier';
   hotelId: string;                      // Stable hotel property ID
   canonicalOfferId: string;             // Stable universal offer ID (e.g. vct-ht-man-ceylon-heritage)
   sourceType: CanonicalOfferSourceType; // 'MANUAL' | 'API' | 'HYBRID'

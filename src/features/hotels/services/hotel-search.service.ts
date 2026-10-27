@@ -19,6 +19,7 @@ import type {
 } from '../domain/hotel-search-models.ts';
 import { manualHotelAdapter } from '../adapters/manual-hotel.adapter.ts';
 import { liteApiHotelAdapter } from '../adapters/liteapi-hotel.adapter.ts';
+import { hotelDemoOffer } from '../domain/hotel-journey.ts';
 
 export class HotelSearchService {
   private lastSearchResponse: HotelSearchResponse | null = null;
@@ -33,7 +34,7 @@ export class HotelSearchService {
     const allOffers: CanonicalHotelOffer[] = [
       ...manualResult.offers,
       ...supplierResult.offers
-    ].filter(o => (o as any).isSeed !== true);
+    ].filter(o => (o as any).isSeed !== true).map(hotelDemoOffer);
 
     // Compute facets
     const facets = this.computeFacets(allOffers);
@@ -64,10 +65,11 @@ export class HotelSearchService {
   public async getOfferById(hotelId: string): Promise<CanonicalHotelOffer | null> {
     // Check manual adapter first
     const manual = await manualHotelAdapter.getOfferById(hotelId);
-    if (manual) return manual;
+    if (manual) return hotelDemoOffer(manual);
 
     // Check supplier adapter
-    return await liteApiHotelAdapter.getOfferById(hotelId);
+    const supplier = await liteApiHotelAdapter.getOfferById(hotelId);
+    return supplier ? hotelDemoOffer(supplier) : null;
   }
 
   public async revalidate(

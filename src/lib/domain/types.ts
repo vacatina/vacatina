@@ -166,6 +166,13 @@ export interface TripBucketCandidate {
   currency?: string;
   revalidationStatus?: string;
   revalidatedAt?: string;
+  configuration?: Record<string, unknown>;
+  availabilityStatus?: string;
+  lastCheckedAt?: string;
+  validUntil?: string;
+  propertyId?: string;
+  roomId?: string;
+  ratePlanId?: string;
 }
 
 export interface TripBucketSummary {

@@ -28,6 +28,7 @@ import {
 import { routerService } from '../../../lib/services/router.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
 import { showToast } from '../../../components/ui/toast.ts';
+import { HOTEL_DEMO_DISCLOSURE, hotelEscape, hotelQuery, parseHotelQuery, validateHotelSearch } from '../domain/hotel-journey.ts';
 
 export class HotelsSearchView {
   private currentRequest!: HotelSearchRequest;
@@ -38,23 +39,17 @@ export class HotelsSearchView {
   private isModifyOpen = false;
   private occupancyCleanup?: () => void;
   private autocompleteCleanup?: () => void;
+  private generation = 0;
 
   public async loadFromQuery(query: URLSearchParams, container: HTMLElement): Promise<void> {
-    const destination = query.get('destination') || query.get('to') || 'Bentota';
-    const checkIn = query.get('checkIn') || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
-    const checkOut = query.get('checkOut') || new Date(Date.now() + 10 * 86400000).toISOString().split('T')[0];
-    const rooms = parseInt(query.get('rooms') || '1', 10);
-    const adults = parseInt(query.get('adults') || '2', 10);
-    const children = parseInt(query.get('children') || '0', 10);
+    const generation = ++this.generation;
     const directOnly = query.get('directOnly') === 'true';
 
-    this.currentRequest = {
-      searchId: `srch-ht-${Date.now()}`,
-      destination,
-      checkInDate: checkIn,
-      checkOutDate: checkOut,
-      occupancy: { rooms, adults, children }
-    };
+    this.currentRequest = parseHotelQuery(query);
+    this.currentFilters = {};
+    this.currentSort = 'recommended';
+    const errors = validateHotelSearch(this.currentRequest);
+    if (errors.length) { this.renderError(container, errors.join(' ')); return; }
 
     if (directOnly) {
       this.currentFilters.directContractOnly = true;
@@ -65,11 +60,13 @@ export class HotelsSearchView {
 
     try {
       this.currentResponse = await hotelSearchService.search(this.currentRequest);
+      if (generation !== this.generation) return;
       this.isLoading = false;
       this.renderResults(container);
     } catch {
       this.isLoading = false;
-      this.renderError(container, 'Failed to fetch verified hotel inventory. Please retry.');
+      if (generation !== this.generation) return;
+      this.renderError(container, 'Could not load hotel examples. Please retry.');
     }
   }
 
@@ -97,7 +94,7 @@ export class HotelsSearchView {
         <div class="max-w-md bg-white p-8 rounded-3xl border border-brand-border shadow-xl space-y-4">
           <div class="text-3xl">🏨</div>
           <h2 class="text-xl font-heading font-bold text-brand-black">Hotel Search Unavailable</h2>
-          <p class="text-xs text-brand-muted leading-relaxed">${message}</p>
+          <p role="alert" class="text-xs text-brand-muted leading-relaxed">${hotelEscape(message)}</p>
           <a href="/hotels" class="inline-block px-6 py-2.5 rounded-xl bg-brand-primary text-white font-bold text-xs">
             Return to Hotels Hub
           </a>
@@ -134,9 +131,9 @@ export class HotelsSearchView {
                 ← <span class="hidden sm:inline">Hub</span>
               </a>
               <div class="h-4 w-px bg-gray-200"></div>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2 min-w-0">
                 <span class="text-sm">📍</span>
-                <span class="font-bold text-sm text-brand-black">${this.currentRequest.destination}</span>
+                <span class="font-bold text-sm text-brand-black break-words">${hotelEscape(this.currentRequest.destination)}</span>
                 <span class="text-xs text-brand-muted">(${this.currentRequest.checkInDate} to ${this.currentRequest.checkOutDate} · ${nights}N)</span>
                 <span class="text-xs text-brand-muted hidden md:inline">· ${formatOccupancySummaryText(this.currentRequest.occupancy)}</span>
               </div>
@@ -158,7 +155,7 @@ export class HotelsSearchView {
                 <input 
                   type="text" 
                   id="modify-dest-input" 
-                  value="${this.currentRequest.destination}"
+                  value="${hotelEscape(this.currentRequest.destination)}" aria-label="Destination"
                   required
                   class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold"
                 />
@@ -178,6 +175,7 @@ export class HotelsSearchView {
 
         <!-- Main Results Grid Area -->
         <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+          <p class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs mb-5">${HOTEL_DEMO_DISCLOSURE}</p>
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Left Filter Sidebar -->
             <aside class="lg:col-span-4 space-y-6">
@@ -192,7 +190,7 @@ export class HotelsSearchView {
                 <!-- Direct Contract Toggle -->
                 <div class="space-y-2 pb-4 border-b border-brand-border/60">
                   <label class="flex items-center justify-between cursor-pointer">
-                    <span class="text-xs font-bold text-brand-black">Vacatina Direct Only</span>
+                    <span class="text-xs font-bold text-brand-black">Manual catalog examples</span>
                     <input 
                       type="checkbox" 
                       id="filter-direct-only" 
@@ -200,7 +198,7 @@ export class HotelsSearchView {
                       class="rounded text-brand-primary focus:ring-brand-primary h-4 w-4"
                     />
                   </label>
-                  <p class="text-[10px] text-brand-muted">Show exclusively direct contracted villas and resorts with negotiated allotments.</p>
+                  <p class="text-[10px] text-brand-muted">Fixture references only, not verified contracts.</p>
                 </div>
 
                 <!-- Star Rating Filter -->
@@ -269,10 +267,10 @@ export class HotelsSearchView {
             <!-- Right Results List Column -->
             <section class="lg:col-span-8 space-y-4">
               <!-- Result Count & Sort Selector -->
-              <div class="flex items-center justify-between bg-white px-5 py-3.5 rounded-2xl border border-brand-border shadow-sm">
+              <div class="flex flex-wrap gap-3 items-center justify-between bg-white px-5 py-3.5 rounded-2xl border border-brand-border shadow-sm">
                 <div>
-                  <span class="font-bold text-sm text-brand-black">${visibleOffers.length} Stays Available</span>
-                  <span class="text-xs text-brand-muted hidden sm:inline">in ${this.currentRequest.destination}</span>
+                  <span id="hotel-results-count" data-results-count="${visibleOffers.length}" class="font-bold text-sm text-brand-black">${visibleOffers.length} Stay Examples</span>
+                  <span class="text-xs text-brand-muted hidden sm:inline">in ${hotelEscape(this.currentRequest.destination)}</span>
                 </div>
 
                 <div class="flex items-center gap-2 text-xs">
@@ -322,7 +320,7 @@ export class HotelsSearchView {
                                 ? 'bg-[#1B1464] text-white shadow-md'
                                 : 'bg-brand-black/70 backdrop-blur-sm text-white'
                             }">
-                              ${hotel.featuredBadge || (hotel.sourceType === 'MANUAL' ? 'Vacatina Direct Exclusive' : 'LiteAPI Verified')}
+                              Canonical demo fixture
                             </span>
                           </div>
                           
@@ -338,7 +336,7 @@ export class HotelsSearchView {
                         </div>
 
                         <!-- Content Details -->
-                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="p-5 flex-1 min-w-0 flex flex-col justify-between space-y-4">
                           <div>
                             <div class="flex items-center justify-between">
                               <span class="text-[11px] font-bold text-brand-primary uppercase tracking-wider">
@@ -362,7 +360,7 @@ export class HotelsSearchView {
                                 ★ ${hotel.guestRatingScore} / 10
                               </span>
                               <span class="text-brand-muted text-[11px]">
-                                (${hotel.guestReviewCount} guest reviews)
+                                (illustrative rating, not verified reviews)
                               </span>
                             </div>
 
@@ -377,9 +375,9 @@ export class HotelsSearchView {
                           </div>
 
                           <!-- Pricing & CTA Bar -->
-                          <div class="pt-3 border-t border-brand-border/60 flex items-center justify-between">
+                          <div class="pt-3 border-t border-brand-border/60 flex flex-wrap gap-3 items-center justify-between">
                             <div>
-                              <div class="text-[10px] text-brand-muted">Starting from</div>
+                              <div class="text-[10px] text-brand-muted">Illustrative price from</div>
                               <div class="text-lg font-bold text-brand-black">
                                 LKR ${(hotel.startingFromPriceMinor / 100).toLocaleString()}
                                 <span class="text-[10px] font-normal text-brand-muted">/ night</span>
@@ -413,6 +411,7 @@ export class HotelsSearchView {
   }
 
   private wireEvents(container: HTMLElement): void {
+    for (const [id, label] of [['modify-cin-input', 'Check-in'], ['modify-cout-input', 'Check-out']]) container.querySelector(`#${id}`)?.setAttribute('aria-label', label);
     // 1. Modify Search Toggle
     const modifyBtn = container.querySelector('#modify-hotels-search-btn');
     const modifyDrawer = container.querySelector('#modify-hotels-drawer');
@@ -511,13 +510,7 @@ export class HotelsSearchView {
     container.querySelectorAll<HTMLButtonElement>('[data-open-hotel]').forEach(btn => {
       btn.addEventListener('click', () => {
         const hotelId = btn.getAttribute('data-open-hotel')!;
-        openCanonicalHotelDetailModal(hotelId, {
-          checkInDate: this.currentRequest.checkInDate,
-          checkOutDate: this.currentRequest.checkOutDate,
-          rooms: this.currentRequest.occupancy.rooms,
-          adults: this.currentRequest.occupancy.adults,
-          children: this.currentRequest.occupancy.children
-        }, btn);
+        routerService.navigateTo(`/hotels/property/${encodeURIComponent(hotelId)}?${hotelQuery(this.currentRequest)}`);
       });
     });
 

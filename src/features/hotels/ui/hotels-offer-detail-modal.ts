@@ -18,11 +18,15 @@ import { hotelSearchService } from '../services/hotel-search.service.ts';
 import { hotelTripBucketService } from '../services/hotel-trip-bucket.service.ts';
 import { hotelFavoritesService } from '../services/hotel-favorites.service.ts';
 import { openTripBucketDrawer } from '../../../components/trip-bucket/trip-bucket-ui.ts';
-import { showToast } from '../../../components/ui/toast.ts';
+import { showToast, activateFocusTrap, deactivateFocusTrap, setBackgroundInert } from '../../../components/ui/toast.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
+import { HOTEL_DEMO_DISCLOSURE, hotelEscape } from '../domain/hotel-journey.ts';
 
 let activeHotelModal: HTMLElement | null = null;
 let previousHotelActiveElement: HTMLElement | null = null;
+let closeCurrentHotel: (() => void) | null = null;
+let lastHotelContext: { checkInDate?: string; checkOutDate?: string; rooms?: number; adults?: number; children?: number } | undefined;
+export function closeCanonicalHotelModal(): void { closeCurrentHotel?.(); }
 
 export async function openCanonicalHotelDetailModal(
   hotelId: string,
@@ -35,6 +39,9 @@ export async function openCanonicalHotelDetailModal(
   },
   triggerElement?: HTMLElement | null
 ): Promise<void> {
+  closeCanonicalHotelModal();
+  if (searchContext) lastHotelContext = searchContext;
+  searchContext ||= lastHotelContext;
   if (triggerElement) previousHotelActiveElement = triggerElement;
   else if (document.activeElement instanceof HTMLElement) {
     previousHotelActiveElement = document.activeElement;
@@ -45,7 +52,16 @@ export async function openCanonicalHotelDetailModal(
   // Fetch canonical offer
   const hotel = await hotelSearchService.getOfferById(hotelId);
   if (!hotel) {
-    showToast(`Hotel property ${hotelId} not found or expired.`, 'warning');
+    const dialog = document.createElement('div');
+    dialog.id = 'hotel-invalid-dialog';
+    dialog.className = 'fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4';
+    dialog.setAttribute('role', 'alertdialog'); dialog.setAttribute('aria-modal', 'true'); dialog.setAttribute('aria-labelledby', 'hotel-invalid-title');
+    dialog.innerHTML = `<div class="bg-white rounded-2xl p-6 w-full max-w-md"><h2 id="hotel-invalid-title" class="font-bold text-lg">Hotel option unavailable</h2><p class="text-sm mt-3">${hotelEscape(hotelId)} was not found. No room hold or booking was created.</p><button type="button" class="mt-5 min-h-[44px] px-5 rounded-xl bg-brand-primary text-white">Close</button></div>`;
+    const close = () => { deactivateFocusTrap(dialog); setBackgroundInert(false); document.removeEventListener('keydown', onKey); dialog.remove(); closeCurrentHotel = null; previousHotelActiveElement?.focus(); };
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') close(); };
+    dialog.querySelector('button')?.addEventListener('click', close);
+    document.addEventListener('keydown', onKey); document.body.appendChild(dialog); closeCurrentHotel = close;
+    setBackgroundInert(true, dialog); activateFocusTrap(dialog); dialog.querySelector('button')?.focus();
     return;
   }
 
@@ -84,18 +100,18 @@ function renderHotelModal(
   const isFav = hotelFavoritesService.isHotelFavorite(hotel.hotelId);
 
   modalOverlay.innerHTML = `
-    <div class="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-brand-border overflow-hidden flex flex-col max-h-[90vh]">
+    <div id="hotel-modal-panel" class="relative w-full min-w-0 max-w-4xl bg-white rounded-3xl shadow-2xl border border-brand-border overflow-hidden flex flex-col max-h-[90vh]">
       <!-- Header Banner / Close Bar -->
-      <div class="sticky top-0 z-20 bg-white/95 backdrop-blur-md px-6 py-4 border-b border-brand-border/60 flex items-center justify-between">
-        <div class="flex items-center gap-3 min-w-0">
+      <div class="sticky top-0 z-20 bg-white/95 backdrop-blur-md px-4 py-4 border-b border-brand-border/60 flex items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-2 min-w-0">
           <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${
             hotel.sourceType === 'MANUAL'
               ? 'bg-[#1B1464] text-white'
               : 'bg-brand-primary/10 text-brand-primary'
           }">
-            ${hotel.featuredBadge || (hotel.sourceType === 'MANUAL' ? 'Vacatina Direct Exclusive' : 'LiteAPI Bedbank Verified')}
+            Demo fixture · Not live
           </span>
-          <span class="text-xs font-bold text-[#C5A880]">${hotel.starRating}★ Luxury Stay</span>
+          <span class="text-xs font-bold text-brand-muted">${hotel.starRating}★ illustrative class</span>
           <span class="text-xs text-brand-muted hidden sm:inline">· 📍 ${hotel.location.city}, ${hotel.location.country}</span>
         </div>
 
@@ -124,6 +140,7 @@ function renderHotelModal(
 
       <!-- Modal Body (Scrollable) -->
       <div class="p-6 overflow-y-auto space-y-8 text-brand-black text-xs leading-relaxed">
+        <p id="hotel-truth-disclosure" class="rounded-xl p-4 bg-amber-50 border border-amber-200">${HOTEL_DEMO_DISCLOSURE}</p>
         <!-- Title & Location Bar -->
         <div class="space-y-2">
           <h2 id="hotel-modal-title" class="text-2xl sm:text-3xl font-heading font-bold text-brand-black">
@@ -131,7 +148,7 @@ function renderHotelModal(
           </h2>
           <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs text-brand-muted">
             <span>📍 ${hotel.location.address}</span>
-            <span>· ★ <strong>${hotel.guestRatingScore} / 10</strong> (${hotel.guestReviewCount} verified guest reviews)</span>
+            <span>· Illustrative rating <strong>${hotel.guestRatingScore} / 10</strong> (not verified guest reviews)</span>
             <span>· Check-in: <strong>${hotel.checkInTime}</strong> · Check-out: <strong>${hotel.checkOutTime}</strong></span>
           </div>
         </div>
@@ -212,7 +229,7 @@ function renderHotelModal(
                     ${room.ratePlans.map(plan => `
                       <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-gray-200 hover:border-brand-primary bg-gray-50/40 hover:bg-brand-primary/5 transition-all gap-3">
                         <div class="space-y-1">
-                          <div class="flex items-center gap-2">
+                          <div class="flex flex-wrap items-center gap-2">
                             <span class="font-bold text-xs text-brand-black">${plan.rateName}</span>
                             <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${
                               plan.boardBasis === 'AI' ? 'bg-purple-100 text-purple-800' :
@@ -232,10 +249,10 @@ function renderHotelModal(
                         <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0">
                           <div class="text-right">
                             <div class="text-base font-bold text-brand-black">
-                              LKR ${(plan.totalPriceMinor * nights / 100).toLocaleString()}
+                              ${hotelEscape(plan.currency)} ${(plan.totalPriceMinor * nights * roomsCount / 100).toLocaleString()}
                             </div>
                             <div class="text-[10px] text-brand-muted">
-                              ${nights} night${nights > 1 ? 's' : ''} total (incl. taxes)
+                              Illustrative total · ${nights} nights · ${roomsCount} rooms
                             </div>
                           </div>
                           <button 
@@ -292,7 +309,7 @@ function renderHotelModal(
       if (!room || !plan) return;
 
       btn.disabled = true;
-      btn.textContent = 'Revalidating Allotment...';
+      btn.textContent = 'Checking local fixture…';
 
       const config: HotelSelectedConfiguration = {
         hotelId: hotel.hotelId,
@@ -311,7 +328,7 @@ function renderHotelModal(
         childrenCount,
         nightlyRateMinor: plan.nightlyRateMinor,
         taxesMinor: plan.totalTaxesMinor,
-        totalPriceMinor: plan.totalPriceMinor * nights,
+        totalPriceMinor: plan.totalPriceMinor * nights * roomsCount,
         currency: plan.currency,
         freeCancellationBefore: plan.freeCancellationBefore,
         cancellationPolicyDescription: plan.cancellationPolicyDescription,
@@ -319,26 +336,32 @@ function renderHotelModal(
         supplierName: hotel.supplierName
       };
 
-      const result = await hotelTripBucketService.stageHotelRoom(hotel, config);
-      closeModal();
-
-      if (result.success) {
-        showToast(`✓ Staged ${room.name} in Trip Bucket (Ready for Checkout).`, 'success');
+      try {
+        await hotelTripBucketService.stageHotelRoom(hotel, config);
+        closeModal();
+        showToast('Hotel example staged for review. No room hold or supplier confirmation was created.', 'brand');
         openTripBucketDrawer();
-      } else {
-        showToast(`Staged with state '${result.candidate.state}'. Please re-check allotment.`, 'warning');
-        openTripBucketDrawer();
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : 'Could not stage this room.', 'warning');
+        btn.disabled = false; btn.textContent = 'Stage in Trip Bucket';
       }
     });
   });
 
   function closeModal() {
+    deactivateFocusTrap(modalOverlay);
+    setBackgroundInert(false);
     document.removeEventListener('keydown', handleKeyDown);
     modalOverlay.remove();
     activeHotelModal = null;
+    closeCurrentHotel = null;
     if (previousHotelActiveElement) previousHotelActiveElement.focus();
   }
 
   document.body.appendChild(modalOverlay);
   activeHotelModal = modalOverlay;
+  closeCurrentHotel = closeModal;
+  setBackgroundInert(true, modalOverlay);
+  activateFocusTrap(modalOverlay);
+  modalOverlay.querySelector<HTMLButtonElement>('#hotel-modal-close-btn')?.focus();
 }
