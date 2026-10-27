@@ -138,7 +138,7 @@ export class BookingSagaService {
         this.remember(dispatchKey, '/internal/supplier-booking', item.id, { status: 'DISPATCH_STARTED' });
         try {
           const outcome = await this.options.fulfillItem(item, JSON.parse(snapshot.responseBody), dispatchKey);
-          if (outcome.status === 'CONFIRMED' && outcome.isUpstreamConfirmed === true && outcome.supplierReference) {
+          if (item.bookingMode === 'INSTANT_BOOK' && outcome.status === 'CONFIRMED' && outcome.isUpstreamConfirmed === true && outcome.supplierReference) {
             this.storage.updateBookingItem(item.id, { fulfillmentStatus: 'CONFIRMED', isUpstreamConfirmed: true,
               supplierBookingReference: outcome.supplierReference, supplierPnr: outcome.supplierPnr,
               supplierConfirmationNumber: outcome.supplierConfirmationNumber, confirmedAt: new Date().toISOString() });

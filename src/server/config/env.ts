@@ -50,10 +50,18 @@ export interface VacatinaServerEnv {
 export function validateServerEnv(envSource: Record<string, string | undefined> = process.env): VacatinaServerEnv {
   const nodeEnv = (envSource.NODE_ENV || 'development') as VacatinaServerEnv['NODE_ENV'];
   const isProd = nodeEnv === 'production';
+  if (isProd && envSource.VACATINA_CLERK_ROTATION_CONFIRMED !== 'true') {
+    throw new Error('[CRITICAL STARTUP ERROR] Clerk key rotation/revocation requires explicit owner confirmation before production use.');
+  }
+  if (isProd) {
+    let origin: URL;
+    try { origin = new URL(envSource.BASE_URL || ''); } catch { throw new Error('[CRITICAL STARTUP ERROR] BASE_URL must be an explicit production HTTPS origin.'); }
+    if (origin.protocol !== 'https:' || origin.username || origin.password || ['localhost','127.0.0.1','[::1]'].includes(origin.hostname)) throw new Error('[CRITICAL STARTUP ERROR] BASE_URL must be a production HTTPS origin.');
+  }
 
   const getRequired = (key: string, defaultForDev: string): string => {
     const val = envSource[key];
-    if (!val || val.includes('placeholder')) {
+    if (!val || /placeholder/i.test(val) || (isProd && /mock|fixture|unit-test|not-a-real|dev_jwt_secret/i.test(val))) {
       if (isProd) {
         throw new Error(`[CRITICAL STARTUP ERROR] Missing or placeholder value for required production environment variable: ${key}`);
       }
@@ -77,13 +85,30 @@ export function validateServerEnv(envSource: Record<string, string | undefined> 
       if ((!val || val.includes('placeholder')) && isProd) {
         throw new Error('[CRITICAL STARTUP ERROR] Missing or placeholder CLERK_PUBLISHABLE_KEY or NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY');
       }
+      if (isProd && !val.startsWith('pk_live_')) throw new Error('[CRITICAL STARTUP ERROR] A production Clerk publishable key is required.');
       return val || 'pk_test_mock_key';
     })(),
-    CLERK_SECRET_KEY: getRequired('CLERK_SECRET_KEY', 'sk_test_mock_key'),
-    CLERK_FRONTEND_API: envSource.CLERK_FRONTEND_API || 'https://electric-snail-48.clerk.accounts.dev',
-    CLERK_JWKS_URL: envSource.CLERK_JWKS_URL || 'https://electric-snail-48.clerk.accounts.dev/.well-known/jwks.json',
+    CLERK_SECRET_KEY: (() => {
+      const value = getRequired('CLERK_SECRET_KEY', 'sk_test_mock_key');
+      if (isProd && !value.startsWith('sk_live_')) throw new Error('[CRITICAL STARTUP ERROR] A rotated production Clerk secret is required.');
+      return value;
+    })(),
+    CLERK_FRONTEND_API: (() => {
+      const issuer = envSource.CLERK_ISSUER || envSource.CLERK_FRONTEND_API;
+      if (isProd) {
+        let url: URL;
+        try { url = new URL(issuer || ''); } catch { throw new Error('[CRITICAL STARTUP ERROR] An explicit production Clerk issuer is required.'); }
+        if (url.protocol !== 'https:' || url.username || url.password) throw new Error('[CRITICAL STARTUP ERROR] Clerk issuer must use HTTPS.');
+      }
+      return issuer || 'https://electric-snail-48.clerk.accounts.dev';
+    })(),
+    CLERK_JWKS_URL: envSource.CLERK_JWKS_URL || (envSource.CLERK_ISSUER || envSource.CLERK_FRONTEND_API || 'https://electric-snail-48.clerk.accounts.dev').replace(/\/$/, '') + '/.well-known/jwks.json',
     CLERK_JWT_PUBLIC_KEY: envSource.CLERK_JWT_PUBLIC_KEY,
-    JWT_SIGNING_SECRET: getRequired('JWT_SIGNING_SECRET', 'dev_jwt_secret_32_characters_minimum_string'),
+    JWT_SIGNING_SECRET: (() => {
+      const value = getRequired('JWT_SIGNING_SECRET', 'dev_jwt_secret_32_characters_minimum_string');
+      if (isProd && value.length < 32) throw new Error('[CRITICAL STARTUP ERROR] JWT_SIGNING_SECRET must contain at least 32 characters.');
+      return value;
+    })(),
     
     R2_BUCKET_NAME: envSource.R2_BUCKET_NAME || 'vacatina-documents-private',
     R2_PRESIGNED_URL_TTL_SECONDS: parseInt(envSource.R2_PRESIGNED_URL_TTL_SECONDS || '900', 10),

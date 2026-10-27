@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import pg from 'pg';
 import { globalStorageEngine, type VacatinaStorageEngine, type IPersistenceAdapter } from '../db/storage.ts';
 import type { StorageLifecycle } from '../inventory/types.ts';
+import { readBackendReadinessConfig } from '../config/backend-readiness.ts';
 
 type OperationalSnapshot = ReturnType<VacatinaStorageEngine['exportSnapshot']>;
 export interface RuntimeStateParticipant {
@@ -115,6 +116,7 @@ export class RuntimePersistence {
   private async executePostgres<T>(operation: () => Promise<T>): Promise<T> {
     let client: any;
     let before: RuntimeSnapshot | undefined;
+    let hydrated = false;
     try {
       client = await this.pool!.connect();
       await client.query('BEGIN');
@@ -124,13 +126,14 @@ export class RuntimePersistence {
       const result = await client.query('SELECT payload FROM vacatina_runtime_state WHERE namespace = $1 FOR UPDATE', [namespace]);
       before = result.rows[0]?.payload;
       await this.restore(before);
+      hydrated = true;
       const output = await operation();
       await client.query('INSERT INTO vacatina_runtime_state (namespace, payload) VALUES ($1, $2::jsonb) ON CONFLICT (namespace) DO UPDATE SET payload = EXCLUDED.payload, revision = vacatina_runtime_state.revision + 1, updated_at = now()', [namespace, JSON.stringify(await this.snapshot())]);
       await client.query('COMMIT');
       return output;
     } catch (error: any) {
       if (client) await client.query('ROLLBACK').catch(() => undefined);
-      await this.restore(before);
+      if (hydrated) await this.restore(before);
       if (!client || ['42P01', 'ECONNREFUSED', 'ENOTFOUND', 'ETIMEDOUT', '28P01'].includes(error.code)) throw new PersistenceUnavailableError();
       throw error;
     } finally { client?.release(); }
@@ -143,11 +146,12 @@ let activePersistence: RuntimePersistence | undefined;
 export function getRuntimePersistence(): RuntimePersistence {
   if (!activePersistence) {
     const production = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+    const readiness = readBackendReadinessConfig(process.env);
     const databaseUrl = process.env.DATABASE_URL;
     activePersistence = new RuntimePersistence({
       mode: production ? databaseUrl ? 'postgres' : 'unavailable' : 'file',
       databaseUrl,
-      enabled: production && process.env.VACATINA_ENABLE_PRODUCTION_WRITES === 'true',
+      enabled: readiness.productionWritesEnabled,
       filePath: process.env.VACATINA_LOCAL_STORAGE_PATH || '.data/operational-state.json'
     });
   }

@@ -106,7 +106,9 @@ export class PaymentGatewayService {
     });
   }
   private recordWebhook(gateway: CheckoutGateway, event: VerifiedPaymentNotification, rawPayload: string): void {
-    this.storage.recordPaymentWebhook({ gatewayId: gateway, eventId: event.eventId, eventType: event.eventType, rawPayload,
+    const safeReceipt = JSON.stringify({ payloadSha256: createHash('sha256').update(rawPayload).digest('hex'), eventId: event.eventId,
+      eventType: event.eventType, settled: event.settled, amountMinor: event.amountMinor, currency: event.currency });
+    this.storage.recordPaymentWebhook({ gatewayId: gateway, eventId: event.eventId, eventType: event.eventType, rawPayload: safeReceipt,
       processedStatus: 'PROCESSED', idempotencyKey: `webhook:${gateway}:${event.eventId}`, processedAt: new Date(this.now).toISOString() });
   }
   private settleOrder(order: PaymentOrderEntity, paymentReference?: string): void {

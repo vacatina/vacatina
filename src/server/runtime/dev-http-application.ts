@@ -6,12 +6,14 @@ import { authenticateClerkHttpRequest, CLERK_VERIFIER_CONFIG } from '../auth/cle
 import { GuestSessionManager } from '../auth/guest-session.ts';
 import type { SecurityContext } from '../auth/rbac.ts';
 import { getRuntimePersistence, type RuntimePersistence } from './persistence.ts';
+import { backendTelemetry, requestCorrelationId, type BackendTelemetrySink } from './observability.ts';
 
 export interface DevelopmentHttpOptions {
   sessionSecret?: string;
   persistence?: RuntimePersistence;
   authenticate?: (request: Request) => Promise<SecurityContext | null>;
   dispatch?: (request: Request, identity?: SecurityContext) => Promise<Response>;
+  telemetry?: BackendTelemetrySink;
 }
 
 let secretPromise: Promise<string> | undefined;
@@ -37,10 +39,17 @@ export function createDevelopmentHttpApplication(options: DevelopmentHttpOptions
   return async (request: Request) => {
     const url = new URL(request.url);
     const method = request.method.toUpperCase();
+    const requestId = requestCorrelationId(request.headers.get('x-request-id'));
+    const started = Date.now(); let observed = false;
     const finish = (response: Response) => {
       response.headers.set('Cache-Control', 'no-store');
       response.headers.set('X-Content-Type-Options', 'nosniff');
       response.headers.set('Vary', 'Cookie, Authorization');
+      response.headers.set('X-Request-Id', requestId);
+      if (!observed) {
+        observed = true;
+        backendTelemetry({ requestId, operation: 'http.request', status: String(response.status), latencyMs: Date.now() - started }, options.telemetry);
+      }
       return response;
     };
     const fail = (status: number, code: string, detail: string) => finish(createProblemResponse(status, code.replace(/_/g, ' '), detail, url.pathname, code));
@@ -72,6 +81,7 @@ export function createDevelopmentHttpApplication(options: DevelopmentHttpOptions
       const headers = new Headers(request.headers);
       headers.set('x-session-id', sessionId);
       headers.set('x-vacatina-runtime', 'server');
+      headers.set('x-request-id', requestId);
       headers.delete('x-user-id'); headers.delete('x-user-role'); headers.delete('x-organization-id');
       const scopedUrl = new URL(url); scopedUrl.searchParams.set('sessionId', sessionId);
       let body: string | undefined;

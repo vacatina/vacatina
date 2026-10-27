@@ -31,6 +31,11 @@ const BRAND_DIR = path.join(ROOT_DIR, 'public', 'brand');
 const WEB_BRAND_DIR = path.join(BRAND_DIR, 'web');
 const CARDS_DIR = path.join(ROOT_DIR, 'public', 'cards');
 
+export function assertBrowserModuleBoundary(inputs) {
+  const serverInput = inputs.find(input => /src[\\/]server[\\/]/.test(input));
+  if (serverInput) throw new Error(`Private server module entered the browser build: ${serverInput}`);
+}
+
 export function buildProject() {
   const startMs = Date.now();
   // Rebuild generated output from scratch; never publish stale server modules.
@@ -74,8 +79,7 @@ export function buildProject() {
     bundle: true, platform: 'browser', format: 'iife', target: ['es2022'],
     write: false, outfile: bundleOutPath, metafile: true, legalComments: 'none',
     logLevel: 'warning' });
-  const serverInput = Object.keys(browserBuild.metafile.inputs).find(input => /src[\\/]server[\\/]/.test(input));
-  if (serverInput) throw new Error(`Private server module entered the browser build: ${serverInput}`);
+  assertBrowserModuleBoundary(Object.keys(browserBuild.metafile.inputs));
   const bundleJs = browserBuild.outputFiles[0].text;
   fs.writeFileSync(bundleOutPath, bundleJs, 'utf8');
 

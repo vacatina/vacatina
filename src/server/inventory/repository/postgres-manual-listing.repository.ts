@@ -33,6 +33,9 @@ export class PostgresManualListingRepository implements IManualListingRepository
   private isConnected = false;
 
   constructor(connectionString?: string) {
+    if (process.env.NODE_ENV === 'production' || process.env.VERCEL === '1') {
+      throw new Error('Legacy manual PostgreSQL persistence is not production approved.');
+    }
     this.fallbackMemory = new InMemoryManualListingRepository();
     const connStr = connectionString || process.env.DATABASE_URL;
 

@@ -386,7 +386,10 @@ export type BookingOverallStatus =
   | 'CANCEL_PENDING'
   | 'CANCELLED'
   | 'REFUND_PENDING'
-  | 'MANUAL_REVIEW';
+  | 'MANUAL_REVIEW'
+  | 'FULFILMENT_PENDING'
+  | 'FULFILLED'
+  | 'EXPIRED';
 
 export type BookingItemStatus =
   | 'PENDING'

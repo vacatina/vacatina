@@ -111,6 +111,12 @@ const ROLE_PERMISSIONS: Partial<Record<UserRole, PermissionSlug[]>> = {
     'ops:resolve_ticket',
     'booking:view_own'
   ],
+  OPS_SUPERVISOR: [
+    'ops:triage_queue',
+    'ops:reconcile_booking',
+    'ops:view_tickets',
+    'ops:resolve_ticket'
+  ],
   FINANCE_OPS: [
     'finance:view_ledger',
     'finance:authorize_refund',

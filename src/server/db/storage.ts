@@ -221,13 +221,15 @@ export class VacatinaStorageEngine {
     if (snapshot && (snapshot.version !== 1 || !snapshot.collections || typeof snapshot.collections !== 'object')) {
       throw new Error('Unsupported operational storage snapshot');
     }
+    const validated: Record<string, Map<string, unknown>> = {};
     for (const name of STORAGE_COLLECTION_NAMES) {
       const entries = snapshot?.collections[name] || [];
       if (!Array.isArray(entries) || entries.some(entry => !Array.isArray(entry) || entry.length !== 2 || typeof entry[0] !== 'string')) {
         throw new Error('Invalid operational storage collection: ' + name);
       }
-      this[name] = new Map(entries) as any;
+      validated[name] = new Map(entries);
     }
+    for (const name of STORAGE_COLLECTION_NAMES) this[name] = validated[name] as any;
   }
 
   public async flush(): Promise<void> {

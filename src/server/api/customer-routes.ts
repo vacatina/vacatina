@@ -132,7 +132,13 @@ export async function handleCustomerRoutes(request: Request, context: SecurityCo
       if (method === 'DELETE' && !itemId[2]) { storage.removeTripBucketItem(item.id); return json({success:true,...snapshot()}); }
       if (method === 'POST' && itemId[2]) {
         const result = await globalUnifiedInventory.revalidateOffer(item.canonicalOfferId);
-        storage.updateTripBucketItem(item.id,{state:({UNCHANGED:'READY',PRICE_CHANGED:'PRICE_CHANGED',UNAVAILABLE:'UNAVAILABLE',EXPIRED:'OFFER_EXPIRED'} as any)[result.status] || 'RECHECK_REQUIRED',unitSellingPriceMinor:result.newPriceMinor ?? item.unitSellingPriceMinor,lastRevalidatedAt:new Date().toISOString()});
+        let state = ({UNCHANGED:'READY',PRICE_CHANGED:'PRICE_CHANGED',UNAVAILABLE:'UNAVAILABLE',EXPIRED:'OFFER_EXPIRED'} as any)[result.status] || 'RECHECK_REQUIRED';
+        if (state === 'READY' && (item.sourceType === 'SEED' || item.environmentClass === 'SEED' || item.sellability === 'DISCOVERY_ONLY')) state = 'DRAFT';
+        // Readiness is a draft/recheck state, not supplier confirmation. Request-to-confirm
+        // inventory may resolve its action, but the booking lifecycle still requires
+        // operator/manual evidence before it can ever become CONFIRMED.
+        if (state === 'READY' && item.state === 'PRICE_CHANGED' && item.configuration.acceptedPriceMinor !== (result.newPriceMinor ?? item.unitSellingPriceMinor)) state = 'PRICE_CHANGED';
+        storage.updateTripBucketItem(item.id,{state,unitSellingPriceMinor:result.newPriceMinor ?? item.unitSellingPriceMinor,lastRevalidatedAt:new Date().toISOString()});
         return json(snapshot());
       }
     }
@@ -160,13 +166,16 @@ export async function handleCustomerRoutes(request: Request, context: SecurityCo
     if (!group || group.userId !== context.userId) return fail(404,'BOOKING_NOT_FOUND','This booking could not be found for your account.');
     if (path === '/api/v1/checkout/payment-intent' && method === 'POST') {
       const key = request.headers.get('x-idempotency-key');
-      if (!key) return fail(400,'IDEMPOTENCY_KEY_MISSING','A payment request reference is required.');
-      return json(await (payment as any).createPaymentIntent({bookingGroupId:group.id,customerEmail:context.email,
-        customerName:input.customerName,gatewayId:input.gatewayId,returnUrl:request.headers.get('origin') || url.origin,idempotencyKey:key}));
+      if (!key || key.length < 8 || key.length > 180) return fail(400,'IDEMPOTENCY_KEY_MISSING','A payment request reference is required.');
+       return json(await (payment as any).createPaymentIntent({bookingGroupId:group.id,customerEmail:context.email,
+         customerName:input.customerName,amountMinor:group.totalSellingPriceMinor,currency:group.currency,
+         gatewayId:input.gatewayId,returnUrl:url.origin,idempotencyKey:createHash('sha256').update(context.userId+':'+key).digest('hex')}));
     }
     if (method === 'GET') return json({bookingGroup:group,items:storage.getBookingItems(group.id)});
     if (path.endsWith('/cancel') && method === 'POST') {
-      return json(await (saga as any).requestCancellation(group.id,context.userId,input.reason));
+      const key = request.headers.get('x-idempotency-key');
+      if (!key || key.length < 8 || key.length > 180) return fail(400,'IDEMPOTENCY_KEY_MISSING','A cancellation request reference is required.');
+      return json(await saga.requestCancellation(group.id,input.reason,createHash('sha256').update(context.userId+':'+key).digest('hex'),context.userId));
     }
     return fail(405,'METHOD_NOT_ALLOWED','This booking action is not supported.');
   }
