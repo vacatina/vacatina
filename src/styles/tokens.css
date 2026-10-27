@@ -1,0 +1,295 @@
+/* ============================================================================
+ * Vacatina DESIGN v4 — Canonical Token & Accessibility Stylesheet
+ * Authority: Vacatina_DESIGN_v4_ANTIGRAVITY_HANDOFF.md
+ * Sole Brand Primary: #1B1464 (Space Cadet Navy). Legacy #0071BC is retired.
+ * Allowed Fonts: Plus Jakarta Sans (Headings) & Inter (Body / UI / Tabular).
+ * ============================================================================ */
+
+:root {
+  /* Core Brand Tokens (Vacatina DESIGN v4 Authority) */
+  --brand-primary: #1B1464;
+  --brand-primary-hover: #130E4B;
+  --brand-primary-active: #0E0A38;
+  --brand-primary-subtle: #F0EFFC;
+  --brand-primary-border: #C7C3F4;
+
+  /* Authoritative Neutral Surface & Text Tokens (§10: #000000, #525252, #E5E5E5) */
+  --bg-canvas: #FAFAFA;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F5F5F5;
+  --bg-elevated: #FFFFFF;
+
+  --text-primary: #000000;
+  --text-strong: #000000;
+  --text-secondary: #525252;
+  --text-muted: #525252;
+  --text-on-brand: #FFFFFF;
+  --text-on-brand-muted: rgba(255, 255, 255, 0.78);
+
+  --border-default: #E5E5E5;
+  --border-subtle: #E5E5E5;
+  --border-strong: #CCCCCC;
+
+  /* Semantic Status Tokens (Dual-coded with icon + text) */
+  --status-ready-text: #15803D;
+  --status-ready-bg: #DCFCE7;
+  --status-ready-border: #86EFAC;
+
+  --status-warning-text: #B45309;
+  --status-warning-bg: #FEF3C7;
+  --status-warning-border: #FCD34D;
+
+  --status-danger-text: #B91C1C;
+  --status-danger-bg: #FEE2E2;
+  --status-danger-border: #FCA5A5;
+
+  --status-info-text: #1D4ED8;
+  --status-info-bg: #DBEAFE;
+  --status-info-border: #93C5FD;
+
+  /* Elevation & Radius */
+  --radius-card: 16px;
+  --radius-command: 24px;
+  --radius-pill: 9999px;
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 10px 25px -5px rgba(27, 20, 100, 0.10), 0 4px 10px -4px rgba(15, 23, 42, 0.06);
+  --shadow-command: 0 12px 32px -8px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-floating: 0 20px 40px -12px rgba(15, 23, 42, 0.22);
+
+  /* Motion System Tokens (§72–§77) */
+  --motion-instant: 100ms;
+  --motion-fast: 160ms;
+  --motion-standard: 210ms;
+  --motion-overlay: 260ms;
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quart: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-strong);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Mandatory Tabular Numerals for prices, dates, times, durations, counts, subtotals */
+.tabular-nums,
+[data-tabular="true"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Canonical 1440px Navigation Breakpoint (Never 1535px) */
+@media (max-width: 1439.98px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+  .mobile-menu-btn {
+    display: none !important;
+  }
+}
+
+/* Header Brand Responsive Presentation:
+ * 360–1439px: official mark-only (36px) — zero crowding in dense desktop header
+ * 1440px+ (desktop): official full logo lockup (OneColor Space Cadet) + mandatory tagline "we treasure your holidays"
+ * footer: official full reverse logo + tagline always
+ */
+@media (max-width: 1439.98px) {
+  .vacatina-logo-mark-wrap {
+    display: flex !important;
+  }
+  .vacatina-logo-full-wrap {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .vacatina-logo-mark-wrap {
+    display: none !important;
+  }
+  .vacatina-logo-full-wrap {
+    display: flex !important;
+  }
+}
+
+/* Outlined Circular Social Icons (§12–§14) */
+.footer-social-circle {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background-color: transparent;
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 180ms ease;
+  text-decoration: none;
+}
+
+.footer-social-circle:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #FFFFFF;
+  transform: translateY(-1.5px);
+}
+
+.footer-social-circle:focus-visible {
+  outline: 2px solid #FFFFFF !important;
+  outline-offset: 2px !important;
+}
+
+.footer-social-circle svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* WCAG 2.2 AA 44x44px Minimum Touch Target Enforcement */
+.search-tab,
+.filter-pill,
+#header-trip-bucket-btn,
+#header-favorites-btn,
+#header-locale-btn,
+#mobile-nav-toggle,
+#more-dropdown-btn,
+#resources-dropdown-btn,
+#dock-review-trip-btn,
+.touch-target-44 {
+  min-height: 44px;
+}
+
+.icon-touch-44 {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Accessible Focus Ring (#1B1464) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[role="tab"]:focus-visible,
+[role="radio"]:focus-visible {
+  outline: 2px solid var(--brand-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Scrollbar utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Micro-interactions */
+.swap-rotate-180 {
+  transform: rotate(180deg);
+}
+
+.search-field-card {
+  transition: border-color 160ms var(--ease-out-quart), box-shadow 160ms var(--ease-out-quart), background-color 160ms var(--ease-out-quart);
+}
+.search-field-card:hover,
+.search-field-card:focus-within {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(27, 20, 100, 0.08);
+}
+
+@keyframes pulse-highlight {
+  0% { box-shadow: 0 0 0 0 rgba(27, 20, 100, 0.35); }
+  70% { box-shadow: 0 0 0 10px rgba(27, 20, 100, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(27, 20, 100, 0); }
+}
+
+.prefill-pulse {
+  animation: pulse-highlight 900ms var(--ease-out-quart);
+}
+
+/* SCC Horizontal Affordance & Mask Indicators (§10 Delta Item) */
+.scc-rail-wrapper {
+  position: relative;
+}
+.scc-rail-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.95));
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 160ms var(--ease-out-quart);
+}
+.scc-rail-wrapper.at-end::after {
+  opacity: 0;
+}
+
+/* Discovery Card & Interactive Surface Motion */
+#main-content article {
+  transition: transform var(--motion-standard) var(--ease-standard),
+              box-shadow var(--motion-standard) var(--ease-standard),
+              border-color var(--motion-fast) var(--ease-standard);
+}
+#main-content article:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Mobile Sticky Summary Bar vs Desktop Floating Dock (Screen 03 Foundation v1.1 Recovery) */
+@media (min-width: 640px) {
+  #mobile-summary-bar {
+    display: none !important;
+  }
+}
+@media (max-width: 639.98px) {
+  #floating-trip-dock {
+    display: none !important;
+  }
+}
+
+/* Reduced Motion Guardrail */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

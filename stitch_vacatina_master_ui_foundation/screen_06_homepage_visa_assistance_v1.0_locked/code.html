@@ -1,0 +1,1032 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>06 — Vacatina — Homepage Visa Assistance v1.0 — REVIEW</title>
+<!-- Google Fonts: Plus Jakarta Sans & Inter ONLY -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            navy: '#1B1464',
+            white: '#FFFFFF',
+            black: '#000000',
+            surface: '#FAFAFA',
+            dim: '#F5F5F5',
+            border: '#E5E5E5',
+            muted: '#525252',
+            success: '#15803D',
+            warning: '#B45309',
+            error: '#B91C1C',
+            info: '#1D4ED8'
+          }
+        },
+        fontFamily: {
+          headline: ['"Plus Jakarta Sans"', 'sans-serif'],
+          interface: ['"Inter"', 'sans-serif']
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #FAFAFA;
+    color: #000000;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+  }
+  .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .font-interface { font-family: 'Inter', sans-serif; }
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+  .custom-scroll::-webkit-scrollbar { width: 6px; }
+  .custom-scroll::-webkit-scrollbar-track { background: #FAFAFA; }
+  .custom-scroll::-webkit-scrollbar-thumb { background: #E5E5E5; border-radius: 9999px; }
+  .custom-scroll::-webkit-scrollbar-thumb:hover { background: #525252; }
+  .nav-item:hover .nav-dropdown, .nav-item:focus-within .nav-dropdown { display: block; }
+</style>
+<style id="header-responsive-style">
+  @media (max-width: 1023px) { .hide-below-lg { display: none !important; } .trip-bucket-label { display: none !important; } }
+  @media (min-width: 1024px) { .hide-below-lg { display: flex !important; } .trip-bucket-label { display: inline !important; } }
+  @media (max-width: 1439px) { .desktop-nav-responsive { display: none !important; } .hamburger-responsive { display: flex !important; } }
+  @media (min-width: 1440px) { .desktop-nav-responsive { display: flex !important; } .hamburger-responsive { display: none !important; } }
+  .search-tablist { scroll-behavior: smooth; }
+  @media (min-width: 1280px) { .search-tablist { justify-content: space-between; overflow-x: visible; } .search-tab { flex-shrink: 0; } }
+</style>
+<style id="foundation-final-qa">
+  button, summary { min-height: 44px !important; }
+  button[class*="min-h-[48px]"] { min-height: 48px !important; }
+  #trip-bucket-trigger, #mobile-nav-toggle, #mobile-nav-close, #trip-bucket-close, #header-favorites-trigger { min-width: 44px; }
+  #mobile-nav-drawer a, .nav-dropdown a, header nav > a { min-height: 44px; display: flex; align-items: center; }
+  .search-panel label:has(input[type=checkbox]) { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid #1B1464; outline-offset: 2px; box-shadow: 0 0 0 2px #FFFFFF;
+  }
+  dialog { max-height: calc(100dvh - 32px) !important; overflow-y: auto; }
+</style>
+<style id="vacatina-refinement-style">
+  #floating-summary-dock[data-scroll-hidden="true"], #mobile-summary-bar[data-scroll-hidden="true"] {
+    opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transform: translateY(140%) !important;
+  }
+  #floating-summary-dock, #mobile-summary-bar { transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease; }
+  body { padding-bottom: 112px; }
+  @media(max-width:639px){ body { padding-bottom: 88px; } #floating-summary-dock { display: none !important; } }
+  @media(prefers-reduced-motion:reduce){ #floating-summary-dock, #mobile-summary-bar { transition: none; } }
+</style>
+</head>
+<body class="bg-brand-surface text-brand-black min-h-screen flex flex-col antialiased selection:bg-brand-navy selection:text-white font-interface">
+<a class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-navy focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy font-medium text-[13px]" href="#main-content">Skip to main content</a>
+<!-- 1. GLOBAL HEADER -->
+<header class="sticky top-0 z-40 h-[76px] bg-white border-b border-brand-border px-4 sm:px-6 xl:px-8 flex items-center justify-between">
+<div class="w-full mx-auto flex items-center justify-between gap-2 sm:gap-4 max-w-full">
+<div class="flex items-center gap-4 xl:gap-8 flex-shrink-0">
+<a aria-label="Vacatina Homepage" class="flex flex-col group focus:outline-none focus:ring-2 focus:ring-brand-navy rounded-lg p-1" href="#">
+<div class="flex items-center gap-2">
+<svg aria-hidden="true" class="w-6 h-6 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
+<span class="font-headline font-extrabold text-[22px] tracking-tight text-brand-navy leading-none">vacatina</span>
+</div>
+<span class="font-interface text-[10px] text-brand-muted tracking-wider uppercase font-semibold mt-1 leading-none whitespace-nowrap">we treasure your holidays</span>
+</a>
+<nav aria-label="Primary Navigation" class="desktop-nav desktop-nav-responsive items-center gap-1 xl:gap-2 flex-shrink-0">
+<a class="px-3 py-2 text-[14px] font-semibold text-brand-navy hover:text-brand-black rounded-lg transition-colors whitespace-nowrap" href="#">Home</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('flights', true); return false;">Flights</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('hotels', true); return false;">Hotels</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('cars', true); return false;">Cars</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('rails', true); return false;">Rails</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('cruises', true); return false;">Cruises</a>
+<!-- More Dropdown -->
+<div class="relative nav-item py-2" id="nav-addons-container">
+<button aria-controls="nav-addons-menu" aria-expanded="false" aria-haspopup="true" class="dropdown-toggle flex items-center gap-1 px-3 py-1.5 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap" id="nav-addons-btn" type="button">
+<span class="">More</span>
+<svg aria-hidden="true" class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="nav-addons-btn" class="nav-dropdown hidden absolute top-full left-0 w-60 pt-2 z-50" id="nav-addons-menu" role="menu">
+<div class="bg-white border border-brand-border rounded-xl shadow-lg py-2">
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('activities', true); closeAllDropdowns(); return false;" role="menuitem">Activities</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('visa', true); closeAllDropdowns(); return false;" role="menuitem">Visa Assistance</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('sightseeing', true); closeAllDropdowns(); return false;" role="menuitem">Sightseeing Tours</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('packages', true); closeAllDropdowns(); return false;" role="menuitem">Holiday Packages</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('insurance', true); closeAllDropdowns(); return false;" role="menuitem">Travel Insurance</a>
+<div class="my-1.5 border-t border-brand-border"></div>
+<a class="block px-4 py-2 text-[13px] font-semibold text-brand-navy hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('bundle', true); closeAllDropdowns(); return false;" role="menuitem">Build Your Bundle</a>
+</div>
+</div>
+</div>
+<!-- Resources Dropdown -->
+<div class="relative nav-item py-2" id="nav-resources-container">
+<button aria-controls="nav-resources-menu" aria-expanded="false" aria-haspopup="true" class="dropdown-toggle flex items-center gap-1 px-3 py-1.5 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap" id="nav-resources-btn" type="button">
+<span class="">Resources</span>
+<svg aria-hidden="true" class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="nav-resources-btn" class="nav-dropdown hidden absolute top-full left-0 w-48 pt-2 z-50" id="nav-resources-menu" role="menu">
+<div class="bg-white border border-brand-border rounded-xl shadow-lg py-2">
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Blog</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">About Us</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">FAQ</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Contact</a>
+</div>
+</div>
+</div>
+</nav>
+</div>
+<div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+<div class="relative nav-item py-1 flex-shrink-0 hide-below-lg" id="nav-locale-container">
+<button aria-controls="nav-locale-menu" aria-expanded="false" aria-haspopup="true" aria-label="Language EN, currency USD" class="dropdown-toggle flex items-center gap-1.5 text-[13px] font-medium text-brand-black px-2.5 sm:px-3 py-2 rounded-lg border border-brand-border bg-white hover:bg-brand-surface transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0 min-h-[40px]" id="nav-locale-btn" type="button">
+<svg aria-hidden="true" class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" x2="22" y1="12" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+<span class="whitespace-nowrap font-medium" id="current-locale-display">EN · USD</span>
+<svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="nav-locale-btn" class="nav-dropdown hidden absolute top-full right-0 w-64 pt-2 z-50" id="nav-locale-menu" role="menu">
+<div class="bg-white border border-brand-border rounded-xl shadow-lg p-3 text-[13px]">
+<div class="mb-3">
+<div class="text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1.5">Language</div>
+<div class="grid grid-cols-2 gap-1" id="locale-lang-options">
+<button aria-pressed="true" class="px-2.5 py-1.5 bg-brand-navy text-white rounded text-left font-medium text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectLanguage('EN', this)" type="button">English</button>
+<button aria-pressed="false" class="px-2.5 py-1.5 text-brand-black hover:bg-brand-dim rounded text-left text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectLanguage('SI', this)" type="button">Sinhala</button>
+<button aria-pressed="false" class="px-2.5 py-1.5 text-brand-black hover:bg-brand-dim rounded text-left text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectLanguage('TA', this)" type="button">Tamil</button>
+</div>
+</div>
+<div>
+<div class="text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1.5">Currency</div>
+<div class="grid grid-cols-3 gap-1" id="locale-curr-options">
+<button aria-pressed="true" class="px-2 py-1 bg-brand-navy text-white rounded text-center font-medium text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('USD', this)" type="button">USD $</button>
+<button aria-pressed="false" class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('LKR', this)" type="button">LKR Rs</button>
+<button aria-pressed="false" class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('AED', this)" type="button">AED</button>
+<button aria-pressed="false" class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('EUR', this)" type="button">EUR €</button>
+<button aria-pressed="false" class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('GBP', this)" type="button">GBP £</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<button aria-label="Saved Favorites (0 items)" class="relative p-2 text-brand-muted hover:text-brand-navy rounded-lg hover:bg-brand-dim transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-brand-navy min-h-[40px] min-w-[40px] flex items-center justify-center hide-below-lg" id="header-favorites-trigger" onclick="closeAllDropdowns();closeMobileNav();vacatinaPreviewMessage('Saved Favorites','No saved items yet. Save ideas to revisit later. Favorites stay separate from your Trip Bucket.');return false;" type="button">
+<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<button aria-controls="trip-bucket-drawer" aria-expanded="false" aria-label="Open Trip Bucket with 3 items" class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-2 rounded-lg border border-brand-border bg-white hover:bg-brand-surface transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0 min-h-[40px]" id="trip-bucket-trigger" onclick="openTripBucket()" type="button">
+<svg aria-hidden="true" class="w-4 h-4 text-brand-black flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="hidden md:inline font-medium text-[13px] text-brand-black trip-bucket-label">Trip Bucket</span>
+<span class="inline-flex items-center justify-center px-2 py-0.5 text-[11px] font-bold bg-brand-navy text-white rounded-full tabular-nums">3</span>
+</button>
+<div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 hide-below-lg" id="auth-container">
+<div class="relative nav-item py-1" id="signed-in-user-menu">
+<button aria-controls="user-account-dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Alex Morgan user profile and account options" class="dropdown-toggle flex items-center gap-2 p-1 pl-2 sm:pl-2.5 rounded-xl border border-brand-border bg-white hover:bg-brand-surface transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy min-h-[40px]" id="user-menu-btn" type="button">
+<span class="w-7 h-7 rounded-full bg-brand-navy text-white font-headline font-bold text-[12px] flex items-center justify-center flex-shrink-0">AM</span>
+<span class="font-medium text-[13px] text-brand-black hidden xl:inline">Alex M.</span>
+<svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="user-menu-btn" class="nav-dropdown hidden absolute top-full right-0 w-56 pt-2 z-50" id="user-account-dropdown" role="menu">
+<div class="bg-white border border-brand-border rounded-xl shadow-lg py-2 text-[13px]">
+<div class="px-4 py-2 border-b border-brand-border"><p class="font-semibold text-brand-black">Alex Morgan</p><p class="text-[11px] text-brand-muted truncate">alex.morgan@example.com</p></div>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">My Trips</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Visa Applications</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns();closeMobileNav();vacatinaPreviewMessage('Saved Favorites','No saved items yet. Save ideas to revisit later. Favorites stay separate from your Trip Bucket.');return false;" role="menuitem">Saved / Favorites</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="openTripBucket(); closeAllDropdowns(); return false;" role="menuitem">Trip Bucket (3)</a>
+<div class="my-1 border-t border-brand-border"></div>
+<button class="w-full text-left px-4 py-2 text-brand-error hover:bg-brand-dim font-medium transition-colors" onclick="setAuthState(false)" role="menuitem" type="button">Sign Out</button>
+</div>
+</div>
+</div>
+<div class="hidden items-center gap-1 sm:gap-2" id="guest-state-controls">
+<button class="text-[13px] font-semibold text-brand-black hover:text-brand-navy px-2 sm:px-2.5 py-2 transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy rounded-lg min-h-[40px]" onclick="setAuthState(true)" type="button">Sign In</button>
+<button class="bg-brand-navy text-white text-[13px] font-semibold px-3 sm:px-4 py-2 min-h-[40px] rounded-lg hover:opacity-95 whitespace-nowrap transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="setAuthState(true)" type="button">Sign Up for Free</button>
+</div>
+</div>
+<button aria-controls="mobile-nav-drawer" aria-expanded="false" aria-label="Open navigation menu" class="hamburger-responsive w-11 h-11 flex items-center justify-center text-brand-navy rounded-lg hover:bg-brand-dim focus:outline-none focus:ring-2 focus:ring-brand-navy flex-shrink-0" id="mobile-nav-toggle" onclick="openMobileNav()" type="button">
+<svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow" id="main-content">
+<!-- 2. HERO -->
+<section aria-labelledby="hero-headline" class="bg-brand-navy text-white pt-14 pb-24 sm:pb-32 px-4 sm:px-6 xl:px-12 text-center relative overflow-hidden">
+<div class="max-w-[1320px] mx-auto flex flex-col items-center">
+<h1 class="font-headline font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight leading-[1.1] max-w-4xl text-white mb-3" id="hero-headline">Book Everything in One Place</h1>
+<p class="font-interface text-white/90 text-base sm:text-lg md:text-xl font-normal max-w-2xl leading-relaxed mb-6">Flights, stays, visa assistance and unforgettable experiences—brought together for your next journey.</p>
+<div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[12px] sm:text-[13px] text-white/80 font-medium mb-8">
+<div class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg><span class="">Compare live options</span></div>
+<span class="text-white/40 select-none">•</span>
+<div class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">Transparent pricing</span></div>
+<span class="text-white/40 select-none">•</span>
+<div class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">One place for your trip</span></div>
+</div>
+<div class="w-full max-w-2xl bg-white/10 border border-white/20 rounded-2xl p-2 sm:p-2.5 flex flex-col sm:flex-row items-center gap-2">
+<div class="flex items-center gap-2 pl-3 flex-1 w-full text-left">
+<span class="text-white font-semibold text-[14px] flex-shrink-0">✦ Ask Vacatina</span>
+<span class="hidden sm:inline text-white/40 select-none">|</span>
+<input aria-label="AI Trip Prompt" class="bg-transparent border-0 text-white placeholder-white/70 text-[13px] font-normal focus:ring-0 focus:outline-none w-full p-0" placeholder="Plan 5 days in Dubai with flights, hotel and visa." type="text" value="Plan 5 days in Dubai with flights, hotel and visa.">
+</div>
+<button class="w-full sm:w-auto bg-white text-brand-navy hover:bg-brand-surface font-semibold text-[13px] px-5 py-2.5 rounded-xl whitespace-nowrap transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-white" type="button">Plan My Trip</button>
+</div>
+</div>
+</section>
+<!-- 3. UNIFIED 11-TAB SEARCH COMMAND CENTER -->
+<section aria-label="Search Command Center" class="max-w-[1320px] mx-auto px-4 sm:px-6 xl:px-8 -mt-16 sm:-mt-20 relative z-20 pb-12" id="search-command-center">
+<div class="bg-white border border-brand-border rounded-[22px] shadow-sm p-4 sm:p-6 md:p-8">
+<div aria-label="Search services" class="search-tablist flex items-center overflow-x-auto pb-4 border-b border-brand-border -mx-2 px-2 sm:mx-0 sm:px-0 mb-6 custom-scroll gap-1" role="tablist">
+<button aria-controls="panel-bundle" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-bundle" onclick="switchToSearchTab('bundle', true)" role="tab" tabindex="-1" type="button">Build Your Bundle</button>
+<button aria-controls="panel-flights" aria-selected="true" class="search-tab bg-brand-navy text-white text-[12px] sm:text-[13px] font-semibold px-2 sm:px-2.5 xl:px-2.5 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" id="tab-flights" onclick="switchToSearchTab('flights', true)" role="tab" tabindex="0" type="button"><svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">Flights</span></button>
+<button aria-controls="panel-hotels" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-hotels" onclick="switchToSearchTab('hotels', true)" role="tab" tabindex="-1" type="button">Hotels</button>
+<button aria-controls="panel-visa" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-visa" onclick="switchToSearchTab('visa', true)" role="tab" tabindex="-1" type="button">Visa Assistance</button>
+<button aria-controls="panel-packages" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-packages" onclick="switchToSearchTab('packages', true)" role="tab" tabindex="-1" type="button">Holiday Packages</button>
+<button aria-controls="panel-cars" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-cars" onclick="switchToSearchTab('cars', true)" role="tab" tabindex="-1" type="button">Cars &amp; Transfers</button>
+<button aria-controls="panel-rails" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-rails" onclick="switchToSearchTab('rails', true)" role="tab" tabindex="-1" type="button">Rails</button>
+<button aria-controls="panel-cruises" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-cruises" onclick="switchToSearchTab('cruises', true)" role="tab" tabindex="-1" type="button">Cruises</button>
+<button aria-controls="panel-activities" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-activities" onclick="switchToSearchTab('activities', true)" role="tab" tabindex="-1" type="button">Activities</button>
+<button aria-controls="panel-sightseeing" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-sightseeing" onclick="switchToSearchTab('sightseeing', true)" role="tab" tabindex="-1" type="button">Sightseeing Tours</button>
+<button aria-controls="panel-insurance" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-insurance" onclick="switchToSearchTab('insurance', true)" role="tab" tabindex="-1" type="button">Travel Insurance</button>
+</div>
+<!-- TABPANEL: FLIGHTS (Active Default) -->
+<div aria-labelledby="tab-flights" class="search-panel block" id="panel-flights" role="tabpanel">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+<div aria-label="Journey Type" class="inline-flex items-center gap-1.5 p-1 bg-brand-surface border border-brand-border rounded-xl whitespace-nowrap flex-nowrap flex-shrink-0" role="radiogroup">
+<button aria-checked="true" class="bg-white border border-brand-border text-brand-navy font-semibold px-4 py-1.5 rounded-md text-[13px] shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0" role="radio" type="button">Round Trip</button>
+<button aria-checked="false" class="px-3.5 py-1.5 rounded-md text-[13px] font-medium text-brand-muted hover:text-brand-black transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0" role="radio" type="button">One Way</button>
+<button aria-checked="false" class="px-3.5 py-1.5 rounded-md text-[13px] font-medium text-brand-muted hover:text-brand-black transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0" role="radio" type="button">Multi-City</button>
+</div>
+<div class="flex items-center gap-5 text-[13px] text-brand-muted font-medium">
+<label class="flex items-center gap-2 cursor-pointer select-none hover:text-brand-black transition-colors"><input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" id="flights-direct-only" type="checkbox"><span class="">Direct flights only</span></label>
+<label class="flex items-center gap-2 cursor-pointer select-none hover:text-brand-black transition-colors"><input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" id="flights-nearby-airports" type="checkbox"><span class="">Include nearby airports</span></label>
+</div>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();">
+<div class="lg:col-span-3 relative">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-from">From</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-navy pointer-events-none"><svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<input class="w-full h-12 min-h-[48px] pl-11 pr-10 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-from" list="foundation-airport-options" placeholder="City or Airport" type="text" value="Colombo (CMB) - Bandaranaike">
+<button aria-label="Swap origin and destination" class="absolute right-2 p-1.5 text-brand-muted hover:text-brand-navy hover:bg-brand-dim rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy z-10" id="flight-swap-btn" onclick="swapFields('flight-from', 'flight-to')" type="button">
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-to">To</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-navy pointer-events-none"><svg aria-hidden="true" class="w-5 h-5 rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<input class="w-full h-12 min-h-[48px] pl-11 pr-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-to" list="foundation-airport-options" placeholder="City or Airport" type="text" value="London (LHR) - Heathrow Airport">
+</div>
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-dept">Departure</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-muted pointer-events-none"><svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<input class="w-full h-12 min-h-[48px] pl-10 pr-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-dept" min="2026-10-23" type="date" value="2026-11-12">
+</div>
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-ret">Return</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-muted pointer-events-none"><svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<input class="w-full h-12 min-h-[48px] pl-10 pr-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-ret" min="2026-10-23" type="date" value="2026-11-27">
+</div>
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-travelers">Travelers &amp; Cabin</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-muted pointer-events-none"><svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<input aria-controls="traveler-picker" aria-expanded="false" aria-haspopup="dialog" class="w-full h-12 min-h-[48px] pl-10 pr-7 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium cursor-pointer hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" data-traveler-label="Travelers &amp; Cabin" id="flight-travelers" readonly="" role="button" type="text" value="1 Adult, Economy">
+<div class="absolute right-3 text-brand-muted pointer-events-none"><svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+</div>
+</div>
+</form>
+<div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2.5 text-[12px] sm:text-[13px] text-brand-muted"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-dim border border-brand-border text-brand-black font-semibold text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-brand-success flex-shrink-0"></span>Live Options</span><span class="">Live prices and availability are refreshed during search and before booking.</span></div>
+<button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" type="button">
+<svg aria-hidden="true" class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Search Flights</span>
+</button>
+</div>
+</div>
+<!-- Other Search Tabpanels Placeholder (Hidden by default, switched via tab clicks) -->
+<div aria-labelledby="tab-bundle" class="search-panel hidden" id="panel-bundle" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Configure customized bundle components.</p></div>
+<div aria-labelledby="tab-hotels" class="search-panel hidden" id="panel-hotels" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Search hotels and stays worldwide.</p></div>
+<div aria-labelledby="tab-visa" class="search-panel hidden" id="panel-visa" role="tabpanel"><div class="p-2 sm:p-4">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+<div class="md:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-country-input">Destination Country</label>
+<input class="w-full h-12 min-h-[48px] px-4 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="visa-country-input" placeholder="e.g. United Kingdom" type="text" value="">
+</div>
+<div class="md:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-citizenship-input">Passport / Citizenship</label>
+<input class="w-full h-12 min-h-[48px] px-4 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="visa-citizenship-input" readonly="" type="text" value="Sri Lanka">
+</div>
+<div class="md:col-span-4 flex items-end">
+<button class="w-full h-12 min-h-[48px] bg-brand-navy text-white text-[14px] font-semibold rounded-[11px] hover:opacity-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy flex items-center justify-center gap-2" type="button">
+<svg aria-hidden="true" class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<span class="">Check Visa Requirements</span>
+</button>
+</div>
+</div>
+<p class="text-[12px] text-brand-muted mt-4">Vacatina assists with application checklists, documentation pre-checks and appointment booking.</p>
+</div></div>
+<div aria-labelledby="tab-packages" class="search-panel hidden" id="panel-packages" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Curated holiday package search.</p></div>
+<div aria-labelledby="tab-cars" class="search-panel hidden" id="panel-cars" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Airport transfers and car hire.</p></div>
+<div aria-labelledby="tab-rails" class="search-panel hidden" id="panel-rails" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Train and rail connections.</p></div>
+<div aria-labelledby="tab-cruises" class="search-panel hidden" id="panel-cruises" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Cruises and sea voyages.</p></div>
+<div aria-labelledby="tab-activities" class="search-panel hidden" id="panel-activities" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Destination activities and experiences.</p></div>
+<div aria-labelledby="tab-sightseeing" class="search-panel hidden" id="panel-sightseeing" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Sightseeing and guided tours.</p></div>
+<div aria-labelledby="tab-insurance" class="search-panel hidden" id="panel-insurance" role="tabpanel"><p class="p-6 text-sm text-brand-muted text-center">Travel protection and insurance quotes.</p></div>
+</div>
+</section>
+<!-- ================= 4. POPULAR FLIGHTS DISCOVERY SECTION (NEW HOMEPAGE SECTION) ================= -->
+<section aria-labelledby="popular-flights-heading" class="max-w-[1320px] mx-auto px-4 sm:px-6 xl:px-8 py-8 sm:py-12 pb-24" id="popular-flights-section">
+<!-- Header Row -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
+<div class="max-w-2xl">
+<span class="text-[11px] font-semibold uppercase tracking-wider text-brand-muted font-interface block mb-1.5">POPULAR FLIGHTS</span>
+<h2 class="text-2xl sm:text-3xl font-bold text-brand-black font-headline tracking-tight" id="popular-flights-heading">Popular routes from Colombo</h2>
+<p class="text-[13px] sm:text-[14px] text-brand-muted font-interface mt-1 leading-relaxed">Explore popular international routes and compare available flight options for your trip.</p>
+</div>
+<!-- Filters + Secondary Link -->
+<div class="flex flex-wrap items-center gap-3 sm:gap-5 flex-shrink-0">
+<div aria-label="Route region filters" class="bg-brand-dim border border-brand-border p-1 rounded-full flex items-center gap-1 overflow-x-auto custom-scroll" id="popular-filter-pills" role="radiogroup">
+<button aria-checked="true" class="filter-pill bg-brand-navy text-white rounded-full px-4 py-2 min-h-[40px] text-[12px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterPopularRoutes('all', this)" role="radio" type="button">All</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterPopularRoutes('middle-east', this)" role="radio" type="button">Middle East</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterPopularRoutes('asia', this)" role="radio" type="button">Asia</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterPopularRoutes('europe', this)" role="radio" type="button">Europe</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterPopularRoutes('islands', this)" role="radio" type="button">Islands</button>
+</div>
+<button class="text-brand-navy font-semibold text-[13px] sm:text-[14px] inline-flex items-center gap-1.5 hover:underline whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy rounded-lg p-1 min-h-[44px]" onclick="viewAllFlights()" type="button">
+<span class="">View all flights</span>
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<!-- 4-Card Responsive Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="popular-flights-grid">
+<!-- Card 1: Dubai (Middle East) -->
+<article class="popular-flight-card bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-region="middle-east">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="Dubai skyline with Burj Khalifa during warm golden hour" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1XcksTvqtlu18lpEDsMdMkkAIqC9Gr7lqu1qOPlwVu3Zx3kiZ16R1HG2-m3zf5vFItF7EVYOANdzh1jYC5TCLGSaVtYfH_VrW56C8coR-3ziUSdi7uNYMaKV0AP0dfc3mpA_wNtXJF2HJB0HUl9qauDzN8BTdsx4_mKprJqzfQb7bltKMTsOPbpBkmxY6RSHTt-g5Ym2TvBqEggjLSB8zVYRuLxfet_0o3bQntmxhIPauXe-4i9-TK3Nvg">
+<button aria-label="Save Colombo to Dubai route to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'Colombo to Dubai')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">CMB → DXB</span>
+<span class="text-brand-muted font-normal lowercase">direct options</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">Dubai, United Arab Emirates</h3>
+<p class="text-[12px] text-brand-muted font-interface mt-1">Approx. 4h 35m flight duration · Regular weekly connections</p>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 92,500*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample fare. Final price depends on travel dates, availability and selected fare conditions.</p>
+</div>
+<button aria-label="View flights for Colombo to Dubai" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectPopularRoute('CMB', 'DXB', 'Dubai (DXB) - Dubai International')" type="button">
+              View Flights
+            </button>
+</div>
+</div>
+</article>
+<!-- Card 2: Maldives (Islands) -->
+<article class="popular-flight-card bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-region="islands">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="Tropical clear turquoise lagoon and overwater bungalows in Maldives" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VuM95pYcbxoWMimWKWByjE4-PxfH3FotU45u2DT5IyGZ1PhbQCQZ-BZUW93c2Jqj4zTc2sRL6TMevRVMSdSxenPLVptccN_MprzSnP_kg32Msv8xlzqOsCz35QMb9xdpJCxtwpPGLx_ngC7V6GQHsetZjAxfUfBr_R0fZCcNebF8mzhsU8CXCuKdgUHqhBCrA4zddeWPNYNHKFTabCDP9RyKyNqPJnKxlTTFB_Of4dF--4xbJgOrQ5ie-i">
+<button aria-label="Save Colombo to Maldives route to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'Colombo to Maldives')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">CMB → MLE</span>
+<span class="text-brand-muted font-normal lowercase">short haul</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">Malé, Maldives</h3>
+<p class="text-[12px] text-brand-muted font-interface mt-1">Approx. 1h 25m flight duration · Daily direct connections</p>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 68,000*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample fare. Final price depends on travel dates, availability and selected fare conditions.</p>
+</div>
+<button aria-label="View flights for Colombo to Malé" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectPopularRoute('CMB', 'MLE', 'Male (MLE) - Velana International')" type="button">
+              View Flights
+            </button>
+</div>
+</div>
+</article>
+<!-- Card 3: Bangkok (Asia) -->
+<article class="popular-flight-card bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-region="asia">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="Wat Arun historic temple across river at dusk in Bangkok" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Xq2s7eDgY3C_xzQbbKwd4BxLPGLm_CJIfw9ZndPSfVxP6fO4V-v0yZOz1PJyH5_sXr9hKJb3TPWv2irre6M8gbZ-ImchkoWXCB8dDMNY-bjsmooa5R21OdrGv6mSiydkGmpOWlGeaO-Gdsst3ud28mjQmVnDClY5irHipF6DGieFgsVmTRdOlTKXWG-GJ0_g_hpEAc8yFM23adUYNS5SpmAuq4XzmypnNFdNifxltXn1wWR0fRme401Kys">
+<button aria-label="Save Colombo to Bangkok route to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'Colombo to Bangkok')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">CMB → BKK</span>
+<span class="text-brand-muted font-normal lowercase">regional</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">Bangkok, Thailand</h3>
+<p class="text-[12px] text-brand-muted font-interface mt-1">Approx. 3h 30m flight duration · Multiple airline choices</p>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 84,200*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample fare. Final price depends on travel dates, availability and selected fare conditions.</p>
+</div>
+<button aria-label="View flights for Colombo to Bangkok" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectPopularRoute('CMB', 'BKK', 'Bangkok (BKK) - Suvarnabhumi Airport')" type="button">
+              View Flights
+            </button>
+</div>
+</div>
+</article>
+<!-- Card 4: London (Europe) -->
+<article class="popular-flight-card bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-region="europe">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="London Palace of Westminster and River Thames on clear day" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Vn060YPDM94hVEjlYErjMjcatIlgOZlo2nKrSmzryf7W_nYixdK3sG4uHji6SgMUhNGDkdngXJ76ELVLgQ2OVRnpa0MDu1wB4ctN2MSXxNkPbI6eTZzcC9ov-YklrkYLui18kZd5P91zMo3CAWQTiEVAstfr_OeYRW0xNXbFNhsIZCeNWuCB63MbKBvU3BDHg7sC8wgqhXBr-QsfJY6W5kJjR6QhRxP6nQFk2wPnUSmYExz8qKtizuoglG">
+<button aria-label="Save Colombo to London route to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'Colombo to London')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">CMB → LHR</span>
+<span class="text-brand-muted font-normal lowercase">long haul</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">London, United Kingdom</h3>
+<p class="text-[12px] text-brand-muted font-interface mt-1">Approx. 11h 15m flight duration · Direct and 1-stop options</p>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 248,500*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample fare. Final price depends on travel dates, availability and selected fare conditions.</p>
+</div>
+<button aria-label="View flights for Colombo to London" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectPopularRoute('CMB', 'LHR', 'London (LHR) - Heathrow Airport')" type="button">
+              View Flights
+            </button>
+</div>
+</div>
+</article>
+</div>
+</section><section aria-labelledby="visa-assistance-heading" class="max-w-[1320px] mx-auto px-4 sm:px-6 xl:px-8 py-12 pb-24 border-t border-brand-border" id="visa-assistance-section">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
+<div class="max-w-2xl">
+<span class="text-[11px] font-semibold uppercase tracking-wider text-brand-muted font-interface block mb-1.5">VISA ASSISTANCE</span>
+<h2 class="text-2xl sm:text-3xl font-bold text-brand-black font-headline tracking-tight" id="visa-assistance-heading">Visa support for your journey</h2>
+<p class="text-[13px] sm:text-[14px] text-brand-muted font-interface mt-1 leading-relaxed">Explore visa assistance services for popular destinations and understand the next steps before you travel.</p>
+</div>
+<div class="flex flex-wrap items-center gap-3 sm:gap-5 flex-shrink-0">
+<div aria-label="Visa destination filters" class="bg-brand-dim border border-brand-border p-1 rounded-full flex items-center gap-1 overflow-x-auto custom-scroll" id="visa-filter-pills" role="radiogroup">
+<button aria-checked="true" class="filter-pill bg-brand-navy text-white rounded-full px-4 py-2 min-h-[40px] text-[12px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterVisaDestinations('all', this)" role="radio" type="button">All</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterVisaDestinations('middle-east', this)" role="radio" type="button">Middle East</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterVisaDestinations('asia', this)" role="radio" type="button">Asia</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterVisaDestinations('europe', this)" role="radio" type="button">Europe</button>
+<button aria-checked="false" class="filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="filterVisaDestinations('popular', this)" role="radio" type="button">Popular</button>
+</div>
+<button class="text-brand-navy font-semibold text-[13px] sm:text-[14px] inline-flex items-center gap-1.5 hover:underline whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy rounded-lg p-1 min-h-[44px]" onclick="switchToSearchTab('visa', true);" type="button">
+<span class="">View all visa services</span>
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="visa-assistance-grid">
+<!-- Card 1: UAE -->
+<article class="bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-visa-region="middle-east popular">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="Modern Dubai skyline and architecture at sunrise" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1XcksTvqtlu18lpEDsMdMkkAIqC9Gr7lqu1qOPlwVu3Zx3kiZ16R1HG2-m3zf5vFItF7EVYOANdzh1jYC5TCLGSaVtYfH_VrW56C8coR-3ziUSdi7uNYMaKV0AP0dfc3mpA_wNtXJF2HJB0HUl9qauDzN8BTdsx4_mKprJqzfQb7bltKMTsOPbpBkmxY6RSHTt-g5Ym2TvBqEggjLSB8zVYRuLxfet_0o3bQntmxhIPauXe-4i9-TK3Nvg">
+<button aria-label="Save United Arab Emirates Visa Assistance to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'UAE Visa')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">United Arab Emirates</span>
+<span class="text-brand-muted font-normal lowercase">tourist &amp; visit</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">Tourist &amp; Visit Visa Guidance</h3>
+<ul class="mt-2.5 space-y-1.5 text-[12px] text-brand-muted font-interface">
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Custom document checklist</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Application form review</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Express processing guidance</span></li>
+</ul>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 38,500*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample service fee. Final eligibility and approval are determined by immigration authorities.</p>
+</div>
+<button aria-label="View Visa Details for United Arab Emirates" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectVisaDestination('United Arab Emirates');" type="button">
+              View Visa Details
+            </button>
+</div>
+</div>
+</article>
+<!-- Card 2: United Kingdom -->
+<article class="bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-visa-region="europe popular">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="Historic London Palace of Westminster and river" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Vn060YPDM94hVEjlYErjMjcatIlgOZlo2nKrSmzryf7W_nYixdK3sG4uHji6SgMUhNGDkdngXJ76ELVLgQ2OVRnpa0MDu1wB4ctN2MSXxNkPbI6eTZzcC9ov-YklrkYLui18kZd5P91zMo3CAWQTiEVAstfr_OeYRW0xNXbFNhsIZCeNWuCB63MbKBvU3BDHg7sC8wgqhXBr-QsfJY6W5kJjR6QhRxP6nQFk2wPnUSmYExz8qKtizuoglG">
+<button aria-label="Save United Kingdom Visa Assistance to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'UK Visa')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">United Kingdom</span>
+<span class="text-brand-muted font-normal lowercase">standard visitor</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">Standard Visitor Visa Guidance</h3>
+<ul class="mt-2.5 space-y-1.5 text-[12px] text-brand-muted font-interface">
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Document checklist &amp; audit</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">VFS appointment support</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Financial documentation review</span></li>
+</ul>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 48,000*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample service fee. Final eligibility and approval are determined by immigration authorities.</p>
+</div>
+<button aria-label="View Visa Details for United Kingdom" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectVisaDestination('United Kingdom');" type="button">
+              View Visa Details
+            </button>
+</div>
+</div>
+</article>
+<!-- Card 3: Thailand -->
+<article class="bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-visa-region="asia popular">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="Wat Arun historic riverside temple in Bangkok" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Xq2s7eDgY3C_xzQbbKwd4BxLPGLm_CJIfw9ZndPSfVxP6fO4V-v0yZOz1PJyH5_sXr9hKJb3TPWv2irre6M8gbZ-ImchkoWXCB8dDMNY-bjsmooa5R21OdrGv6mSiydkGmpOWlGeaO-Gdsst3ud28mjQmVnDClY5irHipF6DGieFgsVmTRdOlTKXWG-GJ0_g_hpEAc8yFM23adUYNS5SpmAuq4XzmypnNFdNifxltXn1wWR0fRme401Kys">
+<button aria-label="Save Thailand Visa Assistance to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'Thailand Visa')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">Thailand</span>
+<span class="text-brand-muted font-normal lowercase">tourist visa</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">Tourist Visa Guidance</h3>
+<ul class="mt-2.5 space-y-1.5 text-[12px] text-brand-muted font-interface">
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Application form validation</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Embassy requirements review</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Submission timing guidance</span></li>
+</ul>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 22,500*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample service fee. Final eligibility and approval are determined by immigration authorities.</p>
+</div>
+<button aria-label="View Visa Details for Thailand" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectVisaDestination('Thailand');" type="button">
+              View Visa Details
+            </button>
+</div>
+</div>
+</article>
+<!-- Card 4: Singapore -->
+<article class="bg-white rounded-2xl border border-brand-border flex flex-col justify-between overflow-hidden hover:border-brand-navy/40 hover:shadow-md transition duration-200" data-visa-region="asia popular">
+<div class="relative h-48 overflow-hidden bg-brand-surface flex-shrink-0">
+<img alt="Singapore Marina Bay skyline with Marina Bay Sands and waterfront architecture" class="w-full h-full object-cover" src="https://static.independent.co.uk/2020/10/23/17/singapore.jpg">
+<button aria-label="Save Singapore Visa Assistance to Favorites" aria-pressed="false" class="absolute top-3 right-3 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/95 border border-brand-border shadow-sm flex items-center justify-center text-brand-muted hover:text-brand-navy transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleSaveRoute(this, 'Singapore Visa')" type="button">
+<svg aria-hidden="true" class="w-[18px] h-[18px] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[11px] font-semibold text-brand-navy uppercase tracking-wider mb-1">
+<span class="">Singapore</span>
+<span class="text-brand-muted font-normal lowercase">entry &amp; e-visa</span>
+</div>
+<h3 class="text-[17px] font-bold text-brand-black font-headline leading-snug">Entry &amp; e-Visa Guidance</h3>
+<ul class="mt-2.5 space-y-1.5 text-[12px] text-brand-muted font-interface">
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">SG Arrival Card walkthrough</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">e-Visa eligibility check</span></li>
+<li class="flex items-center gap-1.5"><svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="">Entry requirements verification</span></li>
+</ul>
+</div>
+<div class="pt-4 mt-4 border-t border-brand-border">
+<div class="mb-3">
+<span class="text-[10px] text-brand-muted block uppercase tracking-wider font-semibold">From</span>
+<div class="text-[18px] font-bold text-brand-navy font-headline tabular-nums leading-tight">LKR 26,000*</div>
+<p class="text-[10px] text-brand-muted mt-0.5 leading-snug">Sample service fee. Final eligibility and approval are determined by immigration authorities.</p>
+</div>
+<button aria-label="View Visa Details for Singapore" class="w-full bg-brand-navy hover:bg-[#150f50] text-white text-[13px] font-semibold min-h-[44px] py-2.5 px-4 rounded-xl font-interface transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="selectVisaDestination('Singapore');" type="button">
+              View Visa Details
+            </button>
+</div>
+</div>
+</article>
+</div>
+<!-- Advisory Callout -->
+<div class="mt-8 p-4 rounded-xl bg-brand-surface border border-brand-border flex items-start gap-3">
+<svg aria-hidden="true" class="w-5 h-5 text-brand-navy flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="8"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+<p class="text-[12px] sm:text-[13px] text-brand-muted font-interface leading-relaxed">
+<strong class="text-brand-black font-semibold">Important Notice:</strong> Visa eligibility, processing requirements and final approval are determined by the relevant immigration authority. Vacatina provides application assistance and document guidance.
+      </p>
+</div>
+</section>
+</main>
+<!-- 5. COMPACT TRIP BUCKET (Semantic Desktop Dock Button) -->
+<button aria-controls="trip-bucket-drawer" aria-expanded="false" aria-label="Open Trip Overview: 3 items, ready items estimate LKR 505,000" class="fixed bottom-5 right-5 z-30 hidden sm:flex items-center gap-4 bg-white border border-brand-border rounded-2xl shadow-xl px-4 py-3 max-w-[460px] border-l-4 border-l-brand-navy transition-all duration-200 text-left hover:border-brand-muted focus:outline-none focus:ring-2 focus:ring-brand-navy" data-scroll-hidden="false" id="floating-summary-dock" onclick="openTripBucket()" style="width: min(460px, -40px + 100vw);" type="button">
+<div class="flex-1 min-w-0">
+<div class="font-headline font-bold text-[14px]">Your Trip · 3</div>
+<div class="text-[12px] my-1">2 ready · 1 needs action</div>
+<div class="text-[13px] font-bold text-brand-navy tabular-nums">Ready estimate: LKR 505,000</div>
+</div>
+<span class="flex-shrink-0 bg-brand-navy text-white text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:opacity-95 transition-opacity whitespace-nowrap">Review Trip</span>
+</button>
+<!-- MOBILE STICKY BOTTOM TRIP BUCKET BAR -->
+<aside class="fixed bottom-0 left-0 right-0 z-30 sm:hidden bg-white border-t border-brand-border px-4 py-3 flex items-center justify-between shadow-lg" data-scroll-hidden="false" id="mobile-summary-bar">
+<div class="flex flex-col">
+<span class="text-[12px] font-semibold">Trip · 3 · 1 needs action</span>
+<span class="text-[14px] font-bold text-brand-navy tabular-nums">Ready estimate: LKR 505,000</span>
+</div>
+<button class="bg-brand-navy text-white text-[13px] font-semibold px-4 min-h-[44px] rounded-xl flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap" onclick="openTripBucket()" type="button">
+<span class="">Review Trip</span>
+</button>
+</aside>
+<!-- TRIP BUCKET OVERLAY DRAWER -->
+<div aria-hidden="true" class="fixed inset-0 bg-black/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" id="trip-bucket-backdrop" onclick="closeTripBucket()"></div>
+<div aria-hidden="true" aria-label="Your Trip" aria-modal="true" class="fixed inset-y-0 right-0 z-50 w-full sm:w-[460px] bg-white shadow-2xl flex flex-col transform translate-x-full pointer-events-none transition-transform duration-300 ease-in-out border-l border-brand-border" id="trip-bucket-drawer" inert="" role="dialog">
+<div class="px-5 py-4 border-b border-brand-border bg-white flex items-center justify-between flex-shrink-0">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline font-bold text-[19px] text-brand-black tracking-tight leading-snug" id="trip-bucket-title">Your Trip (3 items)</h2>
+</div>
+<p class="font-interface text-[12px] text-brand-muted font-medium mt-0.5 tabular-nums">CMB → LHR · 12 Nov – 27 Nov 2026 · 1 Adult</p>
+</div>
+<button aria-label="Close Trip Bucket drawer" class="p-2 rounded-lg text-brand-muted hover:text-brand-black hover:bg-brand-dim transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy flex-shrink-0" id="trip-bucket-close" onclick="closeTripBucket()" type="button">
+<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scroll bg-brand-surface" id="drawer-items-container">
+<article class="bg-white border border-brand-border rounded-xl p-4 shadow-sm" data-kind="flight" data-price="248500" data-state="ready">
+<div class="flex items-start justify-between gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-brand-dim text-brand-navy flex-shrink-0 whitespace-nowrap">FLIGHT</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-brand-success border border-emerald-200 flex-shrink-0 whitespace-nowrap">
+<svg aria-hidden="true" class="w-3 h-3 text-brand-success flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<span class="">Ready</span>
+</span>
+</div>
+<h3 class="font-headline font-bold text-[15px] text-brand-black leading-snug">Colombo (CMB) → London (LHR)</h3>
+<p class="text-[12px] text-brand-muted mt-0.5">Example Airline · Economy Flex · Thu, 12 Nov 2026</p>
+<div class="mt-3 pt-3 border-t border-brand-border flex items-center justify-between gap-3">
+<div class="min-w-0"><span class="text-[10px] font-medium text-brand-muted block">Policy</span><span class="text-[11px] text-brand-black font-medium block truncate">Change fee may apply</span></div>
+<div class="text-right flex-shrink-0"><span class="text-[10px] font-medium text-brand-muted block whitespace-nowrap">Sample price</span><span class="font-headline font-bold text-[15px] text-brand-black tabular-nums whitespace-nowrap">LKR 248,500</span></div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-brand-border flex items-center justify-between text-[12px]">
+<button aria-expanded="false" class="font-semibold text-brand-navy hover:underline focus:outline-none whitespace-nowrap" type="button">View details</button>
+<button class="text-brand-muted hover:text-brand-black focus:outline-none whitespace-nowrap" type="button">Remove</button>
+</div>
+</article>
+<article class="bg-white border border-brand-border rounded-xl p-4 shadow-sm" data-kind="hotel" data-price="256500" data-state="ready">
+<div class="flex items-start justify-between gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-brand-dim text-brand-navy flex-shrink-0 whitespace-nowrap">HOTEL</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-brand-success border border-emerald-200 flex-shrink-0 whitespace-nowrap">
+<svg aria-hidden="true" class="w-3 h-3 text-brand-success flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<span class="">Ready</span>
+</span>
+</div>
+<h3 class="font-headline font-bold text-[15px] text-brand-black leading-snug">Example London Hotel · Deluxe King Room</h3>
+<p class="text-[12px] text-brand-muted mt-0.5 tabular-nums">12 Nov – 16 Nov 2026 · 1 Room · 1 Adult</p>
+<div class="mt-3 pt-3 border-t border-brand-border flex items-center justify-between gap-3">
+<div class="min-w-0"><span class="text-[10px] font-medium text-brand-muted block">Policy</span><span class="text-[11px] text-brand-success font-semibold block truncate">Free cancellation until 09 Nov</span></div>
+<div class="text-right flex-shrink-0"><span class="text-[10px] font-medium text-brand-muted block whitespace-nowrap">Sample price</span><span class="font-headline font-bold text-[15px] text-brand-black tabular-nums whitespace-nowrap">LKR 256,500</span></div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-brand-border flex items-center justify-between text-[12px] flex-wrap gap-2">
+<button aria-expanded="false" class="font-semibold text-brand-navy hover:underline focus:outline-none whitespace-nowrap" type="button">View details</button>
+<button class="min-h-[44px] px-3 py-2 text-[13px] font-semibold text-brand-navy rounded-lg focus:ring-2 focus:ring-brand-navy" type="button">Change room</button>
+<button class="text-brand-muted hover:text-brand-black focus:outline-none whitespace-nowrap" type="button">Remove</button>
+</div>
+</article>
+<article class="bg-white border border-brand-warning/40 rounded-xl p-4 shadow-sm" data-kind="visa" data-price="45000" data-state="needsAction">
+<div class="flex items-start justify-between gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-brand-dim text-brand-navy flex-shrink-0 whitespace-nowrap">VISA ASSISTANCE</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-brand-warning border border-amber-200 flex-shrink-0 whitespace-nowrap">
+<svg aria-hidden="true" class="w-3 h-3 text-brand-warning flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="8"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+<span class="">Needs action</span>
+</span>
+</div>
+<h3 class="font-headline font-bold text-[15px] text-brand-black leading-snug">United Kingdom · 1 Traveler</h3>
+<p class="text-[12px] text-brand-warning font-medium mt-0.5">Complete applicant details before checkout.</p>
+<div class="mt-3 pt-3 border-t border-brand-border flex items-center justify-between gap-3">
+<div class="min-w-0"><span class="text-[10px] font-medium text-brand-muted block">Status</span><span class="text-[11px] text-brand-black font-medium block truncate">Pending Document Review</span></div>
+<div class="text-right flex-shrink-0"><span class="text-[10px] font-medium text-brand-muted block whitespace-nowrap">Sample fee · excluded</span><span class="font-headline font-bold text-[15px] text-brand-black tabular-nums whitespace-nowrap">LKR 45,000</span></div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-brand-border flex items-center justify-between text-[12px]">
+<button class="font-semibold text-brand-navy hover:underline focus:outline-none whitespace-nowrap" type="button">Complete details</button>
+<button class="text-brand-muted hover:text-brand-black focus:outline-none whitespace-nowrap" type="button">Remove</button>
+</div>
+</article>
+</div>
+<div class="p-5 border-t border-brand-border bg-white flex-shrink-0">
+<div class="space-y-1.5 mb-3 text-[13px]">
+<div class="flex justify-between gap-3 text-[13px]"><span class="">FLIGHT · Ready</span><span class="tabular-nums font-semibold">LKR 248,500</span></div>
+<div class="flex justify-between gap-3 text-[13px]"><span class="">HOTEL · Ready</span><span class="tabular-nums font-semibold">LKR 256,500</span></div>
+<div class="flex justify-between gap-3 pt-3 border-t border-brand-border text-brand-navy font-bold" id="ready-trip-subtotal"><span class="">Ready items subtotal</span><span class="tabular-nums">LKR 505,000</span></div>
+</div>
+<div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-brand-warning text-[12px] font-medium mb-4 flex items-center gap-2">1 item needs action before checkout can proceed. Incomplete items are excluded.</div>
+<button class="w-full py-3.5 bg-brand-navy text-white text-[14px] font-semibold rounded-xl hover:opacity-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2" type="button">Review Trip</button>
+<p class="text-[12px] text-brand-muted my-3">Example trip and sample prices. Prices and availability are refreshed from connected inventory sources before booking.</p>
+</div>
+</div>
+<!-- MOBILE NAVIGATION DRAWER -->
+<div aria-hidden="true" class="fixed inset-0 bg-black/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" id="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+<div aria-hidden="true" aria-label="Navigation Menu" aria-modal="true" class="fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-white shadow-2xl flex flex-col transform -translate-x-full pointer-events-none transition-transform duration-300 ease-in-out border-r border-brand-border" id="mobile-nav-drawer" inert="" role="dialog">
+<div class="p-4 border-b border-brand-border flex items-center justify-between flex-shrink-0">
+<div class="flex items-center gap-2">
+<svg aria-hidden="true" class="w-5 h-5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
+<span class="font-headline font-extrabold text-[18px] text-brand-navy leading-none">vacatina</span>
+</div>
+<button aria-label="Close navigation menu" class="p-2 rounded-lg text-brand-muted hover:text-brand-black hover:bg-brand-dim transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="mobile-nav-close" onclick="closeMobileNav()" type="button">
+<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<nav class="flex-1 overflow-y-auto p-4 space-y-1 text-[14px] font-medium text-brand-black custom-scroll">
+<div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider px-3 mb-1.5">Services</div>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors font-semibold text-brand-navy" href="#" onclick="closeMobileNav();">Home</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('flights', true);">Flights</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('hotels', true);">Hotels</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('cars', true);">Cars &amp; Transfers</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('rails', true);">Rails</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('cruises', true);">Cruises</a>
+<div class="my-2 border-t border-brand-border"></div>
+<div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider px-3 mb-1.5">More</div>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('activities', true);">Activities</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('visa', true);">Visa Assistance</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('sightseeing', true);">Sightseeing Tours</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('packages', true);">Holiday Packages</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('insurance', true);">Travel Insurance</a>
+<a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-navy font-semibold" href="#" onclick="closeMobileNav(); switchToSearchTab('bundle', true);">Build Your Bundle</a>
+</nav>
+</div>
+<!-- SCRIPTS & INTERACTION LOGIC -->
+<script>
+  function switchToSearchTab(tabName, focusTab = false) {
+    const tabs = document.querySelectorAll('.search-tab');
+    const panels = document.querySelectorAll('.search-panel');
+    tabs.forEach(tab => {
+      const isTarget = tab.id === 'tab-' + tabName;
+      tab.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+      tab.setAttribute('tabindex', isTarget ? '0' : '-1');
+      if (isTarget) {
+        tab.className = 'search-tab bg-brand-navy text-white text-[12px] sm:text-[13px] font-semibold px-2 sm:px-2.5 xl:px-2.5 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors';
+        if (focusTab) tab.focus();
+      } else {
+        tab.className = 'search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy';
+      }
+    });
+    panels.forEach(panel => {
+      if (panel.id === 'panel-' + tabName) {
+        panel.classList.remove('hidden');
+        panel.classList.add('block');
+      } else {
+        panel.classList.remove('block');
+        panel.classList.add('hidden');
+      }
+    });
+  }
+
+  function swapFields(fromId, toId) {
+    const fromEl = document.getElementById(fromId);
+    const toEl = document.getElementById(toId);
+    if (fromEl && toEl) {
+      const temp = fromEl.value;
+      fromEl.value = toEl.value;
+      toEl.value = temp;
+    }
+  }
+
+  function openTripBucket() {
+    const drawer = document.getElementById('trip-bucket-drawer');
+    const backdrop = document.getElementById('trip-bucket-backdrop');
+    const trigger = document.getElementById('trip-bucket-trigger');
+    const dock = document.getElementById('floating-summary-dock');
+    if (drawer && backdrop) {
+      drawer.classList.remove('translate-x-full', 'pointer-events-none');
+      drawer.removeAttribute('inert');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      drawer.setAttribute('aria-hidden', 'false');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      if (dock) dock.classList.add('hidden');
+      document.body.style.overflow = 'hidden';
+      const closeBtn = document.getElementById('trip-bucket-close');
+      if (closeBtn) closeBtn.focus();
+    }
+  }
+
+  function closeTripBucket() {
+    const drawer = document.getElementById('trip-bucket-drawer');
+    const backdrop = document.getElementById('trip-bucket-backdrop');
+    const trigger = document.getElementById('trip-bucket-trigger');
+    const dock = document.getElementById('floating-summary-dock');
+    if (drawer && backdrop) {
+      drawer.classList.add('translate-x-full', 'pointer-events-none');
+      drawer.setAttribute('inert', '');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      drawer.setAttribute('aria-hidden', 'true');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      if (dock) dock.classList.remove('hidden');
+      document.body.style.overflow = '';
+      if (trigger) trigger.focus();
+    }
+  }
+
+  function openMobileNav() {
+    const nav = document.getElementById('mobile-nav-drawer');
+    const backdrop = document.getElementById('mobile-nav-backdrop');
+    const toggle = document.getElementById('mobile-nav-toggle');
+    const closeBtn = document.getElementById('mobile-nav-close');
+    if (nav && backdrop) {
+      nav.classList.remove('-translate-x-full', 'pointer-events-none');
+      nav.removeAttribute('inert');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      nav.setAttribute('aria-hidden', 'false');
+      if (toggle) toggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      if (closeBtn) closeBtn.focus();
+    }
+  }
+
+  function closeMobileNav() {
+    const nav = document.getElementById('mobile-nav-drawer');
+    const backdrop = document.getElementById('mobile-nav-backdrop');
+    const toggle = document.getElementById('mobile-nav-toggle');
+    if (nav && backdrop) {
+      nav.classList.add('-translate-x-full', 'pointer-events-none');
+      nav.setAttribute('inert', '');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      nav.setAttribute('aria-hidden', 'true');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      if (toggle) toggle.focus();
+    }
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.add('hidden'));
+    document.querySelectorAll('.dropdown-toggle').forEach(t => t.setAttribute('aria-expanded', 'false'));
+  }
+
+  document.querySelectorAll('.dropdown-toggle').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const menuId = btn.getAttribute('aria-controls');
+      const menu = document.getElementById(menuId);
+      if (!menu) return;
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      closeAllDropdowns();
+      if (!isExpanded) {
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-item')) {
+      closeAllDropdowns();
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeAllDropdowns();
+      closeTripBucket();
+      closeMobileNav();
+    }
+  });
+
+  // POPULAR FLIGHTS DISCOVERY INTERACTIONS
+  function filterPopularRoutes(region, buttonElement) {
+    const filterButtons = document.querySelectorAll('#popular-filter-pills .filter-pill');
+    filterButtons.forEach(btn => {
+      const isActive = btn === buttonElement;
+      btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+      if (isActive) {
+        btn.className = 'filter-pill bg-brand-navy text-white rounded-full px-4 py-2 min-h-[40px] text-[12px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy';
+      } else {
+        btn.className = 'filter-pill text-brand-muted hover:bg-white hover:text-brand-black px-4 py-2 min-h-[40px] text-[12px] font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy';
+      }
+    });
+
+    const cards = document.querySelectorAll('#popular-flights-grid .popular-flight-card');
+    cards.forEach(card => {
+      const cardRegion = card.getAttribute('data-region');
+      if (region === 'all' || cardRegion === region) {
+        card.classList.remove('hidden');
+        card.classList.add('flex');
+      } else {
+        card.classList.add('hidden');
+        card.classList.remove('flex');
+      }
+    });
+  }
+
+  function selectPopularRoute(fromCode, toCode, destinationLabel) {
+    switchToSearchTab('flights', true);
+    const fromEl = document.getElementById('flight-from');
+    const toEl = document.getElementById('flight-to');
+    if (fromEl) fromEl.value = 'Colombo (CMB) - Bandaranaike';
+    if (toEl) toEl.value = destinationLabel;
+    const searchCenter = document.getElementById('search-command-center');
+    if (searchCenter) {
+      searchCenter.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (toEl) {
+      setTimeout(() => toEl.focus(), 350);
+    }
+  }
+
+  function viewAllFlights() {
+    switchToSearchTab('flights', true);
+    const fromEl = document.getElementById('flight-from');
+    const toEl = document.getElementById('flight-to');
+    if (fromEl) fromEl.value = 'Colombo (CMB) - Bandaranaike';
+    if (toEl) {
+      toEl.value = '';
+      toEl.placeholder = 'Where to? City or Airport';
+    }
+    const searchCenter = document.getElementById('search-command-center');
+    if (searchCenter) {
+      searchCenter.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (toEl) {
+      setTimeout(() => toEl.focus(), 350);
+    }
+  }
+
+  function toggleSaveRoute(btn, routeName) {
+    const isPressed = btn.getAttribute('aria-pressed') === 'true';
+    const newPressed = !isPressed;
+    btn.setAttribute('aria-pressed', newPressed ? 'true' : 'false');
+    const svg = btn.querySelector('svg');
+    if (newPressed) {
+      btn.setAttribute('aria-label', 'Remove ' + routeName + ' from Favorites');
+      if (svg) {
+        svg.setAttribute('fill', '#1B1464');
+        svg.classList.remove('text-brand-muted');
+        svg.classList.add('text-brand-navy');
+      }
+      btn.classList.add('border-brand-navy');
+    } else {
+      btn.setAttribute('aria-label', 'Save ' + routeName + ' route to Favorites');
+      if (svg) {
+        svg.setAttribute('fill', 'none');
+        svg.classList.remove('text-brand-navy');
+        svg.classList.add('text-brand-muted');
+      }
+      btn.classList.remove('border-brand-navy');
+    }
+  }
+
+  // Scroll direction detection for floating dock
+  (function initScrollBehavior() {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    function updateDock() {
+      const currentScrollY = window.scrollY;
+      const dock = document.getElementById('floating-summary-dock');
+      const mobileBar = document.getElementById('mobile-summary-bar');
+      const drawer = document.getElementById('trip-bucket-drawer');
+      const isDrawerOpen = drawer && drawer.getAttribute('aria-hidden') === 'false';
+      if (isDrawerOpen) return;
+
+      if (currentScrollY > 120 && currentScrollY > lastScrollY + 8) {
+        if (dock) dock.setAttribute('data-scroll-hidden', 'true');
+        if (mobileBar) mobileBar.setAttribute('data-scroll-hidden', 'true');
+      } else if (currentScrollY < lastScrollY - 8 || currentScrollY <= 80) {
+        if (dock) dock.setAttribute('data-scroll-hidden', 'false');
+        if (mobileBar) mobileBar.setAttribute('data-scroll-hidden', 'false');
+      }
+      lastScrollY = currentScrollY;
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateDock);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
+</script>
+
+
+</body></html>

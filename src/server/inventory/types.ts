@@ -1,0 +1,1700 @@
+/* ============================================================================
+ * Vacatina Unified Inventory System — Canonical Types & Contracts
+ * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md,
+ *            docs/13_SUPPLIER_INTEGRATION_READINESS_MATRIX.md,
+ *            docs/14_CANONICAL_INVENTORY_TAXONOMY_AND_ADMIN_CMS_SCHEMA.md,
+ *            ADR-006, ADR-007 & ADR-008
+ * ============================================================================ */
+
+import { ArchitecturalInvariantViolationError } from '../../lib/domain/architectural-invariants.ts';
+import type { CanonicalRateOption } from './domain/canonical-offer.ts';
+
+export { ArchitecturalInvariantViolationError };
+
+export type TravelProductSlug =
+  | 'flights'
+  | 'hotels'
+  | 'visa'
+  | 'packages'
+  | 'cars'
+  | 'rails'
+  | 'cruises'
+  | 'activities'
+  | 'sightseeing'
+  | 'insurance';
+
+// ----------------------------------------------------------------------------
+// 1. The 7 Orthogonal Canonical Inventory Dimensions (ADR-007 & ADR-008)
+// ----------------------------------------------------------------------------
+
+/**
+ * Dimension 1: Origin/Source Channel
+ */
+export type InventorySource =
+  | 'API'                 // External supplier/GDS/NDC/Bedbank
+  | 'MANUAL'              // Direct manual listing entered via Admin CMS
+  | 'DIRECT_CONTRACT'     // Directly negotiated commercial contract managed in Admin CMS
+  | 'COMPOSITE'           // Multi-component structured holiday package combining API & manual parts
+  | 'MANUAL_INTERNAL'     // Internal operational workflow executed by Vacatina operations staff
+  | 'PARTNER_MANUAL';     // External travel partner managing inventory via Vacatina Extranet
+
+/**
+ * Dimension 2: Listing Archetype & Purpose
+ */
+export type ListingKind =
+  | 'DISCOVERY_CONTENT'  // Marketing cards, destination inspiration, teasers (never directly bookable)
+  | 'SELLABLE_INVENTORY' // Physical inventory (seats, rooms, vehicles, berths)
+  | 'SERVICE'            // Human/operational service (visa assistance, concierge, airport escort)
+  | 'PACKAGE';           // Structured multi-day holiday packages
+
+/**
+ * Dimension 3: Product Composition Architecture
+ */
+export type CompositionType =
+  | 'SINGLE'             // Standalone individual product
+  | 'CURATED_PACKAGE'    // Fixed multi-day itinerary pre-assembled by Vacatina
+  | 'DYNAMIC_BUNDLE';    // Algorithmic or user-assembled multi-product bundle (e.g. flight + hotel)
+
+/**
+ * Dimension 4: Operational Fulfillment Mechanism
+ */
+export type FulfillmentMode =
+  | 'INSTANT'              // Instant electronic issuance upon payment
+  | 'ON_REQUEST'           // Requires supplier / allotment allocation before final confirmation
+  | 'MANUAL_CONFIRMATION'; // Requires manual human document check and consular/concierge review
+
+/**
+ * Dimension 5: Data Environment & Sandbox Isolation
+ */
+export type EnvironmentClass =
+  | 'PRODUCTION' // Live commercial environment
+  | 'SANDBOX'    // Safe test/simulated environment
+  | 'SEED';      // Prototype accelerator / demo data, strictly isolated from checkout
+
+/**
+ * Dimension 6: Commercial Transactability / Sellability
+ */
+export type Sellability =
+  | 'DISCOVERY_ONLY' // Non-purchasable informational teaser; click prefills real search
+  | 'QUOTE_ONLY'     // Requires agent quotation before checkout
+  | 'BOOKABLE';      // Directly purchasable online through Vacatina checkout
+
+/**
+ * Dimension 7: Upstream Provider Integration Lifecycle
+ * 6-Tier Authoritative Lifecycle:
+ * - NOT_CONNECTED: No credentials, no active network connection
+ * - MOCK: In-memory simulation / deterministic fixture
+ * - SANDBOX_CONNECTED: Live sandbox test credentials connected and pinged
+ * - SANDBOX_CERTIFIED: Upstream provider compliance & certification test suite passed in sandbox
+ * - PRODUCTION_CONFIGURED: Production keys configured and validated
+ * - PRODUCTION_LIVE: Commercial contract signed, live credentials active, financial settlement enabled
+ */
+export type ProviderLifecycle =
+  | 'NOT_CONNECTED'
+  | 'MOCK'
+  | 'SANDBOX_CONNECTED'
+  | 'SANDBOX_CERTIFIED'
+  | 'PRODUCTION_CONFIGURED'
+  | 'PRODUCTION_LIVE'
+  // Backward-compatibility aliases for existing subtests and specs
+  | 'PLANNED'
+  | 'SCAFFOLD'
+  | 'INTEGRATION_CANDIDATE'
+  | 'SANDBOX_ACTIVE'
+  | 'CERTIFIED';
+
+/**
+ * Storage & Persistence Lifecycle Architecture
+ */
+export type StorageLifecycle =
+  | 'IN_MEMORY_PROTOTYPE'
+  | 'FILE_BACKED_PROTOTYPE'
+  | 'PERSISTENT_DATABASE';
+
+/**
+ * 5-Tier Integration & Backend Capability Implementation Status (Architecture v2.4):
+ * Governs both external provider integrations and backend capabilities.
+ * - PLANNED: Requirements, schemas, and contracts defined; no adapter or service code exists.
+ * - ADAPTER_SCAFFOLDED: Adapter code boundary, contracts, and fallback mocks implemented; live credentials pending.
+ * - SANDBOX_VERIFIED: Real authenticated sandbox request and response tests passing with live sandbox credentials.
+ * - INTEGRATED: Code, contracts, and end-to-end integration sagas passing automated tests in local/CI environment.
+ * - PRODUCTION_VERIFIED: Production credentials active, live settlement verified, production signed-off.
+ */
+export type ImplementationStatus =
+  | 'PLANNED'
+  | 'SCAFFOLDED'
+  | 'IMPLEMENTED_LOCAL'
+  | 'SANDBOX_VERIFIED'
+  | 'INTEGRATED'
+  | 'PRODUCTION_VERIFIED'
+  // Backward-compatibility aliases
+  | 'ADAPTER_SCAFFOLDED'
+  | 'SANDBOX';
+
+/**
+ * Canonical Trip Bucket Item Readiness States (Screen 04 v1.2 / Architecture v2.4):
+ * Evaluates the readiness of an individual item staged in the Trip Bucket.
+ * Only items with state 'READY' contribute to the checkout subtotal.
+ */
+export type TripItemReadinessState =
+  | 'DRAFT'
+  | 'NEEDS_ACTION'
+  | 'READY'
+  | 'REFRESHING_PRICE'
+  | 'PRICE_CHANGED'
+  | 'RECHECK_REQUIRED'
+  | 'OFFER_EXPIRED'
+  | 'UNAVAILABLE';
+
+/**
+ * Canonical Booking & Checkout Lifecycle States (Architecture v2.4):
+ * Evaluates the transactional saga of an order through pre-checkout hold to confirmed issuance.
+ */
+export type BookingLifecycleState =
+  | 'STAGED'
+  | 'HELD'
+  | 'BOOKING_IN_PROGRESS'
+  | 'CONFIRMED'
+  | 'FAILED'
+  | 'CANCELLED';
+
+/**
+ * Canonical Trip Bucket Aggregate View States:
+ * Governs the aggregate container/drawer experience.
+ */
+export type TripBucketAggregateState =
+  | 'EMPTY'
+  | 'STAGED'
+  | 'READY_FOR_REVIEW';
+
+// ----------------------------------------------------------------------------
+// Canonical Inventory Source Model & Verification Invariants (Architecture v2.0)
+// ----------------------------------------------------------------------------
+
+/**
+ * Authoritative 2-Tier Inventory Source Taxonomy:
+ * Top-Level Source Type: Exactly 4 Provenance Categories
+ * - 'API': External live supplier / GDS / NDC / Bedbank (e.g. Duffel, LiteAPI, Viator)
+ * - 'MANUAL': Vacatina direct commercial inventory, assisted services, or curated packages
+ * - 'HYBRID': Multi-source components (e.g. Flight API + Direct Hotel + Transfer)
+ * - 'SEED': Development, test, demo fixtures & sample cards (Strictly non-sellable)
+ */
+export type TopLevelInventorySource = 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+
+/**
+ * Secondary Subtypes for fine-grained provenance:
+ * - For MANUAL:
+ *   - 'DIRECT_CONTRACT': Directly negotiated commercial agreements (hotels, chauffeur, villas)
+ *   - 'MANUAL_SERVICE': In-house Vacatina operational service (consular visa assistance, concierge)
+ *   - 'CURATED_PACKAGE': Pre-assembled fixed itinerary holiday package created by Vacatina
+ * - For API:
+ *   - 'SUPPLIER_FEED': Direct API integration feed (NDC flight, GDS, Bedbank rate)
+ * - For HYBRID:
+ *   - 'DYNAMIC_PACKAGE': Dynamic bundle composed of API + Manual components
+ * - For SEED:
+ *   - 'PROTOTYPE_SAMPLE': Sample/demo cards for UI layout testing
+ */
+export type ManualSourceSubtype = 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE';
+
+export type InventorySourceSubtype =
+  | ManualSourceSubtype
+  | 'SUPPLIER_FEED'
+  | 'DYNAMIC_PACKAGE'
+  | 'PROTOTYPE_SAMPLE';
+
+/**
+ * Authoritative 5 Canonical Inventory Source Types (Audit v2.4):
+ * - MANUAL_DIRECT: Vacatina staff/admin manually creates contracted inventory (Direct hotel, villa, transfer, package). Sellable only after Commercial Truth Gate.
+ * - API_SUPPLIER: External supplier/API returns inventory (Duffel, LiteAPI, Viator etc.). Sellable only after LIVE_API_CERTIFIED.
+ * - INTERNAL_SERVICE: Vacatina itself delivers service (Visa Assistance). Sellable if operationally certified.
+ * - DYNAMIC_PACKAGE: Vacatina combines multiple underlying inventory sources. Sellable only when every component is sellable.
+ * - SAMPLE_INVENTORY: UI/test/demo content (demo hotel/card/sample offer). Strictly quarantined from production checkout.
+ *
+ * This is the authoritative taxonomy for persisted inventory records, Commercial
+ * Truth Gate checks and supplier certification. Consumer-facing offers use the
+ * separate `CanonicalOfferSourceType` contract in `domain/canonical-offer.ts`.
+ */
+export type CanonicalInventorySourceType =
+  | 'MANUAL_DIRECT'
+  | 'API_SUPPLIER'
+  | 'INTERNAL_SERVICE'
+  | 'DYNAMIC_PACKAGE'
+  | 'SAMPLE_INVENTORY'
+  // Backward-compatibility aliases for existing subtests and adapters
+  | 'SUPPLIER_API'
+  | 'MANUAL_CONTRACT'
+  | 'MANUAL_SERVICE'
+  | 'ACCELERATOR_SEED';
+
+/**
+ * Canonical Source Environment States:
+ * - LIVE_CERTIFIED: Supplier API with live certified production credentials & settlement
+ * - LIVE_MANUAL_VERIFIED: Direct contract or internal service verified by operations
+ * - CANDIDATE: Typed adapter scaffold under audit/testing (not certified for live bookings)
+ * - SANDBOX: Provider test credentials or simulated payload active
+ * - DEMO_ONLY: Design accelerator demo fixtures
+ * - SUSPENDED: Circuit breaker tripped, expired allotment, or provider de-listed
+ */
+export type CanonicalSourceEnvironment =
+  | 'LIVE_CERTIFIED'
+  | 'LIVE_MANUAL_VERIFIED'
+  | 'CANDIDATE'
+  | 'SANDBOX'
+  | 'DEMO_ONLY'
+  | 'SUSPENDED';
+
+/**
+ * Canonical Booking Fulfillment Modes:
+ * - INSTANT_API: Automated real-time ticketing/voucher issuance via supplier API
+ * - MANUAL_ALLOTMENT: Direct decrement from confirmed Vacatina room/seat quota
+ * - REQUEST_TO_BOOK: Partner SLA on-request booking requiring manual confirmation
+ * - MANUAL_CONFIRMATION: Human document check / consular checklist review
+ * - INFORMATION_ONLY: Informational discovery teaser / card (not bookable)
+ */
+export type CanonicalBookingMode =
+  | 'INSTANT_API'
+  | 'MANUAL_ALLOTMENT'
+  | 'REQUEST_TO_BOOK'
+  | 'MANUAL_CONFIRMATION'
+  | 'INFORMATION_ONLY';
+
+// ----------------------------------------------------------------------------
+// 2. Publication, Distribution & Booking Capabilities (ADR-008)
+// ----------------------------------------------------------------------------
+
+export type PublicationStatus =
+  | 'DRAFT'
+  | 'IN_REVIEW'
+  | 'PUBLISHED'
+  | 'PAUSED'
+  | 'ARCHIVED'
+  | 'ACTIVE';
+
+export type DistributionScope =
+  | 'B2C_ONLY'
+  | 'B2B_ONLY'
+  | 'BOTH'
+  | 'INTERNAL_ONLY';
+
+export type BookingCapability =
+  | 'INSTANT_RESERVATION'
+  | 'HOLD_AND_CONFIRM'
+  | 'REQUEST_TO_BOOK'
+  | 'INQUIRY_ONLY';
+
+export type AvailabilityMode =
+  | 'INSTANT'       // Guaranteed real-time stock / instant decrement
+  | 'ON_REQUEST'    // Request to confirm with supplier / partner SLA
+  | 'ALLOTMENT'     // Dedicated block allotment with fixed allocation counts
+  | 'SCHEDULED'     // Fixed date departures (charters, cruises, curated packages)
+  | 'UNAVAILABLE';  // Stop sale / blacked out
+
+export type PricingMode =
+  | 'FIXED'         // Stable fixed price
+  | 'FROM_PRICE'    // Starting price indicator for custom itineraries
+  | 'DYNAMIC'       // Live real-time pricing from GDS/API
+  | 'PER_PERSON'    // Per passenger / applicant basis
+  | 'PER_ROOM'      // Per room per night basis
+  | 'PER_VEHICLE'   // Per transfer vehicle basis
+  | 'PER_PACKAGE'   // Flat whole-package price
+  | 'QUOTE_REQUIRED';// Complex custom quote required
+
+export type {
+  ProductExtension,
+  FlightProductExtension,
+  FlightSegmentEntity,
+  HotelProductExtension,
+  CarTransferProductExtension,
+  CruiseProductExtension,
+  CruisePortCallEntity,
+  RailProductExtension,
+  ActivityProductExtension,
+  SightseeingProductExtension,
+  InsuranceProductExtension,
+  VisaProductExtension,
+  PackageProductExtension,
+  PackageDayItineraryEntity
+} from './product-extensions.ts';
+import type { ProductExtension } from './product-extensions.ts';
+
+// Backward-compatible aliases for existing codebase and tests
+export type InventorySourceType =
+  | 'API'
+  | 'DIRECT_CONTRACT'
+  | 'MANUAL_SERVICE'
+  | 'CURATED_PACKAGE'
+  | 'HYBRID'
+  | 'SEED'
+  | 'MANUAL';
+
+export type IntegrationLifecycleStatus =
+  | 'PLANNED'
+  | 'SCAFFOLD'
+  | 'SANDBOX_ACTIVE'
+  | 'CERTIFIED'
+  | 'OPERATIONALLY_LIVE_MANUAL'
+  | 'PRODUCTION_LIVE';
+
+export type AvailabilityState =
+  | 'LIVE'
+  | 'CACHED'
+  | 'MANUAL_AVAILABLE'
+  | 'ON_REQUEST'
+  | 'SOLD_OUT'
+  | 'RATE_EXPIRED'
+  | 'UNAVAILABLE'
+  | 'EXPIRED';
+
+export type ConfirmationMode =
+  | 'INSTANT_CONFIRM'
+  | 'REQUEST_TO_CONFIRM'
+  | 'ASSISTED_SERVICE'
+  | 'INSTANT';
+
+export type BookingMode =
+  | 'INSTANT_BOOK'
+  | 'REQUEST_TO_BOOK'
+  | 'REQUEST_AVAILABILITY'
+  | 'INQUIRY_ONLY';
+
+export interface StructuredLocation {
+  city: string;
+  country: string;
+  countryCode?: string; // ISO 3166-1 alpha-2
+  iataCode?: string;
+  stationCode?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface PricingLayersEntity {
+  rawSupplierCostMinor: number;     // Layer 1: Net Supplier Wholesale Cost
+  rawCurrency: string;
+  platformMarkupMinor: number;      // Layer 2: Global Vacatina B2C Margin
+  b2bAgencyMarginMinor: number;     // Layer 3: Dynamic B2B Preferential Adjustment
+  manualOverrideMinor?: number;     // Layer 4: Administrative Override (if active)
+  overrideReason?: string;
+  finalSellingPriceMinor: number;   // Calculated Customer Selling Price in Minor Units
+  currency: string;
+}
+
+export interface TaxesAndFeesEntity {
+  totalTaxMinor: number;
+  isTaxInclusive: boolean;
+  vatMinor?: number;
+  tourismDirhamOrLevyMinor?: number;
+  serviceChargeMinor?: number;
+  mandatoryLocalFeesText?: string;
+}
+
+export interface B2BDistributionPricingEntity {
+  distributionScope: DistributionScope;
+  b2bNetPriceMinor: number;
+  agencyMarkupPercent?: number;
+  agencyMarkupMinor?: number;
+  agencyCommissionPercent?: number;
+  agencyCommissionMinor?: number;
+  clientFacingPriceMinor?: number;
+  isCreditLineEligible?: boolean;
+}
+
+export interface PinAuditEntity {
+  isPinned: boolean;
+  pinReason?: string;
+  pinValidFrom?: string;
+  pinValidUntil?: string;
+  approverUserId?: string;
+  exclusivityEvidenceId?: string;
+}
+
+export interface PriceFreshnessEntity {
+  lastCheckedAtIso: string;
+  ttlSeconds: number;
+  expiresAtIso: string;
+  isStale: boolean;
+  revalidationEndpoint: string;
+}
+
+// ----------------------------------------------------------------------------
+// Granular Source & Integration Orthogonal Dimensions (GPT Audit v2.0)
+// ----------------------------------------------------------------------------
+
+export type SourceMode =
+  | 'CONTENT_ONLY'  // Non-bookable editorial, destination guides, inspiration cards
+  | 'MANUAL'        // Direct contracts, internal operations, or offline partner rate sheets
+  | 'API';          // Live or candidate external GDS/NDC/Bedbank aggregator
+
+export type IntegrationStatus =
+  | 'NOT_APPLICABLE' // Pure manual/internal service with no external API
+  | 'PLANNED'        // Target provider identified; no live credentials
+  | 'SANDBOX'        // Typed adapter scaffold active in test environment
+  | 'CERTIFIED_LIVE';// Live credentials verified and certified for production bookings
+
+export type ManualSourceType =
+  | 'DIRECT_CONTRACT' // Directly negotiated commercial agreement (allotment/rate sheet)
+  | 'MANUAL_INTERNAL' // In-house Vacatina operational product/service (e.g. Visa Concierge)
+  | 'PARTNER_MANUAL'  // External travel partner providing offline inventory/extranet
+  | null;
+
+export type VerificationStatus =
+  | 'VERIFIED_CONTRACT' // Signed commercial agreement with documented allotment
+  | 'VERIFIED_INTERNAL' // Internal operational desk with SLA capability
+  | 'PARTNER_PENDING'   // Partner agreement under negotiation/contracting
+  | 'UNVERIFIED'        // Unconfirmed rate/inventory
+  | 'PROTOTYPE';        // Design accelerator demo data (quarantined)
+
+export type CurrentAvailabilityMode =
+  | 'CONTENT_ONLY'         // No availability tracking; informational only
+  | 'ON_REQUEST'           // Subject to partner confirmation within SLA
+  | 'ALLOTMENT'            // Finite quota managed in Vacatina database
+  | 'MANUAL_CONFIRMATION'  // Human document/consular audit required
+  | 'LIVE_INSTANT';        // ONLY for verified CERTIFIED_LIVE supplier integrations!
+
+export type CurrentPricingMode =
+  | 'INDICATIVE'     // Starting from price for inspiration cards (*disclaimer required)
+  | 'FIXED_MANUAL'   // Guaranteed flat manual rate (e.g. visa concierge advisory)
+  | 'CONTRACTED'     // Negotiated contracted seasonal rate in minor integer units
+  | 'LIVE_DYNAMIC';  // ONLY for verified CERTIFIED_LIVE supplier integrations!
+
+// ----------------------------------------------------------------------------
+// Discovery Content vs Sellable Inventory Separation (Directive 1)
+// ----------------------------------------------------------------------------
+
+export interface DiscoveryContentEntity {
+  contentId: string;               // e.g. "dsc_dxb_winter_escape"
+  slug: string;                    // e.g. "dubai-winter-escape"
+  title: string;                   // e.g. "Dubai Winter Sun & Skyline"
+  subtitle: string;                // e.g. "Experience futuristic architecture and desert adventures"
+  category: 'DESTINATION_INSPIRATION' | 'SEASONAL_GUIDE' | 'EDITORIAL_FEATURE' | 'ROUTE_SUGGESTION';
+  heroImageUrl: string;
+  targetProductType: TravelProductSlug;
+  targetRoute: string;             // Canonical frontend route, e.g. "/flights" or "/packages"
+  prefillSearchParams: {
+    origin?: string;
+    destination: string;
+    departureDate?: string;
+    returnDate?: string;
+    cabinClass?: string;
+  };
+  editorialBadge?: string;         // e.g. "Staff Pick", "Trending Destination", "Seasonal Special"
+  priceIndication?: {
+    indicativeFromPriceMinor: number;
+    indicativeCurrency: string;
+    priceDisclaimer: string;       // e.g. "*Indicative starting fare based on historical searches; live search required"
+  };
+  isLiveInventoryOffer: false;     // STRICT INVARIANT: Always false. Never an inventory offer.
+  sellability: 'DISCOVERY_ONLY';   // Never directly bookable
+  authorOrCurator: string;
+  publishedAtIso: string;
+}
+
+export interface SourceProvenanceEntity {
+  originAdapter: string;           // e.g. "FlightsDuffelAdapter"
+  fetchTimestampIso: string;
+  providerEndpoint?: string;
+  rawPayloadHash?: string;
+  providerResponseTimeMs?: number;
+  ratePlanCode?: string;
+}
+
+/**
+ * Identity of an individual sub-component within a DYNAMIC_BUNDLE or Holiday Package
+ */
+export interface ComponentOfferIdentity {
+  componentId: string;
+  productType: TravelProductSlug;
+  sourceOfferId?: string;          // Upstream offer ID or CMS listing ID
+  inventorySource: InventorySource;
+  listingKind: ListingKind;
+  compositionType: CompositionType;
+  fulfillmentMode: FulfillmentMode;
+  environmentClass: EnvironmentClass;
+  sellability: Sellability;
+  supplierId: string;
+  supplierName: string;
+  isSandboxSimulated: boolean;
+  revalidationRequired: boolean;
+  lastRevalidationResult?: 'UNCHANGED' | 'PRICE_CHANGED' | 'UNAVAILABLE';
+  componentStatus?: 'VALID' | 'PRICE_CHANGED' | 'EXPIRED' | 'UNAVAILABLE' | 'NEEDS_ACTION';
+  costMinor?: number;
+  currency?: string;
+}
+
+/**
+ * Universal Canonical Offer Model (v2.0)
+ * Authority: ADR-008 & Core Architecture Master Contract
+ */
+export interface CanonicalOfferEntity {
+  // Stable universal identifiers
+  canonicalOfferId: string;         // Universal stable identifier, e.g. "vct-fl-duffel-cmb-dxb-98a7c2"
+  canonicalEntityId?: string;       // Stable real-world entity identifier (e.g. "HOTEL_DUBAI_001", "FLIGHT_CMB_DXB_EK651")
+  alternateSourceOfferIds?: string[]; // IDs of alternate supplier offers consolidated under this entity
+  offerId?: string;                 // Explicit alias for canonicalOfferId
+  sourceOfferId?: string;           // Original upstream provider offer ID / CMS listing ID
+  productType: TravelProductSlug;
+  providerId?: string;              // Explicit alias for supplierId
+  providerOfferId?: string;         // Explicit alias for supplierOfferId
+
+  // --- 7 Orthogonal Canonical Dimensions ---
+  inventorySource: InventorySource;
+  listingKind: ListingKind;
+  compositionType: CompositionType;
+  fulfillmentMode: FulfillmentMode;
+  environmentClass: EnvironmentClass;
+  sellability: Sellability;
+  providerLifecycle: ProviderLifecycle;
+
+  // --- Publication & Distribution Scope (ADR-008) ---
+  publicationStatus?: PublicationStatus;
+  distributionScope?: DistributionScope;
+  bookingCapability?: BookingCapability;
+
+  // --- Canonical Unified Source Model & Verification (Audit v2.4) ---
+  inventorySourceType?: CanonicalInventorySourceType;
+  canonicalSourceType?: CanonicalInventorySourceType;
+  commercialStatus?: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED';
+  sellable?: boolean;
+  price?: number;                   // Customer facing price unit alias (e.g. LKR 89,000)
+  sourceEnvironment?: CanonicalSourceEnvironment;
+  canonicalBookingMode?: CanonicalBookingMode;
+
+  // --- Authoritative 2-Tier Source Taxonomy (Architecture v2.0) ---
+  sourceType: TopLevelInventorySource | InventorySourceType;
+  sourceSubtype?: InventorySourceSubtype;
+
+  // --- Heterogeneous components (for dynamic bundles) ---
+  components?: ComponentOfferIdentity[];
+
+  // --- Granular Source & Integration Separation (GPT Audit v2.0) ---
+  sourceMode?: SourceMode;
+  integrationStatus?: IntegrationStatus;
+  manualSourceType?: ManualSourceType;
+  verificationStatus?: VerificationStatus;
+  currentAvailabilityMode?: CurrentAvailabilityMode;
+  currentPricingMode?: CurrentPricingMode;
+  futureProvider?: string | null;
+
+  supplierId: string;               // e.g. "DUFFEL_NDC", "AMADEUS", "LITEAPI", "PAYLOAD_CMS_DIRECT"
+  supplierName: string;
+  supplierOfferId?: string;         // Upstream provider ID
+  manualListingId?: string;         // Payload CMS document ID
+  title: string;
+  subtitle: string;
+  location: StructuredLocation;
+  availabilityStatus: AvailabilityState;
+  availabilityMode?: AvailabilityMode;
+  pricingMode?: PricingMode;
+  confirmationMode: ConfirmationMode;
+  bookingMode: BookingMode;
+  pricing: PricingLayersEntity;
+  taxesAndFees?: TaxesAndFeesEntity;
+  b2bPricing?: B2BDistributionPricingEntity;
+  productExtension?: ProductExtension;
+  freshness?: PriceFreshnessEntity;
+  validFrom?: string;
+  validUntil?: string;
+  expiresAt?: string;
+  lastCheckedAt?: string;
+  requiresRevalidation?: boolean;
+  inclusions: string[];
+  exclusions: string[];
+  cancellationPolicy: string;
+  pinAboveApi: boolean;             // Administrative priority ranking
+  isExclusiveDeal?: boolean;        // Contractual exclusive rate badge eligibility
+  exclusiveOffer?: boolean;         // Alias for exclusivity eligibility
+  commercialEvidenceId?: string;    // Documented contract evidence ID
+  currency?: string;                // Currency code override
+  pinAudit?: PinAuditEntity;        // Auditable pin justification
+  deduplicationKey: string;         // Composite natural deduplication key
+  isSandboxSimulated: boolean;      // Truthful flag: true if rendered by mock/sandbox adapter
+  integrationLifecycle: IntegrationLifecycleStatus;
+  sourceMetadata?: Record<string, unknown>;
+  sourceProvenance?: SourceProvenanceEntity;
+  revalidationCapability?: {
+    canRevalidateOnline: boolean;
+    requiresSupplierPing: boolean;
+    lastRevalidationResult?: 'UNCHANGED' | 'PRICE_CHANGED' | 'UNAVAILABLE';
+  };
+  rateOptions?: CanonicalRateOption[];
+}
+
+export interface SearchQueryCriteria {
+  productType?: TravelProductSlug;
+  origin?: string;
+  destination: string;
+  departureDate?: string; // YYYY-MM-DD
+  returnDate?: string;    // YYYY-MM-DD
+  checkInDate?: string;   // YYYY-MM-DD
+  checkOutDate?: string;  // YYYY-MM-DD
+  adults?: number;
+  children?: number;
+  infants?: number;
+  rooms?: number;
+  cabinClass?: string;
+  tripType?: 'one_way' | 'round_trip' | 'multi_city';
+  slices?: Array<{ origin: string; destination: string; departureDate: string; cabinClass?: string }>;
+  currency?: string;
+  organizationId?: string; // For B2B agency tier pricing
+  preferredSourceType?: InventorySourceType;
+  channel?: 'B2C' | 'B2B'; // Distribution channel context
+  distributionScope?: DistributionScope;
+}
+
+export interface RevalidationResult {
+  offerId: string;
+  /**
+   * UNCHANGED         — verified against the authoritative source; safe to treat as Ready.
+   * PRICE_CHANGED     — price differs; customer must re-approve.
+   * UNAVAILABLE       — no longer on sale / sold out / stop-sell.
+   * EXPIRED           — validity window or supplier TTL has passed; fresh search required.
+   * RECHECK_REQUIRED  — Vacatina could NOT verify (no revalidation route / supplier unreachable);
+   *                     must never be treated as Ready.
+   */
+  status: 'UNCHANGED' | 'PRICE_CHANGED' | 'UNAVAILABLE' | 'EXPIRED' | 'RECHECK_REQUIRED';
+  updatedOffer?: CanonicalOfferEntity;
+  previousPriceMinor?: number;
+  newPriceMinor?: number;
+  message?: string;
+}
+
+export type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
+
+export interface CircuitBreakerTelemetry {
+  supplierId: string;
+  state: CircuitState;
+  failureCount: number;
+  lastFailureTime?: number;
+  nextRetryTime?: number;
+  totalCalls: number;
+  successfulCalls: number;
+  rollingWindowStart?: number;
+}
+
+// ----------------------------------------------------------------------------
+// 3. Customer Badge Standards & Disclosure Safeguards (Rules 2 & 5)
+// ----------------------------------------------------------------------------
+
+export type CustomerBadge =
+  | 'Live Availability'
+  | 'Instant Confirmation'
+  | 'On Request'
+  | 'Vacatina Assisted'
+  | 'Direct Rate'
+  | 'Exclusive Direct Deal';
+
+/**
+ * Derives truthful, customer-facing commercial badges strictly from verified system state.
+ * Never based on arbitrary marketing toggles.
+ */
+export function deriveCustomerBadges(offer: CanonicalOfferEntity): CustomerBadge[] {
+  const badges: CustomerBadge[] = [];
+
+  // 1. Live Availability: strictly only when production-live, real availability, and fresh
+  const isProdLive = offer.providerLifecycle === 'PRODUCTION_LIVE';
+  const isRealLive = offer.availabilityStatus === 'LIVE';
+  const isFresh = !offer.freshness.isStale;
+  const isProduction = offer.environmentClass === 'PRODUCTION';
+
+  if (isProdLive && isRealLive && isFresh && isProduction) {
+    badges.push('Live Availability');
+  }
+
+  // 2. Operational fulfillment badge: strictly based on verified instant execution capability
+  if (
+    offer.fulfillmentMode === 'INSTANT' &&
+    (offer.bookingCapability === 'INSTANT_RESERVATION' || offer.confirmationMode === 'INSTANT_CONFIRM')
+  ) {
+    badges.push('Instant Confirmation');
+  } else if (
+    offer.fulfillmentMode === 'ON_REQUEST' ||
+    offer.bookingCapability === 'REQUEST_TO_BOOK' ||
+    offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+  ) {
+    badges.push('On Request');
+  } else if (
+    offer.fulfillmentMode === 'MANUAL_CONFIRMATION' ||
+    offer.listingKind === 'SERVICE' ||
+    offer.inventorySource === 'MANUAL_INTERNAL' ||
+    offer.confirmationMode === 'ASSISTED_SERVICE'
+  ) {
+    badges.push('Vacatina Assisted');
+  }
+
+  // 3. Direct Commercial relationship badge
+  if (offer.inventorySource === 'DIRECT_CONTRACT') {
+    badges.push('Direct Rate');
+
+    // Exclusive Direct Deal strictly requires verified exclusive contract flag + published + valid dates
+    const hasValidDate = !offer.validUntil || new Date(offer.validUntil).getTime() >= Date.now();
+    const isPublished = offer.publicationStatus === 'PUBLISHED';
+    if (offer.isExclusiveDeal && isPublished && hasValidDate) {
+      badges.push('Exclusive Direct Deal');
+    }
+  }
+
+  return badges;
+}
+
+/**
+ * Maps Canonical Booking Mode to customer-facing journey CTA copy (GPT Audit v2.2)
+ * Customers see honest journey semantics, never technical source labels.
+ */
+export function getCanonicalBookingModeCta(mode?: CanonicalBookingMode): string {
+  switch (mode) {
+    case 'INSTANT_API':
+    case 'MANUAL_ALLOTMENT':
+      return 'Available — Continue';
+    case 'REQUEST_TO_BOOK':
+      return 'Request Availability';
+    case 'MANUAL_CONFIRMATION':
+      return 'Submit Details';
+    case 'INFORMATION_ONLY':
+      return 'Explore / Search';
+    default:
+      return 'View Options';
+  }
+}
+
+/**
+ * Verifies that an array of customer badges contains zero internal technical terms.
+ */
+export function validateNoTechnicalLeakInCustomerBadges(badges: string[]): boolean {
+  const technicalLeakPatterns = [
+    'API',
+    'SUPPLIER_API',
+    'MANUAL_CONTRACT',
+    'MANUAL_SERVICE',
+    'ACCELERATOR_SEED',
+    'DIRECT_CONTRACT',
+    'MANUAL_INTERNAL',
+    'PARTNER_MANUAL',
+    'SCAFFOLD',
+    'SANDBOX',
+    'SEED',
+    'API Listing',
+    'Manual Listing',
+    'HYBRID',
+    'SINGLE',
+    'CURATED_PACKAGE',
+    'DYNAMIC_BUNDLE',
+    'B2C_ONLY',
+    'B2B_ONLY',
+    'INTERNAL_ONLY'
+  ];
+  return !badges.some(badge =>
+    technicalLeakPatterns.some(tech => badge.toUpperCase().includes(tech.toUpperCase()))
+  );
+}
+
+// ----------------------------------------------------------------------------
+// 4. Invariant Architectural Safeguards (Rules 14 & ADR-008)
+// ----------------------------------------------------------------------------
+
+/**
+ * Invariant 1: SEED cannot become BOOKABLE
+ */
+export function assertSeedCannotBeBookable(offer: { environmentClass: EnvironmentClass; sellability: Sellability }): void {
+  if (offer.environmentClass === 'SEED' && offer.sellability === 'BOOKABLE') {
+    throw new ArchitecturalInvariantViolationError(
+      'SEED_CANNOT_BE_BOOKABLE',
+      'Prototype / SEED data must never have sellability = BOOKABLE. SEED data must be DISCOVERY_ONLY.'
+    );
+  }
+}
+
+/**
+ * Invariant 2: SEED cannot enter checkout
+ */
+export function assertSeedCannotEnterCheckout(offer: { environmentClass: EnvironmentClass; canonicalOfferId: string }): void {
+  if (offer.environmentClass === 'SEED') {
+    throw new ArchitecturalInvariantViolationError(
+      'SEED_CHECKOUT_BLOCKED',
+      `Offer '${offer.canonicalOfferId}' has environmentClass = 'SEED' and is strictly prohibited from entering checkout, payment, or booking.`
+    );
+  }
+}
+
+/**
+ * Invariant 3: SCAFFOLD providers cannot create production bookings
+ */
+export function assertScaffoldCannotCreateProductionBooking(provider: {
+  providerId: string;
+  lifecycle: ProviderLifecycle;
+  environment: EnvironmentClass;
+}): void {
+  if (provider.environment === 'PRODUCTION' && provider.lifecycle !== 'PRODUCTION_LIVE') {
+    throw new ArchitecturalInvariantViolationError(
+      'SCAFFOLD_PRODUCTION_BOOKING_BLOCKED',
+      `Provider '${provider.providerId}' has lifecycle '${provider.lifecycle}'. Only 'PRODUCTION_LIVE' providers may execute live production bookings.`
+    );
+  }
+}
+
+/**
+ * Invariant 4: Manual / Direct offers require PUBLISHED state to be BOOKABLE
+ */
+export function assertManualOfferPublishedForBooking(listing: {
+  status: PublicationStatus;
+  sellability: Sellability;
+  title: string;
+}): void {
+  if (listing.status !== 'PUBLISHED' && listing.sellability === 'BOOKABLE') {
+    throw new ArchitecturalInvariantViolationError(
+      'MANUAL_OFFER_NOT_PUBLISHED',
+      `Manual/Direct listing '${listing.title}' has status '${listing.status}' and cannot be BOOKABLE. Only 'PUBLISHED' listings can be sold.`
+    );
+  }
+}
+
+/**
+ * Invariant 5: Unavailable or expired offers cannot become Trip Bucket READY
+ */
+export function assertUnavailableOfferCannotBeReady(item: {
+  availabilityStatus: AvailabilityState;
+  targetTripBucketState: 'DRAFT' | 'NEEDS_ACTION' | 'READY' | 'REFRESHING_PRICE' | 'PRICE_CHANGED' | 'RECHECK_REQUIRED' | 'OFFER_EXPIRED' | 'UNAVAILABLE';
+}): void {
+  if (
+    (item.availabilityStatus === 'SOLD_OUT' || item.availabilityStatus === 'RATE_EXPIRED') &&
+    item.targetTripBucketState === 'READY'
+  ) {
+    throw new ArchitecturalInvariantViolationError(
+      'EXPIRED_OFFER_CANNOT_BE_READY',
+      `An item with availabilityStatus '${item.availabilityStatus}' cannot transition to Trip Bucket 'READY' state.`
+    );
+  }
+}
+
+/**
+ * Invariant 6: B2C vs B2B Distribution Scope Separation (Rule 4)
+ */
+export function assertDistributionScopeIntegrity(
+  offer: { distributionScope: DistributionScope; canonicalOfferId: string },
+  channel: 'B2C' | 'B2B'
+): void {
+  if (channel === 'B2C' && (offer.distributionScope === 'B2B_ONLY' || offer.distributionScope === 'INTERNAL_ONLY')) {
+    throw new ArchitecturalInvariantViolationError(
+      'B2C_DISTRIBUTION_LEAK',
+      `Offer '${offer.canonicalOfferId}' has distributionScope '${offer.distributionScope}' and cannot appear in B2C channel.`
+    );
+  }
+  if (channel === 'B2B' && (offer.distributionScope === 'B2C_ONLY' || offer.distributionScope === 'INTERNAL_ONLY')) {
+    throw new ArchitecturalInvariantViolationError(
+      'B2B_DISTRIBUTION_LEAK',
+      `Offer '${offer.canonicalOfferId}' has distributionScope '${offer.distributionScope}' and cannot appear in B2B channel.`
+    );
+  }
+}
+
+/**
+ * Invariant 7: Pinned Ranking & Exclusivity Eligibility Rules (Rule 6 & GPT Audit v2.5)
+ * Any "Pin Above API Results" or "Exclusive Vacatina Offer" functionality strictly requires:
+ * 1. Production environment and ACTIVE / PUBLISHED status
+ * 2. COMMERCIALLY_VERIFIED commercial status
+ * 3. Valid contract period (unexpired)
+ * 4. Current availability (not SOLD_OUT, RATE_EXPIRED, or UNAVAILABLE)
+ * 5. Pricing approval & positive margins
+ * 6. Documented evidence supporting any exclusivity claim
+ */
+export function isOfferEligibleForPinOverride(offer: CanonicalOfferEntity): boolean {
+  if (!offer.pinAboveApi) return false;
+  
+  // 1. Must be production, active/published
+  if (offer.environmentClass !== 'PRODUCTION') return false;
+  if (offer.publicationStatus && offer.publicationStatus !== 'PUBLISHED' && offer.publicationStatus !== 'ACTIVE') return false;
+
+  // 2. Must be COMMERCIALLY_VERIFIED
+  const isCommerciallyVerified =
+    offer.commercialStatus === 'COMMERCIALLY_VERIFIED' ||
+    offer.verificationStatus === 'VERIFIED_CONTRACT' ||
+    offer.verificationStatus === 'VERIFIED_INTERNAL' ||
+    offer.sourceEnvironment === 'LIVE_MANUAL_VERIFIED';
+  if (!isCommerciallyVerified) return false;
+
+  // 3. Current availability check
+  if (
+    offer.availabilityStatus === 'SOLD_OUT' ||
+    offer.availabilityStatus === 'RATE_EXPIRED' ||
+    offer.availabilityStatus === 'UNAVAILABLE'
+  ) return false;
+
+  // 4. Valid contract period
+  const now = Date.now();
+  if (offer.validUntil && new Date(offer.validUntil).getTime() < now) return false;
+  if (offer.freshness?.expiresAtIso && new Date(offer.freshness.expiresAtIso).getTime() < now) return false;
+
+  // 5. Documented evidence & audit reason
+  const hasEvidence = Boolean(
+    offer.commercialEvidenceId ||
+    offer.pinAudit?.pinReason ||
+    offer.pinAudit?.exclusivityEvidenceId ||
+    offer.pricing?.overrideReason
+  );
+  if (!hasEvidence) return false;
+
+  // Check pin date bounds if provided
+  if (offer.pinAudit?.pinValidFrom && new Date(offer.pinAudit.pinValidFrom).getTime() > now) return false;
+  if (offer.pinAudit?.pinValidUntil && new Date(offer.pinAudit.pinValidUntil).getTime() < now) return false;
+
+  return true;
+}
+
+export function isOfferEligibleForExclusivityBadge(offer: CanonicalOfferEntity): boolean {
+  if (!offer.exclusiveOffer) return false;
+  return isOfferEligibleForPinOverride(offer) && Boolean(offer.commercialEvidenceId || offer.pinAudit?.exclusivityEvidenceId);
+}
+
+/**
+ * Invariant 8: Discovery Content is Never Sellable Inventory (Directive 1 & GPT Audit v2.2)
+ * Editorial guides, marketing teasers, and homepage destination cards are NEVER inventory.
+ * They cannot enter checkout, have no live availability, and cannot be purchased.
+ */
+export function assertDiscoveryContentCannotBeSold(content: DiscoveryContentEntity): void {
+  if (content.isLiveInventoryOffer !== false || content.sellability !== 'DISCOVERY_ONLY') {
+    throw new ArchitecturalInvariantViolationError(
+      'DISCOVERY_CONTENT_CANNOT_BE_SOLD',
+      `Discovery content '${content.contentId}' must have isLiveInventoryOffer = false and sellability = 'DISCOVERY_ONLY'. It cannot be sold as an inventory offer.`
+    );
+  }
+}
+
+export function assertDiscoveryLayerCannotEnterInventoryCheckout(content: { sellability?: string; isLiveInventoryOffer?: boolean; canonicalOfferId?: string }): void {
+  if (content.sellability === 'DISCOVERY_ONLY' || content.isLiveInventoryOffer === false) {
+    throw new ArchitecturalInvariantViolationError(
+      'DISCOVERY_CONTENT_CHECKOUT_BLOCKED',
+      `Content Layer Safety Guard: Discovery/Editorial content '${content.canonicalOfferId || 'item'}' cannot enter checkout or booking flows.`
+    );
+  }
+}
+
+/**
+ * Invariant 9: Package Component Provenance & Checkout Readiness (Directive 7)
+ */
+export function isPackageReadyForCheckout(pkgOffer: CanonicalOfferEntity): boolean {
+  if (pkgOffer.productType !== 'packages') return true;
+  if (!pkgOffer.components || pkgOffer.components.length === 0) return true;
+  return !pkgOffer.components.some(c =>
+    c.componentStatus === 'EXPIRED' ||
+    c.componentStatus === 'UNAVAILABLE' ||
+    c.componentStatus === 'NEEDS_ACTION' ||
+    c.lastRevalidationResult === 'UNAVAILABLE'
+  );
+}
+
+/**
+ * Invariant 10: Production Response Environment Safety Guard (Directive 9)
+ * Guarantees zero SEED, zero SANDBOX-bookable, zero B2B/INTERNAL leaks into B2C,
+ * zero unpublished manual offers, and zero expired bookables in production responses.
+ */
+export function assertProductionResponseSafety(
+  offers: CanonicalOfferEntity[],
+  context: { channel?: 'B2C' | 'B2B'; environment?: 'PRODUCTION' | 'SANDBOX' | 'DEVELOPMENT' } = {}
+): void {
+  const isProd = context.environment !== 'SANDBOX' && context.environment !== 'DEVELOPMENT';
+  const isB2C = context.channel !== 'B2B';
+
+  for (const offer of offers) {
+    if (isProd) {
+      if (offer.environmentClass === 'SEED') {
+        throw new ArchitecturalInvariantViolationError(
+          'PRODUCTION_SEED_LEAK',
+          `Environment Safety Violation: SEED offer '${offer.canonicalOfferId}' leaked into PRODUCTION response`
+        );
+      }
+      if (offer.environmentClass === 'SANDBOX' && offer.sellability === 'BOOKABLE') {
+        throw new ArchitecturalInvariantViolationError(
+          'PRODUCTION_SANDBOX_LEAK',
+          `Environment Safety Violation: SANDBOX simulated offer '${offer.canonicalOfferId}' marked BOOKABLE in PRODUCTION response`
+        );
+      }
+    }
+
+    if (isB2C) {
+      if (offer.distributionScope === 'B2B_ONLY') {
+        throw new ArchitecturalInvariantViolationError(
+          'B2C_DISTRIBUTION_LEAK',
+          `Distribution Isolation Violation: B2B_ONLY offer '${offer.canonicalOfferId}' leaked into B2C response`
+        );
+      }
+      if (offer.distributionScope === 'INTERNAL_ONLY') {
+        throw new ArchitecturalInvariantViolationError(
+          'INTERNAL_DISTRIBUTION_LEAK',
+          `Distribution Isolation Violation: INTERNAL_ONLY offer '${offer.canonicalOfferId}' leaked into B2C response`
+        );
+      }
+    }
+
+    if (offer.publicationStatus && offer.publicationStatus !== 'PUBLISHED') {
+      throw new ArchitecturalInvariantViolationError(
+        'UNPUBLISHED_OFFER_IN_SEARCH',
+        `Publication Safety Violation: Non-published offer '${offer.canonicalOfferId}' (status: ${offer.publicationStatus}) presented in search response`
+      );
+    }
+
+    if (offer.sellability === 'BOOKABLE' && offer.availabilityStatus === 'EXPIRED') {
+      throw new ArchitecturalInvariantViolationError(
+        'EXPIRED_OFFER_BOOKABLE',
+        `Freshness Safety Violation: EXPIRED offer '${offer.canonicalOfferId}' presented as BOOKABLE`
+      );
+    }
+  }
+}
+
+/**
+ * Invariant 12: Production Search Excludes Demo / Accelerator Seed (Audit v2.1)
+ * Guarantees prototype accelerator fixtures and demo seed data never leak into production search responses.
+ */
+export function assertProductionSearchExcludesDemoSeed(offers: CanonicalOfferEntity[]): void {
+  for (const offer of offers) {
+    if (
+      offer.canonicalSourceType === 'SAMPLE_INVENTORY' ||
+      offer.inventorySourceType === 'SAMPLE_INVENTORY' ||
+      offer.canonicalSourceType === 'ACCELERATOR_SEED' ||
+      offer.environmentClass === 'SEED' ||
+      offer.sourceEnvironment === 'DEMO_ONLY' ||
+      offer.sourceType === 'SEED' ||
+      offer.verificationStatus === 'PROTOTYPE'
+    ) {
+      throw new ArchitecturalInvariantViolationError(
+        'PRODUCTION_SEED_LEAK',
+        `Production Isolation Guard: DEMO_ONLY / ACCELERATOR_SEED offer '${offer.canonicalOfferId}' cannot enter production search responses.`
+      );
+    }
+  }
+}
+
+/**
+ * Invariant 13: Candidate or Sandbox Cannot Masquerade as Production Ready (Audit v2.1)
+ * Uncertified scaffolds and sandbox adapters can never be marked Ready for live production execution.
+ */
+export function assertCandidateCannotBeProductionReady(offer: CanonicalOfferEntity): void {
+  const isCandidateOrSandbox =
+    offer.sourceEnvironment === 'CANDIDATE' ||
+    offer.sourceEnvironment === 'SANDBOX' ||
+    offer.environmentClass === 'SANDBOX' ||
+    offer.providerLifecycle === 'INTEGRATION_CANDIDATE' ||
+    offer.providerLifecycle === 'SANDBOX_ACTIVE' ||
+    offer.providerLifecycle === 'SCAFFOLD' ||
+    offer.providerLifecycle === 'PLANNED' ||
+    offer.providerLifecycle === 'NOT_CONNECTED' ||
+    offer.providerLifecycle === 'MOCK' ||
+    offer.providerLifecycle === 'SANDBOX_CONNECTED' ||
+    offer.providerLifecycle === 'SANDBOX_CERTIFIED' ||
+    offer.providerLifecycle === 'PRODUCTION_CONFIGURED';
+
+  if (isCandidateOrSandbox) {
+    if (
+      offer.environmentClass === 'PRODUCTION' &&
+      offer.sellability === 'BOOKABLE' &&
+      offer.availabilityStatus === 'LIVE' &&
+      offer.confirmationMode === 'INSTANT_CONFIRM'
+    ) {
+      throw new ArchitecturalInvariantViolationError(
+        'CANDIDATE_MASQUERADING_AS_LIVE',
+        `Lifecycle Safety Guard: Candidate/Sandbox offer '${offer.canonicalOfferId}' cannot claim PRODUCTION instant live bookability.`
+      );
+    }
+  }
+}
+
+/**
+ * Invariant 14: Truthful Booking Reference Semantics & Upstream Isolation (Audit v2.1)
+ * Guarantees that internal booking reference VCT-2026-XXXXXX is never disguised as an airline PNR,
+ * and that upstream PNRs / hotel vouchers are strictly undefined in sandbox or uncertified runs.
+ */
+export function assertNoFabricatedUpstreamReferences(bookingItem: {
+  isUpstreamConfirmed: boolean;
+  supplierPnr?: string;
+  supplierConfirmationNumber?: string;
+  vacatinaBookingReference: string;
+  vacatinaServiceReference?: string;
+}): void {
+  if (!bookingItem.vacatinaBookingReference || !/^VCT-\d{4}-[A-Z0-9]{10}$/.test(bookingItem.vacatinaBookingReference)) {
+    throw new ArchitecturalInvariantViolationError(
+      'INVALID_VACATINA_BOOKING_REFERENCE',
+      `Booking Reference Guard: Item missing valid canonical Vacatina booking reference 'VCT-YYYY-XXXXXXXXXX'.`
+    );
+  }
+
+  // If not confirmed by real upstream provider, supplier PNR & confirmation number MUST be undefined
+  if (!bookingItem.isUpstreamConfirmed) {
+    if (bookingItem.supplierPnr !== undefined) {
+      throw new ArchitecturalInvariantViolationError(
+        'FABRICATED_UPSTREAM_PNR',
+        `Integrity Guard: supplierPnr cannot be set for uncertified / sandbox booking item without real upstream confirmation.`
+      );
+    }
+    if (bookingItem.supplierConfirmationNumber !== undefined) {
+      throw new ArchitecturalInvariantViolationError(
+        'FABRICATED_UPSTREAM_CONFIRMATION',
+        `Integrity Guard: supplierConfirmationNumber cannot be set for uncertified / sandbox booking item without real upstream confirmation.`
+      );
+    }
+  }
+}
+
+/**
+ * Invariant 11: Multi-Criteria Source Selection Engine (GPT Audit v2.2)
+ * Does NOT blindly prefer API over manual. Evaluates 8 orthogonal dimensions:
+ * 1. Certification & environment readiness (LIVE_CERTIFIED / LIVE_MANUAL_VERIFIED vs CANDIDATE)
+ * 2. Inventory certainty (guaranteed ALLOTMENT / LIVE stock vs ON_REQUEST)
+ * 3. Verification status (VERIFIED_CONTRACT / VERIFIED_INTERNAL vs UNVERIFIED)
+ * 4. Price freshness & cache TTL safety
+ * 5. Commercial margin & net-to-selling yield
+ * 6. Cancellation terms & traveler flexibility
+ * 7. Operational fulfillment SLA & booking mode
+ * 8. Administrative pin override (if verified with auditable reason)
+ */
+export function computeOfferSourceScore(offer: CanonicalOfferEntity): number {
+  let score = 0;
+
+  // 1. Certification & Environment Readiness (0 - 30 pts)
+  if (offer.sourceEnvironment === 'LIVE_CERTIFIED' || offer.sourceEnvironment === 'LIVE_MANUAL_VERIFIED') {
+    score += 30; // Certified commercial provider with guaranteed fulfillment
+  } else if (offer.sourceEnvironment === 'CANDIDATE' || offer.sourceEnvironment === 'SANDBOX') {
+    score += 10; // Scaffold/sandbox provider under audit
+  } else if (offer.sourceEnvironment === 'DEMO_ONLY' || offer.environmentClass === 'SEED') {
+    return -2000; // Prototype demo fixtures strictly disqualified
+  } else if (offer.sourceEnvironment === 'SUSPENDED') {
+    return -3000; // Circuit-breaker tripped or stop-sale active
+  } else {
+    score += 15;
+  }
+
+  // 2. Inventory Certainty & Availability (0 - 30 pts)
+  if (offer.availabilityStatus === 'LIVE' || offer.availabilityStatus === 'MANUAL_AVAILABLE') {
+    score += (offer.availabilityMode === 'ALLOTMENT' || offer.canonicalBookingMode === 'MANUAL_ALLOTMENT') ? 30 : 25;
+  } else if (offer.availabilityStatus === 'CACHED' || offer.availabilityStatus === 'ON_REQUEST') {
+    score += 15;
+  } else if (offer.availabilityStatus === 'SOLD_OUT' || offer.availabilityStatus === 'RATE_EXPIRED' || offer.availabilityStatus === 'UNAVAILABLE') {
+    return -1000; // Unsellable
+  }
+
+  // 3. Verification Status (0 - 25 pts)
+  if (offer.verificationStatus === 'VERIFIED_CONTRACT' || offer.verificationStatus === 'VERIFIED_INTERNAL') {
+    score += 25;
+  } else if (offer.verificationStatus === 'PARTNER_PENDING') {
+    score += 10;
+  } else if (offer.verificationStatus === 'PROTOTYPE') {
+    return -2000;
+  } else {
+    score += 5; // UNVERIFIED
+  }
+
+  // 4. Price Freshness & Cache TTL (0 - 15 pts)
+  if (offer.freshness) {
+    if (offer.freshness.isStale) {
+      score -= 20; // Stale cache penalty
+    } else {
+      score += 15; // Fresh rate
+    }
+  } else {
+    score += 10;
+  }
+
+  // 5. Selling Margin Score (0 - 20 pts)
+  const net = offer.pricing?.rawSupplierCostMinor || 1;
+  const selling = offer.pricing?.finalSellingPriceMinor || net;
+  const marginPercent = net > 0 ? ((selling - net) / net) * 100 : 0;
+  if (marginPercent >= 15) score += 20;
+  else if (marginPercent >= 10) score += 15;
+  else if (marginPercent >= 5) score += 10;
+  else score += 5;
+
+  // 6. Cancellation Flexibility Score (0 - 15 pts)
+  const policy = (offer.cancellationPolicy || '').toLowerCase();
+  if (policy.includes('free cancellation')) {
+    score += 15;
+  } else if (policy.includes('refundable')) {
+    score += 10;
+  } else {
+    score += 3;
+  }
+
+  // 7. Fulfilment SLA & Booking Mode Score (0 - 15 pts)
+  if (
+    (offer.fulfillmentMode === 'INSTANT' && offer.bookingCapability === 'INSTANT_RESERVATION') ||
+    offer.canonicalBookingMode === 'INSTANT_API' ||
+    offer.canonicalBookingMode === 'MANUAL_ALLOTMENT'
+  ) {
+    score += 15; // Instant guaranteed allocation
+  } else if (offer.fulfillmentMode === 'MANUAL_CONFIRMATION' || offer.canonicalBookingMode === 'MANUAL_CONFIRMATION') {
+    score += 10;
+  } else {
+    score += 5; // On request
+  }
+
+  // 8. Pin override bonus (if legitimately eligible)
+  if (offer.pinAboveApi && isOfferEligibleForPinOverride(offer)) {
+    score += 50;
+  }
+
+  return score;
+}
+
+export function selectBestSourceOffer(candidates: CanonicalOfferEntity[]): CanonicalOfferEntity | undefined {
+  if (!candidates || candidates.length === 0) return undefined;
+  if (candidates.length === 1) return candidates[0];
+
+  const scored = candidates
+    .filter(o => o.environmentClass !== 'SEED' && o.sellability !== 'DISCOVERY_ONLY')
+    .map(offer => ({
+      offer,
+      score: computeOfferSourceScore(offer)
+    }))
+    .sort((a, b) => {
+      // Primary: Score
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+      // Secondary: Lower final customer selling price wins
+      const priceA = a.offer.pricing?.finalSellingPriceMinor || 0;
+      const priceB = b.offer.pricing?.finalSellingPriceMinor || 0;
+      return priceA - priceB;
+    });
+
+  return scored.length > 0 ? scored[0].offer : candidates[0];
+}
+
+// ----------------------------------------------------------------------------
+// 15. Commercial Entity Classification & Production Sellability Guards (Rule 5 & 13)
+// ----------------------------------------------------------------------------
+
+export type CommercialEntityClassification =
+  | 'VERIFIED_CONTRACT'
+  | 'PRODUCTION_CREDENTIALS_VERIFIED'
+  | 'SANDBOX_APPROVED'
+  | 'CANDIDATE'
+  | 'TARGET_ONLY'
+  | 'EXAMPLE_ONLY'
+  | 'REMOVE_UNVERIFIED';
+
+export interface CommercialEntityAuditRecord {
+  entityId: string;
+  commercialEntityName: string;
+  category: TravelProductSlug | 'MULTI_PRODUCT' | 'PLATFORM';
+  classification: CommercialEntityClassification;
+  legalContractVerified: boolean;
+  productionCredentialsVerified: boolean;
+  sandboxApproved: boolean;
+  canEnterProductionSellable: boolean;
+  auditNotes: string;
+}
+
+export function assertCommercialEntitySellable(
+  entityName: string,
+  classification: CommercialEntityClassification
+): void {
+  if (
+    classification === 'CANDIDATE' ||
+    classification === 'TARGET_ONLY' ||
+    classification === 'EXAMPLE_ONLY' ||
+    classification === 'REMOVE_UNVERIFIED'
+  ) {
+    throw new ArchitecturalInvariantViolationError(
+      'UNVERIFIED_COMMERCIAL_ENTITY',
+      `Commercial Safety Invariant: Entity '${entityName}' is classified as '${classification}'. Unverified or candidate entities are strictly blocked from entering production sellable inventory.`
+    );
+  }
+}
+
+export function assertProviderCanExecuteLiveBooking(provider: {
+  providerId: string;
+  lifecycle: ProviderLifecycle;
+  bookingExecutionSupported: boolean;
+  role: string;
+}): void {
+  if (provider.lifecycle !== 'PRODUCTION_LIVE' || !provider.bookingExecutionSupported) {
+    throw new ArchitecturalInvariantViolationError(
+      'PROVIDER_NOT_PRODUCTION_LIVE',
+      `Provider Certification Invariant: Provider '${provider.providerId}' (lifecycle: ${provider.lifecycle}, role: ${provider.role}) cannot execute live bookings. Live bookings require lifecycle 'PRODUCTION_LIVE' and bookingExecutionSupported = true.`
+    );
+  }
+  if (provider.role === 'CANDIDATE' || provider.role === 'TARGET') {
+    throw new ArchitecturalInvariantViolationError(
+      'CANDIDATE_PROVIDER_BLOCKED_FROM_LIVE',
+      `Provider Certification Invariant: Provider '${provider.providerId}' has role '${provider.role}'. Live production bookings are forbidden until contract and operational certification are complete.`
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 16. Seven-Stage Multi-Dimensional Governance & Operational Readiness (Architecture v2.0)
+// ----------------------------------------------------------------------------
+
+/**
+ * Authoritative 7-Stage Multi-Dimensional Governance Lifecycle:
+ * Explicit separation between Code Safety, Commercial Authority, and Legal Compliance.
+ *
+ * 1. ARCHITECTURE_READY: Canonical schema, route mapping, and pipeline designed
+ * 2. CODE_VERIFIED: Typed adapter, normalization, invariants, and automated tests passing (e.g. 72/72 tests)
+ * 3. SUPPLIER_VERIFIED: Upstream supplier connection, live API sandbox/production handshake verified
+ * 4. COMMERCIAL_APPROVED: Bilateral commercial contract, rate sheet, and margin structure signed off
+ * 5. FINANCE_APPROVED: Settlement currency, payout terms, reconciliation, and payment gateway approved
+ * 6. LEGAL_COMPLIANCE_APPROVED: Regulatory compliance, consumer protection, and insurance/visa licensing approved
+ * 7. PRODUCTION_SELLABLE: ALL 6 preceding gates cleared; offer is authorized to transact real customer money
+ */
+export interface MultiDimensionalReadinessGovernance {
+  architectureReady: boolean;
+  codeVerified: boolean;
+  supplierVerified: boolean;
+  commercialApproved: boolean;
+  financeApproved: boolean;
+  legalComplianceApproved: boolean;
+  productionSellable: boolean;
+}
+
+export interface OperationalReadinessTier extends Partial<MultiDimensionalReadinessGovernance> {
+  systemReady: boolean;        // Schemas, normalizers, deduplication, pricing, backoffice CRUD & tests pass
+  sandboxReady: boolean;       // Sandbox/simulated adapter can execute supported search/recheck/order flows
+  commercialReady: boolean;    // Signed contract, rate sheet, allotment agreement, settlement terms & legal approval
+  productionSellable: boolean; // Both commercialReady = true AND all certification gates cleared
+}
+
+export type InventoryCommercialClass =
+  | 'PLATFORM_CAPABILITY'     // Underlying subsystem capability (e.g. Payload CMS, Bundler engine)
+  | 'SAMPLE_INVENTORY'        // Uncertified sample/demo records for testing and UI demonstration
+  | 'REAL_CONTRACTED'         // Legally verified direct contract with full signed evidence dossier
+  | 'LIVE_API_CERTIFIED';     // Certified external supplier API with production keys and active settlement
+
+export interface CommercialEvidenceDossier {
+  contractReference: string;         // e.g. 'CNT-DIR-HOTEL-2026-A'
+  supplierLegalName: string;         // e.g. 'Boutique Eco-Luxury Resort Operations Ltd'
+  commercialOwner: string;           // e.g. 'Lead Contracting Officer (emp_ops_08)'
+  signedDateIso: string;             // e.g. '2026-09-15T00:00:00Z'
+  effectiveFromIso: string;          // e.g. '2026-10-01T00:00:00Z'
+  effectiveToIso: string;            // e.g. '2026-12-31T23:59:59Z'
+  rateSource: string;                // e.g. 'DIRECT_BILATERAL_RATE_SHEET_2026_Q4'
+  settlementTerms: string;           // e.g. 'NET_30_DAYS_BANK_TRANSFER'
+  cancellationTerms: string;         // e.g. 'Free cancellation up to 48 hours prior to check-in'
+  allotmentRule: string;             // e.g. 'DAILY_COMMITTED_ALLOTMENT_15_KEYS' or 'ON_REQUEST_4H_SLA'
+  operationalContact: string;        // e.g. 'contracts@direct-desk.vacatina.com'
+  documentProofReference: string;    // Document vault hash/reference e.g. 'DOC-VAULT-LK-2026-0881'
+  approvedBy: string;                // User ID / Name of approver
+  approvalTimestampIso: string;      // Timestamp of authorization
+  isEvidenceVerified: boolean;       // Must be explicitly true
+}
+
+export function assertProviderIsProductionSellable(provider: {
+  providerId: string;
+  readinessTier?: OperationalReadinessTier;
+  lifecycle: ProviderLifecycle;
+}): void {
+  if (!provider.readinessTier) {
+    throw new ArchitecturalInvariantViolationError(
+      'MISSING_READINESS_TIER',
+      `Commercial Truth Guard: Provider '${provider.providerId}' has no operational readiness tier defined.`
+    );
+  }
+  if (!provider.readinessTier.commercialReady) {
+    throw new ArchitecturalInvariantViolationError(
+      'PROVIDER_NOT_COMMERCIALLY_READY',
+      `Commercial Truth Guard: Provider '${provider.providerId}' is not COMMERCIAL_READY (requires bilateral contract and legal settlement terms).`
+    );
+  }
+  if (!provider.readinessTier.productionSellable || provider.lifecycle !== 'PRODUCTION_LIVE') {
+    throw new ArchitecturalInvariantViolationError(
+      'PROVIDER_NOT_PRODUCTION_SELLABLE',
+      `Commercial Truth Guard: Provider '${provider.providerId}' is not PRODUCTION_SELLABLE.`
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 17. Provider Operational States (Directive 1)
+// ----------------------------------------------------------------------------
+
+export type ProviderOperationalState =
+  | 'CANDIDATE_PROVIDER'
+  | 'SANDBOX_CONNECTED'
+  | 'MAPPING_VALIDATED'
+  | 'BOOKING_CERTIFIED'
+  | 'LIVE_API_CERTIFIED'
+  | 'SUSPENDED';
+
+// ----------------------------------------------------------------------------
+// 18. Expanded Unified Customer Offer Pattern (Directive 4)
+// ----------------------------------------------------------------------------
+
+export type InventoryFlowState =
+  | 'INITIAL'
+  | 'LOADING'
+  | 'RESULTS'
+  | 'NO_RESULTS'
+  | 'VALIDATION_ERROR'
+  | 'SUPPLIER_ERROR'
+  | 'TIMEOUT'
+  | 'UNAVAILABLE'
+  | 'PRICE_CHANGED'
+  | 'RECHECK_REQUIRED'
+  | 'EXPIRED';
+
+export type CanonicalSourceType = 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+export type CanonicalProductBookingMode = 'INSTANT' | 'REQUEST' | 'ASSISTED';
+export type CanonicalProductAvailabilityMode = 'LIVE' | 'ON_REQUEST' | 'SCHEDULED' | 'STATIC';
+export type PriceStatus = 'VERIFIED' | 'ESTIMATED' | 'PRICE_CHANGED' | 'EXPIRED' | 'STALE';
+export type ConfigurationStatus = 'NOT_CONFIGURED' | 'CONFIGURING' | 'CONFIGURED' | 'CONFIGURATION_COMPLETE';
+export type BookabilityStatus = 'BOOKABLE_NOW' | 'REQUIRES_CONFIGURATION' | 'ON_REQUEST_ONLY' | 'NOT_BOOKABLE';
+
+/**
+ * 17 Mandatory Canonical Product Attributes (Master Inventory Architecture v2.2)
+ * Governs every sellable and discoverable product across the 10 verticals.
+ */
+export interface CanonicalProductRecord {
+  sourceType: 'API' | 'MANUAL' | 'HYBRID' | 'SEED';
+  bookingMode: 'INSTANT' | 'REQUEST' | 'ASSISTED';
+  availabilityMode: 'LIVE' | 'ON_REQUEST' | 'SCHEDULED' | 'STATIC';
+  productType: TravelProductSlug;
+  canonicalId: string;
+  sourceRecordId: string;
+  supplierId?: string;
+  title: string;
+  destinationId: string;
+  price: number;
+  currency: string;
+  priceStatus: PriceStatus;
+  availabilityStatus: AvailabilityState | 'AVAILABLE' | 'LIMITED' | 'ON_REQUEST' | 'SOLD_OUT' | 'UNAVAILABLE';
+  lastCheckedAt: string;
+  requiresRecheck: boolean;
+  configurationStatus: ConfigurationStatus;
+  bookabilityStatus: BookabilityStatus;
+}
+
+export interface UnifiedCustomerOffer {
+  // 1. Identity & Provenance (Authoritative 2-Tier Architecture)
+  offerId: string;
+  productType: TravelProductSlug;
+  sourceType: TopLevelInventorySource;        // 'API' | 'MANUAL' | 'HYBRID' | 'SEED'
+  sourceSubtype?: InventorySourceSubtype;     // 'DIRECT_CONTRACT' | 'MANUAL_SERVICE' | 'CURATED_PACKAGE' | ...
+  inventorySourceType: CanonicalInventorySourceType;
+  providerId: string;
+  supplierId: string;
+  sourceOfferId?: string;
+  sourceReference?: string;
+  title: string;
+
+  // 2. Granular Financial Breakdown (Never collapsed into one ambiguous price)
+  netPrice: number;
+  taxes: number;
+  fees: number;
+  markup: number;
+  discount: number;
+  sellingPrice: number;
+  price: number; // Backward-compatible alias for sellingPrice
+  displayCurrency: string;
+  currency: string; // Backward-compatible alias for displayCurrency
+  settlementCurrency: string;
+  commission?: number;
+
+  // 3. Operational Availability & Quotas
+  availabilityStatus: AvailabilityState;
+  allotment?: number;
+  inventoryQuantity?: number;
+  lastCheckedAt: string;
+  offerExpiresAt?: string;
+
+  // 4. Policies & Fulfillment Conditions
+  cancellationPolicy: string;
+  refundability: 'NON_REFUNDABLE' | 'REFUNDABLE' | 'PARTIALLY_REFUNDABLE';
+  bookingMode: BookingMode;
+  confirmationMode: ConfirmationMode;
+  commercialStatus: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED';
+  sellable: boolean;
+
+  // 5. Explicit 17 Canonical Product Declarations (Master Directive v2.2)
+  canonicalId?: string;
+  sourceRecordId?: string;
+  destinationId?: string;
+  availabilityMode?: CanonicalProductAvailabilityMode;
+  priceStatus?: PriceStatus;
+  requiresRecheck?: boolean;
+  configurationStatus?: ConfigurationStatus;
+  bookabilityStatus?: BookabilityStatus;
+}
+
+export function toUnifiedCustomerOffer(offer: CanonicalOfferEntity): UnifiedCustomerOffer {
+  const isProdSellable =
+    offer.sellability === 'BOOKABLE' &&
+    offer.environmentClass === 'PRODUCTION' &&
+    (offer.providerLifecycle === 'PRODUCTION_LIVE' || offer.providerLifecycle === 'CERTIFIED');
+
+  let source: CanonicalInventorySourceType = (offer.inventorySourceType || offer.canonicalSourceType || '') as CanonicalInventorySourceType;
+  if (!source) {
+    if (offer.sourceType === 'MANUAL' || offer.sourceType === 'DIRECT_CONTRACT' || offer.inventorySource === 'DIRECT_CONTRACT') {
+      source = 'MANUAL_DIRECT';
+    } else if (offer.sourceType === 'MANUAL_SERVICE' || offer.inventorySource === 'MANUAL_INTERNAL' || offer.productType === 'visa') {
+      source = 'INTERNAL_SERVICE';
+    } else if (offer.sourceType === 'HYBRID' || offer.compositionType === 'DYNAMIC_BUNDLE') {
+      source = 'DYNAMIC_PACKAGE';
+    } else if (offer.sourceType === 'SEED' || offer.environmentClass === 'SEED') {
+      source = 'SAMPLE_INVENTORY';
+    } else {
+      source = 'API_SUPPLIER';
+    }
+  }
+  if (source === 'SUPPLIER_API') source = 'API_SUPPLIER';
+  if (source === 'MANUAL_CONTRACT') source = 'MANUAL_DIRECT';
+  if (source === 'MANUAL_SERVICE') source = 'INTERNAL_SERVICE';
+  if (source === 'ACCELERATOR_SEED') source = 'SAMPLE_INVENTORY';
+
+  let topSource: TopLevelInventorySource = 'API';
+  let subSource: InventorySourceSubtype | undefined = undefined;
+
+  if (offer.sourceType === 'SEED' || offer.environmentClass === 'SEED' || source === 'SAMPLE_INVENTORY' || offer.verificationStatus === 'PROTOTYPE') {
+    topSource = 'SEED';
+    subSource = 'PROTOTYPE_SAMPLE';
+  } else if (offer.sourceType === 'HYBRID' || source === 'DYNAMIC_PACKAGE' || offer.compositionType === 'DYNAMIC_BUNDLE') {
+    topSource = 'HYBRID';
+    subSource = 'DYNAMIC_PACKAGE';
+  } else if (
+    offer.sourceType === 'MANUAL' ||
+    offer.sourceType === 'DIRECT_CONTRACT' ||
+    offer.sourceType === 'MANUAL_SERVICE' ||
+    offer.sourceType === 'CURATED_PACKAGE' ||
+    source === 'MANUAL_DIRECT' ||
+    source === 'INTERNAL_SERVICE'
+  ) {
+    topSource = 'MANUAL';
+    if (offer.sourceSubtype) {
+      subSource = offer.sourceSubtype;
+    } else if (offer.sourceType === 'MANUAL_SERVICE' || source === 'INTERNAL_SERVICE' || offer.productType === 'visa') {
+      subSource = 'MANUAL_SERVICE';
+    } else if (offer.sourceType === 'CURATED_PACKAGE' || offer.compositionType === 'CURATED_PACKAGE') {
+      subSource = 'CURATED_PACKAGE';
+    } else {
+      subSource = 'DIRECT_CONTRACT';
+    }
+  } else {
+    topSource = 'API';
+    subSource = 'SUPPLIER_FEED';
+  }
+
+  let commStatus: 'SAMPLE_DEMO' | 'CANDIDATE_UNVERIFIED' | 'COMMERCIALLY_VERIFIED' = 'COMMERCIALLY_VERIFIED';
+  if (offer.environmentClass === 'SEED' || source === 'SAMPLE_INVENTORY') {
+    commStatus = 'SAMPLE_DEMO';
+  } else if (offer.environmentClass === 'SANDBOX' || offer.sourceEnvironment === 'CANDIDATE') {
+    commStatus = 'CANDIDATE_UNVERIFIED';
+  }
+
+  const rawNetMinor = offer.pricing?.rawSupplierCostMinor || 0;
+  const markupMinor = offer.pricing?.platformMarkupMinor || 0;
+  const sellingMinor = offer.pricing?.finalSellingPriceMinor || (rawNetMinor + markupMinor);
+  const taxesMinor = offer.taxesAndFees?.totalTaxMinor || 0;
+  const feesMinor = offer.taxesAndFees?.serviceChargeMinor || 0;
+
+  const netPrice = Math.round(rawNetMinor / 100);
+  const taxes = Math.round(taxesMinor / 100);
+  const fees = Math.round(feesMinor / 100);
+  const markup = Math.round(markupMinor / 100);
+  const sellingPrice = Math.round(sellingMinor / 100);
+
+  const displayCurrency = offer.pricing?.currency || offer.currency || 'LKR';
+  const settlementCurrency = offer.pricing?.rawCurrency || offer.pricing?.currency || displayCurrency;
+
+  const refundability: 'NON_REFUNDABLE' | 'REFUNDABLE' | 'PARTIALLY_REFUNDABLE' =
+    offer.cancellationPolicy?.toLowerCase().includes('free cancellation') ||
+    offer.cancellationPolicy?.toLowerCase().includes('full refund')
+      ? 'REFUNDABLE'
+      : offer.cancellationPolicy?.toLowerCase().includes('non-refundable')
+      ? 'NON_REFUNDABLE'
+      : 'PARTIALLY_REFUNDABLE';
+
+  const canonicalId = offer.canonicalOfferId || offer.offerId || '';
+  const sourceRecordId = offer.sourceOfferId || offer.manualListingId || canonicalId;
+  const destinationId = offer.location?.city || offer.location?.country || 'GLOBAL';
+  const availabilityMode: CanonicalProductAvailabilityMode =
+    offer.availabilityMode === 'SCHEDULED'
+      ? 'SCHEDULED'
+      : offer.availabilityStatus === 'ON_REQUEST' || offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+      ? 'ON_REQUEST'
+      : offer.availabilityStatus === 'MANUAL_AVAILABLE' || offer.sourceType === 'MANUAL'
+      ? 'STATIC'
+      : 'LIVE';
+  const priceStatus: PriceStatus =
+    offer.freshness?.isStale
+      ? 'STALE'
+      : offer.availabilityStatus === 'RATE_EXPIRED' || offer.availabilityStatus === 'EXPIRED'
+      ? 'EXPIRED'
+      : 'VERIFIED';
+  const requiresRecheck = Boolean(offer.requiresRevalidation || offer.freshness?.isStale);
+  const configurationStatus: ConfigurationStatus = 'CONFIGURED';
+  const bookabilityStatus: BookabilityStatus =
+    !isProdSellable
+      ? 'NOT_BOOKABLE'
+      : offer.confirmationMode === 'REQUEST_TO_CONFIRM'
+      ? 'ON_REQUEST_ONLY'
+      : 'BOOKABLE_NOW';
+
+  return {
+    offerId: canonicalId,
+    canonicalId,
+    sourceRecordId,
+    destinationId,
+    availabilityMode,
+    priceStatus,
+    requiresRecheck,
+    configurationStatus,
+    bookabilityStatus,
+    productType: offer.productType,
+    sourceType: topSource,
+    sourceSubtype: subSource,
+    inventorySourceType: source,
+    providerId: offer.providerId || offer.supplierId,
+    supplierId: offer.supplierId,
+    sourceOfferId: offer.sourceOfferId || offer.manualListingId,
+    sourceReference: offer.sourceOfferId || offer.manualListingId || canonicalId,
+    title: offer.title,
+
+    netPrice,
+    taxes,
+    fees,
+    markup,
+    discount: 0,
+    sellingPrice,
+    price: sellingPrice,
+    displayCurrency,
+    currency: displayCurrency,
+    settlementCurrency,
+    commission: offer.b2bPricing?.agencyCommissionMinor ? Math.round(offer.b2bPricing.agencyCommissionMinor / 100) : undefined,
+
+    availabilityStatus: offer.availabilityStatus,
+    allotment: offer.productExtension?.productType === 'hotels' ? 10 : undefined,
+    inventoryQuantity: offer.productExtension?.productType === 'hotels' ? 10 : undefined,
+    lastCheckedAt: offer.freshness?.lastCheckedAtIso || offer.lastCheckedAt || new Date().toISOString(),
+    offerExpiresAt: offer.freshness?.expiresAtIso || offer.validUntil,
+
+    cancellationPolicy: offer.cancellationPolicy || 'Standard supplier cancellation terms apply.',
+    refundability,
+    bookingMode: offer.bookingMode || 'REQUEST_TO_BOOK',
+    confirmationMode: offer.confirmationMode || 'REQUEST_TO_CONFIRM',
+    commercialStatus: offer.commercialStatus || commStatus,
+    sellable: offer.sellable !== undefined ? offer.sellable : isProdSellable
+  };
+}
+
+// ----------------------------------------------------------------------------
+// 19. Dynamic Package Transaction Safety Guard (Directive 7)
+// ----------------------------------------------------------------------------
+
+export function assertPackageAtomicCheckoutReady(pkgOffer: CanonicalOfferEntity): void {
+  if (pkgOffer.productType !== 'packages') return;
+  if (!pkgOffer.components || pkgOffer.components.length === 0) {
+    throw new ArchitecturalInvariantViolationError(
+      'EMPTY_PACKAGE_COMPONENTS',
+      `Dynamic Package '${pkgOffer.canonicalOfferId}' has no components defined.`
+    );
+  }
+  for (const component of pkgOffer.components) {
+    if (
+      component.componentStatus === 'EXPIRED' ||
+      component.componentStatus === 'UNAVAILABLE' ||
+      component.componentStatus === 'NEEDS_ACTION' ||
+      component.lastRevalidationResult === 'UNAVAILABLE'
+    ) {
+      throw new ArchitecturalInvariantViolationError(
+        'PACKAGE_COMPONENT_UNAVAILABLE',
+        `Dynamic Package Safety Guard: Component '${component.componentId}' (${component.productType}) has status '${component.componentStatus}'. Package checkout cannot proceed.`
+      );
+    }
+  }
+}

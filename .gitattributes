@@ -1,0 +1,17 @@
+# ==============================================================================
+# Vacatina GitHub Linguist & Path Attributes
+# Ensures GitHub correctly calculates repository language percentages.
+# Design foundation templates & static HTML skeletons are marked as vendored/generated.
+# ==============================================================================
+
+# Vendor design foundation reference skeletons
+stitch_vacatina_master_ui_foundation/** linguist-vendored
+stitch_vacatina_master_ui_foundation/**/*.html linguist-vendored
+
+# Compiled / Generated web deliverables
+index.html linguist-generated
+screen-04-states.html linguist-generated
+dist/** linguist-generated
+dist-site/** linguist-generated
+public/cards/** linguist-generated
+public/brand/** linguist-vendored

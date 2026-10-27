@@ -1,0 +1,1011 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Vacatina — Master UI Foundation</title>
+<!-- Google Fonts: Plus Jakarta Sans & Inter ONLY (No Google Sans Flex) -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            navy: '#1B1464',
+            white: '#FFFFFF',
+            black: '#000000',
+            surface: '#FAFAFA',
+            dim: '#F5F5F5',
+            border: '#E5E5E5',
+            muted: '#525252',
+            success: '#15803D',
+            warning: '#B45309',
+            error: '#B91C1C',
+            info: '#1D4ED8'
+          }
+        },
+        fontFamily: {
+          headline: ['"Plus Jakarta Sans"', 'sans-serif'],
+          interface: ['"Inter"', 'sans-serif']
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #FAFAFA;
+    color: #000000;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+  }
+  .font-headline {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .font-interface {
+    font-family: 'Inter', sans-serif;
+  }
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  .custom-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scroll::-webkit-scrollbar-track {
+    background: #FAFAFA;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: #E5E5E5;
+    border-radius: 9999px;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #525252;
+  }
+  /* Pure CSS dropdown support as progressive enhancement with JS aria control */
+  .nav-item:hover .nav-dropdown,
+  .nav-item:focus-within .nav-dropdown {
+    display: block;
+  }
+</style>
+<style id="header-responsive-style" class="">@media (max-width: 1023px) { .hide-below-lg { display: none !important; } .trip-bucket-label { display: none !important; } } @media (min-width: 1024px) { .hide-below-lg { display: flex !important; } .trip-bucket-label { display: inline !important; } } @media (max-width: 1439px) { .desktop-nav-responsive { display: none !important; } .hamburger-responsive { display: flex !important; } } @media (min-width: 1440px) { .desktop-nav-responsive { display: flex !important; } .hamburger-responsive { display: none !important; } } .search-tablist { scroll-behavior: smooth; } @media (min-width: 1280px) { .search-tablist { justify-content: space-between; overflow-x: visible; } .search-tab { flex-shrink: 0; } }</style><style id="foundation-final-qa" class="">button,summary{min-height:44px}#trip-bucket-trigger,#mobile-nav-toggle,#mobile-nav-close,#trip-bucket-close,#header-favorites-trigger{min-width:44px}#mobile-nav-drawer a,.nav-dropdown a,header nav>a{min-height:44px;display:flex;align-items:center}.search-panel label:has(input[type=checkbox]){min-height:44px;display:inline-flex;align-items:center;gap:8px}button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #1B1464;outline-offset:2px;box-shadow:0 0 0 2px #FFFFFF}dialog{max-height:calc(100dvh - 32px);overflow-y:auto}
+button,summary{min-height:44px!important}
+button[class*="min-h-[48px]"]{min-height:48px!important}
+@media(max-width:1535px){.desktop-nav-responsive{display:none!important}.hamburger-responsive{display:flex!important}}</style><style id="vacatina-refinement-style" class="">#floating-summary-dock[data-scroll-hidden="true"],#mobile-summary-bar[data-scroll-hidden="true"]{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translateY(140%)!important}#floating-summary-dock,#mobile-summary-bar{transition:opacity 160ms ease,transform 160ms ease,visibility 160ms ease}body{padding-bottom:112px}@media(max-width:639px){body{padding-bottom:88px}}@media(prefers-reduced-motion:reduce){#floating-summary-dock,#mobile-summary-bar{transition:none}}</style><style id="vacatina-runtime-qa">@media(max-width:639px){#floating-summary-dock{display:none!important}}dialog{max-height:calc(100dvh - 32px)!important;overflow-y:auto}</style></head>
+<body class="bg-brand-surface text-brand-black min-h-screen flex flex-col antialiased selection:bg-brand-navy selection:text-white font-interface" onload="var b=document.body;b.querySelectorAll(&quot;#foundation-feedback-dialog,#foundation-airport-options,#multi-city-legs,#trip-item-notice,#draft-trip-preview,#trip-review-panel,#trip-empty-state,[data-details],[data-room-form],[data-visa-guidance]&quot;).forEach(function(e){e.remove();});b.querySelectorAll(&quot;#trip-bucket-drawer article[data-kind=hotel] button&quot;).forEach(function(e){if(e.textContent.trim()===&quot;Change room&quot;)e.remove();});b.querySelectorAll(&quot;#trip-bucket-drawer p&quot;).forEach(function(e){if(e.textContent.trim()===&quot;Example trip and sample prices. Prices and availability are refreshed from connected inventory sources before booking.&quot;)e.remove();});[&quot;nav&quot;,&quot;search&quot;,&quot;trip-base&quot;,&quot;trip-details&quot;,&quot;draft&quot;].forEach(function(k){var s=b.getAttribute(&quot;data-vacatina-&quot;+k);if(s)(new Function(s))();});var q=document.getElementById(&quot;vacatina-runtime-qa&quot;)||document.createElement(&quot;style&quot;);q.id=&quot;vacatina-runtime-qa&quot;;q.textContent=&quot;@media(max-width:639px){#floating-summary-dock{display:none!important}}dialog{max-height:calc(100dvh - 32px)!important;overflow-y:auto}&quot;;document.head.appendChild(q);var n=document.getElementById(&quot;vacatina-refinement-source&quot;);if(n){var c=n.getAttribute(&quot;data-part-1&quot;);if(c)(new Function(c))();}" data-vacatina-nav="(function(){if(window.__vacatinaNavReady)return;window.__vacatinaNavReady=true;const D=document;const byId=id=&gt;D.getElementById(id);let active=null,opener=null,saved=[],overflow='';const visible=e=&gt;e.getClientRects().length&amp;&amp;!e.closest('[inert]');const controls=el=&gt;Array.from(el.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=&quot;-1&quot;])')).filter(visible);function isolate(id,backdropId){active=byId(id);if(!active)return;overflow=D.body.style.overflow;saved=[];Array.from(D.body.children).forEach(el=&gt;{if(el===active||el.contains(active)||el.id===backdropId||['SCRIPT','STYLE','LINK'].includes(el.tagName))return;saved.push([el,el.hasAttribute('inert')]);el.setAttribute('inert','');});D.body.style.overflow='hidden';const first=controls(active)[0];if(first)first.focus();}function restore(){active=null;saved.forEach(([el,was])=&gt;{if(!was)el.removeAttribute('inert');});saved=[];D.body.style.overflow=overflow;}const openNav=window.openMobileNav,closeNav=window.closeMobileNav,openTrip=window.openTripBucket,closeTrip=window.closeTripBucket;window.openMobileNav=function(){if(active) return;opener=D.activeElement;openNav();isolate('mobile-nav-drawer','mobile-nav-backdrop');};window.closeMobileNav=function(){const was=active&amp;&amp;active.id==='mobile-nav-drawer';if(was)restore();closeNav();if(was&amp;&amp;opener&amp;&amp;visible(opener))opener.focus();};window.openTripBucket=function(){if(active&amp;&amp;active.id==='mobile-nav-drawer')window.closeMobileNav();if(active)return;opener=D.activeElement;openTrip();isolate('trip-bucket-drawer','trip-bucket-backdrop');};window.closeTripBucket=function(){const was=active&amp;&amp;active.id==='trip-bucket-drawer';if(was)restore();closeTrip();if(was&amp;&amp;opener&amp;&amp;visible(opener))opener.focus();};D.addEventListener('keydown',function(e){if(active){if(e.key==='Tab'){e.preventDefault();e.stopImmediatePropagation();const list=controls(active);const i=list.indexOf(D.activeElement);const next=e.shiftKey?(i&lt;=0?list.length-1:i-1):(i&lt;0||i===list.length-1?0:i+1);if(list[next])list[next].focus();}else if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();if(active.id==='mobile-nav-drawer')window.closeMobileNav();else window.closeTripBucket();}return;}const trigger=D.querySelector('.dropdown-toggle[aria-expanded=&quot;true&quot;]');if(e.key==='Escape'&amp;&amp;trigger){e.preventDefault();e.stopImmediatePropagation();window.closeAllDropdowns();trigger.focus();return;}const t=e.target.closest('.dropdown-toggle');if(t&amp;&amp;['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();if(t.getAttribute('aria-expanded')!=='true')t.click();const menu=byId(t.getAttribute('aria-controls'));if(menu){const list=controls(menu);const item=e.key==='ArrowUp'?list[list.length-1]:list[0];if(item)item.focus();}return;}const menu=e.target.closest('.nav-dropdown');if(menu&amp;&amp;['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();const list=controls(menu);let i=list.indexOf(D.activeElement);i=e.key==='Home'?0:e.key==='End'?list.length-1:(i+(e.key==='ArrowDown'?1:-1)+list.length)%list.length;if(list[i])list[i].focus();}},true);D.addEventListener('focusin',function(e){if(active&amp;&amp;!active.contains(e.target)){const first=controls(active)[0];if(first)first.focus();}},true);const originalAuth=window.toggleAuthState;function auth(signedIn){originalAuth(signedIn);['mobile-nav-user-banner','mobile-nav-account-links','mobile-nav-user-actions'].forEach(id=&gt;byId(id)&amp;&amp;byId(id).classList.toggle('hidden',!signedIn));if(byId('mobile-nav-guest-actions'))byId('mobile-nav-guest-actions').classList.toggle('hidden',signedIn);}window.toggleAuthState=auth;window.setAuthState=auth;let lang='EN',currency='USD';function locale(){const label=byId('current-locale-display');if(label)label.textContent=lang+' · '+currency;const button=byId('nav-locale-btn');if(button)button.setAttribute('aria-label','Language '+lang+', currency '+currency);D.querySelectorAll('[onclick]').forEach(el=&gt;{const action=el.getAttribute('onclick')||'';if(action.startsWith('selectLanguage('))el.setAttribute('aria-pressed',String(action.includes(&quot;'&quot;+lang+&quot;'&quot;)));if(action.startsWith('selectCurrency('))el.setAttribute('aria-pressed',String(action.includes(&quot;'&quot;+currency+&quot;'&quot;)));});}window.selectLanguage=function(code){lang=code;locale();};window.selectCurrency=function(code){currency=code;locale();};auth(!byId('signed-in-user-menu').classList.contains('hidden'));locale();})();" data-vacatina-search="(function(){if(window.__vacatinaSearchReady)return;window.__vacatinaSearchReady=true;const D=document,$=id=&gt;D.getElementById(id);const inputClass='w-full min-h-[48px] px-3 rounded-[11px] border border-brand-border bg-white text-[14px] focus:ring-2 focus:ring-brand-navy';const buttonClass='min-h-[44px] px-4 py-2 rounded-lg border border-brand-border text-[14px] font-semibold focus:ring-2 focus:ring-brand-navy';const nativeDialog=D.createElement('dialog');nativeDialog.id='foundation-feedback-dialog';nativeDialog.setAttribute('aria-label','Search preview');nativeDialog.style.cssText='max-width:min(92vw,520px);width:100%;border:1px solid #E5E5E5;border-radius:16px;padding:24px;color:#000000;background:#FFFFFF;font-family:Inter,sans-serif';nativeDialog.innerHTML='&lt;h2 id=&quot;feedback-heading&quot; style=&quot;font:700 22px Plus Jakarta Sans,sans-serif;margin:0 0 16px&quot;&gt;&lt;/h2&gt;&lt;div id=&quot;feedback-content&quot;&gt;&lt;/div&gt;&lt;button id=&quot;feedback-close&quot; type=&quot;button&quot; style=&quot;margin-top:20px;min-height:48px;padding:12px 20px;background:#1B1464;color:white;border:0;border-radius:10px&quot;&gt;Close&lt;/button&gt;';D.body.appendChild(nativeDialog);$('feedback-close').onclick=()=&gt;nativeDialog.close();nativeDialog.addEventListener('click',e=&gt;{if(e.target===nativeDialog){const r=nativeDialog.getBoundingClientRect();if(e.clientX&lt;r.left||e.clientX&gt;r.right||e.clientY&lt;r.top||e.clientY&gt;r.bottom)nativeDialog.close();}});window.vacatinaPreviewMessage=function(title,message){$('feedback-heading').textContent=title;$('feedback-content').textContent=message;nativeDialog.showModal();};D.querySelectorAll('.search-tab').forEach(tab=&gt;{tab.childNodes.forEach(n=&gt;{if(n.nodeType===3)n.textContent=n.textContent.replace(/^\s*\d+\.\s*/,'');});});const dates={'flight-dept':'2026-11-12','flight-ret':'2026-11-27','hotel-checkin':'2026-11-12','hotel-checkout':'2026-11-16','visa-date':'2026-11-12','rail-dept':'2026-11-12','act-date':'2026-11-13'};Object.entries(dates).forEach(([id,value])=&gt;{const e=$(id);if(e){e.type='date';e.value=value;const now=new Date();e.min=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');e.removeAttribute('readonly');}});['sightseeing-date','insurance-start','insurance-end'].forEach(id=&gt;{const field=$(id);if(field){field.min=$('flight-dept').min;field.required=true;}});if($('car-datetime')){$('car-datetime').type='datetime-local';$('car-datetime').value='2026-11-12T10:00';$('car-datetime').min=$('flight-dept').min+'T00:00';}D.querySelectorAll('.search-panel input[type=&quot;text&quot;]').forEach(e=&gt;{if(e.id!=='flight-travelers')e.removeAttribute('readonly');});const suggestions=D.createElement('datalist');suggestions.id='foundation-airport-options';['Colombo (CMB) - Bandaranaike','London (LHR) - Heathrow Airport','Dubai (DXB) - Dubai International','Male (MLE) - Velana International'].forEach(v=&gt;{const o=D.createElement('option');o.value=v;suggestions.appendChild(o);});D.body.appendChild(suggestions);['flight-from','flight-to','bundle-origin','pkg-origin'].forEach(id=&gt;$(id)&amp;&amp;$(id).setAttribute('list',suggestions.id));const flightPanel=$('panel-flights'),returnBlock=$('flight-ret').parentElement.parentElement;let journey='Round Trip';const multi=D.createElement('div');multi.id='multi-city-legs';multi.className='hidden space-y-3 my-4';const legs=D.createElement('div');const add=D.createElement('button');add.type='button';add.className=buttonClass;add.textContent='Add flight leg';multi.append(legs,add);returnBlock.parentElement.after(multi);let legCounter=1;function syncRemove(){legs.querySelectorAll('[data-remove-leg]').forEach(b=&gt;b.disabled=legs.children.length&lt;=1);}function addLeg(){if(legs.children.length&gt;=5)return;const n=++legCounter,row=D.createElement('div');row.className='grid grid-cols-1 sm:grid-cols-4 gap-3 p-3 rounded-xl border border-brand-border';row.innerHTML='&lt;div&gt;&lt;label for=&quot;leg-from-'+n+'&quot;&gt;From — Leg '+n+'&lt;/label&gt;&lt;input id=&quot;leg-from-'+n+'&quot; data-leg-field=&quot;from&quot; class=&quot;'+inputClass+'&quot; type=&quot;text&quot; list=&quot;foundation-airport-options&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;label for=&quot;leg-to-'+n+'&quot;&gt;To — Leg '+n+'&lt;/label&gt;&lt;input id=&quot;leg-to-'+n+'&quot; data-leg-field=&quot;to&quot; class=&quot;'+inputClass+'&quot; type=&quot;text&quot; list=&quot;foundation-airport-options&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;label for=&quot;leg-date-'+n+'&quot;&gt;Departure — Leg '+n+'&lt;/label&gt;&lt;input id=&quot;leg-date-'+n+'&quot; data-leg-field=&quot;date&quot; class=&quot;'+inputClass+'&quot; type=&quot;date&quot;&gt;&lt;/div&gt;&lt;button type=&quot;button&quot; data-remove-leg class=&quot;'+buttonClass+'&quot; aria-label=&quot;Remove flight leg '+n+'&quot;&gt;Remove leg&lt;/button&gt;';row.querySelector('button').onclick=()=&gt;{row.remove();syncRemove();};row.querySelector('input[type=&quot;date&quot;]').min=$('flight-dept').min;legs.appendChild(row);syncRemove();}add.onclick=addLeg;addLeg();const journeyButtons=Array.from(flightPanel.querySelectorAll('[role=&quot;radio&quot;]'));function selectJourney(b){journey=b.textContent.trim();journeyButtons.forEach(e=&gt;{const selected=e===b;e.setAttribute('aria-checked',String(selected));e.tabIndex=selected?0:-1;e.classList.toggle('bg-white',selected);e.classList.toggle('shadow-sm',selected);e.classList.toggle('border',selected);e.classList.toggle('font-semibold',selected);});returnBlock.hidden=journey!=='Round Trip';multi.classList.toggle('hidden',journey!=='Multi-City');}journeyButtons.forEach((b,i)=&gt;{b.onclick=()=&gt;selectJourney(b);b.onkeydown=e=&gt;{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();const next=journeyButtons[(i+(e.key==='ArrowRight'?1:2))%3];next.click();next.focus();}};});const required={flights:['flight-from','flight-to','flight-dept','flight-travelers'],hotels:['hotel-destination','hotel-checkin','hotel-checkout','hotel-guests'],visa:['visa-nationality','visa-residence','visa-dest','visa-purpose','visa-date','visa-travelers'],packages:['pkg-dest','pkg-origin','pkg-dates','pkg-travelers','pkg-type'],cars:['car-service','car-pickup','car-dropoff','car-datetime','car-travelers','car-vehicle'],rails:['rail-from','rail-to','rail-dept','rail-travelers','rail-class'],cruises:['cruise-dest','cruise-port','cruise-window','cruise-travelers','cruise-cabin'],activities:['act-dest','act-date','act-travelers'],sightseeing:['sightseeing-dest','sightseeing-date','sightseeing-travelers','sightseeing-type'],insurance:['insurance-region','insurance-residence','insurance-start','insurance-end','insurance-travelers','insurance-type']};Object.entries(required).forEach(([service,ids])=&gt;{const panel=$('panel-'+service);const btn=Array.from(panel.querySelectorAll('button')).find(b=&gt;['Search Flights','Search Hotels','Check Visa Options','Explore Packages','Find Transfers / Cars','Search Trains','Find Cruises','Explore Activities','Explore Sightseeing Tours','Compare Travel Insurance'].includes(b.textContent.trim()));if(!btn)return;btn.onclick=()=&gt;{let fields=ids.map($).filter(Boolean);if(service==='flights'&amp;&amp;journey==='Round Trip')fields.push($('flight-ret'));if(service==='flights'&amp;&amp;journey==='Multi-City')fields=fields.concat(Array.from(legs.querySelectorAll('input')));fields.forEach(f=&gt;f.setCustomValidity(''));const missing=fields.find(f=&gt;!f.value.trim());if(missing){missing.setCustomValidity('Please complete this field.');missing.reportValidity();return;}if(service==='flights'&amp;&amp;$('flight-from').value===$('flight-to').value){$('flight-to').setCustomValidity('Choose a different destination.');$('flight-to').reportValidity();return;}const invalid=fields.find(f=&gt;!f.checkValidity());if(invalid){invalid.reportValidity();return;}const start=service==='flights'?$('flight-dept'):service==='hotels'?$('hotel-checkin'):service==='insurance'?$('insurance-start'):null;const end=service==='flights'&amp;&amp;journey==='Round Trip'?$('flight-ret'):service==='hotels'?$('hotel-checkout'):service==='insurance'?$('insurance-end'):null;if(start&amp;&amp;end&amp;&amp;end.value&lt;=start.value){end.setCustomValidity('Choose an end date after the start date.');end.reportValidity();return;}const original=btn.textContent;btn.disabled=true;btn.textContent='Checking your search…';setTimeout(()=&gt;{btn.disabled=false;btn.textContent=original;const names={flights:'Flights',hotels:'Hotels',visa:'Visa Assistance',packages:'Holiday Packages',cars:'Cars &amp; Transfers',rails:'Rails',cruises:'Cruises',activities:'Activities',sightseeing:'Sightseeing Tours',insurance:'Travel Insurance'};const label=f=&gt;(f.labels?.[0]?.textContent||f.closest('label')?.textContent||'Option').trim();const requested=fields.map(f=&gt;label(f)+': '+f.value).join('; ');const filters=Array.from(panel.querySelectorAll('details input,details select')).filter(f=&gt;!f.disabled&amp;&amp;(f.type==='checkbox'?f.checked:f.value.trim())).map(f=&gt;f.type==='checkbox'?label(f):label(f)+': '+f.value).join('; ');window.vacatinaPreviewMessage(names[service]+' search preview',requested+(filters?' | Filters: '+filters:'')+'. This is a search preview; availability and bookings are not confirmed.'+(service==='insurance'?' Quotes and cover depend on eligibility and policy terms.':''));},350);};});D.querySelectorAll('span').forEach(e=&gt;{if(e.textContent==='Live inventory confirmed during search and before booking hold.')e.textContent='Live prices and availability are refreshed during search and before booking.';if(e.textContent.trim()==='Live Fares')e.textContent='Live Options';});})()" data-vacatina-trip-base="(function(){if(window.__vacatinaTripBaseReady)return;window.__vacatinaTripBaseReady=true;const D=document,$=id=&gt;D.getElementById(id),drawer=$('trip-bucket-drawer'),list=drawer.querySelector('article').parentElement,footer=drawer.lastElementChild;const money=n=&gt;'LKR '+n.toLocaleString('en-US');const cards=()=&gt;Array.from(list.querySelectorAll('article'));cards().forEach((card,i)=&gt;{card.dataset.kind=['flight','hotel','visa'][i];card.dataset.price=String([248500,256500,45000][i]);card.dataset.state=i===2?'needsAction':'ready';});const status=D.createElement('div');status.id='trip-item-notice';status.setAttribute('role','status');status.className='text-[13px] my-3';list.appendChild(status);let deleted=null;function update(){const all=cards(),ready=all.filter(c=&gt;c.dataset.state==='ready'),sum=ready.reduce((s,c)=&gt;s+Number(c.dataset.price||0),0),pending=all.length-ready.length;const summary=footer.firstElementChild;summary.replaceChildren();ready.forEach(card=&gt;{const row=D.createElement('div');row.className='flex justify-between gap-3 text-[13px]';const label=D.createElement('span');label.textContent=card.dataset.kind.toUpperCase()+' · Ready';const price=D.createElement('span');price.className='tabular-nums font-semibold';price.textContent=money(Number(card.dataset.price));row.append(label,price);summary.appendChild(row);});const total=D.createElement('div');total.id='ready-trip-subtotal';total.className='flex justify-between gap-3 pt-3 border-t border-brand-border text-brand-navy font-bold';total.innerHTML='&lt;span&gt;Ready items subtotal&lt;/span&gt;&lt;span class=&quot;tabular-nums&quot;&gt;&lt;/span&gt;';total.lastElementChild.textContent=money(sum);summary.appendChild(total);const warning=footer.children[1];warning.textContent=pending?pending+' item'+(pending===1?' needs':'s need')+' action before checkout can proceed. Incomplete items are excluded.':all.length?'All example items are ready for review.':'Your trip starts here. Choose components to continue.';drawer.querySelector('h2').textContent='Your Trip ('+all.length+' items)';const trigger=$('trip-bucket-trigger');trigger.setAttribute('aria-label','Open Trip Bucket with '+all.length+' items');trigger.querySelectorAll('span').forEach(s=&gt;{if(/^\d+$/.test(s.textContent.trim()))s.textContent=String(all.length);});const dock=$('floating-summary-dock');dock.firstElementChild.innerHTML='&lt;div class=&quot;font-headline font-bold text-[14px]&quot;&gt;Your Trip · '+all.length+'&lt;/div&gt;&lt;div class=&quot;text-[12px] my-1&quot;&gt;'+ready.length+' ready · '+pending+(pending===1?' needs action':' need action')+'&lt;/div&gt;&lt;div class=&quot;text-[13px] font-bold text-brand-navy tabular-nums&quot;&gt;Ready estimate: '+money(sum)+'&lt;/div&gt;';dock.style.width='min(460px,calc(100vw - 40px))';dock.setAttribute('aria-label','Open Trip Overview: '+all.length+' items, ready items estimate '+money(sum));const mobile=$('mobile-summary-bar');mobile.firstElementChild.innerHTML='&lt;span class=&quot;text-[12px] font-semibold&quot;&gt;Trip · '+all.length+' · '+pending+(pending===1?' needs action':' need action')+'&lt;/span&gt;&lt;span class=&quot;text-[14px] font-bold text-brand-navy tabular-nums&quot;&gt;Ready estimate: '+money(sum)+'&lt;/span&gt;';D.querySelectorAll('#mobile-nav-drawer a').forEach(a=&gt;{if(a.textContent.includes('Trip Bucket'))a.querySelectorAll('span').forEach(s=&gt;{if(/^\d+ items$/.test(s.textContent.trim()))s.textContent=all.length+' items';});});D.querySelectorAll('#signed-in-user-menu a').forEach(a=&gt;{if(/^Trip Bucket/.test(a.textContent.trim()))a.textContent='Trip Bucket ('+all.length+')';});}cards().forEach(card=&gt;{const remove=Array.from(card.querySelectorAll('button')).find(b=&gt;b.textContent.trim()==='Remove');remove.onclick=()=&gt;{deleted={card,index:cards().indexOf(card)};card.remove();status.replaceChildren();status.append('Item removed. ');const undo=D.createElement('button');undo.type='button';undo.textContent='Undo remove';undo.className='min-h-[44px] px-3 text-brand-navy font-semibold rounded-lg focus:ring-2 focus:ring-brand-navy';undo.onclick=()=&gt;{list.insertBefore(deleted.card,cards()[deleted.index]||status);deleted=null;status.textContent='Item restored.';update();};status.appendChild(undo);update();};});const oldOpen=window.openTripBucket,oldClose=window.closeTripBucket;window.openTripBucket=function(){oldOpen();$('floating-summary-dock').style.display='none';$('mobile-summary-bar').style.display='none';};window.closeTripBucket=function(){$('floating-summary-dock').style.display='';$('mobile-summary-bar').style.display='';oldClose();};drawer.setAttribute('aria-label','Your Trip');const note=D.createElement('p');note.className='text-[12px] text-brand-muted my-3';note.textContent='Example trip and sample prices. Prices and availability are refreshed from connected inventory sources before booking.';footer.appendChild(note);window.vacatinaTrip={cards,update,money,list,footer,status};update();})()" data-vacatina-trip-details="(function(){if(window.__vacatinaTripDetailsReady)return;window.__vacatinaTripDetailsReady=true;const T=window.vacatinaTrip,D=document;if(!T)return;function button(text,fn){const b=D.createElement('button');b.type='button';b.className='min-h-[44px] px-3 py-2 text-[13px] font-semibold text-brand-navy rounded-lg focus:ring-2 focus:ring-brand-navy';b.textContent=text;b.onclick=fn;return b;}function empty(){let e=D.getElementById('trip-empty-state');if(!T.cards().length&amp;&amp;!e){e=D.createElement('section');e.id='trip-empty-state';e.innerHTML='&lt;h3 class=&quot;font-headline font-bold text-lg&quot;&gt;Your trip starts here&lt;/h3&gt;&lt;p&gt;Add flights, stays and experiences to keep your plans together.&lt;/p&gt;';e.appendChild(button('Build Your Trip',()=&gt;{window.closeTripBucket();window.switchToSearchTab('bundle',true);}));T.list.insertBefore(e,T.status);}else if(T.cards().length&amp;&amp;e)e.remove();}T.empty=empty;T.list.addEventListener('click',()=&gt;setTimeout(empty,0));T.states={draft:'Choose option',ready:'Ready',needsAction:'Needs action',refreshing:'Refreshing price',priceChanged:'Price changed',recheck:'Recheck required',expired:'Offer expired',unavailable:'Unavailable'};T.cards().forEach(card=&gt;{const kind=card.dataset.kind,price=card.querySelector('span.font-headline.tabular-nums'),buttons=Array.from(card.querySelectorAll('button')),remove=buttons.find(b=&gt;b.textContent.trim()==='Remove'),view=buttons.find(b=&gt;b.textContent.trim()==='View details');if(price)price.previousElementSibling.textContent=kind==='visa'?'Sample fee · excluded':'Sample price';if(view){view.setAttribute('aria-expanded','false');view.onclick=()=&gt;{const old=card.querySelector('[data-details]');if(old){old.remove();view.setAttribute('aria-expanded','false');return;}const p=D.createElement('p');p.dataset.details='';p.className='text-[13px] mt-3 pt-3 border-t border-brand-border';p.textContent=card.querySelector('p').textContent+'. '+(kind==='hotel'?'Free cancellation until 09 Nov.':'Change fee may apply.')+' Sample price '+T.money(Number(card.dataset.price))+'. Prices and availability are refreshed before booking.';card.appendChild(p);view.setAttribute('aria-expanded','true');};}if(kind==='hotel'){const change=button('Change room',()=&gt;{if(card.querySelector('[data-room-form]'))return;const box=D.createElement('div');box.dataset.roomForm='';box.className='mt-3 space-y-3';box.innerHTML='&lt;label for=&quot;example-room-choice&quot;&gt;Choose an example room&lt;/label&gt;&lt;select id=&quot;example-room-choice&quot; class=&quot;w-full min-h-[48px] px-3 border border-brand-border rounded-lg&quot;&gt;&lt;option value=&quot;256500&quot;&gt;Deluxe King Room — LKR 256,500&lt;/option&gt;&lt;option value=&quot;260000&quot;&gt;Twin Room — LKR 260,000&lt;/option&gt;&lt;/select&gt;';const select=box.querySelector('select');select.value=card.dataset.price;box.appendChild(button('Confirm room and sample price',()=&gt;{card.dataset.price=select.value;card.querySelector('h3').textContent='Example London Hotel · '+(select.value==='260000'?'Twin Room':'Deluxe King Room');price.textContent=T.money(Number(select.value));card.querySelector('[data-details]')?.remove();view.setAttribute('aria-expanded','false');box.remove();T.status.textContent='Room and sample price updated after your confirmation.';T.update();}));card.appendChild(box);});remove.parentElement.insertBefore(change,remove);remove.parentElement.classList.add('flex-wrap','gap-2');}if(kind==='visa'){buttons.find(b=&gt;b.textContent.trim()==='Complete details').onclick=()=&gt;{if(card.querySelector('[data-visa-guidance]'))return;const p=D.createElement('div');p.dataset.visaGuidance='';p.className='text-[13px] mt-3';p.textContent='Complete nationality, residence, destination and travel details in the visa form. This example remains Needs action and is excluded from ready totals until its requirements are checked. Visa decisions rest with the relevant authority.';p.appendChild(button('Check Visa Options',()=&gt;{window.closeTripBucket();window.switchToSearchTab('visa',true);D.getElementById('visa-nationality').focus();}));card.appendChild(p);};}});const review=Array.from(T.footer.querySelectorAll('button')).find(b=&gt;/^Review Trip/.test(b.textContent.trim()));review.textContent='Review Trip';review.onclick=()=&gt;{D.getElementById('trip-review-panel')?.remove();const block=D.createElement('section');block.id='trip-review-panel';block.setAttribute('aria-label','Trip review');block.className='p-4 my-3 border border-brand-border rounded-xl text-[13px]';const all=T.cards(),ready=all.filter(c=&gt;c.dataset.state==='ready'),pending=all.length-ready.length;const h=D.createElement('h3');h.className='font-headline font-bold text-lg';h.textContent='Review Trip';const p=D.createElement('p');p.textContent=ready.length+' ready · '+pending+(pending===1?' needs action':' need action')+'. Ready subtotal: '+T.money(ready.reduce((s,c)=&gt;s+Number(c.dataset.price),0))+'. '+(pending?'Complete remaining items before checkout.':'Example trip and sample prices; availability is refreshed before booking.');block.append(h,p,button('Back to trip',()=&gt;block.remove()));T.list.insertBefore(block,T.status);block.scrollIntoView({block:'nearest'});};empty();})()" data-vacatina-draft="(function(){if(window.__vacatinaDraftReady)return;window.__vacatinaDraftReady=true;const D=document,T=window.vacatinaTrip,bundle=D.getElementById('panel-bundle');if(!T)return;const cls='min-h-[44px] px-3 py-2 rounded-lg text-[13px] font-semibold text-brand-navy border border-brand-border focus:ring-2 focus:ring-brand-navy';function button(t,f){const b=D.createElement('button');b.type='button';b.className=cls;b.textContent=t;b.onclick=f;return b;}const services={&quot;Flights&quot;:{&quot;kind&quot;:&quot;flight&quot;,&quot;tab&quot;:&quot;flights&quot;,&quot;action&quot;:&quot;Choose flight&quot;},&quot;Hotels&quot;:{&quot;kind&quot;:&quot;hotel&quot;,&quot;tab&quot;:&quot;hotels&quot;,&quot;action&quot;:&quot;Choose hotel&quot;},&quot;Visa Assistance&quot;:{&quot;kind&quot;:&quot;visa&quot;,&quot;tab&quot;:&quot;visa&quot;,&quot;action&quot;:&quot;Complete visa details&quot;},&quot;Cars &amp; Transfers&quot;:{&quot;kind&quot;:&quot;cars&quot;,&quot;tab&quot;:&quot;cars&quot;,&quot;action&quot;:&quot;Choose cars &amp; transfers&quot;},&quot;Activities&quot;:{&quot;kind&quot;:&quot;activity&quot;,&quot;tab&quot;:&quot;activities&quot;,&quot;action&quot;:&quot;Choose activity&quot;},&quot;Sightseeing Tours&quot;:{&quot;kind&quot;:&quot;sightseeing&quot;,&quot;tab&quot;:&quot;sightseeing&quot;,&quot;action&quot;:&quot;Choose sightseeing tour&quot;},&quot;Travel Insurance&quot;:{&quot;kind&quot;:&quot;insurance&quot;,&quot;tab&quot;:&quot;insurance&quot;,&quot;action&quot;:&quot;Choose travel insurance&quot;}};function classifyDraftServices(request){const tour=/(^|[^a-z])(sightseeing|city tour|guided tour|private tour|hop[ -]on[ -]hop[ -]off|landmark tour|heritage tour|scenic tour)([^a-z]|$)/i.test(request);const aliases=[['Flights',/(^|[^a-z])(flights?|airfare|fly)([^a-z]|$)/i],['Hotels',/(^|[^a-z])(hotels?|stays?|accommodation)([^a-z]|$)/i],['Visa Assistance',/(^|[^a-z])(visa|visas)([^a-z]|$)/i],['Cars &amp; Transfers',/(^|[^a-z])(cars?|transfers?|chauffeur|driver hire|car hire|car rental|airport transfer)([^a-z]|$)/i],['Activities',/(^|[^a-z])(activities|activity|adventure|water sports?|food experience|workshops?|wellness|entertainment|theme parks?)([^a-z]|$)/i],['Sightseeing Tours',/(^|[^a-z])(sightseeing|city tour|guided tour|private tour|hop[ -]on[ -]hop[ -]off|landmark tour|heritage tour|scenic tour)([^a-z]|$)/i],['Travel Insurance',/(^|[^a-z])(insurance|travel cover|trip cover)([^a-z]|$)/i]];return aliases.filter(([name,pattern])=&gt;pattern.test(request)||(name==='Activities'&amp;&amp;!tour&amp;&amp;/(^|[^a-z])experiences?([^a-z]|$)/i.test(request))).map(([name])=&gt;name);}const dialog=D.createElement('dialog');dialog.id='draft-trip-preview';dialog.setAttribute('aria-label','Draft trip plan');dialog.style.cssText='width:min(92vw,560px);border:1px solid #E5E5E5;border-radius:16px;padding:24px;background:white;color:black;font-family:Inter,sans-serif';dialog.innerHTML='&lt;h2 class=&quot;font-headline font-bold text-xl mb-4&quot;&gt;Draft trip plan&lt;/h2&gt;&lt;p id=&quot;draft-request&quot; class=&quot;text-[14px] mb-3&quot;&gt;&lt;/p&gt;&lt;div class=&quot;space-y-3&quot;&gt;&lt;label for=&quot;draft-destination&quot;&gt;Destination&lt;/label&gt;&lt;input id=&quot;draft-destination&quot; class=&quot;w-full min-h-[48px] px-3 rounded-lg border border-brand-border&quot; required&gt;&lt;label for=&quot;draft-dates&quot;&gt;Travel dates&lt;/label&gt;&lt;input id=&quot;draft-dates&quot; class=&quot;w-full min-h-[48px] px-3 rounded-lg border border-brand-border&quot; required&gt;&lt;label for=&quot;draft-travelers&quot;&gt;Travelers&lt;/label&gt;&lt;input id=&quot;draft-travelers&quot; class=&quot;w-full min-h-[48px] px-3 rounded-lg border border-brand-border&quot; required&gt;&lt;p id=&quot;draft-services&quot; class=&quot;text-[14px]&quot;&gt;&lt;/p&gt;&lt;p class=&quot;text-[13px]&quot;&gt;Creating this draft replaces the example trip currently shown. Draft components have no confirmed price and are excluded from ready totals. Choose individual options before booking.&lt;/p&gt;&lt;div class=&quot;flex flex-wrap gap-3&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;draft-cancel&quot; class=&quot;'+cls+'&quot;&gt;Keep existing trip&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;draft-create&quot; class=&quot;'+cls+' bg-brand-navy text-white&quot;&gt;Create draft trip&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;';D.body.appendChild(dialog);const $=id=&gt;D.getElementById(id);let plan=null;function open(ai){let components=Array.from(bundle.querySelectorAll('input[type=&quot;checkbox&quot;]')).filter(c=&gt;c.checked).map(c=&gt;c.closest('label').textContent.trim());if(!ai&amp;&amp;!components.length){window.vacatinaPreviewMessage('Choose your services','Select at least one service for your draft trip.');return;}const request=D.querySelector('[aria-label=&quot;AI Trip Prompt&quot;]')?.value.trim()||'';if(ai&amp;&amp;!request){window.vacatinaPreviewMessage('Tell us about your trip','Enter a planning request to start a draft.');return;}if(ai){components=classifyDraftServices(request);if(!components.length){window.vacatinaPreviewMessage('Choose your services','Select the services you need in Build Your Bundle to continue your draft.');return;}}plan={components,origin:$('bundle-origin').value};$('draft-request').textContent=ai?'Planning request: '+request:'Review your draft trip details.';$('draft-destination').value=ai?(request.match(/in ([A-Za-z ]+?)( with|[.]|$)/i)?.[1]||''):$('bundle-dest').value;$('draft-dates').value=$('bundle-dates').value;$('draft-travelers').value=$('bundle-travelers').value;$('draft-services').textContent='Draft services: '+components.join(', ');dialog.showModal();}$('draft-cancel').onclick=()=&gt;dialog.close();$('draft-create').onclick=()=&gt;{const fields=[$('draft-destination'),$('draft-dates'),$('draft-travelers')];const invalid=fields.find(f=&gt;!f.checkValidity());if(invalid){invalid.reportValidity();return;}const dest=fields[0].value,dates=fields[1].value,travelers=fields[2].value;const drawer=$('trip-bucket-drawer');drawer.querySelector('p').textContent=plan.origin+' → '+dest+' · '+dates+' · '+travelers;T.list.replaceChildren();T.status.replaceChildren();plan.components.forEach(name=&gt;{const service=services[name];if(!service)return;const kind=service.kind;const card=D.createElement('article');card.dataset.kind=kind;card.dataset.serviceTab=service.tab;card.dataset.state='draft';card.dataset.price='0';card.className='bg-white border border-brand-border rounded-xl p-4 space-y-3';const type=D.createElement('div');type.className='flex justify-between gap-3 text-[12px] font-semibold';const title=D.createElement('h3');title.className='font-headline font-bold text-[15px]';title.textContent=name+' · '+dest;type.textContent=name.toUpperCase()+' · ○ Choose option';const meta=D.createElement('p');meta.className='text-[13px] text-brand-muted';meta.textContent=dates+' · '+travelers;const note=D.createElement('p');note.className='text-[13px]';note.textContent='Not priced · Excluded from ready subtotal. Choose an option to view its change and cancellation terms.';const actions=D.createElement('div');actions.className='flex flex-wrap gap-3';actions.appendChild(button(service.action,()=&gt;{window.closeTripBucket();window.switchToSearchTab(service.tab,true);}));actions.appendChild(button('Remove',()=&gt;{const index=T.cards().indexOf(card);card.remove();T.status.replaceChildren();T.status.append('Draft item removed. ');T.status.appendChild(button('Undo remove',()=&gt;{T.list.insertBefore(card,T.cards()[index]||T.status);T.status.textContent='Draft item restored.';T.update();T.empty?.();}));T.update();T.empty?.();}));card.append(type,title,meta,note,actions);T.list.appendChild(card);});T.status.textContent='Draft trip created. No prices or bookings are confirmed.';T.list.appendChild(T.status);dialog.close();T.update();T.empty?.();window.openTripBucket();};Array.from(bundle.querySelectorAll('button')).find(b=&gt;b.textContent.trim()==='Build My Trip').onclick=()=&gt;open(false);Array.from(D.querySelectorAll('button')).find(b=&gt;b.textContent.trim()==='Plan My Trip').onclick=()=&gt;open(true);})()">
+<a class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-navy focus:text-white focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy font-medium text-[13px]" href="#main-content">Skip to main content</a>
+<!-- ================= 1. GLOBAL HEADER (76px Sticky White Header) ================= -->
+<header class="sticky top-0 z-40 h-[76px] bg-white border-b border-brand-border px-4 sm:px-6 xl:px-8 flex items-center justify-between">
+<div class="w-full mx-auto flex items-center justify-between gap-2 sm:gap-4 max-w-full">
+<!-- Brand Lockup -->
+<div class="flex items-center gap-4 xl:gap-8 flex-shrink-0">
+<a aria-label="Vacatina Homepage" class="flex flex-col group focus:outline-none focus:ring-2 focus:ring-brand-navy rounded-lg p-1" href="#">
+<div class="flex items-center gap-2">
+<svg aria-hidden="true" class="w-6 h-6 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24">
+<polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>
+</svg>
+<span class="font-headline font-extrabold text-[22px] tracking-tight text-brand-navy leading-none">vacatina</span>
+</div>
+<span class="font-interface text-[10px] text-brand-muted tracking-wider uppercase font-semibold mt-1 leading-none whitespace-nowrap">we treasure your holidays</span>
+</a>
+<!-- Main Desktop Navigation: collapsed below xl (1280px) to prevent clipping -->
+<nav aria-label="Primary Navigation" class="desktop-nav desktop-nav-responsive items-center gap-1 xl:gap-2 flex-shrink-0">
+<a class="px-3 py-2 text-[14px] font-semibold text-brand-navy hover:text-brand-black rounded-lg transition-colors whitespace-nowrap" href="#">Home</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('flights', true); return false;">Flights</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('hotels', true); return false;">Hotels</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('cars', true); return false;">Cars</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('rails', true); return false;">Rails</a>
+<a class="px-3 py-2 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg transition-colors whitespace-nowrap" href="#" onclick="switchToSearchTab('cruises', true); return false;">Cruises</a>
+<!-- Add-Ons Dropdown -->
+<div class="relative nav-item py-2" id="nav-addons-container">
+<button aria-controls="nav-addons-menu" aria-expanded="false" aria-haspopup="true" class="dropdown-toggle flex items-center gap-1 px-3 py-1.5 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap" id="nav-addons-btn" type="button">
+<span class="">More</span>
+<svg aria-hidden="true" class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="nav-addons-btn" class="nav-dropdown hidden absolute top-full left-0 w-60 pt-2 z-50" id="nav-addons-menu" role="menu"><div class="bg-white border border-brand-border rounded-xl shadow-lg py-2"><a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('activities', true); closeAllDropdowns(); return false;" role="menuitem">Activities</a><a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('visa', true); closeAllDropdowns(); return false;" role="menuitem">Visa Assistance</a><a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('sightseeing', true); closeAllDropdowns(); return false;" role="menuitem">Sightseeing Tours</a><a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('packages', true); closeAllDropdowns(); return false;" role="menuitem">Holiday Packages</a><a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('insurance', true); closeAllDropdowns(); return false;" role="menuitem">Travel Insurance</a><div class="my-1.5 border-t border-brand-border"></div><a class="block px-4 py-2 text-[13px] font-semibold text-brand-navy hover:bg-brand-dim transition-colors" href="#" onclick="switchToSearchTab('bundle', true); closeAllDropdowns(); return false;" role="menuitem">Build Your Bundle</a></div></div>
+</div>
+<!-- Resources Dropdown -->
+<div class="relative nav-item py-2" id="nav-resources-container">
+<button aria-controls="nav-resources-menu" aria-expanded="false" aria-haspopup="true" class="dropdown-toggle flex items-center gap-1 px-3 py-1.5 text-[14px] font-medium text-brand-muted hover:text-brand-navy rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap" id="nav-resources-btn" type="button">
+<span class="">Resources</span>
+<svg aria-hidden="true" class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="nav-resources-btn" class="nav-dropdown hidden absolute top-full left-0 w-48 pt-2 z-50" id="nav-resources-menu" role="menu">
+<div class="bg-white border border-brand-border rounded-xl shadow-lg py-2">
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Blog</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">About Us</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">FAQ</a>
+<a class="block px-4 py-2.5 text-[13px] font-medium text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Contact</a>
+</div>
+</div>
+</div>
+</nav>
+</div>
+<!-- Right Utility Cluster -->
+<div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+<!-- Combined Single-Line "EN · USD" Selector Pill -->
+<div class="relative nav-item py-1 flex-shrink-0 hide-below-lg" id="nav-locale-container">
+<button aria-controls="nav-locale-menu" aria-expanded="false" aria-haspopup="true" aria-label="Language EN, currency USD" class="dropdown-toggle flex items-center gap-1.5 text-[13px] font-medium text-brand-black px-2.5 sm:px-3 py-2 rounded-lg border border-brand-border bg-white hover:bg-brand-surface transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0 min-h-[40px]" id="nav-locale-btn" type="button">
+<svg aria-hidden="true" class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="2" x2="22" y1="12" y2="12"></line>
+<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+<span class="whitespace-nowrap font-medium" id="current-locale-display">EN · USD</span>
+<svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="nav-locale-btn" class="nav-dropdown hidden absolute top-full right-0 w-64 pt-2 z-50" id="nav-locale-menu" role="menu">
+<div class="bg-white border border-brand-border rounded-xl shadow-lg p-3 text-[13px]">
+<div class="mb-3">
+<div class="text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1.5">Language</div>
+<div class="grid grid-cols-2 gap-1" id="locale-lang-options">
+<button class="px-2.5 py-1.5 bg-brand-navy text-white rounded text-left font-medium text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectLanguage('EN', this)" type="button" aria-pressed="true">English</button>
+<button class="px-2.5 py-1.5 text-brand-black hover:bg-brand-dim rounded text-left text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectLanguage('SI', this)" type="button" aria-pressed="false">Sinhala</button>
+<button class="px-2.5 py-1.5 text-brand-black hover:bg-brand-dim rounded text-left text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectLanguage('TA', this)" type="button" aria-pressed="false">Tamil</button>
+</div>
+</div>
+<div>
+<div class="text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1.5">Currency</div>
+<div class="grid grid-cols-3 gap-1" id="locale-curr-options">
+<button class="px-2 py-1 bg-brand-navy text-white rounded text-center font-medium text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('USD', this)" type="button" aria-pressed="true">USD $</button>
+<button class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('LKR', this)" type="button" aria-pressed="false">LKR Rs</button>
+<button class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('AED', this)" type="button" aria-pressed="false">AED</button>
+<button class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('EUR', this)" type="button" aria-pressed="false">EUR €</button>
+<button class="px-2 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" onclick="selectCurrency('GBP', this)" type="button" aria-pressed="false">GBP £</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Favorites Icon (♡) with 44px min touch area -->
+<button aria-label="Saved Favorites (0 items)" class="relative p-2 text-brand-muted hover:text-brand-navy rounded-lg hover:bg-brand-dim transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-brand-navy min-h-[40px] min-w-[40px] flex items-center justify-center hide-below-lg" type="button" id="header-favorites-trigger" onclick="closeAllDropdowns();closeMobileNav();vacatinaPreviewMessage('Saved Favorites','No saved items yet. Save ideas to revisit later. Favorites stay separate from your Trip Bucket.');return false;">
+<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<!-- Trip Bucket Header Trigger (Count badge 3) -->
+<button aria-controls="trip-bucket-drawer" aria-expanded="false" aria-label="Open Trip Bucket with 3 items" class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-2 rounded-lg border border-brand-border bg-white hover:bg-brand-surface transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0 min-h-[40px]" id="trip-bucket-trigger" onclick="openTripBucket()" type="button">
+<svg aria-hidden="true" class="w-4 h-4 text-brand-black flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="hidden md:inline font-medium text-[13px] text-brand-black trip-bucket-label">Trip Bucket</span>
+<span class="inline-flex items-center justify-center px-2 py-0.5 text-[11px] font-bold bg-brand-navy text-white rounded-full tabular-nums">3</span>
+</button>
+<!-- Authentication State Cluster: Guest vs Signed-In Switcher without any debug toggle -->
+<div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 hide-below-lg" id="auth-container">
+<!-- Signed-In State (AM Avatar dropdown) -->
+<div class="relative nav-item py-1" id="signed-in-user-menu">
+<button aria-controls="user-account-dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Alex Morgan user profile and account options" class="dropdown-toggle flex items-center gap-2 p-1 pl-2 sm:pl-2.5 rounded-xl border border-brand-border bg-white hover:bg-brand-surface transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy min-h-[40px]" id="user-menu-btn" type="button">
+<span class="w-7 h-7 rounded-full bg-brand-navy text-white font-headline font-bold text-[12px] flex items-center justify-center flex-shrink-0">AM</span>
+<span class="font-medium text-[13px] text-brand-black hidden xl:inline">Alex M.</span>
+<svg aria-hidden="true" class="w-3.5 h-3.5 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div aria-labelledby="user-menu-btn" class="nav-dropdown hidden absolute top-full right-0 w-56 pt-2 z-50" id="user-account-dropdown" role="menu">
+<div class="bg-white border border-brand-border rounded-xl shadow-lg py-2 text-[13px]">
+<div class="px-4 py-2 border-b border-brand-border">
+<p class="font-semibold text-brand-black">Alex Morgan</p>
+<p class="text-[11px] text-brand-muted truncate">alex.morgan@example.com</p>
+</div>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">My Trips</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Visa Applications</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns();closeMobileNav();vacatinaPreviewMessage('Saved Favorites','No saved items yet. Save ideas to revisit later. Favorites stay separate from your Trip Bucket.');return false;" role="menuitem">Saved / Favorites</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="openTripBucket(); closeAllDropdowns(); return false;" role="menuitem">Trip Bucket (3)</a>
+<div class="my-1 border-t border-brand-border"></div>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Profile &amp; Travelers</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Preferences</a>
+<a class="block px-4 py-2 text-brand-black hover:bg-brand-dim transition-colors" href="#" onclick="closeAllDropdowns(); return false;" role="menuitem">Help &amp; Support</a>
+<div class="my-1 border-t border-brand-border"></div>
+<button class="w-full text-left px-4 py-2 text-brand-error hover:bg-brand-dim font-medium transition-colors" onclick="setAuthState(false)" role="menuitem" type="button">Sign Out</button>
+</div>
+</div>
+</div>
+<!-- Guest State (Sign In & Sign Up) -->
+<div class="hidden items-center gap-1 sm:gap-2" id="guest-state-controls">
+<button class="text-[13px] font-semibold text-brand-black hover:text-brand-navy px-2 sm:px-2.5 py-2 transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy rounded-lg min-h-[40px]" onclick="setAuthState(true)" type="button">Sign In</button>
+<button class="bg-brand-navy text-white text-[13px] font-semibold px-3 sm:px-4 py-2 min-h-[40px] rounded-lg hover:opacity-95 whitespace-nowrap transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="setAuthState(true)" type="button">
+            Sign Up for Free
+          </button>
+</div>
+</div>
+<!-- Mobile & Tablet Hamburger Button (displays when primary nav is collapsed below xl) -->
+<button aria-controls="mobile-nav-drawer" aria-expanded="false" aria-label="Open navigation menu" class="hamburger-responsive w-11 h-11 flex items-center justify-center text-brand-navy rounded-lg hover:bg-brand-dim focus:outline-none focus:ring-2 focus:ring-brand-navy flex-shrink-0" id="mobile-nav-toggle" onclick="openMobileNav()" type="button">
+<svg aria-hidden="true" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+</header>
+<!-- ================= MAIN CONTAINER ================= -->
+<main class="flex-grow" id="main-content">
+<!-- ================= 2. HERO (Solid #1B1464 Background, No Photos, No Gradients) ================= -->
+<section aria-labelledby="hero-headline" class="bg-brand-navy text-white pt-14 pb-24 sm:pb-32 px-4 sm:px-6 xl:px-12 text-center relative overflow-hidden">
+<div class="max-w-[1320px] mx-auto flex flex-col items-center">
+<h1 class="font-headline font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight leading-[1.1] max-w-4xl text-white mb-3" id="hero-headline">
+        Book Everything in One Place
+      </h1>
+<p class="font-interface text-white/90 text-base sm:text-lg md:text-xl font-normal max-w-2xl leading-relaxed mb-6">
+        Flights, stays, visa assistance and unforgettable experiences—brought together for your next journey.
+      </p>
+<!-- Secondary Trust Points -->
+<div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[12px] sm:text-[13px] text-white/80 font-medium mb-8">
+<div class="flex items-center gap-1.5">
+<svg aria-hidden="true" class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<span class="">Compare live options</span>
+</div>
+<span class="text-white/40 select-none">•</span>
+<div class="flex items-center gap-1.5">
+<svg aria-hidden="true" class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Transparent pricing</span>
+</div>
+<span class="text-white/40 select-none">•</span>
+<div class="flex items-center gap-1.5">
+<svg aria-hidden="true" class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">One place for your trip</span>
+</div>
+</div>
+<!-- Secondary AI Entry: ✦ Ask Vacatina -->
+<div class="w-full max-w-2xl bg-white/10 border border-white/20 rounded-2xl p-2 sm:p-2.5 flex flex-col sm:flex-row items-center gap-2">
+<div class="flex items-center gap-2 pl-3 flex-1 w-full text-left">
+<span class="text-white font-semibold text-[14px] flex-shrink-0">✦ Ask Vacatina</span>
+<span class="hidden sm:inline text-white/40 select-none">|</span>
+<input aria-label="AI Trip Prompt" class="bg-transparent border-0 text-white placeholder-white/70 text-[13px] font-normal focus:ring-0 focus:outline-none w-full p-0" placeholder="Plan 5 days in Dubai with flights, hotel and visa." type="text" value="Plan 5 days in Dubai with flights, hotel and visa.">
+</div>
+<button class="w-full sm:w-auto bg-white text-brand-navy hover:bg-brand-surface font-semibold text-[13px] px-5 py-2.5 rounded-xl whitespace-nowrap transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-white" type="button">
+          Plan My Trip
+        </button>
+</div>
+</div>
+</section>
+<!-- ================= 3. UNIFIED 9-TAB SEARCH COMMAND CENTER ================= -->
+<section aria-label="Search Command Center" class="max-w-[1320px] mx-auto px-4 sm:px-6 xl:px-8 -mt-16 sm:-mt-20 relative z-20 pb-16" id="search-command-center">
+<div class="bg-white border border-brand-border rounded-[22px] shadow-sm p-4 sm:p-6 md:p-8">
+<!-- 9 Tabs in exact requested order:
+           1. Build Your Bundle
+           2. Flights (Active Default)
+           3. Hotels
+           4. Visa Assistance
+           5. Holiday Packages
+           6. Cars & Transfers
+           7. Rails
+           8. Cruises
+           9. Activities
+      -->
+<div aria-label="Search services" class="search-tablist flex items-center overflow-x-auto pb-4 border-b border-brand-border -mx-2 px-2 sm:mx-0 sm:px-0 mb-6 custom-scroll gap-1" role="tablist"><button aria-controls="panel-bundle" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-bundle" onclick="switchToSearchTab('bundle', true)" role="tab" tabindex="-1" type="button">Build Your Bundle</button><button aria-controls="panel-flights" aria-selected="true" class="search-tab bg-brand-navy text-white text-[12px] sm:text-[13px] font-semibold px-2 sm:px-2.5 xl:px-2.5 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" id="tab-flights" onclick="switchToSearchTab('flights', true)" role="tab" tabindex="0" type="button"><svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">Flights</span></button><button aria-controls="panel-hotels" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-hotels" onclick="switchToSearchTab('hotels', true)" role="tab" tabindex="-1" type="button">Hotels</button><button aria-controls="panel-visa" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-visa" onclick="switchToSearchTab('visa', true)" role="tab" tabindex="-1" type="button">Visa Assistance</button><button aria-controls="panel-packages" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-packages" onclick="switchToSearchTab('packages', true)" role="tab" tabindex="-1" type="button">Holiday Packages</button><button aria-controls="panel-cars" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-cars" onclick="switchToSearchTab('cars', true)" role="tab" tabindex="-1" type="button">Cars &amp; Transfers</button><button aria-controls="panel-rails" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-rails" onclick="switchToSearchTab('rails', true)" role="tab" tabindex="-1" type="button">Rails</button><button aria-controls="panel-cruises" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-cruises" onclick="switchToSearchTab('cruises', true)" role="tab" tabindex="-1" type="button">Cruises</button><button aria-controls="panel-activities" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-activities" onclick="switchToSearchTab('activities', true)" role="tab" tabindex="-1" type="button">Activities</button><button aria-controls="panel-sightseeing" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-sightseeing" onclick="switchToSearchTab('sightseeing', true)" role="tab" tabindex="-1" type="button">Sightseeing Tours</button><button aria-controls="panel-insurance" aria-selected="false" class="search-tab text-brand-muted hover:text-brand-navy text-[12px] sm:text-[13px] font-medium px-2 sm:px-2.5 xl:px-2 py-1.5 sm:py-2 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="tab-insurance" onclick="switchToSearchTab('insurance', true)" role="tab" tabindex="-1" type="button">Travel Insurance</button></div>
+<!-- 1. TABPANEL: BUILD YOUR BUNDLE -->
+<div aria-labelledby="tab-bundle" class="search-panel hidden" id="panel-bundle" role="tabpanel"><form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 mb-4" onsubmit="event.preventDefault();"><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="bundle-origin">Origin</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="bundle-origin" type="text" value="Colombo (CMB)" list="foundation-airport-options"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="bundle-dest">Primary Destination</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="bundle-dest" type="text" value="London, United Kingdom"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="bundle-dates">Travel Dates</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="bundle-dates" type="text" value="12 Nov – 27 Nov 2026"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="bundle-travelers">Travelers</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy cursor-pointer" id="bundle-travelers" type="text" value="1 Adult" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers"></div><div class="lg:col-span-12 mt-2"><span class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-2 ml-1">Select Bundle Components</span><div class="flex flex-wrap items-center gap-3"><label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-brand-border bg-brand-surface cursor-pointer select-none"><input checked="" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" type="checkbox"><span class="text-[13px] font-medium text-brand-black">Flights</span></label><label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-brand-border bg-brand-surface cursor-pointer select-none"><input checked="" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" type="checkbox"><span class="text-[13px] font-medium text-brand-black">Hotels</span></label><label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-brand-border bg-brand-surface cursor-pointer select-none"><input checked="" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" type="checkbox"><span class="text-[13px] font-medium text-brand-black">Visa Assistance</span></label><label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-brand-border bg-brand-surface cursor-pointer select-none"><input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" type="checkbox"><span class="text-[13px] font-medium text-brand-black">Cars &amp; Transfers</span></label><label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-brand-border bg-brand-surface cursor-pointer select-none"><input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" type="checkbox"><span class="text-[13px] font-medium text-brand-black">Activities</span></label><label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-brand-border bg-brand-surface cursor-pointer select-none"><input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" type="checkbox"><span class="text-[13px] font-medium text-brand-black">Sightseeing Tours</span></label><label class="flex items-center gap-2 px-3 py-2 rounded-lg border border-brand-border bg-brand-surface cursor-pointer select-none"><input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" type="checkbox"><span class="text-[13px] font-medium text-brand-black">Travel Insurance</span></label></div></div></form><div class="p-3.5 rounded-xl bg-brand-dim border border-brand-border text-[12px] text-brand-muted flex items-start gap-2.5"><svg aria-hidden="true" class="w-4 h-4 text-brand-navy flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="16" y2="12"></line><line x1="12" x2="12.01" y1="8" y2="8"></line></svg><span class="">Choose services for a draft trip. Configure each option and review its price before booking.</span></div><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4"><div class="text-[12px] text-brand-muted">Live prices and availability are refreshed during search and before booking.</div><button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="openTripBucket()" type="button"><span class="">Build My Trip</span></button></div></div>
+<!-- 2. TABPANEL: FLIGHTS (Active Default) -->
+<div aria-labelledby="tab-flights" class="search-panel block" id="panel-flights" role="tabpanel">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+<!-- Segmented Control for Journey Type (on one line) -->
+<div aria-label="Journey Type" class="inline-flex items-center gap-1.5 p-1 bg-brand-surface border border-brand-border rounded-xl whitespace-nowrap flex-nowrap flex-shrink-0" role="radiogroup">
+<button aria-checked="true" class="bg-white border border-brand-border text-brand-navy font-semibold px-4 py-1.5 rounded-md text-[13px] shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0" role="radio" type="button">Round Trip</button>
+<button aria-checked="false" class="px-3.5 py-1.5 rounded-md text-[13px] font-medium text-brand-muted hover:text-brand-black transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0" role="radio" type="button">One Way</button>
+<button aria-checked="false" class="px-3.5 py-1.5 rounded-md text-[13px] font-medium text-brand-muted hover:text-brand-black transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap flex-shrink-0" role="radio" type="button">Multi-City</button>
+</div>
+<!-- Checkbox Options -->
+<div class="flex items-center gap-5 text-[13px] text-brand-muted font-medium">
+<label class="flex items-center gap-2 cursor-pointer select-none hover:text-brand-black transition-colors">
+<input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" id="flights-direct-only" type="checkbox">
+<span class="">Direct flights only</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer select-none hover:text-brand-black transition-colors">
+<input class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" id="flights-nearby-airports" type="checkbox">
+<span class="">Include nearby airports</span>
+</label>
+</div>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();">
+<!-- From -->
+<div class="lg:col-span-3 relative">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-from">From</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-navy pointer-events-none">
+<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<input class="w-full h-12 min-h-[48px] pl-11 pr-10 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-from" placeholder="City or Airport" type="text" value="Colombo (CMB) - Bandaranaike" list="foundation-airport-options">
+<button aria-label="Swap origin and destination" class="absolute right-2 p-1.5 text-brand-muted hover:text-brand-navy hover:bg-brand-dim rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy z-10" id="flight-swap-btn" onclick="swapFields('flight-from', 'flight-to')" type="button">
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<!-- To -->
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-to">To</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-navy pointer-events-none">
+<svg aria-hidden="true" class="w-5 h-5 rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<input class="w-full h-12 min-h-[48px] pl-11 pr-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-to" placeholder="City or Airport" type="text" value="London (LHR) - Heathrow Airport" list="foundation-airport-options">
+</div>
+</div>
+<!-- Departure -->
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-dept">Departure</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-muted pointer-events-none">
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<input class="w-full h-12 min-h-[48px] pl-10 pr-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-dept" type="date" value="Thu, 12 Nov 2026" min="2026-10-23">
+</div>
+</div>
+<!-- Return -->
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-ret">Return</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-muted pointer-events-none">
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<input class="w-full h-12 min-h-[48px] pl-10 pr-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-ret" type="date" value="Fri, 27 Nov 2026" min="2026-10-23">
+</div>
+</div>
+<!-- Travelers & Cabin -->
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="flight-travelers">Travelers &amp; Cabin</label>
+<div class="relative flex items-center group">
+<div class="absolute left-3.5 text-brand-muted pointer-events-none">
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<input class="w-full h-12 min-h-[48px] pl-10 pr-7 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium cursor-pointer hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy transition-all" id="flight-travelers" readonly="" type="text" value="1 Adult, Economy" aria-haspopup="dialog" role="button" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers &amp; Cabin">
+<div class="absolute right-3 text-brand-muted pointer-events-none">
+<svg aria-hidden="true" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+</div>
+</form><div id="multi-city-legs" class="hidden space-y-3 my-4"><div><div class="grid grid-cols-1 sm:grid-cols-4 gap-3 p-3 rounded-xl border border-brand-border"><div><label for="leg-from-2">From — Leg 2</label><input id="leg-from-2" data-leg-field="from" class="w-full min-h-[48px] px-3 rounded-[11px] border border-brand-border bg-white text-[14px] focus:ring-2 focus:ring-brand-navy" type="text" list="foundation-airport-options"></div><div><label for="leg-to-2">To — Leg 2</label><input id="leg-to-2" data-leg-field="to" class="w-full min-h-[48px] px-3 rounded-[11px] border border-brand-border bg-white text-[14px] focus:ring-2 focus:ring-brand-navy" type="text" list="foundation-airport-options"></div><div><label for="leg-date-2">Departure — Leg 2</label><input id="leg-date-2" data-leg-field="date" class="w-full min-h-[48px] px-3 rounded-[11px] border border-brand-border bg-white text-[14px] focus:ring-2 focus:ring-brand-navy" type="date" min="2026-10-23"></div><button type="button" data-remove-leg="" class="min-h-[44px] px-4 py-2 rounded-lg border border-brand-border text-[14px] font-semibold focus:ring-2 focus:ring-brand-navy" aria-label="Remove flight leg 2" disabled="">Remove leg</button></div></div><button type="button" class="min-h-[44px] px-4 py-2 rounded-lg border border-brand-border text-[14px] font-semibold focus:ring-2 focus:ring-brand-navy">Add flight leg</button></div>
+<!-- Advanced Options Panel (Collapsible) -->
+<div class="mt-4 pt-3 border-t border-brand-border">
+<details class="group">
+<summary class="flex items-center gap-2 cursor-pointer text-[12px] font-semibold text-brand-navy hover:underline list-none">
+<svg aria-hidden="true" class="w-3.5 h-3.5 transform group-open:rotate-90 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Advanced Options (Student Fare, Corporate Code, Promo Code, Group ID)</span>
+</summary>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3 pt-2">
+<div>
+<label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="adv-fare">Special Fare Type</label>
+<select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black focus:border-brand-navy focus:ring-brand-navy" id="adv-fare">
+<option selected="">Regular Public Fare</option>
+<option>Student / Youth Discount</option>
+<option>Senior Traveler Discount</option>
+<option>Seafarer / Marine Fare</option>
+</select>
+</div>
+<div>
+<label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="adv-corp">Corporate Code</label>
+<input class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black placeholder-brand-muted focus:border-brand-navy focus:ring-brand-navy" id="adv-corp" placeholder="e.g. CORP-8840" type="text">
+</div>
+<div>
+<label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="adv-promo">Promo Code</label>
+<input class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black placeholder-brand-muted focus:border-brand-navy focus:ring-brand-navy" id="adv-promo" placeholder="e.g. VACATION26" type="text">
+</div>
+<div>
+<label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="adv-group">Group ID (10+ Pax)</label>
+<input class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black placeholder-brand-muted focus:border-brand-navy focus:ring-brand-navy" id="adv-group" placeholder="e.g. GRP-LHR-26" type="text">
+</div>
+<div><label for="flight-max-stops" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Max Stops</label><select id="flight-max-stops" class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black focus:border-brand-navy focus:ring-brand-navy"><option value="">Any stops</option><option value="nonstop">Nonstop only</option><option value="1">Up to 1 stop</option><option value="2">Up to 2 stops</option></select></div><div><label for="flight-dept-window" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Departure Time</label><select id="flight-dept-window" class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black focus:border-brand-navy focus:ring-brand-navy"><option value="">Any time</option><option value="morning">Morning (06:00 – 12:00)</option><option value="afternoon">Afternoon (12:00 – 18:00)</option><option value="evening">Evening (18:00 – 24:00)</option><option value="night">Night (00:00 – 06:00)</option></select></div></div>
+</details>
+</div>
+<!-- Search Action Row -->
+<div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2.5 text-[12px] sm:text-[13px] text-brand-muted"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-dim border border-brand-border text-brand-black font-semibold text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-brand-success flex-shrink-0"></span>Live Options</span><span class="">Live prices and availability are refreshed during search and before booking.</span></div>
+<button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" type="button">
+<svg aria-hidden="true" class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Search Flights</span>
+</button>
+</div>
+</div>
+<!-- 3. TABPANEL: HOTELS -->
+<div aria-labelledby="tab-hotels" class="search-panel hidden" id="panel-hotels" role="tabpanel">
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();">
+<div class="lg:col-span-5">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="hotel-destination">Destination or Property</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="hotel-destination" placeholder="City, district, or hotel name" type="text" value="London, United Kingdom">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="hotel-checkin">Check-in</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="hotel-checkin" type="date" value="Thu, 12 Nov 2026" min="2026-10-23">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="hotel-checkout">Check-out</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="hotel-checkout" type="date" value="Mon, 16 Nov 2026" min="2026-10-23">
+</div>
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="hotel-guests">Guests &amp; Rooms</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="hotel-guests" type="text" value="2 Adults · 1 Room" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Guests &amp; Rooms">
+</div>
+</form>
+<details class="mt-4 pt-3 border-t border-brand-border group" id="hotel-more-filters"><summary class="text-[12px] font-semibold text-brand-navy cursor-pointer hover:underline list-none flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-brand-navy rounded select-none"><span class="">More Filters</span><svg class="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary><div class="mt-3 p-3.5 bg-brand-surface border border-brand-border rounded-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end"><div><label for="hotel-star-rating" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Star Rating</label><select id="hotel-star-rating" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any Rating</option><option value="3">3 Stars &amp; above</option><option value="4">4 Stars &amp; above</option><option value="5">5 Stars Luxury</option></select></div><div><label for="hotel-property-type" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Property Type</label><select id="hotel-property-type" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any Property</option><option value="hotel">Hotel</option><option value="resort">Resort</option><option value="villa">Villa</option><option value="apartment">Apartment</option></select></div><div><label for="hotel-max-price" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Max Nightly Price</label><input id="hotel-max-price" type="number" min="0" step="1000" placeholder="Optional max" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"></div><div><label for="hotel-guest-rating" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Guest Rating</label><select id="hotel-guest-rating" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any Score</option><option value="8">Good (8.0+)</option><option value="8.5">Very Good (8.5+)</option><option value="9">Wonderful (9.0+)</option></select></div><div class="pb-2"><label class="flex items-center gap-2 cursor-pointer select-none text-[13px] text-brand-black font-medium"><input id="hotel-free-cancellation" type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy"><span class="">Free Cancellation</span></label></div><div class="pb-2"><label class="flex items-center gap-2 cursor-pointer select-none text-[13px] text-brand-black font-medium"><input id="hotel-breakfast-included" type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy"><span class="">Breakfast Included</span></label></div></div></details><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-[12px] text-brand-muted">
+            Live prices and availability are refreshed during search and before booking.
+          </div>
+<button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" type="button">
+<span class="">Search Hotels</span>
+</button>
+</div>
+</div>
+<!-- 4. TABPANEL: VISA ASSISTANCE -->
+<div aria-labelledby="tab-visa" class="search-panel hidden" id="panel-visa" role="tabpanel">
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();">
+<div class="lg:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-nationality">Passport / Nationality</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="visa-nationality" placeholder="Select nationality" type="text" value="Sri Lankan (LK)">
+</div>
+<div class="lg:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-residence">Country of Residence</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="visa-residence" placeholder="Current residence" type="text" value="Sri Lanka (LK)">
+</div>
+<div class="lg:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-dest">Destination</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="visa-dest" placeholder="Where are you traveling?" type="text" value="United Kingdom (UK)">
+</div>
+<div class="lg:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-purpose">Travel Purpose</label>
+<select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="visa-purpose">
+<option selected="">Tourism / Holiday</option>
+<option>Business Visit</option>
+<option>Transit</option>
+<option>Family Visit</option>
+</select>
+</div>
+<div class="lg:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-date">Planned Travel Date</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="visa-date" type="date" value="12 Nov 2026" min="2026-10-23">
+</div>
+<div class="lg:col-span-4">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="visa-travelers">Travelers</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="visa-travelers" type="text" value="1 Adult" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers">
+</div>
+</form>
+<!-- Compliance Disclaimer -->
+<details class="mt-4 pt-3 border-t border-brand-border group" id="visa-more-filters"><summary class="text-[12px] font-semibold text-brand-navy cursor-pointer hover:underline list-none flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-brand-navy rounded select-none"><span class="">More Filters</span><svg class="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary><div class="mt-3 p-3.5 bg-brand-surface border border-brand-border rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-3 items-end"><div><label for="visa-entry-type" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Entry Type</label><select id="visa-entry-type" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any entry type</option><option value="single">Single Entry</option><option value="multiple">Multiple Entry</option></select></div><div><label for="visa-processing-speed" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Processing Preference</label><select id="visa-processing-speed" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Standard Processing</option><option value="priority">Priority / Express (where offered)</option></select></div></div></details><div class="mt-4 p-3.5 rounded-xl bg-brand-surface border border-brand-border text-[12px] text-brand-muted leading-relaxed">
+<p class="font-medium text-brand-black mb-0.5">Official Visa Compliance Notice</p>
+          Requirements vary by passport, nationality, residence, travel purpose and individual circumstances. Final visa decisions are made by the relevant authorities. Vacatina provides application assistance and document guidance.
+        </div>
+<div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-[12px] text-brand-muted">
+            Live prices and availability are refreshed during search and before booking.
+          </div>
+<button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" type="button">
+<span class="">Check Visa Options</span>
+</button>
+</div>
+</div>
+<!-- 5. TABPANEL: HOLIDAY PACKAGES -->
+<div aria-labelledby="tab-packages" class="search-panel hidden" id="panel-packages" role="tabpanel">
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();">
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="pkg-dest">Destination</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="pkg-dest" type="text" value="Dubai &amp; Maldives Combo">
+</div>
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="pkg-origin">Departure City</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="pkg-origin" type="text" value="Colombo (CMB)" list="foundation-airport-options">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="pkg-dates">Travel Dates</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="pkg-dates" type="text" value="Nov 2026 · Flexible">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="pkg-travelers">Travelers</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="pkg-travelers" type="text" value="2 Adults" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="pkg-type">Package Type</label>
+<select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="pkg-type">
+<option selected="">Curated Explorer</option>
+<option>Luxury Getaway</option>
+<option>Family Adventure</option>
+<option>Honeymoon Special</option>
+</select>
+</div>
+</form>
+<details class="mt-4 pt-3 border-t border-brand-border group" id="packages-more-filters"><summary class="text-[12px] font-semibold text-brand-navy cursor-pointer hover:underline list-none flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-brand-navy rounded select-none"><span class="">More Filters</span><svg class="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary><div class="mt-3 p-3.5 bg-brand-surface border border-brand-border rounded-xl grid grid-cols-1 sm:grid-cols-4 gap-3 items-end"><div><label for="pkg-duration" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Duration</label><select id="pkg-duration" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any duration</option><option value="short">1–4 Days</option><option value="week">5–8 Days</option><option value="extended">9+ Days</option></select></div><div><label for="pkg-tier" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Budget / Tier</label><select id="pkg-tier" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any Tier</option><option value="comfort">Comfort</option><option value="premium">Premium</option><option value="luxury">Luxury</option></select></div><div><label for="pkg-party" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Travel Party</label><select id="pkg-party" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any party type</option><option value="family">Family</option><option value="couple">Couple</option><option value="solo">Solo</option></select></div><div class="pb-2"><label class="flex items-center gap-2 cursor-pointer select-none text-[13px] text-brand-black font-medium"><input id="pkg-flexible-dates" type="checkbox" checked="" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy"><span class="">Flexible Dates (±3 Days)</span></label></div></div></details><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-[12px] text-brand-muted">
+            Live prices and availability are refreshed during search and before booking.
+          </div>
+<button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" type="button">
+<span class="">Explore Packages</span>
+</button>
+</div>
+</div>
+<!-- 6. TABPANEL: CARS & TRANSFERS -->
+<div aria-labelledby="tab-cars" class="search-panel hidden" id="panel-cars" role="tabpanel"><form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();"><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="car-service">Service Type</label><select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="car-service"><option selected="">Airport Transfer</option><option>Point-to-Point Transfer</option><option>Car Hire</option><option>Chauffeur/Driver Hire</option></select></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="car-pickup">Pickup Location</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="car-pickup" type="text" value="Heathrow Airport (LHR)"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="car-dropoff">Drop-off Destination</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="car-dropoff" type="text" value="Central London Hotels"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="car-datetime">Pickup Date &amp; Time</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="car-datetime" type="datetime-local" value="2026-11-12T14:30" min="2026-10-23T00:00"></div><div class="lg:col-span-6"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="car-travelers">Travelers</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy cursor-pointer" id="car-travelers" type="text" value="2 Adults" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers"></div><div class="lg:col-span-6"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="car-vehicle">Vehicle &amp; Luggage</label><select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="car-vehicle"><option selected="">Executive Sedan · 2 Bags</option><option>Standard Sedan · 2 Bags</option><option>Premium SUV · 4 Bags</option><option>Minivan (Up to 7 seats) · 6 Bags</option></select></div></form><div class="mt-4 pt-3 border-t border-brand-border"><details class="group"><summary class="flex items-center gap-2 cursor-pointer text-[12px] font-semibold text-brand-navy hover:underline list-none"><svg aria-hidden="true" class="w-3.5 h-3.5 transform group-open:rotate-90 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">More Filters (Flight Number, Child Seat, Meet &amp; Greet, Excess Luggage)</span></summary><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3 pt-2"><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="car-flight-num">Flight Number</label><input class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="car-flight-num" placeholder="e.g. UL 503" type="text"></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="car-child-seat">Child Seat</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="car-child-seat"><option>None</option><option>1 Infant Seat</option><option>1 Booster Seat</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="car-meet-greet">Meet &amp; Greet</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="car-meet-greet"><option>Included (Arrivals Hall)</option><option>Curbside Pickup</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="car-excess-luggage">Luggage Allowance</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="car-excess-luggage"><option>Standard Luggage</option><option>Extra Large Luggage</option></select></div></div></details></div><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4"><div class="text-[12px] text-brand-muted">Live prices and availability are refreshed during search and before booking.</div><button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="vacatinaPreviewMessage('Cars &amp; Transfers preview', 'Your cars and transfers search is ready. This design preview does not provide live availability or take bookings.');" type="button"><span class="">Find Transfers / Cars</span></button></div></div>
+<!-- 7. TABPANEL: RAILS -->
+<div aria-labelledby="tab-rails" class="search-panel hidden" id="panel-rails" role="tabpanel">
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();">
+<div class="lg:col-span-3 relative">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="rail-from">From Station</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 pr-10 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="rail-from" type="text" value="London St Pancras">
+<button aria-label="Swap rail origin and destination" class="absolute right-2 top-8 p-1.5 text-brand-muted hover:text-brand-navy rounded-md" onclick="swapFields('rail-from', 'rail-to')" type="button">
+<svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="rail-to">To Station</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="rail-to" type="text" value="Paris Gare du Nord">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="rail-dept">Departure Date</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="rail-dept" type="date" value="16 Nov 2026" min="2026-10-23">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="rail-travelers">Travelers</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="rail-travelers" type="text" value="1 Adult" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="rail-class">Class</label>
+<select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="rail-class">
+<option selected="">Standard Premier</option>
+<option>Standard Class</option>
+<option>Business Premier</option>
+</select>
+</div>
+</form>
+<details class="mt-4 pt-3 border-t border-brand-border group" id="rail-more-filters"><summary class="text-[12px] font-semibold text-brand-navy cursor-pointer hover:underline list-none flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-brand-navy rounded select-none"><span class="">More Filters</span><svg class="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary><div class="mt-3 p-3.5 bg-brand-surface border border-brand-border rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-3 items-end"><div><label for="rail-direct-only" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Route Type</label><select id="rail-direct-only" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any route (Direct &amp; connections)</option><option value="direct">Direct trains only</option></select></div><div><label for="rail-time-window" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Departure Time</label><select id="rail-time-window" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any time</option><option value="morning">Morning (06:00 – 12:00)</option><option value="afternoon">Afternoon (12:00 – 18:00)</option><option value="evening">Evening (18:00 – 24:00)</option></select></div><div class="pb-2"><label class="flex items-center gap-2 cursor-pointer select-none text-[13px] text-brand-black font-medium"><input id="rail-flexible-ticket" type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy"><span class="">Flexible Ticket Options</span></label></div></div></details><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-[12px] text-brand-muted">
+            Live prices and availability are refreshed during search and before booking.
+          </div>
+<button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" type="button">
+<span class="">Search Trains</span>
+</button>
+</div>
+</div>
+<!-- 8. TABPANEL: CRUISES -->
+<div aria-labelledby="tab-cruises" class="search-panel hidden" id="panel-cruises" role="tabpanel">
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();">
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="cruise-dest">Destination / Region</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="cruise-dest" type="text" value="Mediterranean &amp; Greek Isles">
+</div>
+<div class="lg:col-span-3">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="cruise-port">Departure Port</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="cruise-port" type="text" value="Barcelona, Spain">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="cruise-window">Travel Window</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="cruise-window" type="text" value="Nov 2026">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="cruise-travelers">Travelers</label>
+<input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="cruise-travelers" type="text" value="2 Adults" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers">
+</div>
+<div class="lg:col-span-2">
+<label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="cruise-cabin">Cabin Preference</label>
+<select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="cruise-cabin">
+<option selected="">Balcony Stateroom</option>
+<option>Ocean View</option>
+<option>Interior Stateroom</option>
+<option>Penthouse Suite</option>
+</select>
+</div>
+</form>
+<details class="mt-4 pt-3 border-t border-brand-border group" id="cruise-more-filters"><summary class="text-[12px] font-semibold text-brand-navy cursor-pointer hover:underline list-none flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-brand-navy rounded select-none"><span class="">More Filters</span><svg class="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary><div class="mt-3 p-3.5 bg-brand-surface border border-brand-border rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-3 items-end"><div><label for="cruise-duration" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Cruise Duration</label><select id="cruise-duration" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any Duration</option><option value="short">2–5 Nights</option><option value="week">6–9 Nights</option><option value="long">10+ Nights</option></select></div><div><label for="cruise-line" class="block text-[10px] font-semibold text-brand-muted uppercase mb-1">Cruise Line</label><select id="cruise-line" class="w-full h-11 min-h-[44px] px-3 rounded-lg bg-white border border-brand-border text-[13px] focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="">Any Cruise Line</option><option value="royal">Royal Caribbean</option><option value="celebrity">Celebrity Cruises</option><option value="msc">MSC Cruises</option><option value="norwegian">Norwegian Cruise Line</option></select></div></div></details><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-[12px] text-brand-muted">
+            Live prices and availability are refreshed during search and before booking.
+          </div>
+<button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" type="button">
+<span class="">Find Cruises</span>
+</button>
+</div>
+</div>
+<!-- 9. TABPANEL: ACTIVITIES -->
+<div aria-labelledby="tab-activities" class="search-panel hidden" id="panel-activities" role="tabpanel"><form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();"><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="act-dest">Destination</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="act-dest" type="text" value="London, United Kingdom"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="act-date">Date</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="act-date" type="date" value="2026-11-14" min="2026-10-23"></div><div class="lg:col-span-2"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="act-travelers">Travelers</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy cursor-pointer" id="act-travelers" type="text" value="1 Adult" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="act-category">Category</label><select id="act-category" class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy"><option value="" selected="">All Activities</option><option value="adventure">Adventure &amp; Outdoor</option><option value="water">Water Sports</option><option value="food">Food &amp; Drink</option><option value="wellness">Wellness</option><option value="entertainment">Entertainment</option><option value="workshops">Workshops &amp; Classes</option><option value="nature">Nature Experiences</option><option value="theme-parks">Theme Parks &amp; Experience Tickets</option></select></div></form><div class="mt-4 pt-3 border-t border-brand-border"><details class="group"><summary class="flex items-center gap-2 cursor-pointer text-[12px] font-semibold text-brand-navy hover:underline list-none"><svg aria-hidden="true" class="w-3.5 h-3.5 transform group-open:rotate-90 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">More Filters (Time of Day, Duration, Indoor/Outdoor, Private/Shared, Instant Confirmation, Free Cancellation)</span></summary><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 pt-2"><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="act-time">Time of Day</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="act-time"><option>Any time</option><option>Morning (Before 12pm)</option><option>Afternoon (12pm - 5pm)</option><option>Evening (After 5pm)</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="act-duration">Duration</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="act-duration"><option>Any duration</option><option>Up to 1 hour</option><option>1 to 4 hours</option><option>Full day (4+ hours)</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="act-setting">Setting</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="act-setting"><option>All settings</option><option>Indoor</option><option>Outdoor</option></select></div><div class="lg:col-span-3 flex flex-wrap items-center gap-4 pt-1"><label class="flex items-center gap-2 text-[13px] text-brand-black cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy"> Private Activity</label><label class="flex items-center gap-2 text-[13px] text-brand-black cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" checked=""> Instant Confirmation</label><label class="flex items-center gap-2 text-[13px] text-brand-black cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" checked=""> Free Cancellation</label></div></div></details></div><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4"><div class="text-[12px] text-brand-muted">Live prices and availability are refreshed during search and before booking.</div><button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="vacatinaPreviewMessage('Activities preview', 'Your activities search is ready. This design preview does not provide live availability or take bookings.');" type="button"><span class="">Explore Activities</span></button></div></div>
+<div aria-labelledby="tab-sightseeing" class="search-panel hidden" id="panel-sightseeing" role="tabpanel"><form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();"><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="sightseeing-dest">Destination</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="sightseeing-dest" placeholder="City or destination" type="text" value="London, United Kingdom"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="sightseeing-date">Tour Date</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="sightseeing-date" type="date" value="2026-11-13" min="2026-10-23" required=""></div><div class="lg:col-span-2"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="sightseeing-travelers">Travelers</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy cursor-pointer" id="sightseeing-travelers" type="text" value="1 Adult" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers"></div><div class="lg:col-span-3"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="sightseeing-type">Tour Type</label><select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="sightseeing-type"><option selected="">All Sightseeing Tours</option><option>Guided City Bus Tour</option><option>Historical Walking Tour</option><option>Hop-On Hop-Off Pass</option><option>River Cruise &amp; Monuments</option></select></div></form><div class="mt-4 pt-3 border-t border-brand-border"><details class="group"><summary class="flex items-center gap-2 cursor-pointer text-[12px] font-semibold text-brand-navy hover:underline list-none"><svg aria-hidden="true" class="w-3.5 h-3.5 transform group-open:rotate-90 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">More Filters (Tour Type, Duration, Time of Day, Private/Group, Guide Language, Hotel Pickup, Free Cancellation)</span></summary><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3 pt-2"><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="sightseeing-duration">Duration</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="sightseeing-duration"><option>Any duration</option><option>Half-day (2-4 hrs)</option><option>Full-day (6-8 hrs)</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="sightseeing-time">Time of Day</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="sightseeing-time"><option>Any time</option><option>Morning</option><option>Afternoon</option><option>Night tour</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="sightseeing-lang">Guide Language</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="sightseeing-lang"><option>English</option><option>German</option><option>French</option><option>Spanish</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="sightseeing-format">Tour Format</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="sightseeing-format"><option>Small Group</option><option>Private Tour</option><option>Self-Guided Audio</option></select></div><div class="lg:col-span-4 flex flex-wrap items-center gap-4 pt-1"><label class="flex items-center gap-2 text-[13px] text-brand-black cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" checked=""> Hotel Pickup &amp; Drop-off</label><label class="flex items-center gap-2 text-[13px] text-brand-black cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" checked=""> Free Cancellation</label></div></div></details></div><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4"><div class="text-[12px] text-brand-muted">Live prices and availability are refreshed during search and before booking.</div><button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="vacatinaPreviewMessage('Sightseeing Tours preview', 'Your sightseeing search is ready. This design preview does not provide live availability or take bookings.');" type="button"><span class="">Explore Sightseeing Tours</span></button></div></div><div aria-labelledby="tab-insurance" class="search-panel hidden" id="panel-insurance" role="tabpanel"><form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3" onsubmit="event.preventDefault();"><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="insurance-region">Destination / Coverage Area</label><select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="insurance-region"><option selected="">Worldwide (incl. USA/Canada)</option><option>Worldwide (excl. USA/Canada)</option><option>Asia &amp; Middle East</option><option>Schengen / Europe</option></select></div><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="insurance-residence">Country of Residence</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="insurance-residence" placeholder="e.g. Sri Lanka or United Arab Emirates" type="text" value="Sri Lanka"></div><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="insurance-type">Coverage Type</label><select class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="insurance-type"><option selected="">Comprehensive Platinum</option><option>Standard Gold</option><option>Basic Travel Protection</option></select></div><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="insurance-start">Trip Start Date</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="insurance-start" type="date" value="2026-11-12" min="2026-10-23" required=""></div><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="insurance-end">Trip End Date</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium tabular-nums hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy" id="insurance-end" type="date" value="2026-11-27" min="2026-10-23" required=""></div><div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-brand-muted tracking-wider uppercase mb-1 ml-1" for="insurance-travelers">Travelers</label><input class="w-full h-12 min-h-[48px] px-3.5 rounded-[11px] bg-white border border-brand-border text-brand-black text-[14px] font-medium hover:border-brand-muted focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy cursor-pointer" id="insurance-travelers" type="text" value="1 Adult" role="button" aria-haspopup="dialog" aria-controls="traveler-picker" aria-expanded="false" data-traveler-label="Travelers"></div></form><div class="mt-4 pt-3 border-t border-brand-border"><details class="group"><summary class="flex items-center gap-2 cursor-pointer text-[12px] font-semibold text-brand-navy hover:underline list-none"><svg aria-hidden="true" class="w-3.5 h-3.5 transform group-open:rotate-90 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">More Filters (Trip Duration Model, Medical Coverage, Trip Cancellation, Baggage, Adventure / Sports Cover)</span></summary><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 pt-2"><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="ins-policy-freq">Policy Format</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="ins-policy-freq"><option>Single Trip</option><option>Annual Multi-Trip</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="ins-med-limit">Emergency Medical Limit</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="ins-med-limit"><option>Up to $250,000</option><option>Up to $500,000</option><option>Unlimited Medical</option></select></div><div><label class="block text-[10px] font-semibold text-brand-muted uppercase mb-1" for="ins-cancel-limit">Cancellation &amp; Curtailment</label><select class="w-full h-11 min-h-[44px] px-3 rounded-lg border border-brand-border text-[13px] text-brand-black" id="ins-cancel-limit"><option>Up to $5,000</option><option>Up to $10,000</option><option>Cancel for Any Reason (CFAR)</option></select></div><div class="lg:col-span-3 flex flex-wrap items-center gap-4 pt-1"><label class="flex items-center gap-2 text-[13px] text-brand-black cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy" checked=""> Baggage Loss &amp; Delay Protection</label><label class="flex items-center gap-2 text-[13px] text-brand-black cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded text-brand-navy border-brand-border focus:ring-brand-navy"> Adventure &amp; Extreme Sports Cover</label></div></div></details></div><div class="mt-4 p-3.5 rounded-xl bg-brand-surface border border-brand-border text-[12px] text-brand-muted leading-relaxed">Travel insurance coverage options and eligibility vary by provider, trip duration and resident status. Final policy terms confirmed before purchase.</div><div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4"><div class="text-[12px] text-brand-muted">Live prices and availability are refreshed during search and before booking.</div><button class="w-full sm:w-auto bg-brand-navy text-white text-[14px] font-semibold px-8 py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2 hover:opacity-95 shadow-sm transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="vacatinaPreviewMessage('Travel Insurance preview', 'Your insurance quote search is ready. This design preview does not provide live availability or take bookings.');" type="button"><span class="">Compare Travel Insurance</span></button></div></div></div>
+</section>
+</main>
+<!-- ================= 4. COMPACT TRIP BUCKET (Semantic Desktop Dock Button) ================= -->
+<!-- Specifications: "Your Trip (3 items) • Flight ✓ Hotel ✓ Visa — Needs action • Ready items estimate: LKR 505,000 • Review Trip" -->
+<button aria-controls="trip-bucket-drawer" aria-expanded="false" aria-label="Open Trip Overview: 3 items, ready items estimate LKR 505,000" class="fixed bottom-5 right-5 z-30 hidden sm:flex items-center gap-4 bg-white border border-brand-border rounded-2xl shadow-xl px-4 py-3 max-w-[460px] border-l-4 border-l-brand-navy transition-all duration-200 text-left hover:border-brand-muted focus:outline-none focus:ring-2 focus:ring-brand-navy" id="floating-summary-dock" onclick="openTripBucket()" type="button" style="width: min(460px, -40px + 100vw);" data-scroll-hidden="false">
+<div class="flex-1 min-w-0"><div class="font-headline font-bold text-[14px]">Your Trip · 3</div><div class="text-[12px] my-1">2 ready · 1 needs action</div><div class="text-[13px] font-bold text-brand-navy tabular-nums">Ready estimate: LKR 505,000</div></div>
+<span class="flex-shrink-0 bg-brand-navy text-white text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:opacity-95 transition-opacity whitespace-nowrap">
+    Review Trip
+  </span>
+</button>
+<!-- ================= MOBILE STICKY BOTTOM TRIP BUCKET BAR ================= -->
+<!-- Specifications: "Trip · 3 (1 needs action) | Ready estimate: LKR 505,000" with "Review Trip" button -->
+<aside class="fixed bottom-0 left-0 right-0 z-30 sm:hidden bg-white border-t border-brand-border px-4 py-3 flex items-center justify-between shadow-lg" id="mobile-summary-bar" data-scroll-hidden="false">
+<div class="flex flex-col"><span class="text-[12px] font-semibold">Trip · 3 · 1 needs action</span><span class="text-[14px] font-bold text-brand-navy tabular-nums">Ready estimate: LKR 505,000</span></div>
+<button class="bg-brand-navy text-white text-[13px] font-semibold px-4 min-h-[44px] rounded-xl flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-brand-navy whitespace-nowrap" onclick="openTripBucket()" type="button">
+<span class="">Review Trip</span>
+</button>
+</aside>
+<!-- ================= TRIP BUCKET OVERLAY DRAWER / SLIDE-OVER (440-480px width) ================= -->
+<div aria-hidden="true" class="fixed inset-0 bg-black/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" id="trip-bucket-backdrop" onclick="closeTripBucket()"></div>
+<div aria-hidden="true" aria-label="Your Trip" aria-modal="true" class="fixed inset-y-0 right-0 z-50 w-full sm:w-[460px] bg-white shadow-2xl flex flex-col transform translate-x-full pointer-events-none transition-transform duration-300 ease-in-out border-l border-brand-border" id="trip-bucket-drawer" inert="" role="dialog">
+<!-- Drawer Header -->
+<div class="px-5 py-4 border-b border-brand-border bg-white flex items-center justify-between flex-shrink-0">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline font-bold text-[19px] text-brand-black tracking-tight leading-snug" id="trip-bucket-title">Your Trip (3 items)</h2>
+</div>
+<p class="font-interface text-[12px] text-brand-muted font-medium mt-0.5 tabular-nums">CMB → LHR · 12 Nov – 27 Nov 2026 · 1 Adult</p>
+</div>
+<button aria-label="Close Trip Bucket drawer" class="p-2 rounded-lg text-brand-muted hover:text-brand-black hover:bg-brand-dim transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy flex-shrink-0" id="trip-bucket-close" onclick="closeTripBucket()" type="button">
+<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<!-- Drawer Items Container -->
+<div class="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scroll bg-brand-surface" id="drawer-items-container">
+<!-- Item 1: FLIGHT — Ready -->
+<article class="bg-white border border-brand-border rounded-xl p-4 shadow-sm hover:border-brand-muted transition-colors" data-kind="flight" data-price="248500" data-state="ready">
+<div class="flex items-start justify-between gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-brand-dim text-brand-navy flex-shrink-0 whitespace-nowrap">FLIGHT</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-brand-success border border-emerald-200 flex-shrink-0 whitespace-nowrap">
+<svg aria-hidden="true" class="w-3 h-3 text-brand-success flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<span class="">Ready</span>
+</span>
+</div>
+<h3 class="font-headline font-bold text-[15px] text-brand-black leading-snug">Colombo (CMB) → London (LHR)</h3>
+<p class="text-[12px] text-brand-muted mt-0.5">Example Airline · Economy Flex · Thu, 12 Nov 2026</p>
+<div class="mt-3 pt-3 border-t border-brand-border flex items-center justify-between gap-3">
+<div class="min-w-0">
+<span class="text-[10px] font-medium text-brand-muted block">Policy</span>
+<span class="text-[11px] text-brand-black font-medium block truncate">Change fee may apply</span>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="text-[10px] font-medium text-brand-muted block whitespace-nowrap">Sample price</span>
+<span class="font-headline font-bold text-[15px] text-brand-black tabular-nums whitespace-nowrap">LKR 248,500</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-brand-border flex items-center justify-between text-[12px]">
+<button class="font-semibold text-brand-navy hover:underline focus:outline-none whitespace-nowrap" type="button" aria-expanded="false">View details</button>
+<button class="text-brand-muted hover:text-brand-black focus:outline-none whitespace-nowrap" type="button">Remove</button>
+</div>
+</article>
+<!-- Item 2: HOTEL — Ready -->
+<article class="bg-white border border-brand-border rounded-xl p-4 shadow-sm hover:border-brand-muted transition-colors" data-kind="hotel" data-price="256500" data-state="ready">
+<div class="flex items-start justify-between gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-brand-dim text-brand-navy flex-shrink-0 whitespace-nowrap">HOTEL</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-brand-success border border-emerald-200 flex-shrink-0 whitespace-nowrap">
+<svg aria-hidden="true" class="w-3 h-3 text-brand-success flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<span class="">Ready</span>
+</span>
+</div>
+<h3 class="font-headline font-bold text-[15px] text-brand-black leading-snug">Example London Hotel · Deluxe King Room</h3>
+<p class="text-[12px] text-brand-muted mt-0.5 tabular-nums">12 Nov – 16 Nov 2026 · 1 Room · 1 Adult</p>
+<div class="mt-3 pt-3 border-t border-brand-border flex items-center justify-between gap-3">
+<div class="min-w-0">
+<span class="text-[10px] font-medium text-brand-muted block">Policy</span>
+<span class="text-[11px] text-brand-success font-semibold block truncate">Free cancellation until 09 Nov</span>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="text-[10px] font-medium text-brand-muted block whitespace-nowrap">Sample price</span>
+<span class="font-headline font-bold text-[15px] text-brand-black tabular-nums whitespace-nowrap">LKR 256,500</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-brand-border flex items-center justify-between text-[12px] flex-wrap gap-2">
+<button class="font-semibold text-brand-navy hover:underline focus:outline-none whitespace-nowrap" type="button" aria-expanded="false">View details</button>
+<button type="button" class="min-h-[44px] px-3 py-2 text-[13px] font-semibold text-brand-navy rounded-lg focus:ring-2 focus:ring-brand-navy">Change room</button><button class="text-brand-muted hover:text-brand-black focus:outline-none whitespace-nowrap" type="button">Remove</button>
+</div>
+</article>
+<!-- Item 3: VISA ASSISTANCE — Needs Action -->
+<article class="bg-white border border-brand-warning/40 rounded-xl p-4 shadow-sm hover:border-brand-warning transition-colors" data-kind="visa" data-price="45000" data-state="needsAction">
+<div class="flex items-start justify-between gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-brand-dim text-brand-navy flex-shrink-0 whitespace-nowrap">VISA ASSISTANCE</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-brand-warning border border-amber-200 flex-shrink-0 whitespace-nowrap">
+<svg aria-hidden="true" class="w-3 h-3 text-brand-warning flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+<span class="">Needs action</span>
+</span>
+</div>
+<h3 class="font-headline font-bold text-[15px] text-brand-black leading-snug">United Kingdom · 1 Traveler</h3>
+<p class="text-[12px] text-brand-warning font-medium mt-0.5">Complete applicant details before checkout.</p>
+<div class="mt-3 pt-3 border-t border-brand-border flex items-center justify-between gap-3">
+<div class="min-w-0">
+<span class="text-[10px] font-medium text-brand-muted block">Status</span>
+<span class="text-[11px] text-brand-black font-medium block truncate">Pending Document Review</span>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="text-[10px] font-medium text-brand-muted block whitespace-nowrap">Sample fee · excluded</span>
+<span class="font-headline font-bold text-[15px] text-brand-black tabular-nums whitespace-nowrap">LKR 45,000</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-brand-border flex items-center justify-between text-[12px]">
+<button class="font-semibold text-brand-navy hover:underline focus:outline-none whitespace-nowrap" type="button">Complete details</button>
+<button class="text-brand-muted hover:text-brand-black focus:outline-none whitespace-nowrap" type="button">Remove</button>
+</div>
+</article>
+<div id="trip-item-notice" role="status" class="text-[13px] my-3"></div></div>
+<!-- Drawer Footer: Precise Calculation (248,500 + 256,500 = 505,000) -->
+<div class="p-5 border-t border-brand-border bg-white flex-shrink-0">
+<div class="space-y-1.5 mb-3 text-[13px]"><div class="flex justify-between gap-3 text-[13px]"><span>FLIGHT · Ready</span><span class="tabular-nums font-semibold">LKR 248,500</span></div><div class="flex justify-between gap-3 text-[13px]"><span>HOTEL · Ready</span><span class="tabular-nums font-semibold">LKR 256,500</span></div><div id="ready-trip-subtotal" class="flex justify-between gap-3 pt-3 border-t border-brand-border text-brand-navy font-bold"><span>Ready items subtotal</span><span class="tabular-nums">LKR 505,000</span></div></div>
+<div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-brand-warning text-[12px] font-medium mb-4 flex items-center gap-2">1 item needs action before checkout can proceed. Incomplete items are excluded.</div>
+<button class="w-full py-3.5 bg-brand-navy text-white text-[14px] font-semibold rounded-xl hover:opacity-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-brand-navy focus:ring-offset-2" type="button">Review Trip</button>
+<p class="text-[12px] text-brand-muted my-3">Example trip and sample prices. Prices and availability are refreshed from connected inventory sources before booking.</p></div>
+</div>
+<!-- ================= MOBILE NAVIGATION DRAWER ================= -->
+<div aria-hidden="true" class="fixed inset-0 bg-black/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" id="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+<div aria-hidden="true" aria-label="Navigation Menu" aria-modal="true" class="fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-white shadow-2xl flex flex-col transform -translate-x-full pointer-events-none transition-transform duration-300 ease-in-out border-r border-brand-border" id="mobile-nav-drawer" inert="" role="dialog">
+<div class="p-4 border-b border-brand-border flex items-center justify-between flex-shrink-0">
+<div class="flex items-center gap-2">
+<svg aria-hidden="true" class="w-5 h-5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
+<span class="font-headline font-extrabold text-[18px] text-brand-navy leading-none">vacatina</span>
+</div>
+<button aria-label="Close navigation menu" class="p-2 rounded-lg text-brand-muted hover:text-brand-black hover:bg-brand-dim transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" id="mobile-nav-close" onclick="closeMobileNav()" type="button">
+<svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<!-- Authenticated user info block in mobile nav -->
+<div class="px-4 py-3 bg-brand-surface border-b border-brand-border flex-shrink-0" id="mobile-nav-user-banner">
+<div class="flex items-center gap-2.5">
+<span class="w-8 h-8 rounded-full bg-brand-navy text-white font-headline font-bold text-[13px] flex items-center justify-center flex-shrink-0">AM</span>
+<div class="min-w-0">
+<p class="font-semibold text-brand-black text-[13px] truncate">Alex Morgan</p>
+<p class="text-[11px] text-brand-muted truncate">alex.morgan@example.com</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto p-4 space-y-1 text-[14px] font-medium text-brand-black custom-scroll"><div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider px-3 mb-1.5">Quick Actions</div><a class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-black" href="#" onclick="closeMobileNav(); openTripBucket(); return false;" aria-label="Trip Bucket: 3 items, 1 needs action"><div class="flex items-center gap-2"><svg aria-hidden="true" class="w-4 h-4 text-brand-black flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">Trip Bucket</span></div><span class="px-2 py-0.5 text-[11px] font-bold bg-brand-navy text-white rounded-full tabular-nums">3 items</span></a><a class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeAllDropdowns();closeMobileNav();vacatinaPreviewMessage('Saved Favorites','No saved items yet. Save ideas to revisit later. Favorites stay separate from your Trip Bucket.');return false;" aria-label="Saved Favorites: 0 items"><div class="flex items-center gap-2"><svg aria-hidden="true" class="w-4 h-4 text-brand-muted flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="">Saved / Favorites</span></div><span class="text-[12px] text-brand-muted font-normal">0</span></a><div class="my-2 border-t border-brand-border"></div><div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider px-3 mb-1.5">Services</div><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors font-semibold text-brand-navy" href="#" onclick="closeMobileNav();">Home</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('flights', true);">Flights</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('hotels', true);">Hotels</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('cars', true);">Cars &amp; Transfers</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('rails', true);">Rails</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('cruises', true);">Cruises</a><div class="my-2 border-t border-brand-border"></div><div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider px-3 mb-1.5">More</div><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('activities', true);">Activities</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('visa', true);">Visa Assistance</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('sightseeing', true);">Sightseeing Tours</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('packages', true);">Holiday Packages</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav(); switchToSearchTab('insurance', true);">Travel Insurance</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-navy font-semibold" href="#" onclick="closeMobileNav(); switchToSearchTab('bundle', true);">Build Your Bundle</a><div class="my-2 border-t border-brand-border"></div><div id="mobile-nav-account-links" class=""><div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider px-3 mb-1.5">My Account</div><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">Profile &amp; Travelers</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">My Trips</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">Visa Applications</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">Preferences</a><div class="my-2 border-t border-brand-border"></div></div><div class="px-3 py-2 bg-brand-surface rounded-xl border border-brand-border mb-2"><div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1.5">Language</div><div class="grid grid-cols-3 gap-1 mb-3"><button aria-label="Set language to English" class="px-2 py-1.5 bg-brand-navy text-white rounded text-center font-medium text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectLanguage('EN', this)" aria-pressed="true">English</button><button aria-label="Set language to Sinhala" class="px-2 py-1.5 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectLanguage('SI', this)" aria-pressed="false">Sinhala</button><button aria-label="Set language to Tamil" class="px-2 py-1.5 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectLanguage('TA', this)" aria-pressed="false">Tamil</button></div><div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1.5">Currency</div><div class="grid grid-cols-3 gap-1"><button aria-label="Set currency to USD" class="px-1.5 py-1 bg-brand-navy text-white rounded text-center font-medium text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectCurrency('USD', this)" aria-pressed="true">USD $</button><button aria-label="Set currency to LKR" class="px-1.5 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectCurrency('LKR', this)" aria-pressed="false">LKR Rs</button><button aria-label="Set currency to AED" class="px-1.5 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectCurrency('AED', this)" aria-pressed="false">AED</button><button aria-label="Set currency to EUR" class="px-1.5 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectCurrency('EUR', this)" aria-pressed="false">EUR €</button><button aria-label="Set currency to GBP" class="px-1.5 py-1 text-brand-black hover:bg-brand-dim rounded text-center text-[12px] focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors" type="button" onclick="selectCurrency('GBP', this)" aria-pressed="false">GBP £</button></div></div><div class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider px-3 mb-1.5">Resources</div><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">Blog</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">About Us</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">FAQ</a><a class="block px-3 py-2 rounded-lg hover:bg-brand-dim transition-colors text-brand-muted hover:text-brand-black" href="#" onclick="closeMobileNav();">Contact Us</a></nav>
+<div class="p-4 border-t border-brand-border flex-shrink-0 bg-white" id="mobile-nav-auth-actions"><!-- Logged-in mobile actions -->
+<div class="space-y-2" id="mobile-nav-user-actions">
+  <button aria-label="Sign out of your Vacatina account" class="w-full py-2.5 text-brand-error text-[13px] font-semibold rounded-lg border border-brand-border hover:bg-brand-dim transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleAuthState(false); closeMobileNav();" type="button">Sign Out</button>
+</div>
+<!-- Guest mobile actions -->
+<div class="hidden space-y-2" id="mobile-nav-guest-actions">
+  <button aria-label="Sign up for free Vacatina account" class="w-full py-2.5 bg-brand-navy text-white text-[13px] font-semibold rounded-lg hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy" onclick="toggleAuthState(true); closeMobileNav();" type="button">Sign Up for Free</button>
+  <button aria-label="Sign into your account" class="w-full py-2.5 text-brand-black text-[13px] font-semibold rounded-lg border border-brand-border hover:bg-brand-dim focus:outline-none focus:ring-2 focus:ring-brand-navy" onclick="toggleAuthState(true); closeMobileNav();" type="button">Sign In</button>
+</div></div>
+</div>
+<!-- ================= JAVASCRIPT CONTROLLERS ================= -->
+<script>
+  function switchToSearchTab(tabName, focusTab = false) {
+    const tabs = document.querySelectorAll('.search-tab');
+    const panels = document.querySelectorAll('.search-panel');
+    
+    tabs.forEach(tab => {
+      const isTarget = tab.id === 'tab-' + tabName;
+      tab.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+      tab.setAttribute('tabindex', isTarget ? '0' : '-1');
+      if (isTarget) {
+        tab.className = 'search-tab bg-brand-navy text-white text-[13px] font-semibold px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-brand-navy transition-colors';
+        if (focusTab) tab.focus();
+      } else {
+        tab.className = 'search-tab text-brand-muted hover:text-brand-navy text-[13px] font-medium px-3.5 py-2.5 rounded-lg hover:bg-brand-dim whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-brand-navy';
+      }
+    });
+
+    panels.forEach(panel => {
+      if (panel.id === 'panel-' + tabName) {
+        panel.classList.remove('hidden');
+        panel.classList.add('block');
+      } else {
+        panel.classList.remove('block');
+        panel.classList.add('hidden');
+      }
+    });
+  }
+
+  function swapFields(fromId, toId) {
+    const fromEl = document.getElementById(fromId);
+    const toEl = document.getElementById(toId);
+    if (fromEl && toEl) {
+      const temp = fromEl.value;
+      fromEl.value = toEl.value;
+      toEl.value = temp;
+    }
+  }
+
+  // Auth state toggler (demonstrates Guest vs Signed-in)
+  function toggleAuthState(signedIn) {
+    const userMenu = document.getElementById('signed-in-user-menu');
+    const guestControls = document.getElementById('guest-state-controls');
+    if (signedIn) {
+      userMenu.classList.remove('hidden');
+      guestControls.classList.add('hidden');
+      guestControls.classList.remove('flex');
+    } else {
+      userMenu.classList.add('hidden');
+      guestControls.classList.remove('hidden');
+      guestControls.classList.add('flex');
+    }
+    closeAllDropdowns();
+  }
+
+  let lastFocusedTrigger = null;
+
+  function openTripBucket() {
+    lastFocusedTrigger = document.activeElement;
+    const drawer = document.getElementById('trip-bucket-drawer');
+    const backdrop = document.getElementById('trip-bucket-backdrop');
+    const trigger = document.getElementById('trip-bucket-trigger');
+    const dock = document.getElementById('floating-summary-dock');
+    const main = document.getElementById('main-content');
+
+    if (drawer && backdrop) {
+      drawer.classList.remove('translate-x-full', 'pointer-events-none');
+      drawer.removeAttribute('inert');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      drawer.setAttribute('aria-hidden', 'false');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      if (dock) dock.classList.add('hidden'); // When drawer is OPEN, dock is HIDDEN
+      if (main) main.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = 'hidden';
+      const closeBtn = document.getElementById('trip-bucket-close');
+      if (closeBtn) closeBtn.focus();
+    }
+  }
+
+  function closeTripBucket() {
+    const drawer = document.getElementById('trip-bucket-drawer');
+    const backdrop = document.getElementById('trip-bucket-backdrop');
+    const trigger = document.getElementById('trip-bucket-trigger');
+    const dock = document.getElementById('floating-summary-dock');
+    const main = document.getElementById('main-content');
+
+    if (drawer && backdrop) {
+      drawer.classList.add('translate-x-full', 'pointer-events-none');
+      drawer.setAttribute('inert', '');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      drawer.setAttribute('aria-hidden', 'true');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      if (dock) dock.classList.remove('hidden'); // When drawer is CLOSED, dock reappears on desktop
+      if (main) main.removeAttribute('aria-hidden');
+      document.body.style.overflow = '';
+      if (lastFocusedTrigger && typeof lastFocusedTrigger.focus === 'function') {
+        lastFocusedTrigger.focus();
+      } else if (trigger) {
+        trigger.focus();
+      }
+    }
+  }
+
+  // Accessible Focus Trap for Slide-Over Drawer
+  document.getElementById('trip-bucket-drawer').addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+      const focusableEls = this.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      const firstEl = focusableEls[0];
+      const lastEl = focusableEls[focusableEls.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) {
+          e.preventDefault();
+          lastEl.focus();
+        }
+      } else {
+        if (document.activeElement === lastEl) {
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
+    }
+  });
+
+  function openMobileNav() {
+    const nav = document.getElementById('mobile-nav-drawer');
+    const backdrop = document.getElementById('mobile-nav-backdrop');
+    const toggle = document.getElementById('mobile-nav-toggle');
+    const closeBtn = document.getElementById('mobile-nav-close');
+    if (nav && backdrop) {
+      nav.classList.remove('-translate-x-full', 'pointer-events-none');
+      nav.removeAttribute('inert');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      nav.setAttribute('aria-hidden', 'false');
+      if (toggle) toggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      if (closeBtn) closeBtn.focus();
+    }
+  }
+
+  function closeMobileNav() {
+    const nav = document.getElementById('mobile-nav-drawer');
+    const backdrop = document.getElementById('mobile-nav-backdrop');
+    const toggle = document.getElementById('mobile-nav-toggle');
+    if (nav && backdrop) {
+      nav.classList.add('-translate-x-full', 'pointer-events-none');
+      nav.setAttribute('inert', '');
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      nav.setAttribute('aria-hidden', 'true');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      if (toggle) toggle.focus();
+    }
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.add('hidden'));
+    document.querySelectorAll('.dropdown-toggle').forEach(t => t.setAttribute('aria-expanded', 'false'));
+  }
+
+  document.querySelectorAll('.dropdown-toggle').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const menuId = btn.getAttribute('aria-controls');
+      const menu = document.getElementById(menuId);
+      if (!menu) return;
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      closeAllDropdowns();
+      if (!isExpanded) {
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-item')) {
+      closeAllDropdowns();
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeAllDropdowns();
+      const drawer = document.getElementById('trip-bucket-drawer');
+      if (drawer && !drawer.classList.contains('translate-x-full')) {
+        closeTripBucket();
+      }
+      const mobileNav = document.getElementById('mobile-nav-drawer');
+      if (mobileNav && !mobileNav.classList.contains('-translate-x-full')) {
+        closeMobileNav();
+      }
+    }
+  });
+
+  // Tab Key Cycling for ARIA Tablist
+  (function setupTabKeyCycling() {
+    const tablist = document.querySelector('.search-tablist');
+    if (!tablist) return;
+    tablist.addEventListener('keydown', function(e) {
+      const tabs = Array.from(tablist.querySelectorAll('.search-tab'));
+      const focusedIndex = tabs.indexOf(document.activeElement);
+      if (focusedIndex === -1) return;
+      let targetIndex = -1;
+      if (e.key === 'ArrowRight') {
+        targetIndex = (focusedIndex + 1) % tabs.length;
+      } else if (e.key === 'ArrowLeft') {
+        targetIndex = (focusedIndex - 1 + tabs.length) % tabs.length;
+      } else if (e.key === 'Home') {
+        targetIndex = 0;
+      } else if (e.key === 'End') {
+        targetIndex = tabs.length - 1;
+      }
+      if (targetIndex !== -1) {
+        e.preventDefault();
+        const targetTab = tabs[targetIndex];
+        const tabName = targetTab.id.replace('tab-', '');
+        switchToSearchTab(tabName, true);
+      }
+    });
+  })();
+</script>
+
+
+
+
+
+
+<div id="vacatina-refinement-source" hidden="" aria-hidden="true" data-part-1="(function () {if (window.__vacatinaUnifiedReady) return;const D = document, $ = id =&gt; D.getElementById(id), picker = $('traveler-picker');if (!picker) return;window.__vacatinaUnifiedReady = true;const ids = ['bundle-travelers','flight-travelers','hotel-guests','visa-travelers','pkg-travelers','car-travelers','rail-travelers','cruise-travelers','act-travelers','sightseeing-travelers','insurance-travelers','draft-travelers'];let opener = null, mode = '', cabin = 'Economy', rooms = 1, anchor = Math.max(0, window.scrollY), framePending = false, directionHidden = false;const cabinBlock = $('picker-cabin-block');let roomBlock = $('picker-rooms-block');if (!roomBlock) {roomBlock = D.createElement('div');roomBlock.id = 'picker-rooms-block';roomBlock.className = 'flex items-center justify-between';roomBlock.innerHTML = '&lt;label for=&quot;picker-rooms&quot; class=&quot;text-[13px] font-semibold&quot;&gt;Rooms&lt;/label&gt;&lt;input id=&quot;picker-rooms&quot; type=&quot;number&quot; min=&quot;1&quot; max=&quot;9&quot; step=&quot;1&quot; value=&quot;1&quot; class=&quot;w-24 min-h-[44px] px-3 text-center rounded-[11px] border border-brand-border&quot;&gt;';cabinBlock.before(roomBlock);}const error = $('picker-error-msg');error.setAttribute('role','alert');error.setAttribute('aria-live','polite');const keys = ['adults','children','infants','rooms'];const minima = {adults:1,children:0,infants:0,rooms:1};function clearError() {error.textContent = '';error.classList.add('hidden');keys.forEach(k =&gt; $('picker-'+k).removeAttribute('aria-invalid'));}function fail(message, key) {error.textContent = message;error.classList.remove('hidden');$('picker-'+key).setAttribute('aria-invalid','true');$('picker-'+key).focus();return false;}function count(key) {const raw = $('picker-'+key).value;return raw.trim() === '' ? NaN : Number(raw);}function updateSteps() {const a=count('adults'), c=count('children'), i=count('infants'), total=a+c+i;keys.forEach(k =&gt; {const n = count(k), down = $('picker-'+k+'-decrease'), up = $('picker-'+k+'-increase');if (down) down.disabled = !Number.isFinite(n) || n &lt;= minima[k] || (k==='adults' &amp;&amp; n&lt;=i);if (up) up.disabled = !Number.isFinite(n) || n&gt;=9 || (k!=='rooms' &amp;&amp; total&gt;=9) || (k==='infants' &amp;&amp; n&gt;=a);});}keys.forEach(k =&gt; {
+    const input = $('picker-'+k);
+    input.step = '1';
+    input.setAttribute('aria-describedby','picker-error-msg');
+    input.addEventListener('input', () =&gt; {clearError();updateSteps();});
+    if (!$('picker-'+k+'-decrease')) {
+      const group=D.createElement('div');
+      group.className='flex items-center gap-1';
+      input.before(group);
+      for (const delta of [-1,1]) {
+        const button=D.createElement('button');
+        button.id='picker-'+k+(delta&lt;0?'-decrease':'-increase');
+        button.type='button';
+        button.className='min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold';
+        button.textContent=delta&lt;0?'−':'+';
+        button.setAttribute('aria-label',(delta&lt;0?'Decrease ':'Increase ')+k);
+        if(delta&lt;0)group.append(button,input);else group.append(button);
+      }
+      input.classList.remove('w-24');
+      input.classList.add('w-16');
+    }
+    for(const delta of [-1,1]) {
+      const button=$('picker-'+k+(delta&lt;0?'-decrease':'-increase'));
+      button.onclick=()=&gt;{input.value=String(Math.max(minima[k],Math.min(9,(Number.isFinite(count(k))?count(k):minima[k])+delta)));clearError();updateSteps();};
+    }
+  });function parseComposition(text) {const result={adults:1,children:0,infants:0,rooms:null};for(const [key,pattern] of [['adults',/([0-9]+)[ ]*Adult/i],['children',/([0-9]+)[ ]*Child/i],['infants',/([0-9]+)[ ]*Infant/i],['rooms',/([0-9]+)[ ]*Room/i]]) {const match=text.match(pattern);if(match)result[key]=Number(match[1]);}return result;}function parse(field) {const v=field.value, composition=parseComposition(v);for(const k of ['adults','children','infants'])$('picker-'+k).value=String(composition[k]);const selected=v.split(/[·,]/).map(s=&gt;s.trim()).find(s=&gt;Array.from($('picker-cabin').options).some(o=&gt;o.value===s));if(selected)cabin=selected;if(composition.rooms!==null)rooms=composition.rooms;$('picker-rooms').value=String(rooms);$('picker-cabin').value=cabin;}function render(a,c,i) {const text=a+' Adult'+(a===1?'':'s')+(c?' · '+c+' '+(c===1?'Child':'Children'):'')+(i?' · '+i+' Infant'+(i===1?'':'s'):'');ids.forEach(id=&gt;{const e=$(id);if(!e)return;e.value=text+(id==='flight-travelers'?' · '+cabin:id==='hotel-guests'?' · '+rooms+' Room'+(rooms===1?'':'s'):'');e.setAttribute('aria-label',e.dataset.travelerLabel+': '+e.value);});}function open(id) {const field=$(id);if(!field||picker.open)return;opener=field;mode=id==='flight-travelers'?'flight':id==='hotel-guests'?'hotel':'generic';parse(field);cabinBlock.hidden=mode!=='flight';cabinBlock.style.display=mode==='flight'?'block':'none';roomBlock.hidden=mode!=='hotel';roomBlock.style.display=mode==='hotel'?'flex':'none';$('traveler-picker-title').textContent=mode==='flight'?'Travelers &amp; Cabin':mode==='hotel'?'Guests &amp; Rooms':'Select Travelers';clearError();updateSteps();field.setAttribute('aria-expanded','true');picker.showModal();$('picker-adults').focus();updateDocks();}window.vacatinaOpenTravelerPicker=function(id){open(id);};ids.forEach(id=&gt;{const e=$(id);if(!e)return;e.readOnly=true;e.removeAttribute('onclick');e.removeAttribute('onkeydown');e.setAttribute('role','button');e.setAttribute('aria-haspopup','dialog');e.setAttribute('aria-controls','traveler-picker');e.setAttribute('aria-expanded','false');e.dataset.travelerLabel=e.labels?.[0]?.textContent.trim()||'Travelers';e.onclick=()=&gt;open(id);e.onkeydown=event=&gt;{if(event.key==='Enter'||event.key===' '){event.preventDefault();open(id);}};});$('picker-apply').onclick=()=&gt;{const a=count('adults'),c=count('children'),i=count('infants'),r=count('rooms');for(const [k,n] of [['adults',a],['children',c],['infants',i]])if(!Number.isFinite(n)||!Number.isInteger(n)||n&lt;minima[k])return fail('Enter a whole number for '+k+' (minimum '+minima[k]+').',k);if(a+c+i&gt;9)return fail('Choose no more than 9 travelers in total.', 'adults');if(i&gt;a)return fail('Infants cannot exceed the number of adults.', 'infants');if(mode==='hotel'&amp;&amp;(!Number.isInteger(r)||r&lt;1||r&gt;9))return fail('Choose 1–9 rooms.', 'rooms');if(mode==='flight')cabin=$('picker-cabin').value;if(mode==='hotel')rooms=r;render(a,c,i);picker.close();};function cancel(){picker.close();}$('picker-cancel').onclick=cancel;$('picker-close-x').onclick=cancel;picker.addEventListener('cancel',e=&gt;{e.preventDefault();cancel();});picker.addEventListener('close',()=&gt;{clearError();if(opener){opener.setAttribute('aria-expanded','false');opener.focus();}updateDocks();});function tripOpen(){return $('trip-bucket-drawer')?.getAttribute('aria-hidden')==='false';}function updateDocks() {const hidden=tripOpen()||!!D.querySelector('dialog[open]')||directionHidden;for(const id of ['floating-summary-dock','mobile-summary-bar']){const e=$(id);if(!e)continue;if(e.getAttribute('data-scroll-hidden')!==String(hidden))e.setAttribute('data-scroll-hidden',String(hidden));e.inert=hidden;}}function direction() {framePending=false;const y=Math.max(0,window.scrollY);if(y&lt;=80){directionHidden=false;anchor=y;}else if(y&gt;anchor+10){directionHidden=true;anchor=y;}else if(y&lt;anchor-10){directionHidden=false;anchor=y;}updateDocks();}window.addEventListener('scroll',()=&gt;{if(!framePending){framePending=true;requestAnimationFrame(direction);}},{passive:true});window.addEventListener('resize',()=&gt;{anchor=Math.max(0,window.scrollY);updateDocks();},{passive:true});const originalOpen=window.openTripBucket,originalClose=window.closeTripBucket;window.openTripBucket=function(){const result=originalOpen.apply(this,arguments);updateDocks();return result;};window.closeTripBucket=function(){const result=originalClose.apply(this,arguments);anchor=Math.max(0,window.scrollY);directionHidden=false;updateDocks();return result;};new MutationObserver(updateDocks).observe(D.body,{subtree:true,attributes:true,attributeFilter:['open','aria-hidden']});updateDocks();})" class=""></div>
+
+
+
+
+
+<dialog id="traveler-picker" aria-label="Travelers and cabin" style="max-width: min(92vw, 520px); width: 100%; border: 1px solid rgb(229, 229, 229); border-radius: 16px; padding: 24px; color: rgb(0, 0, 0); background: rgb(255, 255, 255); font-family: Inter, sans-serif;"><div class="flex items-center justify-between pb-3 mb-4 border-b border-brand-border"><h2 id="traveler-picker-title" class="font-headline font-bold text-xl text-brand-navy">Select Travelers</h2><button id="picker-close-x" type="button" class="p-1 text-brand-muted hover:text-brand-black rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-navy" aria-label="Close travelers dialog"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="space-y-4"><div class="flex items-center justify-between"><label for="picker-adults" class="text-[13px] font-semibold text-brand-black">Adults <span class="text-[11px] font-normal text-brand-muted block">Ages 12+</span></label><div class="flex items-center gap-1"><button id="picker-adults-decrease" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Decrease adults">−</button><input id="picker-adults" class="min-h-[44px] px-3 text-center rounded-[11px] border border-brand-border bg-white text-[14px] font-semibold focus:ring-2 focus:ring-brand-navy w-16" type="number" min="1" max="9" value="1" step="1" aria-describedby="picker-error-msg"><button id="picker-adults-increase" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Increase adults">+</button></div></div><div class="flex items-center justify-between"><label for="picker-children" class="text-[13px] font-semibold text-brand-black">Children <span class="text-[11px] font-normal text-brand-muted block">Ages 2–11</span></label><div class="flex items-center gap-1"><button id="picker-children-decrease" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Decrease children">−</button><input id="picker-children" class="min-h-[44px] px-3 text-center rounded-[11px] border border-brand-border bg-white text-[14px] font-semibold focus:ring-2 focus:ring-brand-navy w-16" type="number" min="0" max="8" value="0" step="1" aria-describedby="picker-error-msg"><button id="picker-children-increase" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Increase children">+</button></div></div><div class="flex items-center justify-between"><label for="picker-infants" class="text-[13px] font-semibold text-brand-black">Infants <span class="text-[11px] font-normal text-brand-muted block">Under 2 (on lap, max 1 per adult)</span></label><div class="flex items-center gap-1"><button id="picker-infants-decrease" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Decrease infants">−</button><input id="picker-infants" class="min-h-[44px] px-3 text-center rounded-[11px] border border-brand-border bg-white text-[14px] font-semibold focus:ring-2 focus:ring-brand-navy w-16" type="number" min="0" max="8" value="0" step="1" aria-describedby="picker-error-msg"><button id="picker-infants-increase" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Increase infants">+</button></div></div><div id="picker-rooms-block" class="flex items-center justify-between"><label for="picker-rooms" class="text-[13px] font-semibold">Rooms</label><div class="flex items-center gap-1"><button id="picker-rooms-decrease" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Decrease rooms">−</button><input id="picker-rooms" type="number" min="1" max="9" step="1" value="1" class="min-h-[44px] px-3 text-center rounded-[11px] border border-brand-border w-16" aria-describedby="picker-error-msg"><button id="picker-rooms-increase" type="button" class="min-w-[44px] min-h-[44px] rounded-lg border border-brand-border font-semibold" aria-label="Increase rooms">+</button></div></div><div id="picker-cabin-block" class="space-y-1.5 pt-2 border-t border-brand-border"><label for="picker-cabin" class="text-[13px] font-semibold text-brand-black">Cabin Class</label><select id="picker-cabin" class="w-full min-h-[48px] px-3 rounded-[11px] border border-brand-border bg-white text-[14px] focus:ring-2 focus:ring-brand-navy"><option>Economy</option><option>Premium Economy</option><option>Business</option><option>First</option></select></div><p id="picker-error-msg" class="text-[12px] text-brand-error hidden" role="alert" aria-live="polite"></p><div class="flex items-center justify-end gap-3 pt-3 border-t border-brand-border"><button id="picker-cancel" class="min-h-[44px] px-4 py-2 rounded-lg border border-brand-border text-[13px] font-semibold hover:bg-brand-dim focus:ring-2 focus:ring-brand-navy" type="button">Cancel</button><button id="picker-apply" class="min-h-[44px] px-5 py-2 rounded-lg bg-brand-navy text-white text-[13px] font-semibold hover:opacity-95 focus:ring-2 focus:ring-brand-navy" type="button">Apply</button></div></div></dialog>
+
+
+
+
+
+
+
+<dialog id="foundation-feedback-dialog" aria-label="Search preview" style="max-width: min(92vw, 520px); width: 100%; border: 1px solid rgb(229, 229, 229); border-radius: 16px; padding: 24px; color: rgb(0, 0, 0); background: rgb(255, 255, 255); font-family: Inter, sans-serif;"><h2 id="feedback-heading" style="font:700 22px Plus Jakarta Sans,sans-serif;margin:0 0 16px"></h2><div id="feedback-content"></div><button id="feedback-close" type="button" style="margin-top:20px;min-height:48px;padding:12px 20px;background:#1B1464;color:white;border:0;border-radius:10px" class="">Close</button></dialog><datalist id="foundation-airport-options"><option value="Colombo (CMB) - Bandaranaike"></option><option value="London (LHR) - Heathrow Airport"></option><option value="Dubai (DXB) - Dubai International"></option><option value="Male (MLE) - Velana International"></option></datalist><dialog id="draft-trip-preview" aria-label="Draft trip plan" style="width: min(92vw, 560px); border: 1px solid rgb(229, 229, 229); border-radius: 16px; padding: 24px; background: white; color: black; font-family: Inter, sans-serif;"><h2 id="feedback-heading" class="font-headline font-bold text-xl mb-4">Draft trip plan</h2><p id="draft-request" class="text-[14px] mb-3"></p><div class="space-y-3"><label for="draft-destination" class="">Destination</label><input id="draft-destination" class="w-full min-h-[48px] px-3 rounded-lg border border-brand-border" required=""><label for="draft-dates" class="">Travel dates</label><input id="draft-dates" class="w-full min-h-[48px] px-3 rounded-lg border border-brand-border" required=""><label for="draft-travelers" class="">Travelers</label><input id="draft-travelers" class="w-full min-h-[48px] px-3 rounded-lg border border-brand-border" required=""><p id="draft-services" class="text-[14px]"></p><p class="text-[13px]">Creating this draft replaces the example trip currently shown. Draft components have no confirmed price and are excluded from ready totals. Choose individual options before booking.</p><div class="flex flex-wrap gap-3"><button type="button" id="draft-cancel" class="min-h-[44px] px-3 py-2 rounded-lg text-[13px] font-semibold text-brand-navy border border-brand-border focus:ring-2 focus:ring-brand-navy">Keep existing trip</button><button type="button" id="draft-create" class="min-h-[44px] px-3 py-2 rounded-lg text-[13px] font-semibold text-brand-navy border border-brand-border focus:ring-2 focus:ring-brand-navy bg-brand-navy text-white">Create draft trip</button></div></div></dialog></body></html>
