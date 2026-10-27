@@ -6,6 +6,18 @@ import { journeyConfigurationFromQuery, journeyProductDetails, journeyOfferId, v
 import { tripBucketService } from '../src/lib/services/trip-bucket.service.ts';
 import { evaluateTripReviewHandoff } from '../src/features/trip-review/trip-review-workspace.ts';
 
+test('Activities and Sightseeing Phase 11 retain distinct taxonomy and guided-route context', () => {
+  const activity = JOURNEY_DEMO_OFFERS.find(o => o.productType === 'activities');
+  const tour = JOURNEY_DEMO_OFFERS.find(o => o.productType === 'sightseeing');
+  assert.ok(activity); assert.ok(tour);
+  assert.notEqual(journeyOfferId(activity), journeyOfferId(tour));
+  assert.equal(journeyProductDetails(activity).tourType, undefined);
+  assert.ok(journeyProductDetails(tour).routeDescription);
+  assert.ok(journeyProductDetails(tour).languages);
+  assert.equal(findJourneyProduct('/activities')?.productType, 'activities');
+  assert.equal(findJourneyProduct('/sightseeing-tours')?.productType, 'sightseeing');
+});
+
 test('Cars Phase 9: car hire and return transfers retain distinct mandatory logistics', () => {
   const config = journeyConfigurationFromQuery(new URLSearchParams('destination=Dubai&departureDate=2027-02-01&returnDate=2027-02-05&pickup=DXB&dropoff=Marina&pickupTime=14:30&returnTime=16:00&adults=2'));
   assert.deepEqual(validateJourneyConfiguration('cars', config, true), {});

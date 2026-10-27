@@ -131,6 +131,7 @@ function journeyPublishedFacts(offer: JourneyOffer): string {
     ['meetingPointAddress', 'Meeting point'], ['durationHours', 'Duration (hours)'], ['guideLanguage', 'Guide language'], ['visaType', 'Service category'],
     ['processingSlaBusinessDays', 'Published processing estimate (business days)'], ['underwriterName', 'Underwriter'], ['planTier', 'Plan'], ['coverageRegion', 'Coverage region'],
     ['confirmationNotes', 'Operator confirmation required'], ['packageTheme', 'Package style'], ['itineraryDays', 'Illustrative itinerary days'], ['itineraryNights', 'Illustrative itinerary nights']
+    , ['tourType', 'Tour format'], ['routeDescription', 'Guided route'], ['activityCategory', 'Activity format']
   ];
   for (const [key, label] of keys) if (extension[key] !== undefined && extension[key] !== '') rows.push([label, extension[key]]);
   const segments = Array.isArray(extension.segments) ? extension.segments as Array<Record<string, unknown>> : [];

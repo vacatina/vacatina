@@ -44,6 +44,17 @@ export const JOURNEY_DEMO_OFFERS: JourneyOffer[] = [
       ticketTypes: [{ id: 'PARTICIPANT_REQUEST', label: 'Participant option request · Not a ticket' }],
       confirmationNotes: 'Date, session, participant eligibility, tickets and inclusions need operator confirmation. No time slot or ticket is reserved.'
     }
+  }),
+  demoOffer('sightseeing', 'London guided sightseeing planning example', 'London', {
+    sightseeing: {
+      tourType: 'Guided sightseeing request',
+      routeDescription: 'Route, stops and departure point have not been supplied. Request the operator itinerary before booking.',
+      meetingPointAddress: 'Meeting point to be confirmed by operator',
+      timeSlots: [{ id: 'OPERATOR_CONFIRM', label: 'Tour departure time to confirm' }],
+      ticketTypes: [{ id: 'GUIDED_TOUR_REQUEST', label: 'Guided tour participant request' }],
+      languages: [{ id: 'LANGUAGE_TO_CONFIRM', label: 'Guide language to confirm' }],
+      confirmationNotes: 'Guide, language, route, meeting point, admission and tour departure require operator confirmation. No tour slot or guide is assigned.'
+    }
   })
 ];
 
