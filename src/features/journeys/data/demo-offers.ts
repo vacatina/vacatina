@@ -36,6 +36,14 @@ export const JOURNEY_DEMO_OFFERS: JourneyOffer[] = [
       vehicleCategories: [{ id: 'STANDARD_REQUEST', label: 'Standard vehicle request · Allocation pending' }, { id: 'ACCESS_REQUEST', label: 'Accessibility requirements · Operator review' }],
       confirmationNotes: 'Vehicle, passenger/luggage capacity, driver assignment, hire eligibility and return arrangements require operator confirmation. No vehicle is reserved.'
     }
+  }),
+  demoOffer('activities', 'Dubai activity planning example', 'Dubai', {
+    activity: {
+      activityCategory: 'Experience request',
+      timeSlots: [{ id: 'OPERATOR_CONFIRM', label: 'Time to be confirmed by operator' }],
+      ticketTypes: [{ id: 'PARTICIPANT_REQUEST', label: 'Participant option request · Not a ticket' }],
+      confirmationNotes: 'Date, session, participant eligibility, tickets and inclusions need operator confirmation. No time slot or ticket is reserved.'
+    }
   })
 ];
 

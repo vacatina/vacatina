@@ -78,7 +78,7 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
     if (!Array.isArray(extension.timeSlots) && extension.timeSlot) extension.timeSlots = [String(extension.timeSlot)];
     if (!Array.isArray(extension.cabinCategories) && extension.cabinGrade) extension.cabinCategories = [String(extension.cabinGrade)];
     for (const [source, field, label] of [
-      ['timeSlots', 'timeSlot', 'Available session'], ['roomTypes', 'roomType', 'Room category'], ['boardBasisOptions', 'boardBasis', 'Meal plan'],
+      ['timeSlots', 'timeSlot', offer.inventoryMode === 'demo_fixture' ? 'Session request · Not confirmed' : 'Published session'], ['roomTypes', 'roomType', 'Room category'], ['boardBasisOptions', 'boardBasis', 'Meal plan'],
       ['cabinCategories', 'cabinType', 'Cabin category'], ['languages', 'language', 'Tour language'],
       ['packageStyles', 'packageStyle', 'Package style'], ['accommodationTiers', 'accommodationTier', 'Accommodation request'], ['vehicleCategories', 'vehicleCategory', 'Vehicle category'], ['ticketTypes', 'ticketType', 'Ticket / participant option'], ['coverageOptions', 'coverageOption', 'Coverage request']
     ] as const) {
