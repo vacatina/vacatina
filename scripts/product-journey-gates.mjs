@@ -1,4 +1,51 @@
 /** Browser gates added incrementally at each local product checkpoint. */
+export const GENERIC_PHASES = [
+  { phase: 8, product: 'packages', route: '/holiday-packages', destination: 'Dubai' }
+];
+
+export async function verifyProductPhase(cdp, assertCheck, definition) {
+  for (const width of [1440, 768, 360]) {
+    await cdp.setViewport(width, width === 768 ? 1024 : 900, width < 1440);
+    const result = await cdp.evaluate(`(async () => {
+      const definition = ${JSON.stringify(definition)};
+      const wait = ms => new Promise(r => setTimeout(r, ms));
+      const navigate = url => window.__VACATINA_ROUTER__.navigateTo(url);
+      const fits = () => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
+      document.getElementById('trip-bucket-close')?.click();
+      const params = new URLSearchParams({ inventory:'demo',destination:definition.destination,origin:'Colombo',departureDate:'2027-02-01',returnDate:'2027-02-05',adults:'2',children:'0',infants:'0',rooms:'1',pickup:'Airport pickup request',dropoff:'Hotel drop-off request',pickupTime:'14:30',travellerAges:'32,30',residenceCountry:'LK',cabinClass:'standard',durationDays:'5' });
+      navigate(definition.route + '?' + params); await wait(100);
+      const hub = !!document.getElementById('journey-search-form') && fits();
+      const searchForm = document.getElementById('journey-search-form');
+      const destinationInput = searchForm?.querySelector('[name=destination]');
+      if (destinationInput) destinationInput.value = '';
+      searchForm?.requestSubmit(); await wait(80);
+      const validation = !!document.querySelector('#journey-results [role=alert]');
+      const retry = document.getElementById('journey-search-form');
+      if (retry) retry.querySelector('[name=destination]').value = definition.destination;
+      retry?.requestSubmit(); await wait(150);
+      const button = document.querySelector('[data-journey-offer]');
+      const search = !!button && fits() && document.getElementById('journey-results').textContent.includes('Canonical demo fixture');
+      button?.click(); await wait(150);
+      const configure = document.getElementById('journey-configure-form');
+      const details = !!configure && fits() && document.getElementById('journey-product-workspace').textContent.includes('no live supplier');
+      const labels = !!configure && Array.from(configure.querySelectorAll('input,select')).every(input => input.closest('label') || input.getAttribute('aria-label') || (input.id && document.querySelector('label[for="' + input.id + '"]')));
+      configure?.querySelectorAll('select[name]').forEach(select => { if (!select.value) select.value = Array.from(select.options).find(option => option.value)?.value || ''; });
+      const policy = document.getElementById('journey-policy-confirm'); if (policy) policy.checked = true;
+      configure?.requestSubmit(); await wait(160);
+      const item = window.__VACATINA_OS__.tripBucketService.getItems().find(i => i.productType === definition.product && i.offerId?.startsWith('DEMO-'));
+      const staged = !!item && item.state === 'needs_action' && item.configuration.destination === definition.destination && item.configuration.departureDate === '2027-02-01' && item.sourceId === 'VACATINA_LOCAL_DEMO';
+      const reviewLink = Array.from(document.querySelectorAll('#journey-configure-form a')).find(a => a.getAttribute('href') === '/trip/review');
+      reviewLink?.click(); await wait(120);
+      const review = !!document.getElementById('trip-review-workspace') && !!document.getElementById('btn-review-checkout')?.disabled && fits();
+      navigate(definition.route + '/offer/DEMO-' + definition.product + '-missing?' + params); await wait(100);
+      const invalid = !!document.querySelector('#journey-results [role=alert]');
+      params.set('destination','No-Such-Destination'); navigate(definition.route + '/search?' + params); await wait(100);
+      const empty = !!document.getElementById('journey-results')?.textContent.includes('No matching options right now');
+      navigate('/'); return {hub,validation,search,details,labels,staged:!!staged,review,invalid,empty};
+    })()`);
+    assertCheck(`Phase ${definition.phase} ${definition.product} — canonical request journey, truth, keyboard controls and responsive @ ${width}`, Object.values(result).every(Boolean), JSON.stringify(result));
+  }
+}
 export async function verifyVisa(cdp, assertCheck) {
   for (const width of [1440, 768, 360]) {
     await cdp.setViewport(width, width === 768 ? 1024 : 900, width < 1440);

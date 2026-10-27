@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "node --no-warnings scripts/browser-verify.mjs",
     "test:hotels-phase6": "node --experimental-strip-types --no-warnings --test tests/hotels-phase6-journey.test.ts",
+    "test:product-phases": "node --experimental-strip-types --no-warnings --test tests/b2c-product-phases.test.ts",
     "cd": "node scripts/cd-workflow.mjs",
     "deploy": "node scripts/cd-workflow.mjs",
     "images:generate": "node scripts/generate-card-images.mjs",

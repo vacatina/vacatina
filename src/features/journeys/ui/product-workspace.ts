@@ -6,6 +6,7 @@ import {
 import { journeyService, refreshServerTripBucket } from '../services/journey-service.ts';
 import type { JourneyRevalidation } from '../services/journey-service.ts';
 import { favoritesService } from '../../../lib/services/favorites.service.ts';
+import { JOURNEY_DEMO_DISCLOSURE } from '../data/demo-offers.ts';
 
 const JOURNEY_INPUT_CLASS = 'w-full min-h-[44px] rounded-xl border border-brand-border bg-white px-3 text-sm text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-info';
 const JOURNEY_BUTTON_CLASS = 'min-h-[44px] rounded-xl px-5 py-3 text-sm font-semibold bg-brand-primary text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-brand-info focus:ring-offset-2 disabled:opacity-50 disabled:cursor-wait';
@@ -33,6 +34,7 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
   fields += journeyInput(config, 'children', 'Children', 'number', 'min="0" max="8" step="1"');
   fields += journeyInput(config, 'infants', 'Infants', 'number', 'min="0" max="8" step="1"');
   if (['packages', 'hotels'].includes(product)) fields += journeyInput(config, 'rooms', 'Rooms', 'number', 'min="1" max="9" step="1" required');
+  if (product === 'packages') fields += journeyInput(config, 'durationDays', 'Requested duration (days)', 'number', 'min="1" max="365" step="1"');
   if (product === 'cars') {
     fields += journeyInput(config, 'pickup', 'Pickup location', 'text', 'required maxlength="300"');
     fields += journeyInput(config, 'dropoff', 'Drop-off / return location', 'text', 'required maxlength="300"');
@@ -73,7 +75,8 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
     if (!Array.isArray(extension.cabinCategories) && extension.cabinGrade) extension.cabinCategories = [String(extension.cabinGrade)];
     for (const [source, field, label] of [
       ['timeSlots', 'timeSlot', 'Available session'], ['roomTypes', 'roomType', 'Room category'], ['boardBasisOptions', 'boardBasis', 'Meal plan'],
-      ['cabinCategories', 'cabinType', 'Cabin category'], ['languages', 'language', 'Tour language']
+      ['cabinCategories', 'cabinType', 'Cabin category'], ['languages', 'language', 'Tour language'],
+      ['packageStyles', 'packageStyle', 'Package style'], ['accommodationTiers', 'accommodationTier', 'Accommodation request'], ['vehicleCategories', 'vehicleCategory', 'Vehicle category'], ['ticketTypes', 'ticketType', 'Ticket / participant option'], ['coverageOptions', 'coverageOption', 'Coverage request']
     ] as const) {
       const options = getPublishedOptions(source);
       if (options.length) fields += journeySelect(config, field, label, [['', 'Select an option'], ...options]);
@@ -85,7 +88,7 @@ export function renderJourneyFields(product: string, config: JourneyConfiguratio
 export function readJourneyForm(form: HTMLFormElement, initial: JourneyConfiguration): JourneyConfiguration {
   const result = { ...initial };
   const data = new FormData(form);
-  const numeric = new Set(['adults', 'children', 'infants', 'rooms', 'luggage', 'driverAge']);
+  const numeric = new Set(['adults', 'children', 'infants', 'rooms', 'luggage', 'driverAge', 'durationDays']);
   for (const [key, value] of data.entries()) {
     if (key in result && typeof value === 'string') (result as any)[key] = numeric.has(key) ? Number(value) : value.trim();
   }
@@ -156,10 +159,13 @@ export class ProductWorkspace {
   private host!: HTMLElement;
   private product!: JourneyProductDefinition;
   private navigate!: JourneyNavigate;
+  private demoMode = false;
+  private contextQuery(): string { return `${journeyConfigQuery(this.config)}${this.demoMode ? '&inventory=demo' : ''}`; }
 
   public async load(container: HTMLElement, product: JourneyProductDefinition, query: URLSearchParams, navigate: JourneyNavigate, offerId?: string, search = false): Promise<void> {
     this.currentRequest++;
     this.host = container; this.product = product; this.navigate = navigate;
+    this.demoMode = query.get('inventory') === 'demo' || !!offerId?.startsWith('DEMO-');
     this.config = journeyConfigurationFromQuery(query);
     this.selectedOffer = null; this.quote = null; this.acceptedChangedPrice = false; this.staged = false;
     this.busy = false;
@@ -167,6 +173,7 @@ export class ProductWorkspace {
     this.render();
     if (offerId) await this.openOffer(offerId);
     else if (search) await this.search();
+    if (container.isConnected) { const heading = container.querySelector<HTMLElement>('h1'); heading?.setAttribute('tabindex', '-1'); heading?.focus({ preventScroll: true }); }
   }
 
   private async search(): Promise<void> {
@@ -175,7 +182,7 @@ export class ProductWorkspace {
     const request = ++this.currentRequest;
     this.status = 'loading'; this.message = ''; this.render();
     try {
-      const result = await journeyService.search(this.product.productType, this.config);
+      const result = await journeyService.search(this.product.productType, this.config, this.demoMode ? 'demo_fixture' : undefined);
       if (request !== this.currentRequest) return;
       this.offers = result.offers.filter(offer => offer.productType === this.product.productType);
       this.warnings = result.warnings || []; this.status = 'results';
@@ -203,7 +210,7 @@ export class ProductWorkspace {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
         <nav class="flex flex-wrap items-center gap-2 text-xs text-brand-muted mb-8" aria-label="Breadcrumb"><a href="/" class="min-h-[44px] inline-flex items-center hover:underline">Home</a><span aria-hidden="true">/</span><a href="${p.route}" class="min-h-[44px] inline-flex items-center hover:underline">${journeyEscape(p.label)}</a>${detail ? '<span aria-hidden="true">/</span><span>Configure your choice</span>' : ''}</nav>
         ${detail ? this.renderDetail(this.selectedOffer!) : `<header class="grid grid-cols-1 md:grid-cols-5 gap-8 items-center mb-10"><div class="md:col-span-3"><p class="text-xs font-semibold tracking-widest uppercase text-brand-primary mb-3">${journeyEscape(p.eyebrow)}</p><h1 class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold tracking-tight leading-tight">${journeyEscape(p.label)}</h1><p class="mt-4 max-w-2xl text-base leading-relaxed text-brand-muted">${journeyEscape(p.description)}</p><p class="mt-4 text-xs text-brand-muted">Prices and availability are checked during search and before booking.</p></div><div class="hidden md:block md:col-span-2 rounded-2xl overflow-hidden h-52 bg-brand-subtle"><img src="${p.image}" alt="${journeyEscape(p.label)} travel inspiration" class="w-full h-full object-cover" loading="lazy"></div></header>
-        <form id="journey-search-form" class="bg-white border border-brand-border rounded-3xl p-5 sm:p-7 mb-8" novalidate><h2 class="font-heading text-lg font-semibold mb-5">Find your options</h2><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${renderJourneyFields(p.productType, this.config)}</div><div class="mt-5 flex flex-col sm:flex-row sm:items-center gap-4"><button type="submit" class="${JOURNEY_BUTTON_CLASS}"${this.status === 'loading' ? ' disabled' : ''}>${this.status === 'loading' ? 'Searching…' : 'Compare options'}</button><p class="text-xs text-brand-muted">Only options available through this service appear in the results.</p></div></form>
+        <form id="journey-search-form" class="bg-white border border-brand-border rounded-3xl p-5 sm:p-7 mb-8" novalidate><h2 class="font-heading text-lg font-semibold mb-5">Find your options</h2><label class="block text-sm font-semibold mb-5">Catalog<select id="journey-inventory" class="${JOURNEY_INPUT_CLASS} mt-2"><option value="published"${this.demoMode ? '' : ' selected'}>Published service inventory (may be unavailable)</option><option value="demo"${this.demoMode ? ' selected' : ''}>Canonical demo examples · No booking</option></select></label>${this.demoMode ? `<p class="rounded-xl p-4 bg-amber-50 border border-amber-200 text-xs mb-5">${JOURNEY_DEMO_DISCLOSURE}</p>` : '<p class="text-xs text-brand-muted mb-5">No live supplier is activated in this build. Choose the demo catalog to explore a local planning journey, or search published inventory without assuming availability.</p>'}<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${renderJourneyFields(p.productType, this.config)}</div><div class="mt-5 flex flex-col sm:flex-row sm:items-center gap-4"><button type="submit" class="${JOURNEY_BUTTON_CLASS}"${this.status === 'loading' ? ' disabled' : ''}>${this.status === 'loading' ? 'Searching…' : 'Compare options'}</button><p class="text-xs text-brand-muted">Configure an option before staging it. No payment or confirmation occurs here.</p></div></form>
         <div id="journey-results" aria-live="polite" aria-atomic="false">${this.renderResults()}</div>`}
       </div></section>`;
     this.bind();
@@ -223,8 +230,8 @@ export class ProductWorkspace {
 
   private renderOffer(offer: JourneyOffer): string {
     const id = journeyOfferId(offer);
-    const price = journeyMoney(journeyOfferAmount(offer), offer.displayCurrency || offer.currency || 'LKR');
-    const condition = offer.confirmationMode === 'INSTANT_CONFIRM' ? 'Subject to availability recheck' : 'Confirmation required';
+    const price = offer.priceStatus === 'quote_required' ? 'Quote required' : journeyMoney(journeyOfferAmount(offer), offer.displayCurrency || offer.currency || 'LKR');
+    const condition = offer.inventoryMode === 'demo_fixture' ? 'Canonical demo fixture · No live availability' : offer.confirmationMode === 'INSTANT_CONFIRM' ? 'Subject to availability recheck' : 'Confirmation required';
     return `<article class="bg-white rounded-2xl border border-brand-border p-5 sm:p-6 flex flex-col sm:flex-row gap-5 sm:items-center justify-between"><div class="min-w-0"><p class="text-xs text-brand-muted mb-2">${journeyEscape(condition)}</p><h3 class="font-heading font-semibold text-xl break-words">${journeyEscape(offer.title)}</h3><p class="text-sm text-brand-muted mt-2">${journeyEscape(offer.subtitle || [offer.location?.city, offer.location?.country].filter(Boolean).join(', '))}</p><p class="text-xs text-brand-muted mt-3">${journeyEscape(offer.cancellationPolicy || 'Review the published cancellation conditions before booking.')}</p></div><div class="sm:text-right sm:flex-shrink-0"><p class="font-semibold text-xl text-brand-primary tabular-nums">${journeyEscape(price)}</p><div class="flex gap-2 mt-3"><button type="button" data-journey-save="${journeyEscape(id)}" aria-pressed="${favoritesService.isSaved(offer.title)}" aria-label="Save ${journeyEscape(offer.title)}" class="${JOURNEY_SECONDARY_CLASS}">${favoritesService.isSaved(offer.title) ? 'Saved' : 'Save'}</button><button type="button" data-journey-offer="${journeyEscape(id)}" class="${JOURNEY_BUTTON_CLASS}">View & configure</button></div></div></article>`;
   }
 
@@ -235,27 +242,29 @@ export class ProductWorkspace {
     const recheckMessage = this.quote?.message || '';
     const canStage = !this.staged && (!quoteChanged || this.acceptedChangedPrice);
     return `<div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-2 min-w-0"><p class="text-xs font-semibold text-brand-primary mb-3">Configure your choice</p><h1 class="text-3xl sm:text-4xl font-heading font-bold leading-tight break-words">${journeyEscape(offer.title)}</h1><p class="mt-3 text-brand-muted">${journeyEscape(offer.subtitle || '')}</p>
+      ${offer.inventoryMode === 'demo_fixture' ? `<p class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed">${JOURNEY_DEMO_DISCLOSURE}</p>` : ''}
       ${journeyPublishedFacts(offer)}${this.product.productType === 'packages' || this.product.productType === 'cruises' ? `<section class="mt-8 bg-white border border-brand-border rounded-2xl p-6"><h2 class="font-heading text-xl font-semibold mb-6">Your itinerary</h2>${journeyItinerary(offer)}</section>` : ''}
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8"><section><h2 class="font-heading text-lg font-semibold mb-3">Included</h2>${journeyList(offer.inclusions, 'Check the full inclusions with Vacatina before booking.')}</section><section><h2 class="font-heading text-lg font-semibold mb-3">Not included</h2>${journeyList(offer.exclusions, 'Additional exclusions have not been published.')}</section></div>
       <section class="mt-8 border-t border-brand-border pt-6"><h2 class="font-heading text-lg font-semibold mb-3">Cancellation & confirmation</h2><p class="text-sm text-brand-muted leading-relaxed">${journeyEscape(offer.cancellationPolicy || 'Request the cancellation conditions before booking.')}</p><p class="text-sm text-brand-muted mt-3">${offer.confirmationMode === 'INSTANT_CONFIRM' ? 'Price and availability must pass a fresh check before booking.' : 'This option requires confirmation. Saving it does not confirm a reservation.'}</p></section></div>
-      <aside class="min-w-0"><form id="journey-configure-form" class="bg-white border border-brand-border rounded-2xl p-5 sm:p-6 space-y-5" novalidate><div><p class="text-xs text-brand-muted">Selected option estimate</p><p class="text-2xl font-semibold text-brand-primary tabular-nums mt-1">${journeyEscape(journeyMoney(price, offer.displayCurrency || offer.currency || 'LKR'))}</p></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">${renderJourneyFields(this.product.productType, this.config, true, offer)}</div>
+      <aside class="min-w-0"><form id="journey-configure-form" class="bg-white border border-brand-border rounded-2xl p-5 sm:p-6 space-y-5" novalidate><div><p class="text-xs text-brand-muted">Selected option estimate</p><p class="text-2xl font-semibold text-brand-primary tabular-nums mt-1">${offer.priceStatus === 'quote_required' ? 'Quote required · No price supplied' : journeyEscape(journeyMoney(price, offer.displayCurrency || offer.currency || 'LKR'))}</p></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">${renderJourneyFields(this.product.productType, this.config, true, offer)}</div>
       ${this.product.productType === 'insurance' ? '<label class="flex gap-3 text-xs text-brand-muted leading-relaxed"><input id="journey-policy-confirm" type="checkbox" required class="w-5 h-5 flex-shrink-0"><span>I have reviewed the published policy terms, eligibility, benefits, and exclusions. This selection does not issue a policy.</span></label>' : ''}
       ${this.message ? `<p role="alert" class="text-sm text-brand-error">${journeyEscape(this.message)}</p>` : ''}
       ${this.quote ? `<div role="status" class="rounded-xl bg-brand-subtle p-4 text-xs leading-relaxed">${quoteChanged ? `<strong class="text-brand-warning">The price has changed.</strong><p class="mt-2">Previous: ${journeyEscape(journeyMoney((this.quote.previousPrice || 0) / 100, offer.currency))}<br>Updated: ${journeyEscape(journeyMoney(price, offer.currency))}</p><label class="flex gap-2 mt-3"><input id="journey-price-consent" type="checkbox"${this.acceptedChangedPrice ? ' checked' : ''} class="w-5 h-5"><span>I accept the updated price.</span></label>` : `<p>${journeyEscape(recheckMessage || 'Availability checked. This does not create a booking.')}</p>`}</div>` : ''}
       <button type="submit" class="${JOURNEY_BUTTON_CLASS} w-full"${this.busy || !canStage ? ' disabled' : ''}>${this.busy ? 'Checking your option…' : this.staged ? 'Saved to your trip' : 'Recheck & save to Trip Bucket'}</button>
-      <p class="text-xs text-brand-muted leading-relaxed">No payment is collected here. Your Trip Bucket shows the current readiness of each selection.</p><a href="${this.product.route}?${journeyConfigQuery(this.config)}" class="min-h-[44px] flex items-center justify-center text-sm text-brand-primary underline">Change search details</a>
+      <p class="text-xs text-brand-muted leading-relaxed">No payment is collected here. Your Trip Bucket shows the current readiness of each selection.</p><a href="${this.product.route}?${this.contextQuery()}" class="min-h-[44px] flex items-center justify-center text-sm text-brand-primary underline">Change search details</a>
       ${this.staged ? `<a href="/trip/review" class="${JOURNEY_SECONDARY_CLASS} w-full inline-flex justify-center">Review your trip</a><a href="/trip-builder/results" class="min-h-[44px] flex items-center justify-center text-sm text-brand-primary underline">Continue building your bundle</a>` : ''}</form></aside></div>`;
   }
 
   private bind(): void {
     const search = this.host.querySelector<HTMLFormElement>('#journey-search-form');
-    search?.addEventListener('submit', event => { event.preventDefault(); this.config = readJourneyForm(search, this.config); this.navigate(`${this.product.route}/search?${journeyConfigQuery(this.config)}`); });
+    search?.addEventListener('submit', event => { event.preventDefault(); this.config = readJourneyForm(search, this.config); this.demoMode = search.querySelector<HTMLSelectElement>('#journey-inventory')?.value === 'demo'; this.navigate(`${this.product.route}/search?${this.contextQuery()}`); });
+    search?.querySelector<HTMLSelectElement>('#journey-inventory')?.addEventListener('change', () => { this.config = readJourneyForm(search, this.config); this.demoMode = search.querySelector<HTMLSelectElement>('#journey-inventory')?.value === 'demo'; this.render(); });
     search?.querySelector<HTMLSelectElement>('[name="serviceType"]')?.addEventListener('change', () => { this.config = readJourneyForm(search, this.config); this.render(); });
     search?.querySelector<HTMLSelectElement>('[name="tripType"]')?.addEventListener('change', () => { this.config = readJourneyForm(search, this.config); this.render(); });
     this.host.querySelector('#journey-retry')?.addEventListener('click', () => this.selectedOffer ? this.openOffer(journeyOfferId(this.selectedOffer)) : this.search());
     this.host.querySelector<HTMLSelectElement>('#journey-sort')?.addEventListener('change', event => { this.sort = (event.target as HTMLSelectElement).value; this.render(); });
     this.host.querySelector<HTMLSelectElement>('#journey-condition')?.addEventListener('change', event => { this.condition = (event.target as HTMLSelectElement).value; this.render(); });
-    this.host.querySelectorAll<HTMLButtonElement>('[data-journey-offer]').forEach(button => button.addEventListener('click', () => this.navigate(`${this.product.route}/offer/${encodeURIComponent(button.dataset.journeyOffer!)}?${journeyConfigQuery(this.config)}`)));
+    this.host.querySelectorAll<HTMLButtonElement>('[data-journey-offer]').forEach(button => button.addEventListener('click', () => this.navigate(`${this.product.route}/offer/${encodeURIComponent(button.dataset.journeyOffer!)}?${this.contextQuery()}`)));
     this.host.querySelectorAll<HTMLButtonElement>('[data-journey-save]').forEach(button => button.addEventListener('click', () => {
       const offer = this.offers.find(v => journeyOfferId(v) === button.dataset.journeySave);
       if (!offer) return;
@@ -299,7 +308,7 @@ export class ProductWorkspace {
       const item = result.item;
       if (!item) throw new Error('The selection could not be saved. Please retry.');
       this.staged = true;
-      try { await refreshServerTripBucket(); }
+      try { if (offer.inventoryMode !== 'demo_fixture') await refreshServerTripBucket(); }
       catch { this.message = 'Your selection was saved. Open trip review to reload the latest summary.'; }
     } catch (error) { this.message = error instanceof Error ? error.message : 'We could not save your selection. Please retry.'; }
     finally { if (generation === this.currentRequest) { this.busy = false; this.render(); } }

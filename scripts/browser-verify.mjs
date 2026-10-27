@@ -25,7 +25,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { buildProject } from './build.mjs';
-import { verifyHotels, verifyVisa } from './product-journey-gates.mjs';
+import { verifyHotels, verifyVisa, verifyProductPhase, GENERIC_PHASES } from './product-journey-gates.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1613,6 +1613,13 @@ async function runVerification() {
     // =========================================================================
     // Delta Audit Verification: Legal & Cookie Modal, Social Links, SEO & Open Graph
     // =========================================================================
+    for (const definition of GENERIC_PHASES) {
+      await verifyProductPhase(cdp, assertCheck, definition);
+      if (Number(process.env.VACATINA_E2E_THROUGH) === definition.phase) {
+        assertCheck(`Checkpoint ${definition.phase} — no uncaught browser exceptions`, cdp.pageExceptions.length === 0, JSON.stringify(cdp.pageExceptions));
+        cdp.close(); console.log(`[Vacatina E2E] Focused checkpoint through Phase ${definition.phase} passed; later phases not run.`); return;
+      }
+    }
     const deltaChecks = await cdp.evaluate(`(async () => {
       // 1. Legal & Cookie Preferences Modal
       window.__VACATINA_OS__.openLegalAndCookieModal('cookies');

@@ -2,6 +2,11 @@ import type { TravelProductSlug } from '../../../lib/domain/types.ts';
 
 /** Customer DTO only. Supplier payloads and commercial costs never enter this model. */
 export interface JourneyOffer {
+  inventoryMode?: 'demo_fixture' | 'manual_request' | 'live_supplier';
+  sourceType?: string;
+  sourceId?: string;
+  providerName?: string;
+  priceStatus?: 'quote_required' | 'illustrative' | 'quoted';
   canonicalOfferId?: string;
   offerId: string;
   productType: TravelProductSlug;
@@ -52,6 +57,13 @@ export interface JourneyConfiguration {
   citizenshipCountry: string;
   purpose: string;
   tripType: string;
+  durationDays?: number;
+  packageStyle?: string;
+  accommodationTier?: string;
+  vehicleCategory?: string;
+  ticketType?: string;
+  departurePort?: string;
+  coverageOption?: string;
   acceptedPriceMinor?: number;
   optionId?: string;
 }
@@ -103,6 +115,8 @@ export function journeyConfigurationFromQuery(query: URLSearchParams): JourneyCo
     travellerAges: query.get('travellerAges') || '', residenceCountry: query.get('residenceCountry') || query.get('residence') || '',
     citizenshipCountry: query.get('citizenshipCountry') || query.get('citizenship') || '', purpose: query.get('purpose') || 'tourism',
     tripType: (query.get('tripType') || 'round_trip').replace(/-/g, '_')
+    , durationDays: number('durationDays', 0), packageStyle: query.get('packageStyle') || '', accommodationTier: query.get('accommodationTier') || '',
+    vehicleCategory: query.get('vehicleCategory') || '', ticketType: query.get('ticketType') || '', departurePort: query.get('departurePort') || '', coverageOption: query.get('coverageOption') || '', optionId: query.get('optionId') || ''
   };
 }
 
@@ -115,6 +129,7 @@ export function validateJourneyConfiguration(product: TravelProductSlug, config:
   const errors: Record<string, string> = {};
   if (!config.destination.trim()) errors.destination = 'Enter your destination.';
   if (!isJourneyDate(config.departureDate)) errors.departureDate = 'Choose a valid travel date.';
+  else if (config.departureDate < new Date().toISOString().slice(0, 10)) errors.departureDate = 'Choose a future travel date.';
   if (![config.adults, config.children, config.infants].every(Number.isInteger) || config.adults < 1 || config.children < 0 || config.infants < 0 || config.adults + config.children + config.infants > 9 || config.infants > config.adults) {
     errors.adults = 'Choose 1–9 travellers, including at least one adult and no more infants than adults.';
   }
