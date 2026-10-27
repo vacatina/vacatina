@@ -1,4 +1,36 @@
 /** Browser gates added incrementally at each local product checkpoint. */
+export async function verifyVisa(cdp, assertCheck) {
+  for (const width of [1440, 768, 360]) {
+    await cdp.setViewport(width, width === 768 ? 1024 : 900, width < 1440);
+    const result = await cdp.evaluate(`(async () => {
+      const wait = ms => new Promise(r => setTimeout(r, ms));
+      const navigate = url => window.__VACATINA_ROUTER__.navigateTo(url);
+      const fits = () => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
+      document.getElementById('trip-bucket-close')?.click();
+      const query = 'destination=United+Arab+Emirates&citizenship=LK&residenceCountry=LK&departureDate=2027-02-01&purpose=tourism&applicants=2';
+      navigate('/visa-assistance?' + query); await wait(100);
+      const hub = !!document.querySelector('#visa-view-mount .visa-hub-page') && fits();
+      document.getElementById('visa-hub-search-btn')?.click(); await wait(150);
+      const search = !!document.querySelector('.visa-apply-btn') && fits() && location.search.includes('applicants=2') && document.getElementById('visa-view-mount').textContent.includes('Eligibility not verified');
+      document.querySelector('.visa-apply-btn')?.click(); await wait(150);
+      const modal = document.getElementById('visa-application-modal-overlay');
+      const accessible = !!modal && modal.contains(document.activeElement) && modal.getAttribute('role') === 'dialog' && !modal.querySelector('[type=file]') && !modal.querySelector('#visa-app-passport') && fits();
+      document.getElementById('visa-modal-stage-btn')?.click(); await wait(150);
+      const item = window.__VACATINA_OS__.tripBucketService.getItems().filter(i => i.productType === 'visa' && i.inventoryMode).at(-1);
+      const staged = !!item && item.state === 'needs_action' && item.configuration.adults === 2 && item.configuration.documentUploadState === 'NOT_UPLOADED';
+      document.getElementById('drawer-review-trip-cta')?.click(); await wait(100);
+      const review = !!document.querySelector('#trip-review-workspace [data-inventory-mode=demo_fixture]') && document.getElementById('btn-review-checkout')?.disabled && fits();
+      navigate('/visa-assistance/apply/phase7-missing?' + query); await wait(100);
+      const invalid = document.getElementById('visa-application-modal-overlay')?.getAttribute('role') === 'alertdialog';
+      window.dispatchEvent(new KeyboardEvent('keydown', { key:'Escape', bubbles:true }));
+      const escape = !document.getElementById('visa-application-modal-overlay');
+      navigate('/visa-assistance/search?' + query.replace('United+Arab+Emirates','No-Such-Country')); await wait(150);
+      const empty = document.getElementById('visa-results-count')?.dataset.resultsCount === '0';
+      navigate('/'); return {hub,search,accessible,staged,review:!!review,invalid,escape,empty};
+    })()`);
+    assertCheck(`Visa Phase 7 — context, manual eligibility, no uploads, review and responsive @ ${width}`, Object.values(result).every(Boolean), JSON.stringify(result));
+  }
+}
 export async function verifyHotels(cdp, assertCheck) {
   for (const width of [1440, 768, 360]) {
     await cdp.setViewport(width, width === 768 ? 1024 : 900, width < 1440);

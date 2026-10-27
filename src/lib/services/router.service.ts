@@ -46,7 +46,7 @@ import { hotelsSearchView } from '../../features/hotels/ui/hotels-search-view.ts
 import { openCanonicalHotelDetailModal, closeCanonicalHotelModal } from '../../features/hotels/ui/hotels-offer-detail-modal.ts';
 import { visaHubView } from '../../features/visa/ui/visa-hub-view.ts';
 import { visaSearchView } from '../../features/visa/ui/visa-search-view.ts';
-import { openCanonicalVisaApplicationModal } from '../../features/visa/ui/visa-application-modal.ts';
+import { openCanonicalVisaApplicationModal, closeCanonicalVisaApplicationModal } from '../../features/visa/ui/visa-application-modal.ts';
 import { findJourneyProduct } from '../../features/journeys/domain/journey-models.ts';
 import { productWorkspace } from '../../features/journeys/ui/product-workspace.ts';
 import {
@@ -275,6 +275,7 @@ export class CanonicalRouterService {
     const query = new URLSearchParams(search);
     const path = pathname.replace(/\/$/, '') || '/';
     closeCanonicalHotelModal();
+    closeCanonicalVisaApplicationModal();
 
     telemetry.track('canonical_navigation', { path, search });
 
@@ -312,7 +313,7 @@ export class CanonicalRouterService {
       return;
     }
     // The dedicated Flights product owns /flights and every /flights/* route.
-    const journeyProduct = isDedicatedFlightsPath(path) || path === '/hotels' || path.startsWith('/hotels/') ? undefined : findJourneyProduct(path);
+    const journeyProduct = isDedicatedFlightsPath(path) || path === '/hotels' || path.startsWith('/hotels/') || path === '/visa-assistance' || path.startsWith('/visa-assistance/') ? undefined : findJourneyProduct(path);
     if (journeyProduct) {
       const suffix = path.slice(journeyProduct.route.length);
       const detailPrefix = ['/offer/', '/property/', '/apply/'].find(prefix => suffix.startsWith(prefix));
@@ -413,6 +414,7 @@ export class CanonicalRouterService {
 
     // 2.3 Consular Visa Assistance Routes (Phase 3.3)
     if (path === '/visa-assistance') {
+      visaHubView.prefillFromQuery(query);
       const dest = query.get('destination') || query.get('to');
       if (dest) {
         visaHubView.prefill(dest);
@@ -436,7 +438,9 @@ export class CanonicalRouterService {
     if (path.startsWith('/visa-assistance/apply/')) {
       const remaining = path.replace('/visa-assistance/apply/', '');
       const offerId = remaining.split('/')[0];
-      openCanonicalVisaApplicationModal(offerId);
+      const mount = showVisaView();
+      if (!mount.querySelector('.visa-search-results-page')) visaHubView.render(mount);
+      void openCanonicalVisaApplicationModal(offerId, query);
       return;
     }
 

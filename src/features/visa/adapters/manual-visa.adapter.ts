@@ -178,7 +178,7 @@ export class ManualVisaAdapter implements IVisaAdapter {
 
     // Fuzzy fallback
     for (const [key, offer] of this.offers.entries()) {
-      if (offer.canonicalOfferId === offerId || offer.visaId === offerId || key.includes(offerId) || offerId.includes(key)) {
+      if (offer.canonicalOfferId === offerId || offer.visaId === offerId) {
         return offer;
       }
     }

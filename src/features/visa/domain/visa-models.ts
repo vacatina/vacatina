@@ -12,6 +12,7 @@
  * ============================================================================ */
 
 import type { CanonicalOfferSourceType, CanonicalOfferLifecycleStatus } from '../../../server/inventory/domain/canonical-offer.ts';
+import type { JourneyConfiguration } from '../../journeys/domain/journey-models.ts';
 
 export type VisaCategory = 'TOURIST_EVISA' | 'BUSINESS_VISA' | 'STICKER_VISA' | 'TRANSIT_VISA' | 'ETA';
 export type VisaEntryType = 'SINGLE_ENTRY' | 'DOUBLE_ENTRY' | 'MULTIPLE_ENTRY';
@@ -34,6 +35,7 @@ export interface VisaPricingBreakdown {
 }
 
 export interface CanonicalVisaOffer {
+  inventoryMode?: 'demo_fixture' | 'manual_request';
   visaId: string;                   // Internal service ID (e.g. vs_ae_tourist_30d)
   canonicalOfferId: string;         // Universal stable offer ID (e.g. vct-vs-consular-ae-30d)
   sourceType: CanonicalOfferSourceType; // 'MANUAL' | 'API' | 'HYBRID'
@@ -78,6 +80,7 @@ export interface VisaApplicantBioData {
 }
 
 export interface VisaSelectedConfiguration {
+  journeyContext?: JourneyConfiguration;
   visaId: string;
   canonicalOfferId: string;
   countryName: string;

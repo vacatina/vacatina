@@ -25,7 +25,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { buildProject } from './build.mjs';
-import { verifyHotels } from './product-journey-gates.mjs';
+import { verifyHotels, verifyVisa } from './product-journey-gates.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1512,7 +1512,7 @@ async function runVerification() {
       const mainHiddenDuringVisa = document.getElementById('main-content')?.classList.contains('hidden');
 
       // 2. Navigate to Visa Search (UAE)
-      window.__VACATINA_ROUTER__.navigateTo('/visa-assistance/search?destination=United%20Arab%20Emirates&citizenship=LK');
+      window.__VACATINA_ROUTER__.navigateTo('/visa-assistance/search?destination=United%20Arab%20Emirates&citizenship=LK&residenceCountry=LK&departureDate=2027-02-01&purpose=tourist&applicants=1');
       let visaCards = [];
       for (let i = 0; i < 20; i++) {
         await new Promise(r => setTimeout(r, 60));
@@ -1573,6 +1573,11 @@ async function runVerification() {
       `hubVisible=${journeyO.hubVisible}, hubTitle="${journeyO.hasHubTitle}", hasCards=${journeyO.hasCards}, modalOpen=${journeyO.modalOpen}, stagedInBucket=${journeyO.stagedInBucket}, mainRestored=${journeyO.mainRestored}`
     );
     report.journeysVerified.push('Journey O - Complete Consular Visa B2C Flow');
+    await verifyVisa(cdp, assertCheck);
+    if (process.env.VACATINA_E2E_THROUGH === '7') {
+      assertCheck('Checkpoint 7 — no uncaught browser exceptions', cdp.pageExceptions.length === 0, JSON.stringify(cdp.pageExceptions));
+      cdp.close(); console.log('[Vacatina E2E] Focused checkpoint through Phase 7 passed; later phases not run.'); return;
+    }
 
     // Capture visual artifacts for Visa product
     await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/visa-assistance');`);

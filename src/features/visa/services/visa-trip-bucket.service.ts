@@ -20,6 +20,7 @@ import type {
 } from '../domain/visa-models.ts';
 import { visaSearchService } from './visa-search.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
+import { VISA_DEMO_DISCLOSURE, validateVisaContext } from '../domain/visa-journey.ts';
 
 export class VisaTripBucketService {
   public mapVisaOfferToTripCandidate(
@@ -63,6 +64,12 @@ export class VisaTripBucketService {
       holdStatusText = 'Embassy window closed';
     }
 
+    if (visa.inventoryMode || config.journeyContext) {
+      state = state === 'ready' ? 'needs_action' : state;
+      holdStatusText = 'Local request only · No application submitted';
+      actionRequiredText = 'Eligibility, documents and current fees require manual review. No documents were uploaded or filed.';
+      primaryActionLabel = 'Review assistance request';
+    }
     return {
       id: `tb-${visa.canonicalOfferId}-${config.applicant.passportNumber || 'pending'}-${Date.now()}`,
       productType: 'visa',
@@ -80,7 +87,18 @@ export class VisaTripBucketService {
       integrationMode: 'ADAPTER-READY',
       offerId: visa.canonicalOfferId,
       sourceType: visa.sourceType,
-      confirmationMode: 'ASSISTED_SERVICE',
+      confirmationMode: visa.inventoryMode || config.journeyContext ? 'REQUEST_TO_CONFIRM' : 'ASSISTED_SERVICE',
+      inventoryMode: visa.inventoryMode || (config.journeyContext ? 'demo_fixture' : undefined),
+      inventoryLabel: visa.inventoryMode || config.journeyContext ? 'Canonical visa demo · Manual review required' : undefined,
+      canonicalOfferId: visa.canonicalOfferId,
+      sourceId: visa.providerId,
+      providerName: `${visa.supplierName} (catalog reference)`,
+      truthDisclosure: visa.inventoryMode || config.journeyContext ? VISA_DEMO_DISCLOSURE : undefined,
+      configuration: config.journeyContext ? { ...config.journeyContext, eligibilityState: 'MANUAL_REVIEW_REQUIRED', applicationState: 'LOCAL_REQUEST_NOT_SUBMITTED', documentUploadState: 'NOT_UPLOADED' } : undefined,
+      currency: config.pricing.currency,
+      revalidationStatus: 'LOCAL_CATALOG_CHECK',
+      lastCheckedAt: visa.lastCheckedAt,
+      validUntil: visa.validUntil,
       rawSupplierPrice: config.pricing.embassyFeeMinor / 100,
       supplierBaseCurrency: config.pricing.currency
     };
@@ -90,6 +108,12 @@ export class VisaTripBucketService {
     visa: CanonicalVisaOffer,
     config: VisaSelectedConfiguration
   ): Promise<{ candidate: TripBucketCandidate; success: boolean }> {
+    if (config.journeyContext) {
+      const errors = validateVisaContext(config.journeyContext);
+      if (errors.length) throw new Error(errors.join(' '));
+      if (config.canonicalOfferId !== visa.canonicalOfferId) throw new Error('Choose a canonical visa service.');
+      config = { ...config, pricing: { ...visa.pricing, totalPriceMinor: visa.pricing.totalPriceMinor * (config.journeyContext.adults + config.journeyContext.children + config.journeyContext.infants) } };
+    }
     // 1. Mandatory Pre-Staging Revalidation Guard
     const liveOffer = await visaSearchService.getOfferById(visa.canonicalOfferId);
     let state: TripBucketItemState = (config.applicant.uploadedDocumentCount || 0) >= 2 ? 'ready' : 'needs_action';
@@ -98,13 +122,13 @@ export class VisaTripBucketService {
       state = 'unavailable';
     } else if (liveOffer.availabilityStatus === 'EXPIRED') {
       state = 'offer_expired';
-    } else if (liveOffer.pricing.totalPriceMinor !== config.pricing.totalPriceMinor) {
+    } else if (!config.journeyContext && liveOffer.pricing.totalPriceMinor !== config.pricing.totalPriceMinor) {
       state = 'price_changed';
       config.pricing = liveOffer.pricing;
     }
 
     const candidate = this.mapVisaOfferToTripCandidate(visa, config, state);
-    tripBucketService.addItem(candidate);
+    tripBucketService.stageCandidate(candidate);
 
     telemetry.track('visa_application_staged_in_trip_bucket', {
       visaId: visa.visaId,

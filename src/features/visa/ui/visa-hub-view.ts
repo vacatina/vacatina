@@ -10,12 +10,20 @@ import { POPULAR_VISA_DESTINATIONS } from '../data/destinations.ts';
 import { MANUAL_VISA_SERVICES } from '../data/manual-visas.ts';
 import { initVisaCountryAutocomplete } from './visa-country-autocomplete.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
+import { VISA_DEMO_DISCLOSURE, visaContextFromQuery, validateVisaContext, rememberVisaContext, visaContextQuery } from '../domain/visa-journey.ts';
+import { journeyEscape } from '../../journeys/domain/journey-models.ts';
+import { showToast } from '../../../components/ui/toast.ts';
 
 export class VisaHubView {
   private mountElement: HTMLElement | null = null;
   private prefilledDestination: string = '';
   private selectedDestCode: string = 'AE';
   private selectedCitizenshipCode: string = 'LK';
+  private context = visaContextFromQuery(new URLSearchParams());
+  public prefillFromQuery(query: URLSearchParams): void {
+    this.context = visaContextFromQuery(query);
+    this.prefilledDestination = this.context.destination;
+  }
 
   public prefill(destination: string): void {
     this.prefilledDestination = destination;
@@ -41,7 +49,7 @@ export class VisaHubView {
             <div class="max-w-3xl mb-8">
               <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold/20 text-brand-gold border border-brand-gold/30 mb-3">
                 <span class="w-1.5 h-1.5 rounded-full bg-brand-gold"></span>
-                Official Consular Document Concierge & Filing Desk
+                Demo assistance catalog · Manual review required
               </span>
               <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3 leading-tight">
                 Global Travel Visas, Made Simple & Stress-Free.
@@ -89,7 +97,7 @@ export class VisaHubView {
                         id="visa-hub-destination"
                         autocomplete="off"
                         placeholder="e.g. UAE (Dubai), UK, Singapore, France"
-                        value="${this.prefilledDestination || 'United Arab Emirates'}"
+                        value="${journeyEscape(this.prefilledDestination || 'United Arab Emirates')}"
                         class="w-full pl-9 pr-3 py-3 bg-brand-canvas border border-brand-border rounded-xl text-xs font-semibold text-brand-black placeholder:text-brand-muted/70 focus:outline-none focus:ring-2 focus:ring-brand-primary transition-all"
                       />
                       <svg class="w-4 h-4 text-brand-muted absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -136,6 +144,12 @@ export class VisaHubView {
                 </div>
 
                 <!-- Instant Requirement Quick Pills -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <label class="text-xs font-semibold">Country of residence<input id="visa-hub-residence" value="${journeyEscape(this.context.residenceCountry)}" required class="w-full min-h-[44px] px-3 rounded-xl border border-brand-border mt-2 text-brand-black" placeholder="e.g. LK"></label>
+                  <label class="text-xs font-semibold">Planned travel date<input id="visa-hub-travel-date" type="date" value="${journeyEscape(this.context.departureDate)}" required class="w-full min-h-[44px] px-3 rounded-xl border border-brand-border mt-2 text-brand-black"></label>
+                  <label class="text-xs font-semibold">Applicants<input id="visa-hub-applicants" type="number" min="1" max="9" value="${this.context.adults}" required class="w-full min-h-[44px] px-3 rounded-xl border border-brand-border mt-2 text-brand-black"></label>
+                </div>
+                <p class="text-xs leading-relaxed text-brand-muted">${VISA_DEMO_DISCLOSURE} No document uploads or application submission are connected.</p>
                 <div class="pt-2 border-t border-gray-100 flex flex-wrap items-center gap-2">
                   <span class="text-[11px] font-bold text-brand-muted">Top Routes:</span>
                   ${POPULAR_VISA_DESTINATIONS.map(
@@ -148,7 +162,7 @@ export class VisaHubView {
                     >
                       <span>${dest.flagEmoji}</span>
                       <span>${dest.countryName}</span>
-                      <span class="text-[10px] text-brand-muted font-normal">(${dest.typicalSlaDays}d)</span>
+                        <span class="text-[10px] text-brand-muted font-normal">(example)</span>
                     </button>
                   `
                   ).join('')}
@@ -165,9 +179,9 @@ export class VisaHubView {
           <section>
             <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
               <div>
-                <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-1">Direct Consular Services</span>
+                <span class="text-xs font-bold text-brand-primary uppercase tracking-wider block mb-1">Canonical demo assistance</span>
                 <h2 class="text-2xl sm:text-3xl font-bold text-brand-black">Most Requested Visa Filings</h2>
-                <p class="text-sm text-brand-muted mt-1">Rigorous document pre-audit, authorized portal submission assistance, and transparent fee schedules.</p>
+                <p class="text-sm text-brand-muted mt-1">Review example checklists and fees. Current eligibility and requirements need manual confirmation.</p>
               </div>
               <a
                 href="/visa-assistance/options"
@@ -209,7 +223,7 @@ export class VisaHubView {
 
                     <div class="absolute bottom-3 left-3 right-3 text-white">
                       <div class="text-[11px] font-semibold text-white/90 flex items-center gap-2">
-                        <span>⏱️ SLA: ${service.processingSlaBusinessDays} Business Days</span>
+                        <span>Processing example: ${service.processingSlaBusinessDays} business days</span>
                         <span>·</span>
                         <span>${service.durationDays} Days Stay</span>
                       </div>
@@ -246,7 +260,7 @@ export class VisaHubView {
                     <!-- Pricing & CTA Section -->
                     <div class="pt-4 border-t border-brand-border/60 flex items-center justify-between">
                       <div>
-                        <div class="text-[10px] text-brand-muted">Total Consular Fee</div>
+                        <div class="text-[10px] text-brand-muted">Illustrative fee, not a live quote</div>
                         <div class="text-base font-extrabold text-brand-primary">
                           LKR ${(service.pricing.totalPriceMinor / 100).toLocaleString()}
                         </div>
@@ -275,7 +289,7 @@ export class VisaHubView {
               <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-1">Seamless 4-Stage Protocol</span>
               <h2 class="text-2xl sm:text-3xl font-bold text-brand-black">How Vacatina Consular Desk Works</h2>
               <p class="text-xs sm:text-sm text-brand-muted mt-2">
-                We remove the ambiguity, rejection risks, and complex embassy forms from your international journey.
+                Assistance cannot remove rejection risk. Only the relevant authority can decide your application.
               </p>
             </div>
 
@@ -283,25 +297,25 @@ export class VisaHubView {
               <div class="p-4 rounded-xl bg-brand-canvas border border-brand-border/60 flex flex-col">
                 <div class="w-9 h-9 rounded-lg bg-brand-primary/10 text-brand-primary font-bold text-sm flex items-center justify-center mb-3">1</div>
                 <h3 class="font-bold text-sm text-brand-black mb-1">Document Audit</h3>
-                <p class="text-xs text-brand-muted leading-relaxed">Upload passport scan, photo, and itinerary. Our legal concierge vets clarity, validity, and photo specifications.</p>
+                <p class="text-xs text-brand-muted leading-relaxed">Review the example checklist. Secure upload is not connected in this build.</p>
               </div>
 
               <div class="p-4 rounded-xl bg-brand-canvas border border-brand-border/60 flex flex-col">
                 <div class="w-9 h-9 rounded-lg bg-brand-primary/10 text-brand-primary font-bold text-sm flex items-center justify-center mb-3">2</div>
                 <h3 class="font-bold text-sm text-brand-black mb-1">Dossier Preparation</h3>
-                <p class="text-xs text-brand-muted leading-relaxed">We format government application forms, draft cover letters, verify bank statements, and assemble compliant dossiers.</p>
+                <p class="text-xs text-brand-muted leading-relaxed">Request the current document requirements before preparing an application.</p>
               </div>
 
               <div class="p-4 rounded-xl bg-brand-canvas border border-brand-border/60 flex flex-col">
                 <div class="w-9 h-9 rounded-lg bg-brand-primary/10 text-brand-primary font-bold text-sm flex items-center justify-center mb-3">3</div>
                 <h3 class="font-bold text-sm text-brand-black mb-1">Embassy / VFS Lodgement</h3>
-                <p class="text-xs text-brand-muted leading-relaxed">Direct submission into GDRFA/ICA systems or priority biometric appointment booking at VFS / TLS Colombo.</p>
+                <p class="text-xs text-brand-muted leading-relaxed">No authority submission or appointment booking occurs here.</p>
               </div>
 
               <div class="p-4 rounded-xl bg-brand-canvas border border-brand-border/60 flex flex-col">
                 <div class="w-9 h-9 rounded-lg bg-brand-primary/10 text-brand-primary font-bold text-sm flex items-center justify-center mb-3">4</div>
-                <h3 class="font-bold text-sm text-brand-black mb-1">Approved Visa Delivery</h3>
-                <p class="text-xs text-brand-muted leading-relaxed">Electronic visa PDF with QR verification sent to your inbox, or secure courier tracking for stamped passport return.</p>
+                <h3 class="font-bold text-sm text-brand-black mb-1">Authority decision</h3>
+                <p class="text-xs text-brand-muted leading-relaxed">Approval is never guaranteed. No decision or visa document is generated here.</p>
               </div>
             </div>
           </section>
@@ -315,7 +329,7 @@ export class VisaHubView {
               <span>Statutory Consular Advisory Compliance Notice</span>
             </div>
             <p class="leading-relaxed">
-              Vacatina (Private) Limited operates as a private travel orchestration company and authorized document preparation service. Vacatina is neither a sovereign embassy nor an immigration authority. We do not issue travel visas or guarantee visa approval; the decision to grant or decline any visa application rests exclusively with sovereign consular officers and foreign border agencies.
+              Vacatina is not an embassy or immigration authority. This build offers local planning only. We do not issue travel visas or guarantee approval; decisions rest with the relevant authority.
             </p>
           </section>
 
@@ -336,6 +350,8 @@ export class VisaHubView {
     const citizenshipSelect = mount.querySelector('#visa-hub-citizenship') as HTMLSelectElement;
     const purposeSelect = mount.querySelector('#visa-hub-purpose') as HTMLSelectElement;
     const searchForm = mount.querySelector('#visa-hub-search-form') as HTMLFormElement;
+    if (this.context.citizenshipCountry) citizenshipSelect.value = this.context.citizenshipCountry;
+    if (this.context.purpose) purposeSelect.value = this.context.purpose === 'tourism' ? 'tourist' : this.context.purpose;
 
     if (destInput && destContainer) {
       initVisaCountryAutocomplete({
@@ -360,7 +376,11 @@ export class VisaHubView {
         const citizenship = citizenshipSelect ? citizenshipSelect.value : 'LK';
         const purpose = purposeSelect ? purposeSelect.value : 'tourist';
 
-        const searchUrl = `/visa-assistance/search?destination=${encodeURIComponent(dest)}&citizenship=${encodeURIComponent(citizenship)}&purpose=${encodeURIComponent(purpose)}`;
+        this.context = { ...this.context, destination: dest, citizenshipCountry: citizenship, purpose: purpose === 'tourist' ? 'tourism' : purpose, residenceCountry: mount.querySelector<HTMLInputElement>('#visa-hub-residence')!.value.trim(), departureDate: mount.querySelector<HTMLInputElement>('#visa-hub-travel-date')!.value, adults: Number(mount.querySelector<HTMLInputElement>('#visa-hub-applicants')!.value) };
+        const errors = validateVisaContext(this.context);
+        if (errors.length) { showToast(errors.join(' '), 'warning'); return; }
+        rememberVisaContext(this.context);
+        const searchUrl = `/visa-assistance/search?${visaContextQuery(this.context)}`;
         if (typeof window !== 'undefined' && (window as any).__VACATINA_ROUTER__) {
           (window as any).__VACATINA_ROUTER__.navigateTo(searchUrl);
         }
@@ -376,10 +396,7 @@ export class VisaHubView {
         if (destInput) destInput.value = name;
         this.selectedDestCode = code;
 
-        const searchUrl = `/visa-assistance/search?destination=${encodeURIComponent(name)}&citizenship=${this.selectedCitizenshipCode}&purpose=tourist`;
-        if (typeof window !== 'undefined' && (window as any).__VACATINA_ROUTER__) {
-          (window as any).__VACATINA_ROUTER__.navigateTo(searchUrl);
-        }
+        searchForm.requestSubmit();
       });
     });
 
@@ -389,7 +406,7 @@ export class VisaHubView {
         e.preventDefault();
         const offerId = (btn as HTMLElement).dataset.applyVisaId;
         if (offerId && typeof window !== 'undefined' && (window as any).__VACATINA_ROUTER__) {
-          (window as any).__VACATINA_ROUTER__.navigateTo(`/visa-assistance/apply/${offerId}`);
+          (window as any).__VACATINA_ROUTER__.navigateTo(`/visa-assistance/apply/${offerId}?${visaContextQuery(this.context)}`);
         }
       });
     });

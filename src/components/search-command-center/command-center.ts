@@ -894,7 +894,7 @@ function initSearchSubmitButtons(): void {
         } else if (tabMeta.id === 'hotels') {
           destRoute += `?${new URLSearchParams({ destination: state.hotels.destination, checkIn: state.hotels.checkIn, checkOut: state.hotels.checkOut, rooms: String(state.travellers.rooms), adults: String(state.travellers.adults), children: String(state.travellers.children) })}`;
         } else if (tabMeta.id === 'visa') {
-          destRoute += `?country=${encodeURIComponent(state.visa.country)}`;
+          destRoute = `/visa-assistance?${new URLSearchParams({ destination: state.visa.country, citizenship: state.visa.citizenship, residenceCountry: state.visa.residence, departureDate: state.visa.travelDate, purpose: state.visa.purpose, applicants: String(state.travellers.adults) })}`;
         } else if (tabMeta.id === 'packages') {
           destRoute += `?destination=${encodeURIComponent(state.packages.destination)}`;
         } else if (tabMeta.id === 'cars') {

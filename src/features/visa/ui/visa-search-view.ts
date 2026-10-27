@@ -17,19 +17,32 @@ import { visaSearchService } from '../services/visa-search.service.ts';
 import { visaFavoritesService } from '../services/visa-favorites.service.ts';
 import { initVisaCountryAutocomplete } from './visa-country-autocomplete.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
+import { VISA_DEMO_DISCLOSURE, visaContextFromQuery, validateVisaContext, rememberVisaContext, visaContextQuery } from '../domain/visa-journey.ts';
+import { journeyEscape } from '../../journeys/domain/journey-models.ts';
 
 export class VisaSearchView {
   private mountElement: HTMLElement | null = null;
   private currentResponse: VisaSearchResponse | null = null;
   private displayedOffers: CanonicalVisaOffer[] = [];
   private currentFilters: VisaFilterCriteria = {};
+  private context = visaContextFromQuery(new URLSearchParams());
+  private generation = 0;
 
   public async loadFromQuery(query: URLSearchParams, mount: HTMLElement): Promise<void> {
     this.mountElement = mount;
+    const generation = ++this.generation;
+    this.currentFilters = {};
+    this.context = visaContextFromQuery(query);
+    const errors = validateVisaContext(this.context);
+    if (errors.length) {
+      mount.innerHTML = `<section class="max-w-3xl mx-auto p-6 my-10 rounded-2xl bg-white border"><h1 class="font-bold text-2xl">Check applicant context</h1><p role="alert" class="mt-4">${journeyEscape(errors.join(' '))}</p><a class="min-h-[44px] inline-flex items-center underline mt-4" href="/visa-assistance?${journeyEscape(query.toString())}">Complete visa search details</a></section>`;
+      return;
+    }
+    rememberVisaContext(this.context);
 
     const dest = query.get('destination') || query.get('to') || 'United Arab Emirates';
     const citizenship = query.get('citizenship') || 'LK';
-    const purpose = (query.get('purpose') as any) || 'all';
+    const purpose = this.context.purpose === 'tourism' ? 'tourist' : this.context.purpose as VisaSearchCriteria['purpose'];
 
     const criteria: VisaSearchCriteria = {
       destinationCountry: dest,
@@ -41,13 +54,14 @@ export class VisaSearchView {
     mount.innerHTML = `
       <div class="visa-search-loading bg-brand-canvas min-h-screen py-20 px-4 text-center">
         <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-brand-primary border-t-transparent mb-4"></div>
-        <div class="font-bold text-sm text-brand-black">Checking Consular Requirements & Sovereign Rules...</div>
-        <div class="text-xs text-brand-muted mt-1">Retrieving official visa processing SLAs and fee schedules</div>
+        <div class="font-bold text-sm text-brand-black">Loading assistance examples…</div>
+        <div class="text-xs text-brand-muted mt-1">Eligibility requires manual review</div>
       </div>
     `;
 
     try {
       const response = await visaSearchService.search(criteria);
+      if (generation !== this.generation) return;
       this.currentResponse = response;
       this.displayedOffers = [...response.offers];
       this.render();
@@ -66,7 +80,8 @@ export class VisaSearchView {
   private render(): void {
     if (!this.mountElement || !this.currentResponse) return;
 
-    const { criteria, requirementRule, facets } = this.currentResponse;
+    const { criteria, facets } = this.currentResponse;
+    const requirementRule = { ...this.currentResponse.requirementRule, statusLabel: 'Eligibility not verified · Manual review required', citizenshipCountry: journeyEscape(this.context.citizenshipCountry), destinationCountry: journeyEscape(this.context.destination), headline: 'Confirm current requirements with the relevant authority', description: VISA_DEMO_DISCLOSURE };
     const filteredOffers = visaSearchService.filterOffers(this.displayedOffers, this.currentFilters);
 
     this.mountElement.innerHTML = `
@@ -89,7 +104,7 @@ export class VisaSearchView {
                 <input
                   type="text"
                   id="visa-inline-dest-input"
-                  value="${criteria.destinationCountry}"
+                  value="${journeyEscape(criteria.destinationCountry)}" aria-label="Destination country"
                   placeholder="Destination Country"
                   class="bg-white/10 hover:bg-white/15 focus:bg-white text-white focus:text-brand-black px-3 py-1.5 rounded-lg text-xs font-semibold placeholder:text-white/60 focus:outline-none transition-all w-48"
                 />
@@ -97,6 +112,7 @@ export class VisaSearchView {
 
               <select
                 id="visa-inline-citizenship-select"
+                aria-label="Passport nationality"
                 class="bg-white/10 hover:bg-white/15 focus:bg-white text-white focus:text-brand-black px-3 py-1.5 rounded-lg text-xs font-semibold focus:outline-none transition-all cursor-pointer"
               >
                 <option value="LK" ${criteria.citizenshipCountryCode === 'LK' ? 'selected' : ''}>🇱🇰 Sri Lankan Citizen</option>
@@ -154,11 +170,11 @@ export class VisaSearchView {
 
               <!-- Quick SLA box -->
               <div class="shrink-0 bg-brand-canvas rounded-xl p-3 border border-brand-border/60 text-right min-w-[140px]">
-                <div class="text-[10px] uppercase font-bold text-brand-muted">Processing SLA</div>
+                <div class="text-[10px] uppercase font-bold text-brand-muted">Eligibility state</div>
                 <div class="text-base font-extrabold text-brand-primary">
-                  ${requirementRule.slaDaysMin} - ${requirementRule.slaDaysMax} Days
+                  Manual review
                 </div>
-                <div class="text-[10px] text-brand-muted">Official Working Days</div>
+                <div class="text-[10px] text-brand-muted">No approval or filing</div>
               </div>
             </div>
           </div>
@@ -282,7 +298,7 @@ export class VisaSearchView {
             <!-- Results List -->
             <main class="lg:col-span-9 space-y-4">
               <div class="flex items-center justify-between text-xs text-brand-muted">
-                <div>Showing <strong class="text-brand-black">${filteredOffers.length}</strong> available consular filing options</div>
+                <div id="visa-results-count" data-results-count="${filteredOffers.length}">Showing <strong class="text-brand-black">${filteredOffers.length}</strong> demo assistance options</div>
                 <div>All prices in <strong>LKR</strong></div>
               </div>
 
@@ -321,7 +337,7 @@ export class VisaSearchView {
                     </div>
                     <div class="absolute bottom-2 left-2 right-2">
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-primary text-white shadow-sm block text-center truncate">
-                        SLA ${offer.processingSlaBusinessDays} Business Days
+                        Demo estimate ${offer.processingSlaBusinessDays} days · Not verified
                       </span>
                     </div>
                   </div>
@@ -375,7 +391,7 @@ export class VisaSearchView {
                   <!-- Right Side: Pricing & CTA -->
                   <div class="w-full md:w-56 shrink-0 pt-4 md:pt-0 md:pl-5 border-t md:border-t-0 md:border-l border-brand-border/60 flex flex-col justify-between self-stretch">
                     <div class="space-y-1">
-                      <div class="text-[10px] text-brand-muted">Transparent Fee Breakdown</div>
+                      <div class="text-[10px] text-brand-muted">Illustrative fee per applicant</div>
                       <div class="text-xl font-extrabold text-brand-primary">
                         LKR ${(offer.pricing.totalPriceMinor / 100).toLocaleString()}
                       </div>
@@ -397,7 +413,7 @@ export class VisaSearchView {
                         data-apply-visa-id="${offer.canonicalOfferId}"
                         class="visa-apply-btn w-full py-2.5 px-4 bg-brand-primary hover:bg-[#140F4D] text-white rounded-xl font-bold text-xs shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <span>Apply & Stage</span>
+                        <span>Review assistance</span>
                         <span aria-hidden="true">→</span>
                       </button>
 
@@ -457,7 +473,7 @@ export class VisaSearchView {
         e.preventDefault();
         const dest = destInput ? destInput.value.trim() : '';
         const citizenship = citSelect ? citSelect.value : 'LK';
-        const searchUrl = `/visa-assistance/search?destination=${encodeURIComponent(dest)}&citizenship=${encodeURIComponent(citizenship)}`;
+        const searchUrl = `/visa-assistance/search?${visaContextQuery({ ...this.context, destination: dest, citizenshipCountry: citizenship })}`;
         if (typeof window !== 'undefined' && (window as any).__VACATINA_ROUTER__) {
           (window as any).__VACATINA_ROUTER__.navigateTo(searchUrl);
         }
@@ -516,7 +532,7 @@ export class VisaSearchView {
         e.preventDefault();
         const offerId = (btn as HTMLElement).dataset.applyVisaId;
         if (offerId && typeof window !== 'undefined' && (window as any).__VACATINA_ROUTER__) {
-          (window as any).__VACATINA_ROUTER__.navigateTo(`/visa-assistance/apply/${offerId}`);
+          (window as any).__VACATINA_ROUTER__.navigateTo(`/visa-assistance/apply/${offerId}?${visaContextQuery(this.context)}`);
         }
       });
     });
