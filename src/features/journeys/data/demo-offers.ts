@@ -68,6 +68,12 @@ export const JOURNEY_DEMO_OFFERS: JourneyOffer[] = [
       cabinCategories: [{ id: 'INTERIOR_REQUEST', label: 'Interior cabin preference · Allocation pending' }, { id: 'BALCONY_REQUEST', label: 'Balcony cabin preference · Allocation pending' }],
       confirmationNotes: 'Ship, sailing, embarkation port, ports of call, itinerary, cabin inventory and fare conditions have not been supplied. This is an operator request, not a cabin reservation.'
     }
+  }),
+  demoOffer('insurance', 'Travel insurance comparison request example', 'Worldwide', {
+    insurance: {
+      coverageOptions: [{ id: 'POLICY_REVIEW', label: 'Request actual policy wording and eligibility review' }],
+      confirmationNotes: 'No insurer, coverage, limits, policy wording, exclusions, premium or eligibility decision is supplied by this fixture. No insurance cover is in force and no policy is issued.'
+    }
   })
 ];
 

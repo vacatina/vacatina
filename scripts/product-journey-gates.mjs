@@ -5,7 +5,8 @@ export const GENERIC_PHASES = [
   { phase: 10, product: 'activities', route: '/activities', destination: 'Dubai' },
   { phase: 11, product: 'sightseeing', route: '/sightseeing-tours', destination: 'London' },
   { phase: 12, product: 'rails', route: '/rails', destination: 'Kandy' },
-  { phase: 13, product: 'cruises', route: '/cruises', destination: 'Mediterranean' }
+  { phase: 13, product: 'cruises', route: '/cruises', destination: 'Mediterranean' },
+  { phase: 14, product: 'insurance', route: '/travel-insurance', destination: 'Worldwide' }
 ];
 
 export async function verifyProductPhase(cdp, assertCheck, definition) {

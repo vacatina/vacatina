@@ -48,6 +48,7 @@ for (const offer of JOURNEY_DEMO_OFFERS) {
     const service = new JourneyService(async () => { calls++; throw new Error('Demo journeys must not call a supplier or server booking API'); });
     const config = journeyConfigurationFromQuery(new URLSearchParams({ destination: offer.location?.city || '', origin: 'Colombo', departureDate: '2027-02-01', returnDate: '2027-02-05', returnTime: '15:30', adults: '2', rooms: '1', pickup: 'Airport pickup request', dropoff: 'Hotel drop-off request', pickupTime: '14:30', travellerAges: '32,30', residenceCountry: 'LK', cabinClass: 'standard', durationDays: '5' }));
     config.departurePort = 'Port preference for operator review';
+    if (offer.productType === 'insurance') config.policyReviewAcknowledged = true;
     assert.deepEqual(validateJourneyConfiguration(offer.productType, config), {});
     await assert.rejects(service.search(offer.productType, { ...config, departureDate: 'invalid' }, 'demo_fixture'));
     const response = await service.search(offer.productType, config, 'demo_fixture');
@@ -92,4 +93,15 @@ test('Cruises Phase 13: port and cabin requests never fabricate sailing or inven
   const config = journeyConfigurationFromQuery(new URLSearchParams('destination=Mediterranean&departureDate=2027-02-01&adults=2'));
   assert.ok(validateJourneyConfiguration('cruises', config, true).departurePort);
   assert.ok(validateJourneyConfiguration('cruises', config, true).cabinType);
+});
+
+test('Insurance Phase 14: no fabricated coverage, premiums, policy wording or eligibility', async () => {
+  const offer = JOURNEY_DEMO_OFFERS.find(o => o.productType === 'insurance'); assert.ok(offer);
+  const details = journeyProductDetails(offer);
+  for (const key of ['underwriterName', 'coverageLimits', 'premium', 'policyWordingUrl', 'eligible']) assert.equal(details[key], undefined);
+  const config = journeyConfigurationFromQuery(new URLSearchParams('destination=Worldwide&departureDate=2027-02-01&returnDate=2027-02-05&adults=2&travellerAges=32,30&residenceCountry=LK&coverageOption=POLICY_REVIEW'));
+  assert.deepEqual(validateJourneyConfiguration('insurance', config), {});
+  assert.ok(validateJourneyConfiguration('insurance', { ...config, travellerAges: '32' }).travellerAges);
+  assert.ok(validateJourneyConfiguration('insurance', { ...config, residenceCountry: '' }).residenceCountry);
+  await assert.rejects(new JourneyService().stage(offer, config));
 });

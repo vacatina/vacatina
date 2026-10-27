@@ -99,6 +99,7 @@ export const journeyService = new JourneyService();
 /** Only a published option can be selected; a text value is not proof of availability. */
 export function validatePublishedJourneySelection(offer: JourneyOffer, config: JourneyConfiguration): void {
   const details = journeyProductDetails(offer);
+  if (offer.productType === 'insurance' && !config.policyReviewAcknowledged) throw new Error('Acknowledge that this demo request does not provide insurance cover.');
   for (const [source, key] of [['packageStyles', 'packageStyle'], ['accommodationTiers', 'accommodationTier'], ['vehicleCategories', 'vehicleCategory'], ['ticketTypes', 'ticketType'], ['timeSlots', 'timeSlot'], ['languages', 'language'], ['cabinCategories', 'cabinType'], ['coverageOptions', 'coverageOption'], ['travelClasses', 'cabinClass']] as const) {
     const options = details[source];
     if (!Array.isArray(options) || !options.length) continue;

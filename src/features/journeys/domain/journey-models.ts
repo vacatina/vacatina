@@ -65,6 +65,7 @@ export interface JourneyConfiguration {
   departurePort?: string;
   coverageOption?: string;
   returnTime?: string;
+  policyReviewAcknowledged?: boolean;
   acceptedPriceMinor?: number;
   optionId?: string;
 }
