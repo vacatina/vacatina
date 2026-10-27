@@ -9,7 +9,7 @@
  * ============================================================================ */
 
 import { telemetry } from '../analytics/telemetry.ts';
-import { showToast } from '../../components/ui/toast.ts';
+import { showToast, hideToast } from '../../components/ui/toast.ts';
 import {
   activateSearchTabByDomId,
   highlightSearchPanel
@@ -40,7 +40,7 @@ import { tripBucketService } from './trip-bucket.service.ts';
 import type { CommandCenterTabId } from '../domain/types.ts';
 import { flightsHubView } from '../../features/flights/ui/flights-hub-view.ts';
 import { flightsSearchView } from '../../features/flights/ui/flights-search-view.ts';
-import { openCanonicalFlightDetailModal } from '../../features/flights/ui/flights-offer-detail-modal.ts';
+import { openCanonicalFlightDetailModal, closeCanonicalFlightDetailModal } from '../../features/flights/ui/flights-offer-detail-modal.ts';
 import { hotelsHubView } from '../../features/hotels/ui/hotels-hub-view.ts';
 import { hotelsSearchView } from '../../features/hotels/ui/hotels-search-view.ts';
 import { openCanonicalHotelDetailModal, closeCanonicalHotelModal } from '../../features/hotels/ui/hotels-offer-detail-modal.ts';
@@ -274,6 +274,13 @@ export class CanonicalRouterService {
   public dispatchRoute(pathname: string, search: string, userInitiated = true): void {
     const query = new URLSearchParams(search);
     const path = pathname.replace(/\/$/, '') || '/';
+    hideToast();
+    productWorkspace.cancel();
+    bundleWorkspace.cancel();
+    hotelsHubView.cleanup();
+    visaHubView.cleanup();
+    visaSearchView.cancel();
+    closeCanonicalFlightDetailModal();
     closeCanonicalHotelModal();
     closeCanonicalVisaApplicationModal();
 
@@ -316,7 +323,7 @@ export class CanonicalRouterService {
     const journeyProduct = isDedicatedFlightsPath(path) || path === '/hotels' || path.startsWith('/hotels/') || path === '/visa-assistance' || path.startsWith('/visa-assistance/') ? undefined : findJourneyProduct(path);
     if (journeyProduct) {
       const suffix = path.slice(journeyProduct.route.length);
-      const detailPrefix = ['/offer/', '/property/', '/apply/'].find(prefix => suffix.startsWith(prefix));
+      const detailPrefix = ['/offer/', '/property/', '/apply/'].find(prefix => suffix.startsWith(prefix) || suffix === prefix.slice(0, -1));
       let offerId: string | undefined;
       if (detailPrefix) {
         try { offerId = decodeURIComponent(suffix.slice(detailPrefix.length)); }
@@ -358,7 +365,7 @@ export class CanonicalRouterService {
       return;
     }
 
-    if (path.startsWith('/flights/offer/')) {
+    if (path === '/flights/offer' || path.startsWith('/flights/offer/')) {
       const offerId = flightOfferIdFromPath(path);
       if (!offerId) {
         showToast('This flight option link is incomplete. Please search again.', 'warning');
@@ -397,9 +404,9 @@ export class CanonicalRouterService {
       return;
     }
 
-    if (path.startsWith('/hotels/property/')) {
+    if (path === '/hotels/property' || path.startsWith('/hotels/property/')) {
       const remaining = path.replace('/hotels/property/', '');
-      const propertyId = remaining.split('/')[0];
+      const propertyId = path === '/hotels/property' ? '' : remaining.split('/')[0];
       const mount = showHotelsView();
       if (!mount.querySelector('.hotels-search-view-root')) hotelsHubView.render(mount);
       void openCanonicalHotelDetailModal(propertyId, query.size ? {
@@ -435,9 +442,9 @@ export class CanonicalRouterService {
       return;
     }
 
-    if (path.startsWith('/visa-assistance/apply/')) {
+    if (path === '/visa-assistance/apply' || path.startsWith('/visa-assistance/apply/')) {
       const remaining = path.replace('/visa-assistance/apply/', '');
-      const offerId = remaining.split('/')[0];
+      const offerId = path === '/visa-assistance/apply' ? '' : remaining.split('/')[0];
       const mount = showVisaView();
       if (!mount.querySelector('.visa-search-results-page')) visaHubView.render(mount);
       void openCanonicalVisaApplicationModal(offerId, query);

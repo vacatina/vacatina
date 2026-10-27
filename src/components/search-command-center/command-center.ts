@@ -24,8 +24,10 @@ import { showToast } from '../ui/toast.ts';
 import { openProductConfiguratorModal } from '../dialogs/dialogs-controller.ts';
 import { openTripBucketDrawer } from '../trip-bucket/trip-bucket-ui.ts';
 import { routerService } from '../../lib/services/router.service.ts';
+import { buildCommandCenterHandoff, SCC_FIELD_KEYS } from './journey-handoff.ts';
 
 let activeTravellerTrigger: HTMLElement | null = null;
+let initialized = false;
 
 const AIRPORT_SUGGESTIONS = [
   'Colombo (CMB) — Bandaranaike',
@@ -110,6 +112,8 @@ export function isTravellerPopoverOpen(): boolean {
 }
 
 export function initSearchCommandCenter(): void {
+  if (initialized || !document.getElementById('search-command-center')) return;
+  initialized = true;
   ensureAutocompleteDatalist();
 
   const tabList = document.querySelector<HTMLElement>('#search-command-center [role="tablist"]');
@@ -203,13 +207,19 @@ function initEditableSearchFieldCards(): void {
       labelText.includes('passengers');
 
     if (isTravellerCard) return;
+    const tab = LOCKED_11_TAB_ORDER.find(meta => meta.domPanelId === card.closest('.search-panel')?.id)?.id;
+    const field = tab ? SCC_FIELD_KEYS[tab][(labelSpan.textContent || '').trim()] : undefined;
+    if (!tab || !field) return;
+    valueDiv.dataset.sccField = field;
+    valueDiv.dataset.sccTab = tab;
+    if (!valueDiv.id) valueDiv.id = `scc-${tab}-${field}`;
 
     card.classList.add('search-field-card', 'cursor-text');
-    valueDiv.setAttribute('contenteditable', 'true');
+    valueDiv.setAttribute('contenteditable', 'plaintext-only');
     valueDiv.setAttribute('role', 'textbox');
     valueDiv.setAttribute('aria-label', (labelSpan.textContent || 'Search field').trim());
     valueDiv.setAttribute('spellcheck', 'false');
-    valueDiv.classList.add('focus:outline-none', 'focus:text-brand-primary');
+    valueDiv.classList.add('focus:outline-none', 'focus:text-brand-primary', 'focus:ring-2', 'focus:ring-brand-info', 'rounded');
 
     card.addEventListener('click', event => {
       const target = event.target as HTMLElement;
@@ -228,35 +238,7 @@ function initEditableSearchFieldCards(): void {
 
     valueDiv.addEventListener('blur', () => {
       const newVal = (valueDiv.textContent || '').trim();
-      if (!newVal) return;
-      const id = valueDiv.id;
-      if (id === 'flights-from-display') {
-        searchCommandService.prefillTab('flights', { from: newVal });
-      } else if (id === 'flights-to-display') {
-        searchCommandService.prefillTab('flights', { to: newVal });
-      } else if (id === 'hotels-destination-display') {
-        searchCommandService.prefillTab('hotels', { destination: newVal });
-      } else if (id === 'visa-country-display') {
-        searchCommandService.prefillTab('visa', { country: newVal });
-      } else if (id === 'packages-destination-display') {
-        searchCommandService.prefillTab('packages', { destination: newVal });
-      } else if (id === 'cars-pickup-display') {
-        searchCommandService.prefillTab('cars', { pickup: newVal });
-      } else if (id === 'rails-from-display') {
-        searchCommandService.prefillTab('rails', { fromStation: newVal });
-      } else if (id === 'rails-to-display') {
-        searchCommandService.prefillTab('rails', { toStation: newVal });
-      } else if (id === 'cruises-destination-display') {
-        searchCommandService.prefillTab('cruises', { region: newVal });
-      } else if (id === 'activities-destination-display') {
-        searchCommandService.prefillTab('activities', { destination: newVal });
-      } else if (id === 'sightseeing-destination-display') {
-        searchCommandService.prefillTab('sightseeing', { destination: newVal });
-      } else if (id === 'insurance-region-display') {
-        searchCommandService.prefillTab('insurance', { region: newVal });
-      } else if (id === 'bundle-destination-display') {
-        searchCommandService.prefillTab('bundle', { destination: newVal });
-      }
+      searchCommandService.updateField(tab, field, newVal);
     });
   });
 }
@@ -409,6 +391,7 @@ function initFlightPanelControls(): void {
             : 'px-3 py-1.5 font-medium text-brand-muted hover:text-brand-primary cursor-pointer select-none';
         });
         const label = (pill.textContent || '').trim();
+        searchCommandService.updateField('flights', 'tripType', label === 'One Way' ? 'one-way' : label === 'Multi-City' ? 'multi-city' : 'round-trip');
         const returnCol = flightPanel.querySelector(
           '.grid > div:nth-child(4) .font-semibold.text-sm'
         );
@@ -418,7 +401,7 @@ function initFlightPanelControls(): void {
               ? '— One Way (No Return)'
               : label === 'Multi-City'
                 ? 'Multi-Leg Schedule'
-                : '27 Nov 2026';
+                : searchCommandService.getState().flights.returnDate;
         }
         if (multiCityContainer) {
           multiCityContainer.classList.toggle('hidden', label !== 'Multi-City');
@@ -430,10 +413,17 @@ function initFlightPanelControls(): void {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           activatePill();
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const next = pills[(i + (e.key === 'ArrowRight' ? 1 : pills.length - 1)) % pills.length];
+          next.click(); next.focus();
         }
       });
     });
   }
+  flightPanel.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach(input => {
+    if (/direct/i.test(input.closest('label')?.textContent || '')) input.addEventListener('change', () => searchCommandService.updateField('flights', 'directOnly', input.checked));
+  });
 }
 
 function initBundlePanelControls(): void {
@@ -501,7 +491,7 @@ function initCarsTransfersDualMode(): void {
         Self-Drive &amp; Chauffeur Car Hire
       </button>
     </div>
-    <span id="cars-mode-hint" class="text-[11px] text-brand-muted">Flight tracking &amp; 60m airport wait included</span>
+    <span id="cars-mode-hint" class="text-[11px] text-brand-muted">Vehicle and pickup conditions require confirmation</span>
   `;
 
   carsPanel.insertBefore(modeBar, carsPanel.firstChild);
@@ -520,14 +510,14 @@ function initCarsTransfersDualMode(): void {
       });
       if (mode === 'hire') {
         searchCommandService.prefillTab('cars', {
-          serviceType: 'Self-Drive Car Hire (Driver Age 30+)'
+          serviceType: 'Self-Drive Car Hire (Eligibility to confirm)'
         });
-        if (hintEl) hintEl.textContent = 'Driver age 25–70 · Comprehensive CDW insurance options';
+        if (hintEl) hintEl.textContent = 'Driver eligibility, insurance and hire terms require confirmation';
       } else {
         searchCommandService.prefillTab('cars', {
           serviceType: 'Airport Transfer'
         });
-        if (hintEl) hintEl.textContent = 'Flight tracking & 60m airport wait included';
+        if (hintEl) hintEl.textContent = 'Vehicle, waiting terms and pickup require confirmation';
       }
     });
   });
@@ -824,94 +814,12 @@ function initSearchSubmitButtons(): void {
     if (!submitBtn) return;
 
     submitBtn.classList.add('touch-target-44');
+    submitBtn.dataset.sccSubmit = tabMeta.id;
     submitBtn.addEventListener('click', () => {
       const state = searchCommandService.getState();
-
-      // Validation per tabMeta.id
-      if (tabMeta.id === 'flights') {
-        const fromNorm = state.flights.from.trim().toLowerCase();
-        const toNorm = state.flights.to.trim().toLowerCase();
-        const alertEl = document.getElementById('flight-validation-alert');
-        if (!state.flights.from || !state.flights.to) {
-          showToast('Please specify both origin and destination airports.', 'warning');
-          return;
-        }
-        if (fromNorm && fromNorm === toNorm) {
-          if (alertEl) {
-            alertEl.textContent =
-              'Origin and destination cannot be identical. Please choose a different arrival airport.';
-            alertEl.classList.remove('hidden');
-          }
-          showToast('Origin and destination airports must be different.', 'warning');
-          return;
-        }
-        if (alertEl) alertEl.classList.add('hidden');
-      }
-
-      const canonicalSearchRoutes: Record<CommandCenterTabId, string> = {
-        bundle: '/trip-builder/results',
-        flights: '/flights/search',
-        hotels: '/hotels/search',
-        visa: '/visa-assistance/options',
-        packages: '/holiday-packages/search',
-        cars: '/cars-transfers/search',
-        rails: '/rails/search',
-        cruises: '/cruises/search',
-        activities: '/activities/search',
-        sightseeing: '/sightseeing-tours/search',
-        insurance: '/travel-insurance/compare'
-      };
-
-      let destRoute = canonicalSearchRoutes[tabMeta.id];
-      if (destRoute) {
-        if (tabMeta.id === 'flights') {
-          const flights = state.flights;
-          const tripType =
-            flights.tripType === 'one-way'
-              ? 'one_way'
-              : flights.tripType === 'multi-city'
-                ? 'multi_city'
-                : 'round_trip';
-          const flightParams = new URLSearchParams();
-          flightParams.set('tripType', tripType);
-          flightParams.set('origin', flights.from);
-          flightParams.set('destination', flights.to);
-          flightParams.set('departureDate', flights.departureDate);
-          if (tripType === 'round_trip' && flights.returnDate) {
-            flightParams.set('returnDate', flights.returnDate);
-          }
-          flightParams.set('adults', String(state.travellers.adults));
-          flightParams.set('children', String(state.travellers.children));
-          flightParams.set('infants', String(state.travellers.infants));
-          flightParams.set('cabinClass', state.travellers.cabin || 'Economy');
-          if (flights.directOnly) flightParams.set('directOnly', 'true');
-
-          // Multi-city needs its additional legs entered on the dedicated hub.
-          destRoute =
-            tripType === 'multi_city'
-              ? `/flights?${flightParams.toString()}`
-              : `/flights/search?${flightParams.toString()}`;
-        } else if (tabMeta.id === 'hotels') {
-          destRoute += `?${new URLSearchParams({ destination: state.hotels.destination, checkIn: state.hotels.checkIn, checkOut: state.hotels.checkOut, rooms: String(state.travellers.rooms), adults: String(state.travellers.adults), children: String(state.travellers.children) })}`;
-        } else if (tabMeta.id === 'visa') {
-          destRoute = `/visa-assistance?${new URLSearchParams({ destination: state.visa.country, citizenship: state.visa.citizenship, residenceCountry: state.visa.residence, departureDate: state.visa.travelDate, purpose: state.visa.purpose, applicants: String(state.travellers.adults) })}`;
-        } else if (tabMeta.id === 'packages') {
-          destRoute += `?destination=${encodeURIComponent(state.packages.destination)}`;
-        } else if (tabMeta.id === 'cars') {
-          destRoute += `?pickup=${encodeURIComponent(state.cars.pickup)}&service=${encodeURIComponent(state.cars.serviceType)}`;
-        } else if (tabMeta.id === 'rails') {
-          destRoute += `?from=${encodeURIComponent(state.rails.fromStation)}&to=${encodeURIComponent(state.rails.toStation)}`;
-        } else if (tabMeta.id === 'cruises') {
-          destRoute += `?region=${encodeURIComponent(state.cruises.region)}`;
-        } else if (tabMeta.id === 'activities') {
-          destRoute += `?destination=${encodeURIComponent(state.activities.destination)}`;
-        } else if (tabMeta.id === 'sightseeing') {
-          destRoute += `?destination=${encodeURIComponent(state.sightseeing.destination)}`;
-        } else if (tabMeta.id === 'insurance') {
-          destRoute += `?region=${encodeURIComponent(state.insurance.region)}`;
-        }
-        routerService.navigateTo(destRoute);
-      }
+      const handoff = buildCommandCenterHandoff(tabMeta.id, state);
+      if (handoff.errors.length) { showToast(handoff.errors.join(' '), 'warning'); return; }
+      routerService.navigateTo(handoff.url);
     });
   });
 }
@@ -950,6 +858,10 @@ function initHeroAiTripPrompt(): void {
 
 export function syncSearchDisplayElements(): void {
   const state = searchCommandService.getState();
+  document.querySelectorAll<HTMLElement>('[data-scc-field][data-scc-tab]').forEach(element => {
+    const fields = state[element.dataset.sccTab as CommandCenterTabId] as unknown as Record<string, unknown>;
+    if (document.activeElement !== element) element.textContent = String(fields?.[element.dataset.sccField!] ?? '');
+  });
 
   const setText = (id: string, val: string) => {
     const el = document.getElementById(id);
@@ -988,7 +900,7 @@ export function syncSearchDisplayElements(): void {
       valueEl.textContent = formatTravellerSummary(state.travellers, false, true);
     } else if (panel.id === 'panel-cars') {
       const pax = state.travellers.adults + state.travellers.children;
-      valueEl.textContent = `${pax} Pass · ${Math.max(2, pax)} Bags`;
+      valueEl.textContent = `${pax} travellers · Luggage on next step`;
     } else {
       valueEl.textContent = formatTravellerSummary(state.travellers, false, false);
     }

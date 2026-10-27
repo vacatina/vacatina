@@ -26,6 +26,7 @@ export async function getApiSession(refresh = false): Promise<VacatinaSession> {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       if (!response.ok) throw new VacatinaApiError('Your travel session could not be loaded. Please retry.', response.status);
+      if (!response.headers.get('content-type')?.includes('json')) throw new VacatinaApiError('The travel service is temporarily unavailable. Please retry.', response.status, 'INVALID_API_RESPONSE');
       return response.json();
     })().catch(error => { apiSessionPromise = undefined; throw error; });
   }

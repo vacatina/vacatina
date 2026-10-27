@@ -34,6 +34,9 @@ import { openTripBucketDrawer } from '../../../components/trip-bucket/trip-bucke
 let activeOfferModal: HTMLElement | null = null;
 let activeInvalidDialog: HTMLElement | null = null;
 let previousActiveElement: HTMLElement | null = null;
+let closeCurrentFlight: (() => void) | null = null;
+let modalGeneration = 0;
+export function closeCanonicalFlightDetailModal(): void { modalGeneration++; closeCurrentFlight?.(); }
 
 function escapeHtml(value: unknown): string {
   return String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -78,6 +81,8 @@ export async function openCanonicalFlightDetailModal(
   offerId: string,
   triggerElement?: HTMLElement | null
 ): Promise<void> {
+  closeCanonicalFlightDetailModal();
+  const request = ++modalGeneration;
   let decodedOfferId = offerId;
   try {
     decodedOfferId = decodeURIComponent(offerId);
@@ -93,6 +98,7 @@ export async function openCanonicalFlightDetailModal(
   setBackgroundInert(false);
 
   const offer = await flightSearchService.getOfferById(decodedOfferId);
+  if (request !== modalGeneration) return;
   if (!offer) {
     renderInvalidOfferDialog(decodedOfferId);
     return;
@@ -117,6 +123,7 @@ function renderInvalidOfferDialog(offerId: string): void {
     document.removeEventListener('keydown', handleKeydown);
     dialog.remove();
     activeInvalidDialog = null;
+    closeCurrentFlight = null;
     restoreTriggerFocus();
   };
 
@@ -179,6 +186,7 @@ function renderInvalidOfferDialog(offerId: string): void {
 
   document.body.appendChild(dialog);
   activeInvalidDialog = dialog;
+  closeCurrentFlight = closeDialog;
   document.addEventListener('keydown', handleKeydown);
   setBackgroundInert(true);
   activateFocusTrap(dialog);
@@ -215,6 +223,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
     document.removeEventListener('keydown', keydownHandler);
     modalOverlay.remove();
     activeOfferModal = null;
+    closeCurrentFlight = null;
     restoreTriggerFocus();
   };
 
@@ -599,6 +608,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
   updateModalContent();
   document.body.appendChild(modalOverlay);
   activeOfferModal = modalOverlay;
+  closeCurrentFlight = closeModal;
   document.addEventListener('keydown', keydownHandler);
   setBackgroundInert(true);
   activateFocusTrap(modalOverlay);

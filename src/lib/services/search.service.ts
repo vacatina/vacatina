@@ -211,6 +211,14 @@ export class SearchCommandService {
     this.emit();
   }
 
+  /** Updates a supported SCC text field, including clearing it for validation. */
+  public updateField(tab: CommandCenterTabId, key: string, value: string | boolean): void {
+    const fields = this.state[tab] as unknown as Record<string, unknown>;
+    if (typeof fields[key] !== typeof value || !['string', 'boolean'].includes(typeof value)) return;
+    fields[key] = value;
+    this.emit();
+  }
+
   public setCurrency(currency: SupportedCurrency): void {
     this.state.currency = currency;
     this.emit();

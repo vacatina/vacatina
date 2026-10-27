@@ -66,6 +66,12 @@ export interface JourneyConfiguration {
   coverageOption?: string;
   returnTime?: string;
   policyReviewAcknowledged?: boolean;
+  travelWindow?: string;
+  cabinPreference?: string;
+  durationPreference?: string;
+  requestedCategory?: string;
+  coveragePreference?: string;
+  packageStylePreference?: string;
   acceptedPriceMinor?: number;
   optionId?: string;
 }
@@ -116,8 +122,9 @@ export function journeyConfigurationFromQuery(query: URLSearchParams): JourneyCo
     timeSlot: query.get('timeSlot') || '', language: query.get('language') || '', cabinType: query.get('cabinType') || '',
     travellerAges: query.get('travellerAges') || '', residenceCountry: query.get('residenceCountry') || query.get('residence') || '',
     citizenshipCountry: query.get('citizenshipCountry') || query.get('citizenship') || '', purpose: query.get('purpose') || 'tourism',
-    tripType: (query.get('tripType') || 'round_trip').replace(/-/g, '_')
-    , durationDays: number('durationDays', 0), packageStyle: query.get('packageStyle') || '', accommodationTier: query.get('accommodationTier') || '',
+    tripType: (query.get('tripType') || 'round_trip').replace(/-/g, '_'),
+    travelWindow: query.get('travelWindow') || '', cabinPreference: query.get('cabinPreference') || '', durationPreference: query.get('durationPreference') || '', requestedCategory: query.get('requestedCategory') || '', coveragePreference: query.get('coveragePreference') || '', packageStylePreference: query.get('packageStylePreference') || '',
+    durationDays: number('durationDays', 0), packageStyle: query.get('packageStyle') || '', accommodationTier: query.get('accommodationTier') || '',
     vehicleCategory: query.get('vehicleCategory') || '', ticketType: query.get('ticketType') || '', departurePort: query.get('departurePort') || '', coverageOption: query.get('coverageOption') || '', optionId: query.get('optionId') || '', returnTime: query.get('returnTime') || ''
   };
 }

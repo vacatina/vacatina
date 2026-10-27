@@ -25,7 +25,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { buildProject } from './build.mjs';
-import { verifyHotels, verifyVisa, verifyProductPhase, GENERIC_PHASES } from './product-journey-gates.mjs';
+import { verifyHotels, verifyVisa, verifyProductPhase, verifyGlobalIntegration, GENERIC_PHASES } from './product-journey-gates.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -96,6 +96,7 @@ class CdpSession {
     this.pending = new Map();
     this.consoleErrors = [];
     this.pageExceptions = [];
+    this.screenshots = [];
   }
 
   async open() {
@@ -170,6 +171,7 @@ class CdpSession {
     fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
     const out1 = path.join(SCREENSHOT_DIR, filename);
     fs.writeFileSync(out1, buffer);
+    this.screenshots.push(out1);
     if (fs.existsSync(ARTIFACT_DIR)) {
       fs.writeFileSync(path.join(ARTIFACT_DIR, filename), buffer);
     }
@@ -1580,12 +1582,13 @@ async function runVerification() {
     }
 
     // Capture visual artifacts for Visa product
+    await cdp.setViewport(1440, 900, false);
     await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/visa-assistance');`);
     await sleep(200);
     const shotVisaHub = await cdp.captureScreenshot('vacatina_visa_hub_1440px.png');
     report.screenshots.push(shotVisaHub);
 
-    await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/visa-assistance/search?destination=United%20Arab%20Emirates&citizenship=LK');`);
+    await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/visa-assistance/search?destination=United%20Arab%20Emirates&citizenship=LK&residenceCountry=LK&departureDate=2027-02-01&purpose=tourism&applicants=2');`);
     await sleep(350);
     const shotVisaSearch1440 = await cdp.captureScreenshot('vacatina_visa_search_1440px.png');
     report.screenshots.push(shotVisaSearch1440);
@@ -1620,6 +1623,7 @@ async function runVerification() {
         cdp.close(); console.log(`[Vacatina E2E] Focused checkpoint through Phase ${definition.phase} passed; later phases not run.`); return;
       }
     }
+    await verifyGlobalIntegration(cdp, assertCheck);
     const deltaChecks = await cdp.evaluate(`(async () => {
       // 1. Legal & Cookie Preferences Modal
       window.__VACATINA_OS__.openLegalAndCookieModal('cookies');
@@ -1775,6 +1779,7 @@ async function runVerification() {
     );
 
     report.consoleErrors = cdp.consoleErrors;
+    report.screenshots = [...new Set([...report.screenshots, ...cdp.screenshots])];
     report.pageExceptions = cdp.pageExceptions;
 
     assertCheck(

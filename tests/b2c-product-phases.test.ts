@@ -59,6 +59,7 @@ for (const offer of JOURNEY_DEMO_OFFERS) {
     assert.equal(canonical.inventoryMode, 'demo_fixture'); assert.equal(canonical.sellable, false);
     assert.equal(canonical.priceStatus, 'quote_required');
     await assert.rejects(service.getOffer(`DEMO-${offer.productType}-missing`));
+    await assert.rejects(service.getOffer(''));
     const details = journeyProductDetails(canonical);
     const fields = [['packageStyles', 'packageStyle'], ['accommodationTiers', 'accommodationTier'], ['vehicleCategories', 'vehicleCategory'], ['ticketTypes', 'ticketType'], ['timeSlots', 'timeSlot'], ['languages', 'language'], ['cabinCategories', 'cabinType'], ['coverageOptions', 'coverageOption']] as const;
     for (const [source, key] of fields) {

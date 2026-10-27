@@ -30,7 +30,7 @@ export async function openCanonicalVisaApplicationModal(offerId: string, query =
   modal.className = 'fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-6';
   modal.setAttribute('role', raw ? 'dialog' : 'alertdialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'visa-modal-title');
   const context = query.size ? visaContextFromQuery(query) : getVisaContext() || journeyConfigurationFromQuery(new URLSearchParams());
-  if (raw && !context.destination) context.destination = raw.countryName;
+  if (raw && (!query.size || !context.destination)) context.destination = raw.countryName;
   modal.innerHTML = `<div class="bg-white text-brand-black rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden min-w-0">
     <header class="p-5 border-b border-brand-border flex items-start justify-between gap-3"><h2 id="visa-modal-title" class="font-heading font-bold text-xl break-words">${raw ? journeyEscape(raw.title) : 'Visa option unavailable'}</h2><button id="visa-modal-close-btn" type="button" aria-label="Close visa request" class="min-h-[44px] min-w-[44px] rounded-xl border">✕</button></header>
     <div class="overflow-y-auto p-5 sm:p-6 space-y-6">

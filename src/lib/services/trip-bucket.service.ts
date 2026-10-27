@@ -156,7 +156,10 @@ export function computeTripBucketSummary(items: TripBucketCandidate[]): TripBuck
 }
 
 function cloneItems(items: TripBucketCandidate[]): TripBucketCandidate[] {
-  return items.map(item => ({ ...item }));
+  return structuredClone(items).map(item => {
+    if ((item.inventoryMode === 'demo_fixture' || item.inventoryMode === 'manual_request') && item.state === 'ready') return { ...item, state: 'needs_action', confirmationMode: 'REQUEST_TO_CONFIRM' };
+    return item;
+  });
 }
 
 export class TripBucketService {
@@ -219,9 +222,9 @@ export class TripBucketService {
     }
     const existingIdx = this.items.findIndex(i => i.id === candidate.id);
     if (existingIdx >= 0) {
-      this.items[existingIdx] = { ...candidate };
+      this.items[existingIdx] = structuredClone(candidate);
     } else {
-      this.items.push({ ...candidate });
+      this.items.push(structuredClone(candidate));
     }
     this.emit();
   }
@@ -290,6 +293,7 @@ export class TripBucketService {
   public toggleHotelRoomTier(id: string): TripBucketCandidate | null {
     const item = this.items.find(i => i.id === id);
     if (!item) return null;
+    if (item.configuration || item.inventoryMode) return { ...item };
 
     if (item.priceLkr === 256500) {
       item.title = 'London Executive Twin Room';
@@ -390,6 +394,11 @@ export class TripBucketService {
   public confirmOnRequestAllocation(id: string, partnerReference?: string): TripBucketCandidate | null {
     const item = this.items.find(i => i.id === id);
     if (!item) return null;
+    if (item.inventoryMode === 'demo_fixture' || item.inventoryMode === 'manual_request') {
+      item.state = 'needs_action';
+      item.holdStatusText = 'No verified supplier allocation · Local request only';
+      this.emit(); return { ...item };
+    }
     item.state = 'ready';
     item.holdStatusText = partnerReference
       ? `Partner allocation confirmed (${partnerReference}) · Ready for booking`
@@ -419,7 +428,7 @@ export class TripBucketService {
       item.actionRequiredText =
         item.inventoryMode === 'demo_fixture'
           ? 'Demo fixture inventory — no supplier request or seat hold was created.'
-          : 'Request-to-book: the Vacatina desk must confirm carrier, schedule, baggage and fare before ticketing.';
+          : item.productType === 'flights' ? 'Request-to-book: the Vacatina desk must confirm carrier, schedule, baggage and fare before ticketing.' : 'Request-to-confirm: the operator must verify the selected configuration, current price and conditions before booking.';
       if (metadata) {
         (item as any).metadata = { ...((item as any).metadata || {}), ...metadata };
       }
@@ -531,7 +540,7 @@ export class TripBucketService {
       item.actionRequiredText =
         item.inventoryMode === 'demo_fixture'
           ? 'Demo fixture inventory — no supplier request or seat hold was created. Request a desk quote before booking.'
-          : 'Request-to-book: the Vacatina desk must confirm carrier, schedule, baggage and fare before ticketing.';
+          : item.productType === 'flights' ? 'Request-to-book: the Vacatina desk must confirm carrier, schedule, baggage and fare before ticketing.' : 'Request-to-confirm: the operator must verify the selected configuration, current price and conditions before booking.';
       item.primaryActionLabel = 'Request Desk Confirmation';
       this.emit();
       return { ...item };

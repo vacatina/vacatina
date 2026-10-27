@@ -113,7 +113,7 @@ export class HotelsHubView {
                       <input 
                         type="date" 
                         id="hotel-hub-checkin" 
-                        value="${this.checkInDate}" 
+                        value="${hotelEscape(this.checkInDate)}"
                         required
                         class="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-gray-50/50 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-brand-black"
                       />
@@ -123,7 +123,7 @@ export class HotelsHubView {
                       <input 
                         type="date" 
                         id="hotel-hub-checkout" 
-                        value="${this.checkOutDate}" 
+                        value="${hotelEscape(this.checkOutDate)}"
                         required
                         class="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-gray-50/50 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-brand-black"
                       />

@@ -20,6 +20,8 @@ export class VisaHubView {
   private selectedDestCode: string = 'AE';
   private selectedCitizenshipCode: string = 'LK';
   private context = visaContextFromQuery(new URLSearchParams());
+  private autocompleteCleanup?: () => void;
+  public cleanup(): void { this.autocompleteCleanup?.(); this.autocompleteCleanup = undefined; }
   public prefillFromQuery(query: URLSearchParams): void {
     this.context = visaContextFromQuery(query);
     this.prefilledDestination = this.context.destination;
@@ -30,6 +32,7 @@ export class VisaHubView {
   }
 
   public render(mount: HTMLElement): void {
+    this.cleanup();
     this.mountElement = mount;
 
     const featuredServices = MANUAL_VISA_SERVICES.slice(0, 6);
@@ -354,7 +357,7 @@ export class VisaHubView {
     if (this.context.purpose) purposeSelect.value = this.context.purpose === 'tourism' ? 'tourist' : this.context.purpose;
 
     if (destInput && destContainer) {
-      initVisaCountryAutocomplete({
+      this.autocompleteCleanup = initVisaCountryAutocomplete({
         inputElement: destInput,
         containerElement: destContainer,
         onSelect: dest => {

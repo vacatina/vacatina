@@ -27,8 +27,11 @@ export class VisaSearchView {
   private currentFilters: VisaFilterCriteria = {};
   private context = visaContextFromQuery(new URLSearchParams());
   private generation = 0;
+  private autocompleteCleanup?: () => void;
+  public cancel(): void { this.generation++; this.autocompleteCleanup?.(); this.autocompleteCleanup = undefined; }
 
   public async loadFromQuery(query: URLSearchParams, mount: HTMLElement): Promise<void> {
+    this.autocompleteCleanup?.();
     this.mountElement = mount;
     const generation = ++this.generation;
     this.currentFilters = {};
@@ -79,6 +82,7 @@ export class VisaSearchView {
 
   private render(): void {
     if (!this.mountElement || !this.currentResponse) return;
+    this.autocompleteCleanup?.();
 
     const { criteria, facets } = this.currentResponse;
     const requirementRule = { ...this.currentResponse.requirementRule, statusLabel: 'Eligibility not verified · Manual review required', citizenshipCountry: journeyEscape(this.context.citizenshipCountry), destinationCountry: journeyEscape(this.context.destination), headline: 'Confirm current requirements with the relevant authority', description: VISA_DEMO_DISCLOSURE };
@@ -459,7 +463,7 @@ export class VisaSearchView {
     const citSelect = this.mountElement.querySelector('#visa-inline-citizenship-select') as HTMLSelectElement;
 
     if (destInput && destContainer) {
-      initVisaCountryAutocomplete({
+      this.autocompleteCleanup = initVisaCountryAutocomplete({
         inputElement: destInput,
         containerElement: destContainer,
         onSelect: dest => {

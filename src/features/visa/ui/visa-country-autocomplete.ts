@@ -74,11 +74,11 @@ export function initVisaCountryAutocomplete(options: VisaCountryAutocompleteOpti
             <span class="text-xl shrink-0" aria-hidden="true">${dest.flagEmoji}</span>
             <div class="min-w-0">
               <div class="font-semibold text-xs text-brand-black truncate">${dest.countryName}</div>
-              <div class="text-[10px] text-brand-muted truncate">${dest.region} · ${dest.statusLabel}</div>
+              <div class="text-[10px] text-brand-muted truncate">${dest.region} · Demo catalog reference</div>
             </div>
           </div>
           <span class="text-[10px] font-semibold text-brand-primary bg-brand-primary/5 px-2 py-0.5 rounded-full shrink-0">
-            SLA ${dest.typicalSlaDays}d
+            Review required
           </span>
         </div>
       `

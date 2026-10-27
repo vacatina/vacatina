@@ -15,6 +15,7 @@ import {
 } from '../../lib/services/trip-bucket.service.ts';
 import { searchCommandService } from '../../lib/services/search.service.ts';
 import { telemetry } from '../../lib/analytics/telemetry.ts';
+import { revalidateStagedTrip } from '../../features/trip-review/trip-revalidation.service.ts';
 import {
   activateFocusTrap,
   deactivateFocusTrap,
@@ -34,6 +35,7 @@ import {
 let lastBucketTrigger: HTMLElement | null = null;
 const expandedDetailsItemIds = new Set<string>();
 let currentScrollHidden = false;
+let revalidatingTrip = false;
 
 export function updateTripControlsVisibility(forceVisible?: boolean, forceHidden?: boolean): void {
   const dock = document.getElementById('floating-trip-dock');
@@ -296,7 +298,6 @@ function syncDrawerContents(
       <div class="p-3 rounded-xl bg-brand-subtle border border-brand-border flex flex-wrap items-center justify-between gap-2 text-[11px]">
         <span class="font-semibold text-brand-black">Developer State Inspector (Screen 04)</span>
         <div class="flex items-center gap-1.5">
-          <button type="button" id="drawer-revalidate-btn" class="px-2.5 py-1 rounded-lg bg-white border border-brand-border text-brand-primary font-semibold hover:bg-[#F0EFFC]">↻ Revalidate</button>
           <button type="button" id="drawer-s04-inspector-btn" class="px-2.5 py-1 rounded-lg bg-white border border-brand-border text-brand-black font-semibold hover:bg-[#F0EFFC]">8 States (Screen 04)</button>
           ${
             items.length !== 3 || summary.readySubtotalLkr !== 505000
@@ -394,7 +395,9 @@ function syncDrawerContents(
                     : ''
                 }
                 <span class="text-sm font-bold text-brand-black tabular-nums">${
-                  item.priceLkr > 0
+                  item.priceStatus === 'quote_required'
+                    ? 'Quote required'
+                    : item.priceLkr > 0
                     ? formatCurrencyAmount(item.priceLkr, currency)
                     : 'Pending selection'
                 }</span>
@@ -433,8 +436,9 @@ function syncDrawerContents(
       })
       .join('');
 
+    const revalidationHtml = items.length ? `<div class="rounded-xl border border-brand-border p-3 mb-3 text-xs"><p class="text-brand-muted mb-2">Local checks do not reserve inventory or confirm current supplier prices.</p><button type="button" id="drawer-revalidate-btn" ${revalidatingTrip ? 'disabled' : ''} class="min-h-[44px] px-3 rounded-xl border border-brand-border text-brand-primary font-semibold focus:ring-2 focus:ring-brand-info">${revalidatingTrip ? 'Checking locally…' : 'Check staged options locally'}</button></div>` : '';
     listContainer.innerHTML =
-      toolbarHtml +
+      revalidationHtml + toolbarHtml +
       undoNoticeHtml +
       (itemsHtml ||
         `<div id="trip-empty-state" class="p-6 rounded-xl border border-dashed border-brand-border text-center space-y-2.5">
@@ -546,10 +550,13 @@ function syncDrawerContents(
 
     const revalBtn = listContainer.querySelector('#drawer-revalidate-btn');
     if (revalBtn) {
-      revalBtn.addEventListener('click', () => {
-        tripBucketService.revalidateAllReadyItems(() => {
-          showToast('Local fare fixtures rechecked. No live supplier inventory was queried.', 'brand');
-        });
+      revalBtn.addEventListener('click', async () => {
+        if (revalidatingTrip) return;
+        revalidatingTrip = true;
+        (revalBtn as HTMLButtonElement).disabled = true;
+        try { await revalidateStagedTrip(); showToast('Product-specific local checks completed. No supplier reservation or confirmation was created.', 'brand'); }
+        catch { showToast('Some local checks could not complete. Keep these items blocked and try again.', 'warning'); }
+        finally { revalidatingTrip = false; syncDrawerContents(tripBucketService.getItems(), tripBucketService.getSummary(), currency); document.getElementById('drawer-revalidate-btn')?.focus(); }
       });
     }
 

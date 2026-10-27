@@ -24,6 +24,7 @@ function journeySelect(config: JourneyConfiguration, key: keyof JourneyConfigura
 
 export function renderJourneyFields(product: string, config: JourneyConfiguration, detail = false, offer?: JourneyOffer): string {
   let fields = '';
+  for (const [key, label] of [['travelWindow', 'Preferred travel window · Choose exact dates below'], ['cabinPreference', 'Cabin preference request'], ['durationPreference', 'Duration preference'], ['requestedCategory', 'Requested category'], ['coveragePreference', 'Coverage preference · Not policy coverage'], ['packageStylePreference', 'Package style preference']] as const) if (config[key]) fields += journeyInput(config, key, label, 'text', 'maxlength="160"');
   if (product === 'flights') fields += journeySelect(config, 'tripType', 'Journey type', [['round_trip', 'Return'], ['one_way', 'One way']]);
   if (product === 'rails' || product === 'flights') fields += journeyInput(config, 'origin', product === 'flights' ? 'Departure airport (IATA code)' : 'Departure station', 'text', 'required maxlength="160"');
   fields += journeyInput(config, 'destination', product === 'rails' ? 'Arrival station' : 'Destination', 'text', 'required maxlength="160"');
@@ -131,8 +132,8 @@ function journeyPublishedFacts(offer: JourneyOffer): string {
     ['shipName', 'Ship'], ['cabinGrade', 'Cabin grade'], ['trainNumber', 'Train'], ['originStation', 'Departure station'], ['destinationStation', 'Arrival station'],
     ['meetingPointAddress', 'Meeting point'], ['durationHours', 'Duration (hours)'], ['guideLanguage', 'Guide language'], ['visaType', 'Service category'],
     ['processingSlaBusinessDays', 'Published processing estimate (business days)'], ['underwriterName', 'Underwriter'], ['planTier', 'Plan'], ['coverageRegion', 'Coverage region'],
-    ['confirmationNotes', 'Operator confirmation required'], ['packageTheme', 'Package style'], ['itineraryDays', 'Illustrative itinerary days'], ['itineraryNights', 'Illustrative itinerary nights']
-    , ['tourType', 'Tour format'], ['routeDescription', 'Guided route'], ['activityCategory', 'Activity format']
+    ['confirmationNotes', 'Operator confirmation required'], ['packageTheme', 'Package style'], ['itineraryDays', 'Illustrative itinerary days'], ['itineraryNights', 'Illustrative itinerary nights'],
+    ['tourType', 'Tour format'], ['routeDescription', 'Guided route'], ['activityCategory', 'Activity format']
   ];
   for (const [key, label] of keys) if (extension[key] !== undefined && extension[key] !== '') rows.push([label, extension[key]]);
   const segments = Array.isArray(extension.segments) ? extension.segments as Array<Record<string, unknown>> : [];
@@ -167,9 +168,12 @@ export class ProductWorkspace {
   private product!: JourneyProductDefinition;
   private navigate!: JourneyNavigate;
   private demoMode = false;
+  private loadGeneration = 0;
+  public cancel(): void { this.currentRequest++; this.loadGeneration++; }
   private contextQuery(): string { return `${journeyConfigQuery(this.config)}${this.demoMode ? '&inventory=demo' : ''}`; }
 
   public async load(container: HTMLElement, product: JourneyProductDefinition, query: URLSearchParams, navigate: JourneyNavigate, offerId?: string, search = false): Promise<void> {
+    const generation = ++this.loadGeneration;
     this.currentRequest++;
     this.host = container; this.product = product; this.navigate = navigate;
     this.demoMode = query.get('inventory') === 'demo' || !!offerId?.startsWith('DEMO-');
@@ -178,9 +182,10 @@ export class ProductWorkspace {
     this.busy = false;
     this.offers = []; this.warnings = []; this.message = ''; this.status = 'idle';
     this.render();
-    if (offerId) await this.openOffer(offerId);
+    if (offerId !== undefined) await this.openOffer(offerId);
     else if (search) await this.search();
-    if (container.isConnected) { const heading = container.querySelector<HTMLElement>('h1'); heading?.setAttribute('tabindex', '-1'); heading?.focus({ preventScroll: true }); }
+    if (generation !== this.loadGeneration) return;
+    if (container.isConnected) { const heading = container.querySelector<HTMLElement>('h1'); heading?.setAttribute('tabindex', '-1'); heading?.classList.add('focus:outline-none'); heading?.focus({ preventScroll: true }); }
   }
 
   private async search(): Promise<void> {

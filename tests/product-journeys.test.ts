@@ -7,6 +7,7 @@ import {
 import type { JourneyOffer } from '../src/features/journeys/domain/journey-models.ts';
 import { JourneyService } from '../src/features/journeys/services/journey-service.ts';
 import './b2c-product-phases.test.ts';
+import './b2c-integration.test.ts';
 
 const validJourney = () => journeyConfigurationFromQuery(new URLSearchParams({
   destination: 'Dubai', departureDate: '2027-02-01', returnDate: '2027-02-07', adults: '2', children: '1', infants: '0', rooms: '1',

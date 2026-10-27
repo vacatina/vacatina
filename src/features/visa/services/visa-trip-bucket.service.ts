@@ -112,6 +112,9 @@ export class VisaTripBucketService {
       const errors = validateVisaContext(config.journeyContext);
       if (errors.length) throw new Error(errors.join(' '));
       if (config.canonicalOfferId !== visa.canonicalOfferId) throw new Error('Choose a canonical visa service.');
+      const destination = config.journeyContext.destination.trim().toLowerCase();
+      const aliases = [visa.countryName.toLowerCase(), visa.countryCode.toLowerCase(), ...(visa.countryCode === 'AE' ? ['uae', 'dubai'] : visa.countryCode === 'GB' ? ['uk'] : [])];
+      if (!aliases.includes(destination)) throw new Error('This assistance option does not match the destination. Search again.');
       config = { ...config, pricing: { ...visa.pricing, totalPriceMinor: visa.pricing.totalPriceMinor * (config.journeyContext.adults + config.journeyContext.children + config.journeyContext.infants) } };
     }
     // 1. Mandatory Pre-Staging Revalidation Guard

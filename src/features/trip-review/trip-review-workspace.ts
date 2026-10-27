@@ -17,7 +17,7 @@ import { showToast } from '../../components/ui/toast.ts';
 import { openTripBucketDrawer } from '../../components/trip-bucket/trip-bucket-ui.ts';
 import { routerService } from '../../lib/services/router.service.ts';
 import { getLastFlightSearchQuery } from '../flights/domain/flight-search-context.ts';
-import { findJourneyProduct } from '../journeys/domain/journey-models.ts';
+import { findJourneyProduct, journeyMoney } from '../journeys/domain/journey-models.ts';
 
 function escapeReviewText(value: unknown): string {
   return String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -98,8 +98,18 @@ function metadataRows(item: TripBucketCandidate): Array<[string, string]> {
   if (item.availabilityStatus) rows.push(['Availability', item.availabilityStatus]);
   if (item.validUntil) rows.push(['Fixture valid until', item.validUntil]);
   if (item.configuration) {
+    const common = ['destination', 'origin', 'departureDate', 'returnDate', 'adults', 'children', 'infants', 'travelWindow'];
+    const fields: Record<string, string[]> = {
+      hotels: ['checkInDate', 'checkOutDate', 'roomsCount', 'adultsCount', 'childrenCount', 'roomName', 'rateName', 'boardBasisLabel', 'cancellationPolicyDescription'],
+      visa: ['citizenshipCountry', 'residenceCountry', 'purpose', 'eligibilityState', 'applicationState', 'documentUploadState'],
+      packages: ['rooms', 'durationDays', 'packageStyle', 'packageStylePreference', 'accommodationTier'],
+      cars: ['serviceType', 'pickup', 'dropoff', 'pickupTime', 'returnTime', 'tripType', 'luggage', 'driverAge', 'vehicleCategory'],
+      activities: ['timeSlot', 'ticketType', 'requestedCategory'], sightseeing: ['timeSlot', 'ticketType', 'language', 'requestedCategory'],
+      rails: ['cabinClass'], cruises: ['departurePort', 'cabinType', 'cabinPreference', 'durationPreference'],
+      insurance: ['travellerAges', 'residenceCountry', 'coverageOption', 'coveragePreference']
+    };
     for (const [key, value] of Object.entries(item.configuration)) {
-      if (typeof value === 'string' || typeof value === 'number') rows.push([key.replace(/([A-Z])/g, ' $1'), String(value)]);
+      if ((common.includes(key) || fields[item.productType]?.includes(key)) && value !== '' && (typeof value === 'string' || typeof value === 'number')) rows.push([key.replace(/([A-Z])/g, ' $1'), String(value)]);
     }
   }
   if (item.scheduleStatus) rows.push(['Schedule status', item.scheduleStatus.replace(/_/g, ' ')]);
@@ -121,6 +131,20 @@ function metadataRows(item: TripBucketCandidate): Array<[string, string]> {
     ]);
   }
   return rows;
+}
+
+export function reviewDetailHref(item: TripBucketCandidate): string | null {
+  const product = findJourneyProduct(item.productType);
+  if (!product || !item.offerId) return null;
+  const query = new URLSearchParams();
+  const config: Record<string, unknown> = item.configuration || item.searchContext || {};
+  for (const [key, value] of Object.entries(config)) if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') query.set(key, String(value));
+  if (item.productType === 'hotels') {
+    for (const [key, source] of [['checkIn', 'checkInDate'], ['checkOut', 'checkOutDate'], ['rooms', 'roomsCount'], ['adults', 'adultsCount'], ['children', 'childrenCount']]) if (config[source] !== undefined) query.set(key, String(config[source]));
+  }
+  if (item.inventoryMode === 'demo_fixture' && !['flights', 'hotels', 'visa'].includes(item.productType)) query.set('inventory', 'demo');
+  const prefix = item.productType === 'hotels' ? 'property' : item.productType === 'visa' ? 'apply' : 'offer';
+  return `${product.route}/${prefix}/${encodeURIComponent(item.propertyId || item.offerId)}?${query}`;
 }
 
 export function renderTripReviewWorkspace(container: HTMLElement): void {
@@ -152,7 +176,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
               </div>
               <div class="text-right shrink-0">
                 <div class="text-[10px] uppercase font-bold tracking-wider text-brand-muted">Estimate</div>
-                <div class="text-lg font-black text-brand-black tabular-nums">${formatCurrencyAmount(item.priceLkr, currency)}</div>
+                <div class="text-lg font-black text-brand-black tabular-nums">${item.priceStatus === 'quote_required' ? 'Quote required' : item.amountMinor !== undefined && item.currency !== 'LKR' ? escapeReviewText(journeyMoney(item.amountMinor / 100, item.currency)) : formatCurrencyAmount(item.priceLkr, currency)}</div>
               </div>
             </div>
 
@@ -200,11 +224,9 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
 
             <div class="flex flex-wrap items-center gap-2 pt-1">
               ${
-                item.productType === 'flights' && item.offerId
-                  ? `<a href="/flights/offer/${encodeURIComponent(item.offerId)}" class="min-h-[40px] inline-flex items-center px-3 rounded-xl border border-gray-300 text-[11px] font-bold text-brand-black hover:bg-gray-50">View flight</a>`
-                  : item.offerId && findJourneyProduct(item.productType)
-                    ? `<a href="${findJourneyProduct(item.productType)!.route}/${item.productType === 'hotels' ? 'property' : item.productType === 'visa' ? 'apply' : 'offer'}/${encodeURIComponent(item.propertyId || item.offerId)}" class="min-h-[44px] inline-flex items-center px-3 rounded-xl border border-gray-300 text-xs font-bold">View selection</a>`
-                    : ''
+                reviewDetailHref(item)
+                  ? `<a href="${escapeReviewText(reviewDetailHref(item))}" class="min-h-[44px] inline-flex items-center px-3 rounded-xl border border-gray-300 text-xs font-bold">View ${item.productType === 'flights' ? 'flight' : 'selection'}</a>`
+                  : ''
               }
               ${
                 item.state !== 'ready'
@@ -240,7 +262,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
           <div role="note" class="mt-6 rounded-2xl border border-amber-200 bg-amber-50/70 p-4 text-xs text-amber-950 leading-relaxed">
             <strong class="block mb-1">No live supplier, payment, or ticketing is activated in this build.</strong>
             ${nonLiveCount > 0
-              ? `${nonLiveCount} of ${items.length} staged item${items.length === 1 ? '' : 's'} came from demo fixtures or manual request-to-book inventory. Their estimates are not live quotes and no seat hold exists.`
+              ? `${nonLiveCount} of ${items.length} staged item${items.length === 1 ? '' : 's'} came from demo fixtures or manual request-to-book inventory. Their estimates are not live quotes and no reservation hold exists.`
               : 'All staged items are shown for review only. Server checkout is not connected to browser-local items in this phase.'}
           </div>
 
@@ -248,7 +270,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
             items.length === 0
               ? `<div class="mt-8 bg-white border border-dashed border-gray-300 rounded-2xl p-8 text-center">
                   <h2 class="text-lg font-bold font-display text-brand-black">Your Trip Bucket is empty</h2>
-                  <p class="text-sm text-brand-muted mt-2">Search flights, stage an option you want to review, then return here.</p>
+                  <p class="text-sm text-brand-muted mt-2">Explore a travel product, configure an option, and return here to review it.</p>
                   <a href="/flights" class="inline-flex items-center min-h-[44px] mt-5 px-5 rounded-xl bg-brand-primary text-white text-sm font-bold">Explore flights</a>
                 </div>`
               : `<div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -263,6 +285,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
                       <div class="flex justify-between gap-3 border-t border-gray-200 pt-2"><dt class="text-brand-muted">Ready estimate</dt><dd class="font-black text-brand-primary tabular-nums">${formatCurrencyAmount(summary.readySubtotalLkr, currency)}</dd></div>
                       <div class="flex justify-between gap-3"><dt class="text-brand-muted">Excluded from ready</dt><dd class="font-semibold tabular-nums">${formatCurrencyAmount(summary.excludedSubtotalLkr, currency)}</dd></div>
                     </dl>
+                    <p class="text-[11px] text-brand-muted">Unpriced requests are not included in estimates. Demo estimates are not live quotes.</p>
 
                     ${
                       blockedItems.length > 0

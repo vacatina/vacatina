@@ -173,6 +173,8 @@ export interface TripBucketCandidate {
   propertyId?: string;
   roomId?: string;
   ratePlanId?: string;
+  priceStatus?: 'quote_required' | 'illustrative' | 'quoted';
+  amountMinor?: number;
 }
 
 export interface TripBucketSummary {

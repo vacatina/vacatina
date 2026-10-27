@@ -7,6 +7,7 @@ import { journeyService, syncServerTripBucketSnapshot } from '../journeys/servic
 import type { JourneyBucket } from '../journeys/services/journey-service.ts';
 import { readJourneyForm, renderJourneyFields } from '../journeys/ui/product-workspace.ts';
 import type { JourneyNavigate } from '../journeys/ui/product-workspace.ts';
+import { tripBucketService } from '../../lib/services/trip-bucket.service.ts';
 
 const BUNDLE_COMPONENTS = [
   { productType: 'flights', label: 'Flights', route: '/flights' },
@@ -27,10 +28,16 @@ export class BundleWorkspace {
   private host!: HTMLElement;
   private navigate!: JourneyNavigate;
   private generation = 0;
+  private localPlanning = false;
+  public cancel(): void { this.generation++; }
 
   public async load(host: HTMLElement, query: URLSearchParams, navigate: JourneyNavigate): Promise<void> {
     this.host = host; this.navigate = navigate;
+    this.busy = false;
     this.config = journeyConfigurationFromQuery(query);
+    this.products = query.getAll('product').filter(type => BUNDLE_COMPONENTS.some(component => component.productType === type));
+    if (this.products.length < 2) this.products = ['flights', 'hotels', 'cars'];
+    this.localPlanning = false;
     this.bucket = null; this.error = ''; this.notice = ''; this.loading = true;
     const generation = ++this.generation;
     this.render();
@@ -40,12 +47,16 @@ export class BundleWorkspace {
       syncServerTripBucketSnapshot(this.bucket);
       if (this.bucket.journey) this.config = { ...this.config, ...this.bucket.journey };
       if (Array.isArray(this.bucket.bundleProductTypes) && this.bucket.bundleProductTypes.length) this.products = this.bucket.bundleProductTypes;
-    } catch (error) { this.error = error instanceof Error ? error.message : 'Your trip could not be loaded. Please retry.'; }
+    } catch {
+      if (generation !== this.generation) return;
+      this.localPlanning = true;
+      this.error = 'Server preferences are unavailable. Continue planning locally on this page; no preferences, booking or payment are persisted.';
+    }
     finally { if (generation === this.generation) { this.loading = false; this.render(); } }
   }
 
   private render(): void {
-    const items = this.bucket?.items || [];
+    const items = this.bucket?.items || (this.localPlanning ? tripBucketService.getItems().map(item => ({ id: item.id, canonicalOfferId: item.offerId || item.id, title: item.title, productType: item.productType, state: item.inventoryMode === 'live_supplier' ? item.state : 'NEEDS_ACTION', configuration: item.configuration || {}, travellerManifest: item.travellerCounts, unitSellingPriceMinor: item.priceLkr * 100, currency: item.currency || 'LKR' })) : []);
     const readiness = evaluateBundleReadiness(this.products, items.map(item => ({ ...item, configuration: { ...item.configuration, ...item.travellerManifest } })), this.config);
     this.host.innerHTML = `<section id="bundle-workspace" class="min-h-screen bg-brand-canvas pb-20 text-brand-black"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <nav aria-label="Breadcrumb" class="text-xs text-brand-muted flex items-center gap-2 mb-6"><a href="/" class="min-h-[44px] inline-flex items-center hover:underline">Home</a><span aria-hidden="true">/</span><span>Build Your Bundle</span></nav>
@@ -90,18 +101,25 @@ export class BundleWorkspace {
 
   private async save(showNotice = true): Promise<boolean> {
     if (this.busy) return false;
+    const generation = this.generation;
     const errors = validateJourneyConfiguration('packages', this.config);
     if (this.products.length < 2) errors.products = 'Choose at least two product types for your bundle.';
     if (this.products.includes('flights') && !this.config.origin) errors.origin = 'Enter a departure city or airport for your flights.';
     if (Object.keys(errors).length) { this.error = Object.values(errors).join(' '); this.notice = ''; this.render(); return false; }
+    if (this.localPlanning) {
+      this.error = '';
+      this.notice = 'Preferences held on this page only. Configure each product separately; nothing is reserved or persisted.';
+      this.render(); return true;
+    }
     this.busy = true; this.error = ''; this.notice = ''; this.render();
     try {
       const result = await journeyService.saveBundle(this.config, this.products);
+      if (generation !== this.generation) return false;
       this.bucket = result.items ? result : await journeyService.loadBucket();
       if (showNotice) this.notice = 'Your journey preferences have been saved.';
       return true;
-    } catch (error) { this.error = error instanceof Error ? error.message : 'Your journey could not be saved. Please retry.'; return false; }
-    finally { this.busy = false; this.render(); }
+    } catch (error) { if (generation === this.generation) this.error = error instanceof Error ? error.message : 'Your journey could not be saved. Please retry.'; return false; }
+    finally { if (generation === this.generation) { this.busy = false; this.render(); } }
   }
 }
 

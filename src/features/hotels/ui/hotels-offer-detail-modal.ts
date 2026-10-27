@@ -25,8 +25,9 @@ import { HOTEL_DEMO_DISCLOSURE, hotelEscape } from '../domain/hotel-journey.ts';
 let activeHotelModal: HTMLElement | null = null;
 let previousHotelActiveElement: HTMLElement | null = null;
 let closeCurrentHotel: (() => void) | null = null;
+let generation = 0;
 let lastHotelContext: { checkInDate?: string; checkOutDate?: string; rooms?: number; adults?: number; children?: number } | undefined;
-export function closeCanonicalHotelModal(): void { closeCurrentHotel?.(); }
+export function closeCanonicalHotelModal(): void { generation++; closeCurrentHotel?.(); }
 
 export async function openCanonicalHotelDetailModal(
   hotelId: string,
@@ -40,6 +41,7 @@ export async function openCanonicalHotelDetailModal(
   triggerElement?: HTMLElement | null
 ): Promise<void> {
   closeCanonicalHotelModal();
+  const request = ++generation;
   if (searchContext) lastHotelContext = searchContext;
   searchContext ||= lastHotelContext;
   if (triggerElement) previousHotelActiveElement = triggerElement;
@@ -51,6 +53,7 @@ export async function openCanonicalHotelDetailModal(
 
   // Fetch canonical offer
   const hotel = await hotelSearchService.getOfferById(hotelId);
+  if (request !== generation) return;
   if (!hotel) {
     const dialog = document.createElement('div');
     dialog.id = 'hotel-invalid-dialog';
@@ -78,6 +81,7 @@ function renderHotelModal(
     children?: number;
   }
 ): void {
+  const renderedGeneration = generation;
   if (activeHotelModal) {
     activeHotelModal.remove();
     activeHotelModal = null;
@@ -338,6 +342,7 @@ function renderHotelModal(
 
       try {
         await hotelTripBucketService.stageHotelRoom(hotel, config);
+        if (renderedGeneration !== generation) return;
         closeModal();
         showToast('Hotel example staged for review. No room hold or supplier confirmation was created.', 'brand');
         openTripBucketDrawer();

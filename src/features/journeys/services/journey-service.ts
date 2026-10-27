@@ -13,6 +13,11 @@ export interface JourneyBucketItem {
   id: string; canonicalOfferId: string; title: string; productType: string; state: string;
   configuration: Record<string, unknown>; travellerManifest?: Record<string, unknown>;
   unitSellingPriceMinor: number; currency: string;
+  sourceType?: TripBucketCandidate['sourceType'];
+  inventoryMode?: TripBucketCandidate['inventoryMode'];
+  environmentClass?: string;
+  fulfillmentMode?: string;
+  lastRevalidatedAt?: string;
 }
 export interface JourneyBucket { bucketId: string; currency: string; items: JourneyBucketItem[]; readySubtotalMinor?: number; journey?: Partial<JourneyConfiguration>; bundleProductTypes?: string[] }
 export type JourneyRequester = <T>(path: string, options?: RequestInit) => Promise<T>;
@@ -43,6 +48,7 @@ export class JourneyService {
   }
 
   public getOffer(id: string): Promise<{ offer: JourneyOffer }> {
+    if (!id) return Promise.reject(new Error('This option link is incomplete. Search again; no reservation or payment was created.'));
     if (id.startsWith('DEMO-')) {
       const offer = getDemoJourneyOffer(id);
       return offer ? Promise.resolve({ offer }) : Promise.reject(new Error('This demo option was not found. No reservation or payment was created.'));
@@ -69,7 +75,7 @@ export class JourneyService {
         productType: canonical.productType, productLabel: canonical.productType === 'sightseeing' ? 'Sightseeing Tour' : canonical.productType,
         title: canonical.title, subtitle: 'Local planning request · Quote and operator confirmation required', dateSummary: `${configuration.departureDate}${configuration.returnDate ? ` – ${configuration.returnDate}` : ''}`,
         travellerSummary: `${configuration.adults} adults · ${configuration.children} children · ${configuration.infants} infants`,
-        configuration: { ...configuration }, priceLkr: 0, currency: canonical.currency, state: 'needs_action',
+        configuration: { ...configuration }, priceLkr: 0, priceStatus: 'quote_required', currency: canonical.currency, state: 'needs_action',
         inventoryMode: 'demo_fixture', inventoryLabel: 'Canonical demo fixture · Not live inventory', truthDisclosure: JOURNEY_DEMO_DISCLOSURE,
         sourceType: 'MANUAL', sourceId: canonical.sourceId, providerName: canonical.providerName, supplierName: canonical.providerName || 'Local demo catalog', integrationMode: 'MOCK',
         confirmationMode: 'REQUEST_TO_CONFIRM', availabilityStatus: 'ON_REQUEST', revalidationStatus: 'LOCAL_FIXTURE_CHECK', revalidatedAt: new Date().toISOString(),
@@ -125,6 +131,10 @@ export function syncServerTripBucketSnapshot(bucket: JourneyBucket): void {
       state: localCurrency && states.has(state) ? state as TripBucketItemState : 'recheck_required',
       priceLkr: localCurrency ? item.unitSellingPriceMinor / 100 : 0,
       supplierName: 'Vacatina', integrationMode: 'ADAPTER-READY',
+      canonicalOfferId: item.canonicalOfferId, sourceType: item.sourceType,
+      inventoryMode: item.inventoryMode || (item.environmentClass === 'SANDBOX' ? 'demo_fixture' : item.fulfillmentMode === 'ON_REQUEST' || item.fulfillmentMode === 'MANUAL_CONFIRMATION' ? 'manual_request' : undefined),
+      configuration: structuredClone(config), currency: item.currency, amountMinor: item.unitSellingPriceMinor, priceStatus: 'quoted',
+      revalidatedAt: item.lastRevalidatedAt, revalidationStatus: item.lastRevalidatedAt ? 'SERVER_SNAPSHOT' : 'NOT_REVALIDATED',
       holdStatusText: 'Saved selection · Availability checked again before booking',
       actionRequiredText: !localCurrency ? `Review your ${item.currency} selection and total in checkout.` : state === 'needs_action' ? 'Complete the required selection or confirmation before booking.' : undefined
     };

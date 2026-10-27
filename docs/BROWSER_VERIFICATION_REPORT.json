@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-26T20:40:48.059Z",
+  "timestamp": "2026-10-27T04:14:23.852Z",
   "version": "4.2.0-ultra-reconstructed-locked",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewportsTested": [
@@ -1131,6 +1131,12 @@
     "Journey K — Keyboard-Only Navigation & Escape Focus Restoration",
     "Journey L — Reduced Motion & Zero Runtime Errors",
     "Journey M — Complete Flights B2C Flow",
+    "Flights Phase 5 — Hub Controls & Canonical Submission",
+    "Flights Phase 5 — Invalid Offer & Truthful Empty State",
+    "Flights Phase 5 — Trip Bucket → Review Handoff & Manual State Guard",
+    "Flights Phase 5 — Responsive Flights & Trip Bucket 1440x900",
+    "Flights Phase 5 — Responsive Flights & Trip Bucket 768x1024",
+    "Flights Phase 5 — Responsive Flights & Trip Bucket 360x800",
     "Journey N — Complete Hotels B2C Flow",
     "Journey O - Complete Consular Visa B2C Flow"
   ],
@@ -1233,7 +1239,7 @@
     {
       "name": "Journeys C, E, F, G — Visa Check, 01 · Draft Staging, Cars Dual-Mode, Rail/Insurance Filters & Favorites Isolation",
       "passed": true,
-      "details": "draftCount=1, carMode=\"Self-Drive Car Hire (Driver Age 30+)\", railOvernight=1"
+      "details": "draftCount=1, draftReady=505000, draftPills=\"Flight ✓ · Hotel ✓ · Visa Assistance — Needs action · Draft Bundle — Draft\", carMode=\"Self-Drive Car Hire (Eligibility to confirm)\", railOvernight=1, visa=\"United Arab Emirates\", draftExcluded=true, insFamily=2, railFav=true, bucketUnchanged=true"
     },
     {
       "name": "Journey D — Holiday Package Details Modal Opens with Itinerary & Inert Background",
@@ -1268,7 +1274,37 @@
     {
       "name": "Journey M — Full B2C Flights Product Experience (Hub, Search Results, Modal, Fare Select & Trip Bucket Staging)",
       "passed": true,
-      "details": "hubVisible=true, hubTitle=\"true\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
+      "details": "hubVisible=true, hubTitle=\"true\", origin=\"Colombo (CMB) — Bandaranaike International Airport\", dep=\"2026-11-03\", travellers=\"1 Adult · Economy\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
+    },
+    {
+      "name": "Flights Phase 5 — Hub traveller/date controls and canonical search submission",
+      "passed": true,
+      "details": "controls=true, url=/flights/search?tripType=round_trip&origin=CMB&destination=DXB&departureDate=2026-12-05&returnDate=2026-12-12&adults=2&children=0&infants=0&cabinClass=economy"
+    },
+    {
+      "name": "Flights Phase 5 — Invalid offer dialog, honest no-results and manual request-to-book truth",
+      "passed": true,
+      "details": "invalid=true, invalidClosed=true, manual=true, noResults=true"
+    },
+    {
+      "name": "Flights Phase 5 — Manual inventory stays Needs Action through Trip Bucket, review handoff and request action",
+      "passed": true,
+      "details": "drawer=true, review=true, reviewPath=/trip/review, guard=true"
+    },
+    {
+      "name": "Flights Phase 5 — Zero horizontal overflow & usable Trip Bucket @ 1440x900",
+      "passed": true,
+      "details": "hub=1425/1425, search=1425/1425, offer=1425/1425, panelInside=true, panelFits=true, review=1425/1425, drawer=1425 inside=true, cta=true, dock=none"
+    },
+    {
+      "name": "Flights Phase 5 — Zero horizontal overflow & usable Trip Bucket @ 768x1024",
+      "passed": true,
+      "details": "hub=768/768, search=768/768, offer=768/768, panelInside=true, panelFits=true, review=768/768, drawer=768 inside=true, cta=true, dock=none"
+    },
+    {
+      "name": "Flights Phase 5 — Zero horizontal overflow & usable Trip Bucket @ 360x800",
+      "passed": true,
+      "details": "hub=360/360, search=360/360, offer=360/360, panelInside=true, panelFits=true, review=360/360, drawer=360 inside=true, cta=true, dock=none"
     },
     {
       "name": "Journey N — Full B2C Hotels Product Experience (Hub, Search Results, Property Modal & Trip Bucket Staging)",
@@ -1276,9 +1312,224 @@
       "details": "hubVisible=true, hubTitle=\"true\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
     },
     {
+      "name": "Hotels Phase 6 — search, room/rate, provenance, review, dialogs and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hubGood\":true,\"context\":true,\"resultsGood\":true,\"accessible\":true,\"escape\":true,\"staged\":true,\"reviewed\":true,\"invalidGood\":true,\"empty\":true}"
+    },
+    {
+      "name": "Hotels Phase 6 — search, room/rate, provenance, review, dialogs and responsive @ 768",
+      "passed": true,
+      "details": "{\"hubGood\":true,\"context\":true,\"resultsGood\":true,\"accessible\":true,\"escape\":true,\"staged\":true,\"reviewed\":true,\"invalidGood\":true,\"empty\":true}"
+    },
+    {
+      "name": "Hotels Phase 6 — search, room/rate, provenance, review, dialogs and responsive @ 360",
+      "passed": true,
+      "details": "{\"hubGood\":true,\"context\":true,\"resultsGood\":true,\"accessible\":true,\"escape\":true,\"staged\":true,\"reviewed\":true,\"invalidGood\":true,\"empty\":true}"
+    },
+    {
       "name": "Journey O - Full B2C Consular Visa Experience (Hub, Search Results, Application Modal & Trip Bucket Staging)",
       "passed": true,
       "details": "hubVisible=true, hubTitle=\"true\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
+    },
+    {
+      "name": "Visa Phase 7 — context, manual eligibility, no uploads, review and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"search\":true,\"accessible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"escape\":true,\"empty\":true}"
+    },
+    {
+      "name": "Visa Phase 7 — context, manual eligibility, no uploads, review and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"search\":true,\"accessible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"escape\":true,\"empty\":true}"
+    },
+    {
+      "name": "Visa Phase 7 — context, manual eligibility, no uploads, review and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"search\":true,\"accessible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"escape\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 8 packages — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 8 packages — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 8 packages — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 9 cars — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 9 cars — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 9 cars — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 10 activities — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 10 activities — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 10 activities — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 11 sightseeing — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 11 sightseeing — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 11 sightseeing — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 12 rails — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 12 rails — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 12 rails — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 13 cruises — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 13 cruises — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 13 cruises — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 14 insurance — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 14 insurance — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 14 insurance — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "passed": true,
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Global SCC — all 11 tabs validate and preserve intent without duplicate handlers @ 1440",
+      "passed": true,
+      "details": "[{\"tab\":\"bundle\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"flights\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"hotels\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"visa\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"packages\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"cars\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"rails\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"cruises\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"activities\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"sightseeing\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"insurance\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true}]"
+    },
+    {
+      "name": "Global mixed-product Trip Bucket — source, configuration, product-aware revalidation, review and gate @ 1440",
+      "passed": true,
+      "details": "{\"all10Types\":true,\"provenance\":true,\"drawerFits\":true,\"dockHidden\":true,\"productChecks\":true,\"identity\":true,\"blocked\":true,\"fits\":true,\"shell\":true}"
+    },
+    {
+      "name": "Global SCC — all 11 tabs validate and preserve intent without duplicate handlers @ 768",
+      "passed": true,
+      "details": "[{\"tab\":\"bundle\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"flights\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"hotels\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"visa\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"packages\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"cars\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"rails\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"cruises\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"activities\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"sightseeing\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"insurance\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true}]"
+    },
+    {
+      "name": "Global mixed-product Trip Bucket — source, configuration, product-aware revalidation, review and gate @ 768",
+      "passed": true,
+      "details": "{\"all10Types\":true,\"provenance\":true,\"drawerFits\":true,\"dockHidden\":true,\"productChecks\":true,\"identity\":true,\"blocked\":true,\"fits\":true,\"shell\":true}"
+    },
+    {
+      "name": "Global SCC — all 11 tabs validate and preserve intent without duplicate handlers @ 360",
+      "passed": true,
+      "details": "[{\"tab\":\"bundle\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"flights\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"hotels\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"visa\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"packages\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"cars\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"rails\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"cruises\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"activities\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"sightseeing\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true},{\"tab\":\"insurance\",\"selected\":true,\"active\":true,\"fieldsBound\":true,\"rejected\":true,\"singleHandler\":true,\"correctRoute\":true,\"context\":true,\"usable\":true,\"fits\":true,\"bundleOrchestration\":true}]"
+    },
+    {
+      "name": "Global mixed-product Trip Bucket — source, configuration, product-aware revalidation, review and gate @ 360",
+      "passed": true,
+      "details": "{\"all10Types\":true,\"provenance\":true,\"drawerFits\":true,\"dockHidden\":true,\"productChecks\":true,\"identity\":true,\"blocked\":true,\"fits\":true,\"shell\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /flights",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /hotels",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /visa-assistance",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /holiday-packages",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /cars-transfers",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /activities",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /sightseeing-tours",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /rails",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /cruises",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Global keyboard — real Tab, visible focus and named controls /travel-insurance",
+      "passed": true,
+      "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
     },
     {
       "name": "Delta Audit — Legal Disclosures & Granular Cookie Preferences Modal (Actionable, Inert Trap, Draft Status & Storage)",
@@ -1329,6 +1580,10 @@
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_flights_search_1440px.png",
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_flights_search_360px.png",
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_flights_detail_modal_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_flights_manual_offer_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_flights_review_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_flights_search_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_flights_review_360px.png",
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_hotels_hub_1440px.png",
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_hotels_search_1440px.png",
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_hotels_search_360px.png",
@@ -1336,7 +1591,31 @@
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_visa_hub_1440px.png",
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_visa_search_1440px.png",
     "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_visa_search_360px.png",
-    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_visa_modal_1440px.png"
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_visa_modal_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_packages_detail_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_packages_detail_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_packages_detail_360px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_cars_detail_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_cars_detail_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_cars_detail_360px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_activities_detail_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_activities_detail_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_activities_detail_360px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_sightseeing_detail_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_sightseeing_detail_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_sightseeing_detail_360px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_rails_detail_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_rails_detail_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_rails_detail_360px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_cruises_detail_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_cruises_detail_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_cruises_detail_360px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_insurance_detail_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_insurance_detail_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_insurance_detail_360px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_mixed_review_1440px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_mixed_review_768px.png",
+    "C:\\Users\\Madhusanka\\.gemini\\antigravity\\scratch\\vacatina\\screenshots\\vacatina_b2c_mixed_review_360px.png"
   ],
   "consoleErrors": [],
   "pageExceptions": []
