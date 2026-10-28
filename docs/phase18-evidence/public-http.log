@@ -1,0 +1,111 @@
+{
+  "target": "http://127.0.0.1:4176",
+  "expectedCommit": "d087867e0166978195259a72525dcc8fb9af4853",
+  "checks": [
+    {
+      "name": "direct route /",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /flights",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /hotels",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /visa-assistance",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /holiday-packages",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /cars-transfers",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /activities",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /sightseeing-tours",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /rails",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /cruises",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /travel-insurance",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /trip-builder",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /trip/review",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /requests",
+      "status": "PASS"
+    },
+    {
+      "name": "direct route /checkout",
+      "status": "PASS"
+    },
+    {
+      "name": "release identity",
+      "status": "PASS"
+    },
+    {
+      "name": "safe JSON /api/v1/demo/capabilities",
+      "status": "PASS"
+    },
+    {
+      "name": "safe JSON /api/v1/session",
+      "status": "PASS"
+    },
+    {
+      "name": "safe JSON /api/v1/health",
+      "status": "PASS"
+    },
+    {
+      "name": "safe JSON /api/v1/checkout/capabilities",
+      "status": "PASS"
+    },
+    {
+      "name": "closed API /api/v1/admin/enquiries",
+      "status": "PASS"
+    },
+    {
+      "name": "closed API /api/v1/admin/triage",
+      "status": "PASS"
+    },
+    {
+      "name": "closed API /api/v1/enquiries",
+      "status": "PASS"
+    },
+    {
+      "name": "closed API /api/v1/bookings",
+      "status": "PASS"
+    },
+    {
+      "name": "closed API /api/v1/flights/sandbox/orders",
+      "status": "PASS"
+    },
+    {
+      "name": "fixed asset cache revalidation",
+      "status": "PASS"
+    }
+  ],
+  "backendQualified": false
+}

@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "0592cee91872817b597bf40c68fe42b3c7ca39fb",
+  "main": "3d6c16a095796236aa021ef89eb84ae003375b4e",
+  "originMain": "05a4d9af2aa8d11334a9e69a2e298815f79df894",
+  "protectedFiles": {
+    "screenshots/vacatina_360px_mobile.png": "9EAE7117379C6A58B7EBCB5C2416B7FDE1E94ED5A911853411E1001DBEA71B83",
+    "screenshots/vacatina_footer_1440px.png": "204F32DF10EF52E9D46BFADDEE7FABFC17A53D7F7BA682A7380A0F71EA08FA6D",
+    "screenshots/vacatina_holiday_package_modal.png": "583E08E8D37AE6C850DC554535AF2C8E38C2D2D8EC927865A787E8FB2D561B26",
+    "screenshots/vacatina_screen04_8states_inspector.png": "724111435606760A5DC35537400425E2FB350AA729724BFF67E3408E73BBA2B2"
+  },
+  "privateConfig": {
+    "unchanged": true,
+    "tracked": false
+  },
+  "designUnchanged": true,
+  "checkedAt": "2026-10-28T08:36:17.200Z"
+}

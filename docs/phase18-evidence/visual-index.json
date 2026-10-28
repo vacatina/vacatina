@@ -1,0 +1,241 @@
+{
+  "images": [
+    {
+      "file": "operator-detail-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "C757191A2577C8A15A00EE6744EE133ED087350FAB4CBA3E2E57742E85808B52",
+      "scope": "ISOLATED_LOCAL_FIXTURE_AUTH"
+    },
+    {
+      "file": "operator-detail-360.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "9984EA3969C062BF1F38B7E86252C565AD2854D75FF15FA0644DA38BD4B19A6E",
+      "scope": "ISOLATED_LOCAL_FIXTURE_AUTH"
+    },
+    {
+      "file": "operator-detail-768.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "2687B0AA3E67A9B987826881043469033085457746C91C358D74E17A8E8DCBF6",
+      "scope": "ISOLATED_LOCAL_FIXTURE_AUTH"
+    },
+    {
+      "file": "public-demo-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "C413CE8444B6762EFCD3C0C5CC74943A3E608CEA98848FE5F0A10D4E1B30C25A",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-demo-360.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "56EC0E19DE3650DA9863131A8AA6335875E0ACE8B9D9B439F9510563577AE4B5",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-demo-768.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "08F2E08520840B6F90ED04E039FD59A05B65E2517B7062233077F1F60DFE1E73",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-flight-detail-1440.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "4C6D8B50948E5AA7407FA72DA5F5035A84CC8D85E47BE8C350C5D2DDDE15DE47",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-flight-detail-360.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "AC44C01AAD842FB589673C100E68A7BE18CA60D67CACAD6C0285D1F1B78DF713",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-flight-detail-768.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "99780991D263C3A803FAA8009551588FA59BEC0EC184338043E2AA2B486DC22E",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_activities_detail_1440px.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "B320E7F965CB989909B49F94996C71D68FA32EDE67B1500671647F2822D14593",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_activities_detail_360px.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "7C3A4A45AE089BD8BE63B76D98159D8815068D78FD6076A3BABB670132602A6D",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_activities_detail_768px.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "9C873BB3EFDF75284AEF188BC05CFFF6C90064B1F79AE628CD814C3966AD71B0",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_cars_detail_1440px.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "C572AA46B446602B0D19002B46E058ECAFE417C0090F45F75944D9ED7F2399CD",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_cars_detail_360px.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "0D151D83515F3FAEAC8878AA57931F39D18209B50C21CB753070BFB63DD4F5F5",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_cars_detail_768px.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "07FCD19A89C7014114C09B83D6D77685B9C0D504BEE160B90A0A62731281DE92",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_cruises_detail_1440px.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "2809B0F9833E099063A6FC9BCBF2E16C6990ED064C03EE89AA3C568C5B4B3B30",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_cruises_detail_360px.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "FD755B35849CE80B0E0205A08EBF17503B809FA79E8DABE6985A8A782A267E15",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_cruises_detail_768px.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "2C8F91CBA15234EFCD2A558EBB752C5FA3C6E110A5D86A1EA751656D84F34CFD",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_insurance_detail_1440px.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "2593A3AC956F2254616620E6ACD44FFB605527A1D9350AAC503F1D0651482C8C",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_insurance_detail_360px.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "B200E34E5A8F24E820B86632A582D17313BE4A315BFA09B65CDC699C5CAD3D02",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_insurance_detail_768px.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "6EDAA8C7DA38F7D3692EBF31B559AB6A99ABA1E6D977E66E16884187025BB3C7",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_packages_detail_1440px.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "3CA2B0C7E951655FD3861FD379EA1D2BF4E1804CEC08F02A04AD4E46505FA5A5",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_packages_detail_360px.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "5771C9E2E00F646517771B84FF5F391943E890A957F0F4EEA1A33462A8AFCD70",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_packages_detail_768px.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "BA7E0D863104163FB2E344FF4564736ED4693F5055536695B0E441785DF038D2",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_rails_detail_1440px.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "5A834E7A6E0F94048E112DB7DFC0C52A32433DAB3B53C06EF726302FA0943697",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_rails_detail_360px.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "573D7E71C3ABE52DE138DDC088E1C975AADBBD7BD8C3CE4AC573AAEA07F42600",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_rails_detail_768px.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "C5AA273C35BB945CFD7AE288B7B9B20F5BDA12573D14DCE6EC510158CE3F99DC",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_sightseeing_detail_1440px.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "35CE942D909BC846E76DEDB75E1CAA0CC01F8E3703CB5033EAE82E58086A1544",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_sightseeing_detail_360px.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "22E7704A3789DFA73FD4549F64291D1D98D1A9A389B6B06D962D6A8D38A13EF5",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "public-vacatina_b2c_sightseeing_detail_768px.png",
+      "width": 768,
+      "height": 1024,
+      "sha256": "E36BEF4C463294C555EA822308BCDC4EB97E4E5ADC2EBB73E999ACE723EE88EC",
+      "scope": "LOCAL_BUILT_PUBLIC_DEMO"
+    },
+    {
+      "file": "request-round-trip-1440.png",
+      "width": 1425,
+      "height": 1528,
+      "sha256": "2D1393E5DD5C7F3E0F0B4BF592317CBB3FA42E4AEA860CC289F9D78D7EFE9E6A",
+      "scope": "ISOLATED_LOCAL_FIXTURE_AUTH"
+    },
+    {
+      "file": "request-round-trip-360.png",
+      "width": 360,
+      "height": 2555,
+      "sha256": "3BE196D2AD04BF6B5CA75A1690C2501082669149917F008992D20CFB516F8427",
+      "scope": "ISOLATED_LOCAL_FIXTURE_AUTH"
+    },
+    {
+      "file": "request-round-trip-768.png",
+      "width": 753,
+      "height": 2018,
+      "sha256": "106BF9654892CCC77F5909A6A03ED38DE659A30ECB50BBC779198E566FB6344A",
+      "scope": "ISOLATED_LOCAL_FIXTURE_AUTH"
+    }
+  ],
+  "sheets": [
+    "contact-sheet-01.png",
+    "contact-sheet-02.png",
+    "contact-sheet-03.png"
+  ],
+  "reviewRecord": "See PHASE18_HOSTED_DEMO_ACCEPTANCE.md; generation is not visual approval."
+}

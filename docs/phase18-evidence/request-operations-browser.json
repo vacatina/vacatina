@@ -1,0 +1,86 @@
+{
+  "target": "http://127.0.0.1:4187",
+  "status": "PASS",
+  "mode": "ISOLATED_FIXTURE_AUTH_LOCAL_FILE",
+  "checks": [
+    {
+      "name": "ten-product durable enquiry receipt @ 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "composition reconstruction and browser reload @ 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "operator queue and detail fit viewport @ 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "independent operator quote approval enforced @ 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "customer → operator → independent publisher → customer @ 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "persistent customer withdrawal @ 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "ten-product durable enquiry receipt @ 768",
+      "status": "PASS"
+    },
+    {
+      "name": "composition reconstruction and browser reload @ 768",
+      "status": "PASS"
+    },
+    {
+      "name": "operator queue and detail fit viewport @ 768",
+      "status": "PASS"
+    },
+    {
+      "name": "independent operator quote approval enforced @ 768",
+      "status": "PASS"
+    },
+    {
+      "name": "customer → operator → independent publisher → customer @ 768",
+      "status": "PASS"
+    },
+    {
+      "name": "persistent customer withdrawal @ 768",
+      "status": "PASS"
+    },
+    {
+      "name": "ten-product durable enquiry receipt @ 360",
+      "status": "PASS"
+    },
+    {
+      "name": "composition reconstruction and browser reload @ 360",
+      "status": "PASS"
+    },
+    {
+      "name": "operator queue and detail fit viewport @ 360",
+      "status": "PASS"
+    },
+    {
+      "name": "independent operator quote approval enforced @ 360",
+      "status": "PASS"
+    },
+    {
+      "name": "customer → operator → independent publisher → customer @ 360",
+      "status": "PASS"
+    },
+    {
+      "name": "persistent customer withdrawal @ 360",
+      "status": "PASS"
+    },
+    {
+      "name": "zero uncaught browser exceptions",
+      "status": "PASS",
+      "details": []
+    }
+  ],
+  "exceptions": [],
+  "consoleErrors": []
+}

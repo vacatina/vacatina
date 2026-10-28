@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: Phase 18 file retry is bounded and only retries EPERM/EBUSY operations
+ok 1 - Phase 18 file retry is bounded and only retries EPERM/EBUSY operations
+  ---
+  duration_ms: 527.3119
+  type: 'test'
+  ...
+# Subtest: Phase 18 all ten configurations and bundle preferences survive durable process reconstruction
+ok 2 - Phase 18 all ten configurations and bundle preferences survive durable process reconstruction
+  ---
+  duration_ms: 25.6108
+  type: 'test'
+  ...
+# Subtest: Phase 18 request idempotency, immutable dossier and pending outbox are atomic
+ok 3 - Phase 18 request idempotency, immutable dossier and pending outbox are atomic
+  ---
+  duration_ms: 17.2876
+  type: 'test'
+  ...
+# Subtest: Phase 18 remove/restore uses revisions and replays without duplicate mutation
+ok 4 - Phase 18 remove/restore uses revisions and replays without duplicate mutation
+  ---
+  duration_ms: 2.8581
+  type: 'test'
+  ...
+# Subtest: Phase 18 independent local instances serialize conflicting writes
+ok 5 - Phase 18 independent local instances serialize conflicting writes
+  ---
+  duration_ms: 37.8509
+  type: 'test'
+  ...
+# Subtest: Phase 18 local read-only queries preserve the durable file and failed writes roll back
+ok 6 - Phase 18 local read-only queries preserve the durable file and failed writes roll back
+  ---
+  duration_ms: 15.4863
+  type: 'test'
+  ...
+# Subtest: Phase 18 two distinct options per product retain identity, declared currency and independent configuration
+ok 7 - Phase 18 two distinct options per product retain identity, declared currency and independent configuration
+  ---
+  duration_ms: 93.2578
+  type: 'test'
+  ...
+# Subtest: Phase 18 exact owner/tenant and operator MFA isolation precedes replay
+ok 8 - Phase 18 exact owner/tenant and operator MFA isolation precedes replay
+  ---
+  duration_ms: 4.8322
+  type: 'test'
+  ...
+# Subtest: Phase 18 quotation lifecycle requires independent publication and fresh customer acknowledgement
+ok 9 - Phase 18 quotation lifecycle requires independent publication and fresh customer acknowledgement
+  ---
+  duration_ms: 16.5405
+  type: 'test'
+  ...
+# Subtest: Phase 18 private fields, browser prices and commercial assertions never become authority
+ok 10 - Phase 18 private fields, browser prices and commercial assertions never become authority
+  ---
+  duration_ms: 1.571
+  type: 'test'
+  ...
+# Subtest: Phase 18 actual flight/hotel adapter shapes retain requested choices without restoring commercial authority
+ok 11 - Phase 18 actual flight/hotel adapter shapes retain requested choices without restoring commercial authority
+  ---
+  duration_ms: 12.6725
+  type: 'test'
+  ...
+# Subtest: Phase 18 material search dimensions produce independent fingerprints
+ok 12 - Phase 18 material search dimensions produce independent fingerprints
+  ---
+  duration_ms: 15.1104
+  type: 'test'
+  ...
+# Subtest: Phase 18 configured LiteAPI failures cannot return deterministic supplier offers
+ok 13 - Phase 18 configured LiteAPI failures cannot return deterministic supplier offers
+  ---
+  duration_ms: 25.5986
+  type: 'test'
+  ...
+# Subtest: Phase 18 HTTP allowlist, CSRF, body bounds, safe errors and customer/operator round trip
+ok 14 - Phase 18 HTTP allowlist, CSRF, body bounds, safe errors and customer/operator round trip
+  ---
+  duration_ms: 25.4836
+  type: 'test'
+  ...
+# Subtest: Phase 18 HTTP rate limiting is independent of request body identifiers
+ok 15 - Phase 18 HTTP rate limiting is independent of request body identifiers
+  ---
+  duration_ms: 1.2132
+  type: 'test'
+  ...
+# Subtest: Phase 18 hosted API cannot execute any mutation or collect identity
+ok 16 - Phase 18 hosted API cannot execute any mutation or collect identity
+  ---
+  duration_ms: 0.9197
+  type: 'test'
+  ...
+# Subtest: Phase 18 deployment guards fail closed for wrong project, plan, environment, branch, commit and domain
+ok 17 - Phase 18 deployment guards fail closed for wrong project, plan, environment, branch, commit and domain
+  ---
+  duration_ms: 1.7168
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1183.9051

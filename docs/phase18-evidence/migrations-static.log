@@ -1,0 +1,40 @@
+{
+  "mode": "PARSE_ONLY_NO_DATABASE",
+  "files": [
+    {
+      "name": "001_vacatina_canonical_inventory.sql",
+      "statements": 13,
+      "constantAclStatementsValidated": 0
+    },
+    {
+      "name": "002_operational_runtime_state.sql",
+      "statements": 1,
+      "constantAclStatementsValidated": 0
+    },
+    {
+      "name": "003_backend_readiness.sql",
+      "statements": 33,
+      "constantAclStatementsValidated": 1
+    },
+    {
+      "name": "003_backend_readiness.rollback.sql",
+      "statements": 17,
+      "constantAclStatementsValidated": 0
+    }
+  ],
+  "tables": [
+    "vacatina_search_contexts",
+    "vacatina_offer_references",
+    "vacatina_trip_aggregates",
+    "vacatina_trip_selections",
+    "vacatina_booking_aggregates",
+    "vacatina_booking_selections",
+    "vacatina_revalidation_records",
+    "vacatina_payment_references",
+    "vacatina_operation_requests",
+    "vacatina_backend_events",
+    "vacatina_backend_outbox",
+    "vacatina_mutation_keys"
+  ],
+  "migrationsExecuted": false
+}

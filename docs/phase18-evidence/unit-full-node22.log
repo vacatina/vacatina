@@ -1,0 +1,2288 @@
+TAP version 13
+# Subtest: Admin Manual Inventory CMS & Search Aggregator API Suite
+    # Subtest: Gate 1: Rejects unauthenticated and unauthorized requests to admin endpoints
+    ok 1 - Gate 1: Rejects unauthenticated and unauthorized requests to admin endpoints
+      ---
+      duration_ms: 847.098
+      type: 'test'
+      ...
+    # Subtest: Gate 2: Lists manual listings with productType, status and destination filtering
+    ok 2 - Gate 2: Lists manual listings with productType, status and destination filtering
+      ---
+      duration_ms: 27.1849
+      type: 'test'
+      ...
+    # Subtest: Gate 3: Creates manual listing in DRAFT status with 18 mandatory attributes
+    ok 3 - Gate 3: Creates manual listing in DRAFT status with 18 mandatory attributes
+      ---
+      duration_ms: 47.0764
+      type: 'test'
+      ...
+    # Subtest: Gate 4: Enforces 4-Eyes separation of duties across multi-stage lifecycle (DRAFT -> VERIFIED -> PRICED -> PUBLISHED)
+    ok 4 - Gate 4: Enforces 4-Eyes separation of duties across multi-stage lifecycle (DRAFT -> VERIFIED -> PRICED -> PUBLISHED)
+      ---
+      duration_ms: 133.8523
+      type: 'test'
+      ...
+    # Subtest: Gate 5: Anti-Tamper Governance demotes live listing to DRAFT upon commercial/rate tampering
+    ok 5 - Gate 5: Anti-Tamper Governance demotes live listing to DRAFT upon commercial/rate tampering
+      ---
+      duration_ms: 36.6467
+      type: 'test'
+      ...
+    # Subtest: Gate 6: Operational Stop-Sell toggle and allotment adjustments with audit tracking
+    ok 6 - Gate 6: Operational Stop-Sell toggle and allotment adjustments with audit tracking
+      ---
+      duration_ms: 79.5478
+      type: 'test'
+      ...
+    # Subtest: Gate 7: Multi-Source Search Aggregator aggregates manual listings while isolating SEED content
+    ok 7 - Gate 7: Multi-Source Search Aggregator aggregates manual listings while isolating SEED content
+      ---
+      duration_ms: 454.8977
+      type: 'test'
+      ...
+    # Subtest: Gate 8 (Negative Test): Strict SEED Quarantine ΓÇö SEED item cannot stage as READY in Trip Bucket
+    ok 8 - Gate 8 (Negative Test): Strict SEED Quarantine ΓÇö SEED item cannot stage as READY in Trip Bucket
+      ---
+      duration_ms: 380.0927
+      type: 'test'
+      ...
+    # Subtest: Gate 9 (Negative Test): Stopped or Suspended Manual Inventory Disappears from Customer Search Results
+    ok 9 - Gate 9 (Negative Test): Stopped or Suspended Manual Inventory Disappears from Customer Search Results
+      ---
+      duration_ms: 91.2866
+      type: 'test'
+      ...
+    # Subtest: Gate 10 (Negative Test): Exhausted Allotment Guard ΓÇö Over-selling Quota Throws Error
+    ok 10 - Gate 10 (Negative Test): Exhausted Allotment Guard ΓÇö Over-selling Quota Throws Error
+      ---
+      duration_ms: 22.3705
+      type: 'test'
+      ...
+    1..10
+ok 1 - Admin Manual Inventory CMS & Search Aggregator API Suite
+  ---
+  duration_ms: 2163.6933
+  type: 'suite'
+  ...
+# Subtest: Phase 17 bundle merges local requests without replacing server authority or inventing free prices
+ok 2 - Phase 17 bundle merges local requests without replacing server authority or inventing free prices
+  ---
+  duration_ms: 36.4823
+  type: 'test'
+  ...
+# Subtest: Phase 17 bundle displays native-currency minor units rather than an LKR shadow
+ok 3 - Phase 17 bundle displays native-currency minor units rather than an LKR shadow
+  ---
+  duration_ms: 464.7096
+  type: 'test'
+  ...
+# Subtest: All 11 SCC tabs validate, preserve product intent and use canonical destinations
+ok 4 - All 11 SCC tabs validate, preserve product intent and use canonical destinations
+  ---
+  duration_ms: 195.3497
+  type: 'test'
+  ...
+# Subtest: Mixed 10-product Trip Bucket retains configuration, source, freshness, local revalidation and blocked checkout
+ok 5 - Mixed 10-product Trip Bucket retains configuration, source, freshness, local revalidation and blocked checkout
+  ---
+  duration_ms: 634.8365
+  type: 'test'
+  ...
+# Subtest: Rails Phase 12: station identity, class validation and no fabricated train, seat or schedule
+ok 6 - Rails Phase 12: station identity, class validation and no fabricated train, seat or schedule
+  ---
+  duration_ms: 82.4404
+  type: 'test'
+  ...
+# Subtest: Activities and Sightseeing Phase 11 retain distinct taxonomy and guided-route context
+ok 7 - Activities and Sightseeing Phase 11 retain distinct taxonomy and guided-route context
+  ---
+  duration_ms: 22.036
+  type: 'test'
+  ...
+# Subtest: Cars Phase 9: car hire and return transfers retain distinct mandatory logistics
+ok 8 - Cars Phase 9: car hire and return transfers retain distinct mandatory logistics
+  ---
+  duration_ms: 28.4351
+  type: 'test'
+  ...
+# Subtest: packages B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 9 - packages B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 88.4239
+  type: 'test'
+  ...
+# Subtest: cars B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 10 - cars B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 43.2719
+  type: 'test'
+  ...
+# Subtest: activities B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 11 - activities B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 35.4019
+  type: 'test'
+  ...
+# Subtest: sightseeing B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 12 - sightseeing B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 49.7575
+  type: 'test'
+  ...
+# Subtest: rails B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 13 - rails B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 37.0927
+  type: 'test'
+  ...
+# Subtest: cruises B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 14 - cruises B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 44.1676
+  type: 'test'
+  ...
+# Subtest: insurance B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 15 - insurance B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 36.3592
+  type: 'test'
+  ...
+# Subtest: Cruises Phase 13: port and cabin requests never fabricate sailing or inventory
+ok 16 - Cruises Phase 13: port and cabin requests never fabricate sailing or inventory
+  ---
+  duration_ms: 9.1996
+  type: 'test'
+  ...
+# Subtest: Insurance Phase 14: no fabricated coverage, premiums, policy wording or eligibility
+ok 17 - Insurance Phase 14: no fabricated coverage, premiums, policy wording or eligibility
+  ---
+  duration_ms: 14.8676
+  type: 'test'
+  ...
+# Subtest: Signed guest identity rejects tampering, expiry and unsigned client identifiers
+ok 18 - Signed guest identity rejects tampering, expiry and unsigned client identifiers
+  ---
+  duration_ms: 19.717
+  type: 'test'
+  ...
+# Subtest: Clerk JWT validates signature, issuer, subject, session, time and authorized party
+ok 19 - Clerk JWT validates signature, issuer, subject, session, time and authorized party
+  ---
+  duration_ms: 77.9594
+  type: 'test'
+  ...
+# Subtest: Organization admin never acquires platform privileges; MFA requires verified second factor
+ok 20 - Organization admin never acquires platform privileges; MFA requires verified second factor
+  ---
+  duration_ms: 3.2163
+  type: 'test'
+  ...
+# Subtest: Local durable state survives a new engine and rolls back failed commands
+ok 21 - Local durable state survives a new engine and rolls back failed commands
+  ---
+  duration_ms: 365.9276
+  type: 'test'
+  ...
+# Subtest: Production persistence is explicitly blocked without approved database wiring
+ok 22 - Production persistence is explicitly blocked without approved database wiring
+  ---
+  duration_ms: 3.3121
+  type: 'test'
+  ...
+# Subtest: Local HTTP boundary scopes guest identity and rejects cross-origin, CSRF and client admin claims
+ok 23 - Local HTTP boundary scopes guest identity and rejects cross-origin, CSRF and client admin claims
+  ---
+  duration_ms: 224.245
+  type: 'test'
+  ...
+# Subtest: Local HTTP boundary refuses production environments and malformed payloads
+ok 24 - Local HTTP boundary refuses production environments and malformed payloads
+  ---
+  duration_ms: 8.3281
+  type: 'test'
+  ...
+# Subtest: Phase 15 stage/upsert has stable idempotency, defensive copies and whitelisted configuration
+ok 25 - Phase 15 stage/upsert has stable idempotency, defensive copies and whitelisted configuration
+  ---
+  duration_ms: 97.2121
+  type: 'test'
+  ...
+# Subtest: Phase 15 customer/tenant access cannot be widened by customer or admin-shaped input
+ok 26 - Phase 15 customer/tenant access cannot be widened by customer or admin-shaped input
+  ---
+  duration_ms: 39.3561
+  type: 'test'
+  ...
+# Subtest: Phase 15 demo, sandbox and unverified inventory never becomes sellable or enters booking
+ok 27 - Phase 15 demo, sandbox and unverified inventory never becomes sellable or enters booking
+  ---
+  duration_ms: 40.456
+  type: 'test'
+  ...
+# Subtest: Phase 15 hybrid component provenance prevents a demo component bypass
+ok 28 - Phase 15 hybrid component provenance prevents a demo component bypass
+  ---
+  duration_ms: 17.6677
+  type: 'test'
+  ...
+# Subtest: Phase 15 concurrent booking retries with distinct keys produce one booking and frozen selections
+ok 29 - Phase 15 concurrent booking retries with distinct keys produce one booking and frozen selections
+  ---
+  duration_ms: 92.0899
+  type: 'test'
+  ...
+# Subtest: Phase 15 transitions prohibit direct confirmation and require payment and per-item evidence
+ok 30 - Phase 15 transitions prohibit direct confirmation and require payment and per-item evidence
+  ---
+  duration_ms: 18.7627
+  type: 'test'
+  ...
+# Subtest: Phase 15 payment references are queued, duplicate-protected and never imply authorization
+ok 31 - Phase 15 payment references are queued, duplicate-protected and never imply authorization
+  ---
+  duration_ms: 35.2137
+  type: 'test'
+  ...
+# Subtest: Phase 15 payment confirmation requires a configured trusted verifier and exact totals
+ok 32 - Phase 15 payment confirmation requires a configured trusted verifier and exact totals
+  ---
+  duration_ms: 55.8872
+  type: 'test'
+  ...
+# Subtest: Phase 15 payment authorization remains distinct from verified capture and ignores late failure
+ok 33 - Phase 15 payment authorization remains distinct from verified capture and ignores late failure
+  ---
+  duration_ms: 54.1678
+  type: 'test'
+  ...
+# Subtest: Phase 15 failed authorization clears held payment state and sends the booking to manual review
+ok 34 - Phase 15 failed authorization clears held payment state and sends the booking to manual review
+  ---
+  duration_ms: 51.1082
+  type: 'test'
+  ...
+# Subtest: Phase 15 supplier confirmation, fulfilment and audits preserve authoritative evidence
+ok 35 - Phase 15 supplier confirmation, fulfilment and audits preserve authoritative evidence
+  ---
+  duration_ms: 73.9384
+  type: 'test'
+  ...
+# Subtest: Phase 15 manual confirmation is two-stage, operator-only and never fabricated as upstream API issuance
+ok 36 - Phase 15 manual confirmation is two-stage, operator-only and never fabricated as upstream API issuance
+  ---
+  duration_ms: 56.3536
+  type: 'test'
+  ...
+# Subtest: Phase 15 expired manual approval can be refreshed by an operator but never self-approved
+ok 37 - Phase 15 expired manual approval can be refreshed by an operator but never self-approved
+  ---
+  duration_ms: 32.9325
+  type: 'test'
+  ...
+# Subtest: Phase 15 platform operations require current MFA and tenant-scoped operators cannot cross tenants
+ok 38 - Phase 15 platform operations require current MFA and tenant-scoped operators cannot cross tenants
+  ---
+  duration_ms: 25.4638
+  type: 'test'
+  ...
+# Subtest: Phase 15 price changes remain blocked until explicit customer acceptance and fresh revalidation
+ok 39 - Phase 15 price changes remain blocked until explicit customer acceptance and fresh revalidation
+  ---
+  duration_ms: 26.3471
+  type: 'test'
+  ...
+# Subtest: Phase 15 stale, unavailable and unknown revalidation outcomes fail closed
+ok 40 - Phase 15 stale, unavailable and unknown revalidation outcomes fail closed
+  ---
+  duration_ms: 31.6262
+  type: 'test'
+  ...
+# Subtest: Phase 15 supplier timeout is bounded, correlated, sanitized and replayed without another call
+ok 41 - Phase 15 supplier timeout is bounded, correlated, sanitized and replayed without another call
+  ---
+  duration_ms: 78.8286
+  type: 'test'
+  ...
+# Subtest: Phase 15 interrupted supplier request cannot be rebooked and can reconcile a late authoritative outcome
+ok 42 - Phase 15 interrupted supplier request cannot be rebooked and can reconcile a late authoritative outcome
+  ---
+  duration_ms: 36.7749
+  type: 'test'
+  ...
+# Subtest: Phase 15 partial operational failure retains successful items and exact captured money
+ok 43 - Phase 15 partial operational failure retains successful items and exact captured money
+  ---
+  duration_ms: 51.1486
+  type: 'test'
+  ...
+# Subtest: Phase 15 payment initiation failure creates reconciliation, not a fake charge or replacement payment
+ok 44 - Phase 15 payment initiation failure creates reconciliation, not a fake charge or replacement payment
+  ---
+  duration_ms: 50.3846
+  type: 'test'
+  ...
+# Subtest: Phase 15 cancellation and refund requests are atomic and never claim an unverified refund
+ok 45 - Phase 15 cancellation and refund requests are atomic and never claim an unverified refund
+  ---
+  duration_ms: 59.1321
+  type: 'test'
+  ...
+# Subtest: Phase 15 memory unit-of-work rolls back selection, event, outbox and idempotency writes together
+ok 46 - Phase 15 memory unit-of-work rolls back selection, event, outbox and idempotency writes together
+  ---
+  duration_ms: 5.4281
+  type: 'test'
+  ...
+# Subtest: Phase 15 repository contracts reject dangling references and immutable audit replacement
+ok 47 - Phase 15 repository contracts reject dangling references and immutable audit replacement
+  ---
+  duration_ms: 15.4225
+  type: 'test'
+  ...
+# Subtest: Phase 15 PostgreSQL is disabled before any connection unless all three approvals are explicit
+ok 48 - Phase 15 PostgreSQL is disabled before any connection unless all three approvals are explicit
+  ---
+  duration_ms: 2.5823
+  type: 'test'
+  ...
+# Subtest: Phase 15 PostgreSQL query contract parameterizes data and rolls back driver failures without leaking details
+ok 49 - Phase 15 PostgreSQL query contract parameterizes data and rolls back driver failures without leaking details
+  ---
+  duration_ms: 5.8571
+  type: 'test'
+  ...
+# Subtest: Phase 15 PostgreSQL projections match every prepared table, with atomic commit and no database access
+ok 50 - Phase 15 PostgreSQL projections match every prepared table, with atomic commit and no database access
+  ---
+  duration_ms: 867.2305
+  type: 'test'
+  ...
+# Subtest: Phase 15 failed PostgreSQL hydration preserves prior local state and invalid snapshots do not partially restore
+ok 51 - Phase 15 failed PostgreSQL hydration preserves prior local state and invalid snapshots do not partially restore
+  ---
+  duration_ms: 7.7677
+  type: 'test'
+  ...
+# Subtest: Phase 15 migration validation parses forward/rollback only and covers canonical status and foreign-key contracts
+ok 52 - Phase 15 migration validation parses forward/rollback only and covers canonical status and foreign-key contracts
+  ---
+  duration_ms: 1189.1592
+  type: 'test'
+  ...
+# Subtest: Phase 15 configuration leaves activation disabled and blocks unconfirmed Clerk rotation before reading keys
+ok 53 - Phase 15 configuration leaves activation disabled and blocks unconfirmed Clerk rotation before reading keys
+  ---
+  duration_ms: 24.5117
+  type: 'test'
+  ...
+# Subtest: Phase 15 telemetry whitelists metadata, and the HTTP boundary retains correlation, CSRF and identity scoping
+ok 54 - Phase 15 telemetry whitelists metadata, and the HTTP boundary retains correlation, CSRF and identity scoping
+  ---
+  duration_ms: 776.6137
+  type: 'test'
+  ...
+# Subtest: Phase 15 existing customer routes use saved payment totals and corrected owner-scoped cancellation arguments
+ok 55 - Phase 15 existing customer routes use saved payment totals and corrected owner-scoped cancellation arguments
+  ---
+  duration_ms: 138.3897
+  type: 'test'
+  ...
+# Subtest: Phase 15 request-to-confirm readiness still prepares an unpaid draft without upstream confirmation
+ok 56 - Phase 15 request-to-confirm readiness still prepares an unpaid draft without upstream confirmation
+  ---
+  duration_ms: 50.9573
+  type: 'test'
+  ...
+# Subtest: Phase 15 configuration and fingerprint validation reject invalid parties and changed settlement terms
+ok 57 - Phase 15 configuration and fingerprint validation reject invalid parties and changed settlement terms
+  ---
+  duration_ms: 20.0743
+  type: 'test'
+  ...
+# Subtest: Phase 15 immutable provider receipts prevent event reuse after a later capture replaces the last event
+ok 58 - Phase 15 immutable provider receipts prevent event reuse after a later capture replaces the last event
+  ---
+  duration_ms: 131.0563
+  type: 'test'
+  ...
+# Subtest: Phase 15 a failed command after PostgreSQL hydration restores the transaction checkpoint
+ok 59 - Phase 15 a failed command after PostgreSQL hydration restores the transaction checkpoint
+  ---
+  duration_ms: 19.0034
+  type: 'test'
+  ...
+# Subtest: Phase 15 READY without persisted authoritative revalidation evidence cannot create a booking
+ok 60 - Phase 15 READY without persisted authoritative revalidation evidence cannot create a booking
+  ---
+  duration_ms: 34.6485
+  type: 'test'
+  ...
+# Subtest: Phase 15 delayed payment preparation refuses stale frozen revalidation without creating an order
+ok 61 - Phase 15 delayed payment preparation refuses stale frozen revalidation without creating an order
+  ---
+  duration_ms: 118.1341
+  type: 'test'
+  ...
+# Subtest: Phase 15 trusted payment-verifier failures are categorized without exposing provider diagnostics
+ok 62 - Phase 15 trusted payment-verifier failures are categorized without exposing provider diagnostics
+  ---
+  duration_ms: 158.9379
+  type: 'test'
+  ...
+# Subtest: Vacatina Commercial Truth & Operational Reality Suite
+    # Subtest: Gate T1: SEED Quarantine ΓÇö Prototype / sample items are detected, filtered from search, and blocked from checkout
+    ok 1 - Gate T1: SEED Quarantine ΓÇö Prototype / sample items are detected, filtered from search, and blocked from checkout
+      ---
+      duration_ms: 48.6998
+      type: 'test'
+      ...
+    # Subtest: Gate T2: Honest Provider Truth ΓÇö External providers resolve to SANDBOX_ONLY or CREDENTIALS_REQUIRED, never VERIFIED_EXISTING without evidence
+    ok 2 - Gate T2: Honest Provider Truth ΓÇö External providers resolve to SANDBOX_ONLY or CREDENTIALS_REQUIRED, never VERIFIED_EXISTING without evidence
+      ---
+      duration_ms: 19.3478
+      type: 'test'
+      ...
+    # Subtest: Gate T3: Unverified Manual Workflows ΓÇö Internal manual desks resolve to MANUAL_OPERATION_PROPOSED
+    ok 3 - Gate T3: Unverified Manual Workflows ΓÇö Internal manual desks resolve to MANUAL_OPERATION_PROPOSED
+      ---
+      duration_ms: 10.271
+      type: 'test'
+      ...
+    # Subtest: Gate T4: Pre-Booking Revalidation Truth ΓÇö Stopped or expired listings return UNAVAILABLE / EXPIRED, unmapped returns RECHECK_REQUIRED
+    ok 4 - Gate T4: Pre-Booking Revalidation Truth ΓÇö Stopped or expired listings return UNAVAILABLE / EXPIRED, unmapped returns RECHECK_REQUIRED
+      ---
+      duration_ms: 22.2346
+      type: 'test'
+      ...
+    # Subtest: Gate T5: Trip Bucket Anti-Spoofing ΓÇö Client cannot stage unverified items as READY without passing revalidation
+    ok 5 - Gate T5: Trip Bucket Anti-Spoofing ΓÇö Client cannot stage unverified items as READY without passing revalidation
+      ---
+      duration_ms: 926.4363
+      type: 'test'
+      ...
+    # Subtest: Gate T6: Honest Customer-Facing Confirmation Language ΓÇö Zero technical source leakage
+    ok 6 - Gate T6: Honest Customer-Facing Confirmation Language ΓÇö Zero technical source leakage
+      ---
+      duration_ms: 10.2997
+      type: 'test'
+      ...
+    # Subtest: Gate T7: Documentation Truth Audit ΓÇö Verifies zero unsupported commercial claims in Matrix & Gap Report
+    ok 7 - Gate T7: Documentation Truth Audit ΓÇö Verifies zero unsupported commercial claims in Matrix & Gap Report
+      ---
+      duration_ms: 39.8017
+      type: 'test'
+      ...
+    # Subtest: Gate T8: Provider Activation State Machine ΓÇö 6-Stage Governance enforces BOTH credentials & contract for LIVE
+    ok 8 - Gate T8: Provider Activation State Machine ΓÇö 6-Stage Governance enforces BOTH credentials & contract for LIVE
+      ---
+      duration_ms: 16.1089
+      type: 'test'
+      ...
+    # Subtest: Gate T9: Production Checkout Environment Guard ΓÇö Rejects un-LIVE providers & unverified manual listings
+    ok 9 - Gate T9: Production Checkout Environment Guard ΓÇö Rejects un-LIVE providers & unverified manual listings
+      ---
+      duration_ms: 11.6185
+      type: 'test'
+      ...
+    # Subtest: Gate T10: Hybrid Field Authority Matrix ΓÇö Enforces field ownership & prevents silent overwriting
+    ok 10 - Gate T10: Hybrid Field Authority Matrix ΓÇö Enforces field ownership & prevents silent overwriting
+      ---
+      duration_ms: 16.0837
+      type: 'test'
+      ...
+    # Subtest: Gate T11: Persistence-Ready Repository Boundary ΓÇö 4-Eyes lifecycle & mandatory evidence to publish
+    ok 11 - Gate T11: Persistence-Ready Repository Boundary ΓÇö 4-Eyes lifecycle & mandatory evidence to publish
+      ---
+      duration_ms: 15.8971
+      type: 'test'
+      ...
+    # Subtest: Gate T12: Deterministic Mixed Duplicate Offer Resolution ΓÇö Verified pinned manual wins over API
+    ok 12 - Gate T12: Deterministic Mixed Duplicate Offer Resolution ΓÇö Verified pinned manual wins over API
+      ---
+      duration_ms: 14.1092
+      type: 'test'
+      ...
+    1..12
+ok 63 - Vacatina Commercial Truth & Operational Reality Suite
+  ---
+  duration_ms: 1201.6828
+  type: 'suite'
+  ...
+# Subtest: Duffel NDC Canonical Activation & Production Readiness Suite
+    # Subtest: 1. Canonical Environment Variable Resolution & Fallback Hierarchy
+    ok 1 - 1. Canonical Environment Variable Resolution & Fallback Hierarchy
+      ---
+      duration_ms: 31.1175
+      type: 'test'
+      ...
+    # Subtest: 2. Server Startup Environment Configuration Validation
+    ok 2 - 2. Server Startup Environment Configuration Validation
+      ---
+      duration_ms: 11.9185
+      type: 'test'
+      ...
+    # Subtest: 3. Environment & Credential Classification (Sandbox vs Live)
+    ok 3 - 3. Environment & Credential Classification (Sandbox vs Live)
+      ---
+      duration_ms: 5.349
+      type: 'test'
+      ...
+    # Subtest: 4. Commercial Truth Gate for DUFFEL_NDC Provider
+    ok 4 - 4. Commercial Truth Gate for DUFFEL_NDC Provider
+      ---
+      duration_ms: 6.4846
+      type: 'test'
+      ...
+    # Subtest: 5. Multi-City Flight Search Support
+    ok 5 - 5. Multi-City Flight Search Support
+      ---
+      duration_ms: 29.4891
+      type: 'test'
+      ...
+    # Subtest: 6. Idempotent Booking Hold, Order Confirmation & Cancellation Quote
+    ok 6 - 6. Idempotent Booking Hold, Order Confirmation & Cancellation Quote
+      ---
+      duration_ms: 9.0135
+      type: 'test'
+      ...
+    # Subtest: 7. End-to-End Search to Trip Bucket Staging & Checkout Handoff
+    ok 7 - 7. End-to-End Search to Trip Bucket Staging & Checkout Handoff
+      ---
+      duration_ms: 276.4471
+      type: 'test'
+      ...
+    1..7
+ok 64 - Duffel NDC Canonical Activation & Production Readiness Suite
+  ---
+  duration_ms: 416.5012
+  type: 'test'
+  ...
+# Subtest: Phase 17 sandbox round-trip cards use segment schedules and do not count the return as a stop
+ok 65 - Phase 17 sandbox round-trip cards use segment schedules and do not count the return as a stop
+  ---
+  duration_ms: 29.548
+  type: 'test'
+  ...
+# Subtest: Phase 17 sandbox connection summaries include only outbound connection airports
+ok 66 - Phase 17 sandbox connection summaries include only outbound connection airports
+  ---
+  duration_ms: 5.037
+  type: 'test'
+  ...
+# Subtest: Phase 17 sandbox price changes preserve previous and current native-currency cents
+ok 67 - Phase 17 sandbox price changes preserve previous and current native-currency cents
+  ---
+  duration_ms: 17.3166
+  type: 'test'
+  ...
+# Subtest: Vacatina Phase 16 ΓÇö Duffel TEST MODE sandbox suite
+    # Subtest: runtime boundary rejects production, live mode and missing test credentials
+    ok 1 - runtime boundary rejects production, live mode and missing test credentials
+      ---
+      duration_ms: 10.9555
+      type: 'test'
+      ...
+    # Subtest: search uses real sandbox semantics with no markup and explicit provenance
+    ok 2 - search uses real sandbox semantics with no markup and explicit provenance
+      ---
+      duration_ms: 180.776
+      type: 'test'
+      ...
+    # Subtest: offer retrieval survives restart and revalidation reports price changes and expiry
+    ok 3 - offer retrieval survives restart and revalidation reports price changes and expiry
+      ---
+      duration_ms: 50.4149
+      type: 'test'
+      ...
+    # Subtest: seat maps and quote use the official endpoints and preserve service quantities
+    ok 4 - seat maps and quote use the official endpoints and preserve service quantities
+      ---
+      duration_ms: 29.8612
+      type: 'test'
+      ...
+    # Subtest: Phase 18 durable stable intent recovers after restart and browser key loss without provider calls
+    ok 5 - Phase 18 durable stable intent recovers after restart and browser key loss without provider calls
+      ---
+      duration_ms: 798.7027
+      type: 'test'
+      ...
+    # Subtest: Phase 18 unknown order survives restart and forbids replacement under a new browser key
+    ok 6 - Phase 18 unknown order survives restart and forbids replacement under a new browser key
+      ---
+      duration_ms: 98.0504
+      type: 'test'
+      ...
+    # Subtest: explicit order creation is idempotent and never duplicates on retries
+    ok 7 - explicit order creation is idempotent and never duplicates on retries
+      ---
+      duration_ms: 24.5575
+      type: 'test'
+      ...
+    # Subtest: ambiguous and deterministic order failures are safe, stored, and not retried
+    ok 8 - ambiguous and deterministic order failures are safe, stored, and not retried
+      ---
+      duration_ms: 37.8185
+      type: 'test'
+      ...
+    # Subtest: an in-flight order claim blocks a concurrent duplicate
+    ok 9 - an in-flight order claim blocks a concurrent duplicate
+      ---
+      duration_ms: 21.4657
+      type: 'test'
+      ...
+    # Subtest: sandbox HTTP routes expose only safe non-production projections
+    ok 10 - sandbox HTTP routes expose only safe non-production projections
+      ---
+      duration_ms: 71.7218
+      type: 'test'
+      ...
+    # Subtest: route failures are sanitized and browser source selection stays explicit
+    ok 11 - route failures are sanitized and browser source selection stays explicit
+      ---
+      duration_ms: 20.2188
+      type: 'test'
+      ...
+    1..11
+ok 68 - Vacatina Phase 16 ΓÇö Duffel TEST MODE sandbox suite
+  ---
+  duration_ms: 1367.843
+  type: 'test'
+  ...
+# Subtest: Vacatina Flights Full Flow & Duffel NDC Suite
+    # Subtest: Flight Flow Gate 1: Duffel Search Generates Multi-Carrier Route Options for Popular Hubs
+    ok 1 - Flight Flow Gate 1: Duffel Search Generates Multi-Carrier Route Options for Popular Hubs
+      ---
+      duration_ms: 25.0556
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 2: Multi-Route Dispatch (London LHR and Singapore SIN)
+    ok 2 - Flight Flow Gate 2: Multi-Route Dispatch (London LHR and Singapore SIN)
+      ---
+      duration_ms: 11.9813
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 3: Cabin Class Multiplier and Fare Family Specifications
+    ok 3 - Flight Flow Gate 3: Cabin Class Multiplier and Fare Family Specifications
+      ---
+      duration_ms: 11.0559
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 4: CAP-02 Offer Details Dossier API (GET /api/v1/offers/:id)
+    ok 4 - Flight Flow Gate 4: CAP-02 Offer Details Dossier API (GET /api/v1/offers/:id)
+      ---
+      duration_ms: 265.8785
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 5: CAP-02 Negative Test (404 Problem Details on Invalid Offer ID)
+    ok 5 - Flight Flow Gate 5: CAP-02 Negative Test (404 Problem Details on Invalid Offer ID)
+      ---
+      duration_ms: 13.4103
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 6: CAP-03 Pre-Booking Revalidation API (POST /api/v1/offers/:id/revalidate)
+    ok 6 - Flight Flow Gate 6: CAP-03 Pre-Booking Revalidation API (POST /api/v1/offers/:id/revalidate)
+      ---
+      duration_ms: 34.2364
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 7: Stage Configured Flight Offer into Trip Bucket Drawer as READY
+    ok 7 - Flight Flow Gate 7: Stage Configured Flight Offer into Trip Bucket Drawer as READY
+      ---
+      duration_ms: 5.941
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 8: Recheck Rate in Trip Bucket Maintains Ready State
+    ok 8 - Flight Flow Gate 8: Recheck Rate in Trip Bucket Maintains Ready State
+      ---
+      duration_ms: 460.7767
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 9: Full 15-Capability Matrix Status Verification
+    ok 9 - Flight Flow Gate 9: Full 15-Capability Matrix Status Verification
+      ---
+      duration_ms: 2.9033
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 10: Zero Leakage of Internal Taxonomies to Customer UI Fields
+    ok 10 - Flight Flow Gate 10: Zero Leakage of Internal Taxonomies to Customer UI Fields
+      ---
+      duration_ms: 3.1963
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 11: CAP-12 Booking Saga Checkout & CAP-13 Booking Dossier Retrieval
+    ok 11 - Flight Flow Gate 11: CAP-12 Booking Saga Checkout & CAP-13 Booking Dossier Retrieval
+      ---
+      duration_ms: 53.5606
+      type: 'test'
+      ...
+    # Subtest: Flight Flow Gate 12: CAP-14 Consular Visa Desk Application Queue Endpoints
+    ok 12 - Flight Flow Gate 12: CAP-14 Consular Visa Desk Application Queue Endpoints
+      ---
+      duration_ms: 11.4718
+      type: 'test'
+      ...
+    1..12
+ok 69 - Vacatina Flights Full Flow & Duffel NDC Suite
+  ---
+  duration_ms: 933.4053
+  type: 'test'
+  ...
+# Subtest: Vacatina Flights Full Functional Build Suite
+    # Subtest: Airport Gate 1: Registry Integrity & Code Resolution
+    ok 1 - Airport Gate 1: Registry Integrity & Code Resolution
+      ---
+      duration_ms: 35.3735
+      type: 'test'
+      ...
+    # Subtest: Airport Gate 2: Autocomplete Search with Fuzzy & Code Matching
+    ok 2 - Airport Gate 2: Autocomplete Search with Fuzzy & Code Matching
+      ---
+      duration_ms: 13.0158
+      type: 'test'
+      ...
+    # Subtest: Airport Gate 3: Selection Validation (Identical Origin/Destination Guard)
+    ok 3 - Airport Gate 3: Selection Validation (Identical Origin/Destination Guard)
+      ---
+      duration_ms: 2.2692
+      type: 'test'
+      ...
+    # Subtest: Search Gate 4: Domain Validation Rules for Dates & Travellers
+    ok 4 - Search Gate 4: Domain Validation Rules for Dates & Travellers
+      ---
+      duration_ms: 32.4719
+      type: 'test'
+      ...
+    # Subtest: Search Gate 5: Multi-City Itinerary Chronology & Segment Validation
+    ok 5 - Search Gate 5: Multi-City Itinerary Chronology & Segment Validation
+      ---
+      duration_ms: 11.5941
+      type: 'test'
+      ...
+    # Subtest: Manual Adapter Gate 6: Active vs Paused/Expired Catalog Isolation
+    ok 6 - Manual Adapter Gate 6: Active vs Paused/Expired Catalog Isolation
+      ---
+      duration_ms: 22.3465
+      type: 'test'
+      ...
+    # Subtest: Supplier Adapter Gate 7: Multi-Carrier Search & Normalization
+    ok 7 - Supplier Adapter Gate 7: Multi-Carrier Search & Normalization
+      ---
+      duration_ms: 14.5001
+      type: 'test'
+      ...
+    # Subtest: Search Aggregator Gate 8: Merged Multi-Source Collection & Deduplication
+    ok 8 - Search Aggregator Gate 8: Merged Multi-Source Collection & Deduplication
+      ---
+      duration_ms: 45.9414
+      type: 'test'
+      ...
+    # Subtest: Search Aggregator Gate 9: Deterministic Sorting Algorithms
+    ok 9 - Search Aggregator Gate 9: Deterministic Sorting Algorithms
+      ---
+      duration_ms: 34.5711
+      type: 'test'
+      ...
+    # Subtest: Search Aggregator Gate 10: Faceted Filtering (Stops, Airlines, Baggage)
+    ok 10 - Search Aggregator Gate 10: Faceted Filtering (Stops, Airlines, Baggage)
+      ---
+      duration_ms: 34.4435
+      type: 'test'
+      ...
+    # Subtest: Revalidation Gate 11: Real-Time Upstream Price Recheck Sagas
+    ok 11 - Revalidation Gate 11: Real-Time Upstream Price Recheck Sagas
+      ---
+      duration_ms: 443.9123
+      type: 'test'
+      ...
+    # Subtest: Trip Bucket Gate 12: Canonical 8-State Flight Candidate Staging
+    ok 12 - Trip Bucket Gate 12: Canonical 8-State Flight Candidate Staging
+      ---
+      duration_ms: 57.0662
+      type: 'test'
+      ...
+    # Subtest: Favorites Gate 13: Independent Flight Route & Offer Bookmarking
+    ok 13 - Favorites Gate 13: Independent Flight Route & Offer Bookmarking
+      ---
+      duration_ms: 24.8722
+      type: 'test'
+      ...
+    # Subtest: Traveller Gate 14: Summary Formatting & Constraints
+    ok 14 - Traveller Gate 14: Summary Formatting & Constraints
+      ---
+      duration_ms: 10.3317
+      type: 'test'
+      ...
+    1..14
+ok 70 - Vacatina Flights Full Functional Build Suite
+  ---
+  duration_ms: 880.3276
+  type: 'test'
+  ...
+# Subtest: Vacatina Flights Phase 5 Journey Suite
+    # Subtest: Phase 5 Gate 1: Canonical search parsing, aliases and validation
+    ok 1 - Phase 5 Gate 1: Canonical search parsing, aliases and validation
+      ---
+      duration_ms: 46.1824
+      type: 'test'
+      ...
+    # Subtest: Phase 5 Gate 2: Canonical search serialization and multi-city legs
+    ok 2 - Phase 5 Gate 2: Canonical search serialization and multi-city legs
+      ---
+      duration_ms: 10.7338
+      type: 'test'
+      ...
+    # Subtest: Phase 5 Gate 3: Canonical search returns labelled inventory and a no-results state
+    ok 3 - Phase 5 Gate 3: Canonical search returns labelled inventory and a no-results state
+      ---
+      duration_ms: 13.9175
+      type: 'test'
+      ...
+    # Subtest: Phase 5 Gate 4: Dedicated offer route identity and invalid offers
+    ok 4 - Phase 5 Gate 4: Dedicated offer route identity and invalid offers
+      ---
+      duration_ms: 6.1115
+      type: 'test'
+      ...
+    # Subtest: Phase 5 Gate 5: Demo fixtures and manual request-to-book truth
+    ok 5 - Phase 5 Gate 5: Demo fixtures and manual request-to-book truth
+      ---
+      duration_ms: 7.8434
+      type: 'test'
+      ...
+    # Subtest: Phase 5 Gate 6: Fare configuration and local Trip Bucket staging
+    ok 6 - Phase 5 Gate 6: Fare configuration and local Trip Bucket staging
+      ---
+      duration_ms: 15.8815
+      type: 'test'
+      ...
+    # Subtest: Phase 5 Gate 7: Revalidation never promotes demo or manual inventory
+    ok 7 - Phase 5 Gate 7: Revalidation never promotes demo or manual inventory
+      ---
+      duration_ms: 142.1049
+      type: 'test'
+      ...
+    # Subtest: Phase 5 Gate 8: Local review handoff and non-live checkout gating
+    ok 8 - Phase 5 Gate 8: Local review handoff and non-live checkout gating
+      ---
+      duration_ms: 6.8786
+      type: 'test'
+      ...
+    1..8
+ok 71 - Vacatina Flights Phase 5 Journey Suite
+  ---
+  duration_ms: 268.9412
+  type: 'test'
+  ...
+# Subtest: Vacatina Hotels, Consular Visa & End-to-End Booking Saga Suite
+    # Subtest: Hotel Flow Gate 1: LiteAPI Hotels Search Returns Multi-Property Inventory for Dubai, Colombo, Maldives, and London
+    ok 1 - Hotel Flow Gate 1: LiteAPI Hotels Search Returns Multi-Property Inventory for Dubai, Colombo, Maldives, and London
+      ---
+      duration_ms: 28.1854
+      type: 'test'
+      ...
+    # Subtest: Hotel Flow Gate 2: CAP-02 Offer Details Dossier API Resolves Hotel Offers via Unified Inventory
+    ok 2 - Hotel Flow Gate 2: CAP-02 Offer Details Dossier API Resolves Hotel Offers via Unified Inventory
+      ---
+      duration_ms: 182.6947
+      type: 'test'
+      ...
+    # Subtest: Hotel Flow Gate 3: CAP-03 Pre-Booking Revalidation API Handles UNCHANGED and UNAVAILABLE
+    ok 3 - Hotel Flow Gate 3: CAP-03 Pre-Booking Revalidation API Handles UNCHANGED and UNAVAILABLE
+      ---
+      duration_ms: 32.5417
+      type: 'test'
+      ...
+    # Subtest: Hotel Flow Gate 4: Stage Configured Hotel Room into Trip Bucket Drawer as READY
+    ok 4 - Hotel Flow Gate 4: Stage Configured Hotel Room into Trip Bucket Drawer as READY
+      ---
+      duration_ms: 5.3112
+      type: 'test'
+      ...
+    # Subtest: Visa Flow Gate 5: CAP-14 Consular Visa Desk Application Submission & Retrieval
+    ok 5 - Visa Flow Gate 5: CAP-14 Consular Visa Desk Application Submission & Retrieval
+      ---
+      duration_ms: 16.7758
+      type: 'test'
+      ...
+    # Subtest: Visa Flow Gate 6: Resolving Visa Item in Trip Bucket Transitions State from Needs Action to Ready
+    ok 6 - Visa Flow Gate 6: Resolving Visa Item in Trip Bucket Transitions State from Needs Action to Ready
+      ---
+      duration_ms: 5.6054
+      type: 'test'
+      ...
+    # Subtest: Booking Saga Gate 7: Multi-Product Booking Saga (Flight + Hotel + Visa) Prepares an Atomic Unpaid Booking
+    ok 7 - Booking Saga Gate 7: Multi-Product Booking Saga (Flight + Hotel + Visa) Prepares an Atomic Unpaid Booking
+      ---
+      duration_ms: 106.196
+      type: 'test'
+      ...
+    # Subtest: Booking Saga Gate 9 (Negative Test): SEED Content Strictly Blocked from Checkout
+    ok 8 - Booking Saga Gate 9 (Negative Test): SEED Content Strictly Blocked from Checkout
+      ---
+      duration_ms: 12.0416
+      type: 'test'
+      ...
+    # Subtest: Booking Saga Gate 10 (Negative Test): Unready Cart Items Strictly Block Booking Checkout
+    ok 9 - Booking Saga Gate 10 (Negative Test): Unready Cart Items Strictly Block Booking Checkout
+      ---
+      duration_ms: 5.7366
+      type: 'test'
+      ...
+    # Subtest: Booking Saga Gate 11: Idempotent Re-execution with Duplicate Key Returns Identical Cached Dossier
+    ok 10 - Booking Saga Gate 11: Idempotent Re-execution with Duplicate Key Returns Identical Cached Dossier
+      ---
+      duration_ms: 73.202
+      type: 'test'
+      ...
+    # Subtest: Safety Gate 12: Customer UI Strings and Confirmations Have Zero Technical Jargon Leakage
+    ok 11 - Safety Gate 12: Customer UI Strings and Confirmations Have Zero Technical Jargon Leakage
+      ---
+      duration_ms: 41.0166
+      type: 'test'
+      ...
+    1..11
+ok 72 - Vacatina Hotels, Consular Visa & End-to-End Booking Saga Suite
+  ---
+  duration_ms: 536.7666
+  type: 'suite'
+  ...
+# Subtest: Vacatina Hotels Full Functional Build Suite (Phase 3.2)
+    # Subtest: Hotel Gate 1: Destination Registry Integrity & Lookup
+    ok 1 - Hotel Gate 1: Destination Registry Integrity & Lookup
+      ---
+      duration_ms: 106.2991
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 2: Autocomplete Search with Partial Matching
+    ok 2 - Hotel Gate 2: Autocomplete Search with Partial Matching
+      ---
+      duration_ms: 19.5211
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 3: Direct Manual Hotel Contracts Commercial Truth
+    ok 3 - Hotel Gate 3: Direct Manual Hotel Contracts Commercial Truth
+      ---
+      duration_ms: 10.6798
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 4: LiteAPI Bedbank Normalization Integrity
+    ok 4 - Hotel Gate 4: LiteAPI Bedbank Normalization Integrity
+      ---
+      duration_ms: 7.4188
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 5: Universal Multi-Source Search & Pin-Above-API Ranking
+    ok 5 - Hotel Gate 5: Universal Multi-Source Search & Pin-Above-API Ranking
+      ---
+      duration_ms: 47.756
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 6: Broad Destination Search (Dubai) Merges Direct + LiteAPI
+    ok 6 - Hotel Gate 6: Broad Destination Search (Dubai) Merges Direct + LiteAPI
+      ---
+      duration_ms: 12.6442
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 7: Facet Generation & Star Rating Filtering
+    ok 7 - Hotel Gate 7: Facet Generation & Star Rating Filtering
+      ---
+      duration_ms: 11.8364
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 8: Occupancy Text Formatting
+    ok 8 - Hotel Gate 8: Occupancy Text Formatting
+      ---
+      duration_ms: 1.8744
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 9: Trip Bucket Candidate Transformation & Staging
+    ok 9 - Hotel Gate 9: Trip Bucket Candidate Transformation & Staging
+      ---
+      duration_ms: 13.9425
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 10: Revalidation Engine Available, Price Changed & Depleted Sagas
+    ok 10 - Hotel Gate 10: Revalidation Engine Available, Price Changed & Depleted Sagas
+      ---
+      duration_ms: 13.5319
+      type: 'test'
+      ...
+    # Subtest: Hotel Gate 11: Hotel Saved Favorites Toggle Service
+    ok 11 - Hotel Gate 11: Hotel Saved Favorites Toggle Service
+      ---
+      duration_ms: 436.5306
+      type: 'test'
+      ...
+    1..11
+ok 73 - Vacatina Hotels Full Functional Build Suite (Phase 3.2)
+  ---
+  duration_ms: 893.309
+  type: 'test'
+  ...
+# Subtest: Hotels Phase 6: canonical query, occupancy and date validation
+ok 74 - Hotels Phase 6: canonical query, occupancy and date validation
+  ---
+  duration_ms: 14.4193
+  type: 'test'
+  ...
+# Subtest: Hotels Phase 6: labelled search, empty state and invalid identity
+ok 75 - Hotels Phase 6: labelled search, empty state and invalid identity
+  ---
+  duration_ms: 17.1564
+  type: 'test'
+  ...
+# Subtest: Hotels Phase 6: configured multi-room totals, provenance, revalidation and checkout gate
+ok 76 - Hotels Phase 6: configured multi-room totals, provenance, revalidation and checkout gate
+  ---
+  duration_ms: 16.7961
+  type: 'test'
+  ...
+# [CanonicalSearchOrchestrator] Adapter failing_gds reporting unhealthy; skipping.
+# Subtest: Vacatina Hybrid Inventory & Canonical Offer Architecture
+    # Subtest: Gate 1: Canonical Source Taxonomy (API, MANUAL, DIRECT_CONTRACT, COMPOSITE)
+        # Subtest: defines the 4 primary canonical source types for production inventory
+        ok 1 - defines the 4 primary canonical source types for production inventory
+          ---
+          duration_ms: 9.321
+          type: 'test'
+          ...
+        # Subtest: ensures customer search results merge API and Direct inventory into a single result set
+        ok 2 - ensures customer search results merge API and Direct inventory into a single result set
+          ---
+          duration_ms: 46.313
+          type: 'test'
+          ...
+        1..2
+    ok 1 - Gate 1: Canonical Source Taxonomy (API, MANUAL, DIRECT_CONTRACT, COMPOSITE)
+      ---
+      duration_ms: 70.3887
+      type: 'suite'
+      ...
+    # Subtest: Gate 2: CanonicalOffer Model Completeness & Stable ID Contract
+        # Subtest: enforces all mandatory canonical offer attributes and stable client offerId
+        ok 1 - enforces all mandatory canonical offer attributes and stable client offerId
+          ---
+          duration_ms: 8.5603
+          type: 'test'
+          ...
+        1..1
+    ok 2 - Gate 2: CanonicalOffer Model Completeness & Stable ID Contract
+      ---
+      duration_ms: 14.4769
+      type: 'suite'
+      ...
+    # Subtest: Gate 3: Universal Supplier Adapter Contracts (10 Canonical Verticals)
+        # Subtest: verifies that adapters normalize responses into CanonicalOffer[] with identical interface
+        ok 1 - verifies that adapters normalize responses into CanonicalOffer[] with identical interface
+          ---
+          duration_ms: 7.3347
+          type: 'test'
+          ...
+        1..1
+    ok 3 - Gate 3: Universal Supplier Adapter Contracts (10 Canonical Verticals)
+      ---
+      duration_ms: 8.5239
+      type: 'suite'
+      ...
+    # Subtest: Gate 4: Manual Inventory 6-Stage Lifecycle
+        # Subtest: enforces DRAFT -> REVIEW -> PUBLISHED -> PAUSED -> SOLD_OUT -> ARCHIVED lifecycle
+        ok 1 - enforces DRAFT -> REVIEW -> PUBLISHED -> PAUSED -> SOLD_OUT -> ARCHIVED lifecycle
+          ---
+          duration_ms: 5.6584
+          type: 'test'
+          ...
+        # Subtest: demotes unpublished or stop-sale manual inventory so it disappears from customer search
+        ok 2 - demotes unpublished or stop-sale manual inventory so it disappears from customer search
+          ---
+          duration_ms: 6.6597
+          type: 'test'
+          ...
+        1..2
+    ok 4 - Gate 4: Manual Inventory 6-Stage Lifecycle
+      ---
+      duration_ms: 14.4723
+      type: 'suite'
+      ...
+    # Subtest: Gate 5: Multi-Supplier Deduplication & Rate Options Comparison
+        # Subtest: consolidates same hotel from multiple suppliers into 1 canonical product with multi-rate options
+        ok 1 - consolidates same hotel from multiple suppliers into 1 canonical product with multi-rate options
+          ---
+          duration_ms: 13.1328
+          type: 'test'
+          ...
+        1..1
+    ok 5 - Gate 5: Multi-Supplier Deduplication & Rate Options Comparison
+      ---
+      duration_ms: 20.2989
+      type: 'suite'
+      ...
+    # Subtest: Gate 6: COMPOSITE Package Composition & Revalidation
+        # Subtest: revalidates all heterogeneous sub-components before package becomes READY
+        ok 1 - revalidates all heterogeneous sub-components before package becomes READY
+          ---
+          duration_ms: 284.0805
+          type: 'test'
+          ...
+        1..1
+    ok 6 - Gate 6: COMPOSITE Package Composition & Revalidation
+      ---
+      duration_ms: 292.7867
+      type: 'suite'
+      ...
+    # Subtest: Gate 7: Graceful Supplier Failure & Resilience
+        # Subtest: ensures supplier API outage or timeout does NOT disable manual direct inventory
+        ok 1 - ensures supplier API outage or timeout does NOT disable manual direct inventory
+          ---
+          duration_ms: 24.4883
+          type: 'test'
+          ...
+        1..1
+    ok 7 - Gate 7: Graceful Supplier Failure & Resilience
+      ---
+      duration_ms: 29.7269
+      type: 'suite'
+      ...
+    # Subtest: Gate 8: Per-Offer Travel Credit Eligibility Governance
+        # Subtest: respects per-offer travel credit eligibility and exclusion policies
+        ok 1 - respects per-offer travel credit eligibility and exclusion policies
+          ---
+          duration_ms: 6.7612
+          type: 'test'
+          ...
+        1..1
+    ok 8 - Gate 8: Per-Offer Travel Credit Eligibility Governance
+      ---
+      duration_ms: 7.4976
+      type: 'suite'
+      ...
+    # Subtest: Gate 9: The Exact Canonical 10 Products Lock
+        # Subtest: strictly locks the 10 canonical products (eSIM is NOT a product; Car Rental is within Cars & Transfers)
+        ok 1 - strictly locks the 10 canonical products (eSIM is NOT a product; Car Rental is within Cars & Transfers)
+          ---
+          duration_ms: 1.0682
+          type: 'test'
+          ...
+        1..1
+    ok 9 - Gate 9: The Exact Canonical 10 Products Lock
+      ---
+      duration_ms: 5.7807
+      type: 'suite'
+      ...
+    1..9
+ok 77 - Vacatina Hybrid Inventory & Canonical Offer Architecture
+  ---
+  duration_ms: 487.1078
+  type: 'suite'
+  ...
+# Subtest: Phase 18 file retry is bounded and only retries EPERM/EBUSY operations
+ok 78 - Phase 18 file retry is bounded and only retries EPERM/EBUSY operations
+  ---
+  duration_ms: 617.441
+  type: 'test'
+  ...
+# Subtest: Phase 18 all ten configurations and bundle preferences survive durable process reconstruction
+ok 79 - Phase 18 all ten configurations and bundle preferences survive durable process reconstruction
+  ---
+  duration_ms: 540.0942
+  type: 'test'
+  ...
+# Subtest: Phase 18 request idempotency, immutable dossier and pending outbox are atomic
+ok 80 - Phase 18 request idempotency, immutable dossier and pending outbox are atomic
+  ---
+  duration_ms: 92.8144
+  type: 'test'
+  ...
+# Subtest: Phase 18 remove/restore uses revisions and replays without duplicate mutation
+ok 81 - Phase 18 remove/restore uses revisions and replays without duplicate mutation
+  ---
+  duration_ms: 18.5269
+  type: 'test'
+  ...
+# Subtest: Phase 18 independent local instances serialize conflicting writes
+ok 82 - Phase 18 independent local instances serialize conflicting writes
+  ---
+  duration_ms: 136.339
+  type: 'test'
+  ...
+# Subtest: Phase 18 local read-only queries preserve the durable file and failed writes roll back
+ok 83 - Phase 18 local read-only queries preserve the durable file and failed writes roll back
+  ---
+  duration_ms: 136.2471
+  type: 'test'
+  ...
+# Subtest: Phase 18 two distinct options per product retain identity, declared currency and independent configuration
+ok 84 - Phase 18 two distinct options per product retain identity, declared currency and independent configuration
+  ---
+  duration_ms: 1059.6436
+  type: 'test'
+  ...
+# Subtest: Phase 18 exact owner/tenant and operator MFA isolation precedes replay
+ok 85 - Phase 18 exact owner/tenant and operator MFA isolation precedes replay
+  ---
+  duration_ms: 37.5972
+  type: 'test'
+  ...
+# Subtest: Phase 18 quotation lifecycle requires independent publication and fresh customer acknowledgement
+ok 86 - Phase 18 quotation lifecycle requires independent publication and fresh customer acknowledgement
+  ---
+  duration_ms: 86.4495
+  type: 'test'
+  ...
+# Subtest: Phase 18 private fields, browser prices and commercial assertions never become authority
+ok 87 - Phase 18 private fields, browser prices and commercial assertions never become authority
+  ---
+  duration_ms: 5.8283
+  type: 'test'
+  ...
+# Subtest: Phase 18 actual flight/hotel adapter shapes retain requested choices without restoring commercial authority
+ok 88 - Phase 18 actual flight/hotel adapter shapes retain requested choices without restoring commercial authority
+  ---
+  duration_ms: 56.8435
+  type: 'test'
+  ...
+# Subtest: Phase 18 material search dimensions produce independent fingerprints
+ok 89 - Phase 18 material search dimensions produce independent fingerprints
+  ---
+  duration_ms: 62.8011
+  type: 'test'
+  ...
+# Subtest: Phase 18 configured LiteAPI failures cannot return deterministic supplier offers
+ok 90 - Phase 18 configured LiteAPI failures cannot return deterministic supplier offers
+  ---
+  duration_ms: 135.6111
+  type: 'test'
+  ...
+# Subtest: Phase 18 HTTP allowlist, CSRF, body bounds, safe errors and customer/operator round trip
+ok 91 - Phase 18 HTTP allowlist, CSRF, body bounds, safe errors and customer/operator round trip
+  ---
+  duration_ms: 219.3047
+  type: 'test'
+  ...
+# Subtest: Phase 18 HTTP rate limiting is independent of request body identifiers
+ok 92 - Phase 18 HTTP rate limiting is independent of request body identifiers
+  ---
+  duration_ms: 9.4111
+  type: 'test'
+  ...
+# Subtest: Phase 18 hosted API cannot execute any mutation or collect identity
+ok 93 - Phase 18 hosted API cannot execute any mutation or collect identity
+  ---
+  duration_ms: 5.2999
+  type: 'test'
+  ...
+# Subtest: Phase 18 deployment guards fail closed for wrong project, plan, environment, branch, commit and domain
+ok 94 - Phase 18 deployment guards fail closed for wrong project, plan, environment, branch, commit and domain
+  ---
+  duration_ms: 10.5992
+  type: 'test'
+  ...
+# Subtest: Rails Phase 12: station identity, class validation and no fabricated train, seat or schedule
+ok 95 - Rails Phase 12: station identity, class validation and no fabricated train, seat or schedule
+  ---
+  duration_ms: 18.1398
+  type: 'test'
+  ...
+# Subtest: Activities and Sightseeing Phase 11 retain distinct taxonomy and guided-route context
+ok 96 - Activities and Sightseeing Phase 11 retain distinct taxonomy and guided-route context
+  ---
+  duration_ms: 1.9241
+  type: 'test'
+  ...
+# Subtest: Cars Phase 9: car hire and return transfers retain distinct mandatory logistics
+ok 97 - Cars Phase 9: car hire and return transfers retain distinct mandatory logistics
+  ---
+  duration_ms: 156.0627
+  type: 'test'
+  ...
+# Subtest: packages B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 98 - packages B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 190.9268
+  type: 'test'
+  ...
+# Subtest: cars B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 99 - cars B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 22.647
+  type: 'test'
+  ...
+# Subtest: activities B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 100 - activities B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 11.8468
+  type: 'test'
+  ...
+# Subtest: sightseeing B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 101 - sightseeing B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 5.963
+  type: 'test'
+  ...
+# Subtest: rails B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 102 - rails B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 7.6077
+  type: 'test'
+  ...
+# Subtest: cruises B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 103 - cruises B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 4.7535
+  type: 'test'
+  ...
+# Subtest: insurance B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+ok 104 - insurance B2C phase: validation, search, canonical configuration, provenance, revalidation and review
+  ---
+  duration_ms: 7.3829
+  type: 'test'
+  ...
+# Subtest: Cruises Phase 13: port and cabin requests never fabricate sailing or inventory
+ok 105 - Cruises Phase 13: port and cabin requests never fabricate sailing or inventory
+  ---
+  duration_ms: 1.474
+  type: 'test'
+  ...
+# Subtest: Insurance Phase 14: no fabricated coverage, premiums, policy wording or eligibility
+ok 106 - Insurance Phase 14: no fabricated coverage, premiums, policy wording or eligibility
+  ---
+  duration_ms: 1.9598
+  type: 'test'
+  ...
+# Subtest: Phase 17 bundle merges local requests without replacing server authority or inventing free prices
+ok 107 - Phase 17 bundle merges local requests without replacing server authority or inventing free prices
+  ---
+  duration_ms: 1.591
+  type: 'test'
+  ...
+# Subtest: Phase 17 bundle displays native-currency minor units rather than an LKR shadow
+ok 108 - Phase 17 bundle displays native-currency minor units rather than an LKR shadow
+  ---
+  duration_ms: 86.3841
+  type: 'test'
+  ...
+# Subtest: All 11 SCC tabs validate, preserve product intent and use canonical destinations
+ok 109 - All 11 SCC tabs validate, preserve product intent and use canonical destinations
+  ---
+  duration_ms: 41.0373
+  type: 'test'
+  ...
+# Subtest: Mixed 10-product Trip Bucket retains configuration, source, freshness, local revalidation and blocked checkout
+ok 110 - Mixed 10-product Trip Bucket retains configuration, source, freshness, local revalidation and blocked checkout
+  ---
+  duration_ms: 146.0548
+  type: 'test'
+  ...
+# Subtest: Product configuration rejects impossible dates, passenger counts, and missing transfer logistics
+ok 111 - Product configuration rejects impossible dates, passenger counts, and missing transfer logistics
+  ---
+  duration_ms: 5.1261
+  type: 'test'
+  ...
+# Subtest: Separate products retain distinct published option and policy requirements
+ok 112 - Separate products retain distinct published option and policy requirements
+  ---
+  duration_ms: 6.0324
+  type: 'test'
+  ...
+# Subtest: A bundle is never Ready from mere product presence or mismatched dates/party
+ok 113 - A bundle is never Ready from mere product presence or mismatched dates/party
+  ---
+  duration_ms: 10.2792
+  type: 'test'
+  ...
+# Subtest: Customer display keeps integer-minor precision and escapes untrusted supplier text
+ok 114 - Customer display keeps integer-minor precision and escapes untrusted supplier text
+  ---
+  duration_ms: 3.6343
+  type: 'test'
+  ...
+# Subtest: Product staging sends identity and user configuration only; no client asserted price, provenance, or readiness
+ok 115 - Product staging sends identity and user configuration only; no client asserted price, provenance, or readiness
+  ---
+  duration_ms: 3.6394
+  type: 'test'
+  ...
+# Subtest: Stripe raw-body signatures reject tampering, old timestamps and unsigned requests
+ok 116 - Stripe raw-body signatures reject tampering, old timestamps and unsigned requests
+  ---
+  duration_ms: 23.5489
+  type: 'test'
+  ...
+# Subtest: Verified payment reconciles exact saved amount and ignores caller-supplied event identifiers
+ok 117 - Verified payment reconciles exact saved amount and ignores caller-supplied event identifiers
+  ---
+  duration_ms: 235.5036
+  type: 'test'
+  ...
+# Subtest: Hosted Stripe checkout is idempotent, uses backend totals and rejects foreign return origins
+ok 118 - Hosted Stripe checkout is idempotent, uses backend totals and rejects foreign return origins
+  ---
+  duration_ms: 51.6948
+  type: 'test'
+  ...
+# Subtest: Unconfigured payments fail closed without creating a simulated order
+ok 119 - Unconfigured payments fail closed without creating a simulated order
+  ---
+  duration_ms: 3.7073
+  type: 'test'
+  ...
+# Subtest: PayHere verifies its official checksum, exact merchant and integer amount
+ok 120 - PayHere verifies its official checksum, exact merchant and integer amount
+  ---
+  duration_ms: 9.3415
+  type: 'test'
+  ...
+# Subtest: PayPal completed capture requires verified transmission and matching stored order
+ok 121 - PayPal completed capture requires verified transmission and matching stored order
+  ---
+  duration_ms: 25.0987
+  type: 'test'
+  ...
+# Subtest: Booking preparation remains unpaid and cannot generate confirmed supplier references
+ok 122 - Booking preparation remains unpaid and cannot generate confirmed supplier references
+  ---
+  duration_ms: 21.7135
+  type: 'test'
+  ...
+# Subtest: Price drift requires explicit acceptance before any booking draft or payment
+ok 123 - Price drift requires explicit acceptance before any booking draft or payment
+  ---
+  duration_ms: 3.4888
+  type: 'test'
+  ...
+# Subtest: Vacatina Shared Inventory & Canonical Offer Foundation Suite
+    # Subtest: Gate 1: Manual Listing Complete Lifecycle & 4-Eyes Governance
+    ok 1 - Gate 1: Manual Listing Complete Lifecycle & 4-Eyes Governance
+      ---
+      duration_ms: 27.8448
+      type: 'test'
+      ...
+    # Subtest: Gate 2: API Offer Normalization into Universal Canonical Shape
+    ok 2 - Gate 2: API Offer Normalization into Universal Canonical Shape
+      ---
+      duration_ms: 5.7699
+      type: 'test'
+      ...
+    # Subtest: Gate 3: Duplicate Prevention Across Multiple Suppliers & Source Precedence
+    ok 3 - Gate 3: Duplicate Prevention Across Multiple Suppliers & Source Precedence
+      ---
+      duration_ms: 13.0327
+      type: 'test'
+      ...
+    # Subtest: Gate 4: Multi-Source Search Aggregator with Strict SEED Quarantine
+    ok 4 - Gate 4: Multi-Source Search Aggregator with Strict SEED Quarantine
+      ---
+      duration_ms: 11.3948
+      type: 'test'
+      ...
+    # Subtest: Gate 5: Stale Offer Detection via TTL Check
+    ok 5 - Gate 5: Stale Offer Detection via TTL Check
+      ---
+      duration_ms: 3.0131
+      type: 'test'
+      ...
+    # Subtest: Gate 6: Price Change Detection during Revalidation Sagas
+    ok 6 - Gate 6: Price Change Detection during Revalidation Sagas
+      ---
+      duration_ms: 155.4973
+      type: 'test'
+      ...
+    # Subtest: Gate 7: Unavailable and Expired Revalidation Sagas
+    ok 7 - Gate 7: Unavailable and Expired Revalidation Sagas
+      ---
+      duration_ms: 4.5715
+      type: 'test'
+      ...
+    # Subtest: Gate 8: Source Provenance & Hybrid Authority Isolation
+    ok 8 - Gate 8: Source Provenance & Hybrid Authority Isolation
+      ---
+      duration_ms: 16.2189
+      type: 'test'
+      ...
+    # Subtest: Gate 9: Stable ID Contract Across Search, Details & Trip Bucket
+    ok 9 - Gate 9: Stable ID Contract Across Search, Details & Trip Bucket
+      ---
+      duration_ms: 8.0924
+      type: 'test'
+      ...
+    1..9
+ok 124 - Vacatina Shared Inventory & Canonical Offer Foundation Suite
+  ---
+  duration_ms: 284.7012
+  type: 'test'
+  ...
+# Subtest: Vacatina Upstream Provider Certification & UAT Suite
+    # Subtest: Gate 1 & 2: Enforces Credentials Guard ΓÇö Uncertified Scaffolds Cannot Claim PRODUCTION_LIVE
+    ok 1 - Gate 1 & 2: Enforces Credentials Guard ΓÇö Uncertified Scaffolds Cannot Claim PRODUCTION_LIVE
+      ---
+      duration_ms: 10.5266
+      type: 'test'
+      ...
+    # Subtest: Gate 3: Normalization Integrity across Candidate Adapters (Search & Details Mapping)
+    ok 2 - Gate 3: Normalization Integrity across Candidate Adapters (Search & Details Mapping)
+      ---
+      duration_ms: 46.6106
+      type: 'test'
+      ...
+    # Subtest: Gate 4: Integer Minor Pricing & Multi-Currency Precedence Integrity
+    ok 3 - Gate 4: Integer Minor Pricing & Multi-Currency Precedence Integrity
+      ---
+      duration_ms: 2.1439
+      type: 'test'
+      ...
+    # Subtest: Gate 5: Pre-Booking Revalidation & State Transition Verification
+    ok 4 - Gate 5: Pre-Booking Revalidation & State Transition Verification
+      ---
+      duration_ms: 5.0124
+      type: 'test'
+      ...
+    # Subtest: Gate 6 & 11: Invariant Guard Blocks Scaffold Providers from Live Production Bookings
+    ok 5 - Gate 6 & 11: Invariant Guard Blocks Scaffold Providers from Live Production Bookings
+      ---
+      duration_ms: 2.4328
+      type: 'test'
+      ...
+    # Subtest: Gate 7: Circuit Breaker Transitions & Rate Limit / Outage Fallback
+    ok 6 - Gate 7: Circuit Breaker Transitions & Rate Limit / Outage Fallback
+      ---
+      duration_ms: 26.3338
+      type: 'test'
+      ...
+    # Subtest: Gate 8: Upstream Error Mapping to Standard RFC 7807 Problem Details
+    ok 7 - Gate 8: Upstream Error Mapping to Standard RFC 7807 Problem Details
+      ---
+      duration_ms: 0.6886
+      type: 'test'
+      ...
+    # Subtest: Gate 9, 10 & 12: Provider Registry Telemetry & Audit Compliance
+    ok 8 - Gate 9, 10 & 12: Provider Registry Telemetry & Audit Compliance
+      ---
+      duration_ms: 1.7048
+      type: 'test'
+      ...
+    1..8
+ok 125 - Vacatina Upstream Provider Certification & UAT Suite
+  ---
+  duration_ms: 109.2124
+  type: 'suite'
+  ...
+# Subtest: Vacatina Travel Credit & Refund Ledger Architecture
+    # Subtest: Gate 1: Multi-Bucket Balance & Summary
+        # Subtest: initializes verified test customer with authentic seed credits totalling LKR 83,000
+        ok 1 - initializes verified test customer with authentic seed credits totalling LKR 83,000
+          ---
+          duration_ms: 6.4286
+          type: 'test'
+          ...
+        # Subtest: returns empty balance with zero values for new customer with no prior history
+        ok 2 - returns empty balance with zero values for new customer with no prior history
+          ---
+          duration_ms: 1.9789
+          type: 'test'
+          ...
+        1..2
+    ok 1 - Gate 1: Multi-Bucket Balance & Summary
+      ---
+      duration_ms: 13.1037
+      type: 'suite'
+      ...
+    # Subtest: Gate 2: Append-Only Double-Entry Ledger Invariants
+        # Subtest: enforces that every balance change produces an immutable audit transaction row
+        ok 1 - enforces that every balance change produces an immutable audit transaction row
+          ---
+          duration_ms: 8.716
+          type: 'test'
+          ...
+        1..1
+    ok 2 - Gate 2: Append-Only Double-Entry Ledger Invariants
+      ---
+      duration_ms: 9.6756
+      type: 'suite'
+      ...
+    # Subtest: Gate 3: CBSL Closed-Loop Regulatory Invariants
+        # Subtest: strictly prohibits customer cash top-ups to prevent CBSL stored-money liability
+        ok 1 - strictly prohibits customer cash top-ups to prevent CBSL stored-money liability
+          ---
+          duration_ms: 3.7087
+          type: 'test'
+          ...
+        # Subtest: strictly prohibits peer-to-peer (P2P) transfers between customers
+        ok 2 - strictly prohibits peer-to-peer (P2P) transfers between customers
+          ---
+          duration_ms: 2.9137
+          type: 'test'
+          ...
+        # Subtest: strictly prohibits bank cash withdrawals or cash payouts of travel credits
+        ok 3 - strictly prohibits bank cash withdrawals or cash payouts of travel credits
+          ---
+          duration_ms: 2.4502
+          type: 'test'
+          ...
+        1..3
+    ok 3 - Gate 3: CBSL Closed-Loop Regulatory Invariants
+      ---
+      duration_ms: 12.0784
+      type: 'suite'
+      ...
+    # Subtest: Gate 4: Checkout Partial-Payment & Multi-Bucket Drawdown Order
+        # Subtest: executes priority drawdown: Promotional first, Service second, Refund last
+        ok 1 - executes priority drawdown: Promotional first, Service second, Refund last
+          ---
+          duration_ms: 6.1601
+          type: 'test'
+          ...
+        # Subtest: correctly handles partial payment when order total exceeds available credit
+        ok 2 - correctly handles partial payment when order total exceeds available credit
+          ---
+          duration_ms: 2.3071
+          type: 'test'
+          ...
+        1..2
+    ok 4 - Gate 4: Checkout Partial-Payment & Multi-Bucket Drawdown Order
+      ---
+      duration_ms: 11.17
+      type: 'suite'
+      ...
+    # Subtest: Gate 5: Cancellation & Refund Choice (Original Payment vs Travel Credit)
+        # Subtest: executes Option B: instant refund to Vacatina Travel Credit ledger
+        ok 1 - executes Option B: instant refund to Vacatina Travel Credit ledger
+          ---
+          duration_ms: 4.6434
+          type: 'test'
+          ...
+        # Subtest: executes Option A: unforced choice of original payment gateway refund without touching travel credit
+        ok 2 - executes Option A: unforced choice of original payment gateway refund without touching travel credit
+          ---
+          duration_ms: 216.6229
+          type: 'test'
+          ...
+        1..2
+    ok 5 - Gate 5: Cancellation & Refund Choice (Original Payment vs Travel Credit)
+      ---
+      duration_ms: 222.278
+      type: 'suite'
+      ...
+    # Subtest: Gate 6: Staff Service Credit Governance
+        # Subtest: requires mandatory staff identification and documented justification reason
+        ok 1 - requires mandatory staff identification and documented justification reason
+          ---
+          duration_ms: 4.0628
+          type: 'test'
+          ...
+        1..1
+    ok 6 - Gate 6: Staff Service Credit Governance
+      ---
+      duration_ms: 4.7012
+      type: 'suite'
+      ...
+    # Subtest: Gate 7: Credit Reversal & Administrative Audit
+        # Subtest: appends an auditable DEBIT reversal transaction when an erroneous credit is reversed
+        ok 1 - appends an auditable DEBIT reversal transaction when an erroneous credit is reversed
+          ---
+          duration_ms: 2.9146
+          type: 'test'
+          ...
+        1..1
+    ok 7 - Gate 7: Credit Reversal & Administrative Audit
+      ---
+      duration_ms: 3.6493
+      type: 'suite'
+      ...
+    # Subtest: Gate 8: REST API Router Endpoints & Problem Details
+        # Subtest: GET /api/v1/travel-credit returns balance summary for test customer
+        ok 1 - GET /api/v1/travel-credit returns balance summary for test customer
+          ---
+          duration_ms: 24.8238
+          type: 'test'
+          ...
+        # Subtest: GET /api/v1/travel-credit/transactions returns immutable ledger history
+        ok 2 - GET /api/v1/travel-credit/transactions returns immutable ledger history
+          ---
+          duration_ms: 7.5119
+          type: 'test'
+          ...
+        # Subtest: POST /api/v1/travel-credit/top-up returns RFC 7807 problem response prohibiting cash-in
+        ok 3 - POST /api/v1/travel-credit/top-up returns RFC 7807 problem response prohibiting cash-in
+          ---
+          duration_ms: 9.6291
+          type: 'test'
+          ...
+        # Subtest: POST /api/v1/travel-credit/p2p-transfer returns RFC 7807 problem response prohibiting P2P
+        ok 4 - POST /api/v1/travel-credit/p2p-transfer returns RFC 7807 problem response prohibiting P2P
+          ---
+          duration_ms: 18.3972
+          type: 'test'
+          ...
+        # Subtest: POST /api/v1/travel-credit/withdraw returns RFC 7807 problem response prohibiting cash-out
+        ok 5 - POST /api/v1/travel-credit/withdraw returns RFC 7807 problem response prohibiting cash-out
+          ---
+          duration_ms: 9.6538
+          type: 'test'
+          ...
+        1..5
+    ok 8 - Gate 8: REST API Router Endpoints & Problem Details
+      ---
+      duration_ms: 72.3863
+      type: 'suite'
+      ...
+    1..8
+ok 126 - Vacatina Travel Credit & Refund Ledger Architecture
+  ---
+  duration_ms: 356.2226
+  type: 'suite'
+  ...
+# Subtest: Unified Inventory Source & Admin Contract Suite (v1.0 LOCKED)
+    # Subtest: Pillar 1: Manual Inventory Dynamic CMS & Database Repository Precedence
+    ok 1 - Pillar 1: Manual Inventory Dynamic CMS & Database Repository Precedence
+      ---
+      duration_ms: 25.5778
+      type: 'test'
+      ...
+    # Subtest: Pillar 2: Supplier API Adapter Normalization & Stable ID Invariant
+    ok 2 - Pillar 2: Supplier API Adapter Normalization & Stable ID Invariant
+      ---
+      duration_ms: 8.0214
+      type: 'test'
+      ...
+    # Subtest: Pillar 3: HYBRID Field Authority & Tamper Prevention
+    ok 3 - Pillar 3: HYBRID Field Authority & Tamper Prevention
+      ---
+      duration_ms: 9.1002
+      type: 'test'
+      ...
+    # Subtest: Pillar 4: Strict SEED Quarantine ΓÇö Zero Prototype Cards Reach Search or Checkout
+    ok 4 - Pillar 4: Strict SEED Quarantine ΓÇö Zero Prototype Cards Reach Search or Checkout
+      ---
+      duration_ms: 3.3996
+      type: 'test'
+      ...
+    # Subtest: Correction 1: Relevance-Guarded Pin-Above-API Ranking (No Blind Manual Pinning)
+    ok 5 - Correction 1: Relevance-Guarded Pin-Above-API Ranking (No Blind Manual Pinning)
+      ---
+      duration_ms: 8.6419
+      type: 'test'
+      ...
+    # Subtest: Correction 2: Operational Truth & Commercial Evidence Guard
+    ok 6 - Correction 2: Operational Truth & Commercial Evidence Guard
+      ---
+      duration_ms: 5.9991
+      type: 'test'
+      ...
+    # Subtest: Feature Adapters (Hotels, Flights, Visa) Dynamic Repository Connectivity
+    ok 7 - Feature Adapters (Hotels, Flights, Visa) Dynamic Repository Connectivity
+      ---
+      duration_ms: 39.1085
+      type: 'test'
+      ...
+    1..7
+ok 127 - Unified Inventory Source & Admin Contract Suite (v1.0 LOCKED)
+  ---
+  duration_ms: 126.2364
+  type: 'test'
+  ...
+# Subtest: Vacatina Domain & Core Architecture Invariant Tests
+    # Subtest: enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order
+    ok 1 - enforces exactly 10 Travel Products and 11 Search Command Center Tabs in locked order
+      ---
+      duration_ms: 23.1858
+      type: 'test'
+      ...
+    # Subtest: enforces Traveller validation rules: Adults >= 1, Total <= 9, Infants <= Adults
+    ok 2 - enforces Traveller validation rules: Adults >= 1, Total <= 9, Infants <= Adults
+      ---
+      duration_ms: 3.9705
+      type: 'test'
+      ...
+    # Subtest: computes canonical Trip Bucket baseline financial math (LKR 505,000 Ready; LKR 45,000 Needs Action excluded)
+    ok 3 - computes canonical Trip Bucket baseline financial math (LKR 505,000 Ready; LKR 45,000 Needs Action excluded)
+      ---
+      duration_ms: 6.5099
+      type: 'test'
+      ...
+    # Subtest: supports all 8 canonical Screen 04 Trip Bucket states and transitions
+    ok 4 - supports all 8 canonical Screen 04 Trip Bucket states and transitions
+      ---
+      duration_ms: 5.6843
+      type: 'test'
+      ...
+    # Subtest: keeps Saved Favorites strictly isolated from Trip Bucket totals
+    ok 5 - keeps Saved Favorites strictly isolated from Trip Bucket totals
+      ---
+      duration_ms: 6.6416
+      type: 'test'
+      ...
+    # Subtest: validates newsletter email addresses and parses AI prompts
+    ok 6 - validates newsletter email addresses and parses AI prompts
+      ---
+      duration_ms: 5.0662
+      type: 'test'
+      ...
+    # Subtest: supports Screen 03 Foundation v1.1 recovered capabilities: Change Room, Undo Remove, and Draft Staging
+    ok 7 - supports Screen 03 Foundation v1.1 recovered capabilities: Change Room, Undo Remove, and Draft Staging
+      ---
+      duration_ms: 7.2316
+      type: 'test'
+      ...
+    # Subtest: supports independent Language & Currency selection and canonical Brand Logo components without emoji globe
+    ok 8 - supports independent Language & Currency selection and canonical Brand Logo components without emoji globe
+      ---
+      duration_ms: 9.9771
+      type: 'test'
+      ...
+    # Subtest: provides complete EN, SI, and TA message catalog coverage across all product and legal keys
+    ok 9 - provides complete EN, SI, and TA message catalog coverage across all product and legal keys
+      ---
+      duration_ms: 4.0061
+      type: 'test'
+      ...
+    # Subtest: manages default and updated cookie preferences with essential cookies locked true
+    ok 10 - manages default and updated cookie preferences with essential cookies locked true
+      ---
+      duration_ms: 3.9665
+      type: 'test'
+      ...
+    # Subtest: enforces verified social media URLs and honest localization classification
+    ok 11 - enforces verified social media URLs and honest localization classification
+      ---
+      duration_ms: 2.913
+      type: 'test'
+      ...
+    # Subtest: validates Vercel deployment configuration and dedicated website output directory
+    ok 12 - validates Vercel deployment configuration and dedicated website output directory
+      ---
+      duration_ms: 7.8262
+      type: 'test'
+      ...
+    # Subtest: enforces Canonical Click-to-Destination & Resource Architecture v1.0 specifications
+    ok 13 - enforces Canonical Click-to-Destination & Resource Architecture v1.0 specifications
+      ---
+      duration_ms: 23.9842
+      type: 'test'
+      ...
+    # Subtest: enforces Hybrid Inventory Strategy: canonical offer model, 3 source modes, 3 confirmation modes, and buying condition mapping
+    ok 14 - enforces Hybrid Inventory Strategy: canonical offer model, 3 source modes, 3 confirmation modes, and buying condition mapping
+      ---
+      duration_ms: 2.8008
+      type: 'test'
+      ...
+    # Subtest: enforces 4-layer pricing architecture with raw supplier cost preservation, percentage/fixed markups, and auditable overrides
+    ok 15 - enforces 4-layer pricing architecture with raw supplier cost preservation, percentage/fixed markups, and auditable overrides
+      ---
+      duration_ms: 6.618
+      type: 'test'
+      ...
+    # Subtest: enforces Search Aggregation, Deduplication, and Mixed-Source Trip Bucket Orchestration with On-Request Guards
+    ok 16 - enforces Search Aggregation, Deduplication, and Mixed-Source Trip Bucket Orchestration with On-Request Guards
+      ---
+      duration_ms: 15.4756
+      type: 'test'
+      ...
+    # Subtest: enforces downstream routing for Search Results, Offer Configurators, and Property Details with zero dead-ends
+    ok 17 - enforces downstream routing for Search Results, Offer Configurators, and Property Details with zero dead-ends
+      ---
+      duration_ms: 4.9089
+      type: 'test'
+      ...
+    # Subtest: enforces Manual Inventory Service lifecycle, Seed Content separation, Pin-Above-API ranking, and Canonical Route Registry
+    ok 18 - enforces Manual Inventory Service lifecycle, Seed Content separation, Pin-Above-API ranking, and Canonical Route Registry
+      ---
+      duration_ms: 8.5709
+      type: 'test'
+      ...
+    # Subtest: enforces Server Architecture, Database Schema, and Storage Engine invariants (ADR-001)
+    ok 19 - enforces Server Architecture, Database Schema, and Storage Engine invariants (ADR-001)
+      ---
+      duration_ms: 9.9437
+      type: 'test'
+      ...
+    # Subtest: enforces Tenant-Aware RBAC and strictly blocks cross-tenant leakage (ADR-003)
+    ok 20 - enforces Tenant-Aware RBAC and strictly blocks cross-tenant leakage (ADR-003)
+      ---
+      duration_ms: 4.0422
+      type: 'test'
+      ...
+    # Subtest: enforces Distributed Booking Saga Orchestrator: unpaid preparation, verified payment gate, and manual triage on partial failure (ADR-005)
+    ok 21 - enforces Distributed Booking Saga Orchestrator: unpaid preparation, verified payment gate, and manual triage on partial failure (ADR-005)
+      ---
+      duration_ms: 50.5275
+      type: 'test'
+      ...
+    # Subtest: enforces Payment Gateway Abstraction, SAQ-A compliance, and Idempotent Webhook Ledger (ADR-004)
+    ok 22 - enforces Payment Gateway Abstraction, SAQ-A compliance, and Idempotent Webhook Ledger (ADR-004)
+      ---
+      duration_ms: 300.9782
+      type: 'test'
+      ...
+    # Subtest: enforces Web-Standard API Router with RFC 7807 problem details (ADR-002)
+    ok 23 - enforces Web-Standard API Router with RFC 7807 problem details (ADR-002)
+      ---
+      duration_ms: 453.2438
+      type: 'test'
+      ...
+    # Subtest: enforces Supplier Response -> Canonical Offer Normalization across Duffel, LiteAPI, Viator, and Trainline (ADR-006, Q9/Q11)
+    ok 24 - enforces Supplier Response -> Canonical Offer Normalization across Duffel, LiteAPI, Viator, and Trainline (ADR-006, Q9/Q11)
+      ---
+      duration_ms: 17.2818
+      type: 'test'
+      ...
+    # Subtest: enforces 4-Layer Pricing Precedence engine with integer minor math (ADR-006, Q13)
+    ok 25 - enforces 4-Layer Pricing Precedence engine with integer minor math (ADR-006, Q13)
+      ---
+      duration_ms: 1.2082
+      type: 'test'
+      ...
+    # Subtest: enforces Deduplication composite natural keys, pinAboveApi ranking, and Best-Price-Wins rule (ADR-006, Q12)
+    ok 26 - enforces Deduplication composite natural keys, pinAboveApi ranking, and Best-Price-Wins rule (ADR-006, Q12)
+      ---
+      duration_ms: 8.5373
+      type: 'test'
+      ...
+    # Subtest: enforces product-by-product Cache TTL enforcement and immediate cache busting for manual listings (ADR-006, Q14)
+    ok 27 - enforces product-by-product Cache TTL enforcement and immediate cache busting for manual listings (ADR-006, Q14)
+      ---
+      duration_ms: 1.5233
+      type: 'test'
+      ...
+    # Subtest: enforces Circuit Breaker state transitions (CLOSED -> OPEN -> HALF_OPEN) and graceful fallback during supplier outages (ADR-006, Q16)
+    ok 28 - enforces Circuit Breaker state transitions (CLOSED -> OPEN -> HALF_OPEN) and graceful fallback during supplier outages (ADR-006, Q16)
+      ---
+      duration_ms: 78.157
+      type: 'test'
+      ...
+    # Subtest: enforces multi-source booking lifecycle (Hold, Confirm, Cancel, Refund) across API and Manual channels (ADR-006, Q15)
+    ok 29 - enforces multi-source booking lifecycle (Hold, Confirm, Cancel, Refund) across API and Manual channels (ADR-006, Q15)
+      ---
+      duration_ms: 3.314
+      type: 'test'
+      ...
+    # Subtest: enforces SEED / DEMO inventory isolation from live search and checkout readiness (Canonical Source Taxonomy)
+    ok 30 - enforces SEED / DEMO inventory isolation from live search and checkout readiness (Canonical Source Taxonomy)
+      ---
+      duration_ms: 1.3745
+      type: 'test'
+      ...
+    # Subtest: enforces that all 10 canonical products are registered as typed adapters in UnifiedInventoryService (ADR-006, Q9)
+    ok 31 - enforces that all 10 canonical products are registered as typed adapters in UnifiedInventoryService (ADR-006, Q9)
+      ---
+      duration_ms: 28.4086
+      type: 'test'
+      ...
+    # Subtest: enforces the Canonical 6-Source Inventory Taxonomy and Admin Manual CMS Schema (ADR-006 & Doc 14)
+    ok 32 - enforces the Canonical 6-Source Inventory Taxonomy and Admin Manual CMS Schema (ADR-006 & Doc 14)
+      ---
+      duration_ms: 3.7067
+      type: 'test'
+      ...
+    # Subtest: enforces the 7-Dimension Inventory Invariants and Truthful Sandbox Guards (Rule 14 & ADR-007)
+    ok 33 - enforces the 7-Dimension Inventory Invariants and Truthful Sandbox Guards (Rule 14 & ADR-007)
+      ---
+      duration_ms: 4.2996
+      type: 'test'
+      ...
+    # Subtest: enforces Provider Registry candidate/target tracking and booking execution permissions (Rule 10 & 11)
+    ok 34 - enforces Provider Registry candidate/target tracking and booking execution permissions (Rule 10 & 11)
+      ---
+      duration_ms: 1.5402
+      type: 'test'
+      ...
+    # Subtest: enforces Manual Listing Lifecycle, Direct Contract non-instant fallback, and Canonical Offer v2.0 (ADR-008, Rules 1-3)
+    ok 35 - enforces Manual Listing Lifecycle, Direct Contract non-instant fallback, and Canonical Offer v2.0 (ADR-008, Rules 1-3)
+      ---
+      duration_ms: 3.4837
+      type: 'test'
+      ...
+    # Subtest: enforces Distribution Scope, Derived Badges, Unified Ranking, and Certification Gates (ADR-008, Rules 4-7)
+    ok 36 - enforces Distribution Scope, Derived Badges, Unified Ranking, and Certification Gates (ADR-008, Rules 4-7)
+      ---
+      duration_ms: 5.5636
+      type: 'test'
+      ...
+    # Subtest: enforces ProductExtension Discriminated Union Schemas across all 10 Travel Products (Contract v1.0)
+    ok 37 - enforces ProductExtension Discriminated Union Schemas across all 10 Travel Products (Contract v1.0)
+      ---
+      duration_ms: 9.5478
+      type: 'test'
+      ...
+    # Subtest: enforces DiscoveryContent vs CanonicalOffer separation (Discovery Content is never sellable inventory)
+    ok 38 - enforces DiscoveryContent vs CanonicalOffer separation (Discovery Content is never sellable inventory)
+      ---
+      duration_ms: 2.1675
+      type: 'test'
+      ...
+    # Subtest: enforces SEED Quarantine, Production Response Safety, and Package Component Provenance Invariants
+    ok 39 - enforces SEED Quarantine, Production Response Safety, and Package Component Provenance Invariants
+      ---
+      duration_ms: 2.5778
+      type: 'test'
+      ...
+    # Subtest: enforces Complete Manual Listing Governance (Allotment, Blackouts, Revisions, Stop-Sale, and Approver Audit)
+    ok 40 - enforces Complete Manual Listing Governance (Allotment, Blackouts, Revisions, Stop-Sale, and Approver Audit)
+      ---
+      duration_ms: 2.9447
+      type: 'test'
+      ...
+    # Subtest: enforces Granular Source Separation, Verification Status, and Multi-Criteria Source Selection (GPT Audit v2.0)
+    ok 41 - enforces Granular Source Separation, Verification Status, and Multi-Criteria Source Selection (GPT Audit v2.0)
+      ---
+      duration_ms: 4.8489
+      type: 'test'
+      ...
+    # Subtest: enforces Flights End-to-End Real Product Flow (Search Aggregation, Fare Family Selection, Trip Bucket Staging, Pre-Booking Revalidation, and Saga Hold/Confirm)
+    ok 42 - enforces Flights End-to-End Real Product Flow (Search Aggregation, Fare Family Selection, Trip Bucket Staging, Pre-Booking Revalidation, and Saga Hold/Confirm)
+      ---
+      duration_ms: 15.4818
+      type: 'test'
+      ...
+    # Subtest: enforces Hotels End-to-End Real Product Flow (Search Aggregation, Room & Board Tier Configurator, Trip Bucket Staging, Pre-Booking Revalidation, and Saga Hold/Confirm)
+    ok 43 - enforces Hotels End-to-End Real Product Flow (Search Aggregation, Room & Board Tier Configurator, Trip Bucket Staging, Pre-Booking Revalidation, and Saga Hold/Confirm)
+      ---
+      duration_ms: 7.5326
+      type: 'test'
+      ...
+    # Subtest: enforces Visa Assistance End-to-End Real Product Flow (Country Catalog, Consular Checklist, Needs-Action Staging Isolation, and Resolution to Ready)
+    ok 44 - enforces Visa Assistance End-to-End Real Product Flow (Country Catalog, Consular Checklist, Needs-Action Staging Isolation, and Resolution to Ready)
+      ---
+      duration_ms: 8.7725
+      type: 'test'
+      ...
+    # Subtest: enforces Canonical Inventory Source Taxonomy, Truthful Reference Isolation, and Invariant Guards (Audit v2.1)
+    ok 45 - enforces Canonical Inventory Source Taxonomy, Truthful Reference Isolation, and Invariant Guards (Audit v2.1)
+      ---
+      duration_ms: 12.2755
+      type: 'test'
+      ...
+    # Subtest: enforces Per-Provider Circuit Breaker Configuration & Outage Threshold Isolation (GPT Audit v2.2)
+    ok 46 - enforces Per-Provider Circuit Breaker Configuration & Outage Threshold Isolation (GPT Audit v2.2)
+      ---
+      duration_ms: 1.1934
+      type: 'test'
+      ...
+    # Subtest: enforces Canonical Entity Resolution & Duplicate Prevention across Suppliers (GPT Audit v2.2)
+    ok 47 - enforces Canonical Entity Resolution & Duplicate Prevention across Suppliers (GPT Audit v2.2)
+      ---
+      duration_ms: 1.1033
+      type: 'test'
+      ...
+    # Subtest: enforces Multi-Criteria Source Selection & Customer Journey CTA Semantics (GPT Audit v2.2)
+    ok 48 - enforces Multi-Criteria Source Selection & Customer Journey CTA Semantics (GPT Audit v2.2)
+      ---
+      duration_ms: 3.4795
+      type: 'test'
+      ...
+    # Subtest: enforces Full 18-Attribute Manual Contract Model & Operational Stop-Sell Toggle (GPT Audit v2.2)
+    ok 49 - enforces Full 18-Attribute Manual Contract Model & Operational Stop-Sell Toggle (GPT Audit v2.2)
+      ---
+      duration_ms: 1.9699
+      type: 'test'
+      ...
+    # Subtest: enforces Complete Provider Registry Endpoints, Webhooks, SLAs, and Fallback Plans (docs/20 Matrix)
+    ok 50 - enforces Complete Provider Registry Endpoints, Webhooks, SLAs, and Fallback Plans (docs/20 Matrix)
+      ---
+      duration_ms: 2.2002
+      type: 'test'
+      ...
+    # Subtest: enforces Commercial Entity Audit Classifications (Requirements 5, 6, 7 & 13)
+    ok 51 - enforces Commercial Entity Audit Classifications (Requirements 5, 6, 7 & 13)
+      ---
+      duration_ms: 3.6731
+      type: 'test'
+      ...
+    # Subtest: enforces End-to-End 18-Attribute Manual Contract Lifecycle & 9 Operational Edge Cases (Requirements 9 & 10)
+    ok 52 - enforces End-to-End 18-Attribute Manual Contract Lifecycle & 9 Operational Edge Cases (Requirements 9 & 10)
+      ---
+      duration_ms: 3.8
+      type: 'test'
+      ...
+    # Subtest: enforces Multi-Provider Canonical Entity Resolution, Dynamic Winner Shift, and Recoverable Alternatives (Requirements 8, 10 & 11)
+    ok 53 - enforces Multi-Provider Canonical Entity Resolution, Dynamic Winner Shift, and Recoverable Alternatives (Requirements 8, 10 & 11)
+      ---
+      duration_ms: 2.2784
+      type: 'test'
+      ...
+    # Subtest: enforces Provider Production Live Booking Guard & Truthful Reference Isolation (Requirements 12, 13 & 14)
+    ok 54 - enforces Provider Production Live Booking Guard & Truthful Reference Isolation (Requirements 12, 13 & 14)
+      ---
+      duration_ms: 3.6048
+      type: 'test'
+      ...
+    # Subtest: enforces Four-Tier Operational Readiness Tier on all 11 Providers & Blocks Uncertified Live Sales (Commercial Truth Gate 1)
+    ok 55 - enforces Four-Tier Operational Readiness Tier on all 11 Providers & Blocks Uncertified Live Sales (Commercial Truth Gate 1)
+      ---
+      duration_ms: 3.3584
+      type: 'test'
+      ...
+    # Subtest: enforces Commercial Evidence Dossier Validation on Manual Listings & Blocks Sample Inventory (Commercial Truth Gate 2)
+    ok 56 - enforces Commercial Evidence Dossier Validation on Manual Listings & Blocks Sample Inventory (Commercial Truth Gate 2)
+      ---
+      duration_ms: 6.0074
+      type: 'test'
+      ...
+    # Subtest: enforces the 5-Source Unified Canonical Offer Pattern (LiteAPI Hotel vs Vacatina Direct Hotel Shape Consistency)
+    ok 57 - enforces the 5-Source Unified Canonical Offer Pattern (LiteAPI Hotel vs Vacatina Direct Hotel Shape Consistency)
+      ---
+      duration_ms: 4.9598
+      type: 'test'
+      ...
+    # Subtest: enforces Dynamic Package Transaction Safety and Admin Operational Monitoring Telemetry (Directives 7 & 11)
+    ok 58 - enforces Dynamic Package Transaction Safety and Admin Operational Monitoring Telemetry (Directives 7 & 11)
+      ---
+      duration_ms: 8.2887
+      type: 'test'
+      ...
+    # Subtest: enforces Provider-Neutral Adapter Pluggability & End-to-End Booking Item Provenance Ledger (Directives 1 & 5)
+    ok 59 - enforces Provider-Neutral Adapter Pluggability & End-to-End Booking Item Provenance Ledger (Directives 1 & 5)
+      ---
+      duration_ms: 8.8119
+      type: 'test'
+      ...
+    # Subtest: enforces Inventory Orchestrator Pre-Checkout Invariant Guards (Directive 1-6 Audit Verification)
+    ok 60 - enforces Inventory Orchestrator Pre-Checkout Invariant Guards (Directive 1-6 Audit Verification)
+      ---
+      duration_ms: 6.9786
+      type: 'test'
+      ...
+    # Subtest: enforces Inventory Orchestration Search Pipeline, Raw Schema Encapsulation & Recheck Freshness (Directives 1-4)
+    ok 61 - enforces Inventory Orchestration Search Pipeline, Raw Schema Encapsulation & Recheck Freshness (Directives 1-4)
+      ---
+      duration_ms: 12.3936
+      type: 'test'
+      ...
+    # Subtest: enforces Admin Manual Inventory Separation of Duties (4-Eyes Principle) & 4-Stage Lifecycle Governance (Directive 8)
+    ok 62 - enforces Admin Manual Inventory Separation of Duties (4-Eyes Principle) & 4-Stage Lifecycle Governance (Directive 8)
+      ---
+      duration_ms: 4.7333
+      type: 'test'
+      ...
+    # Subtest: enforces Pin-Above-API and Exclusivity Badge Rules (Only COMMERCIALLY_VERIFIED, ACTIVE, Unexpired with Documented Evidence can Pin)
+    ok 63 - enforces Pin-Above-API and Exclusivity Badge Rules (Only COMMERCIALLY_VERIFIED, ACTIVE, Unexpired with Documented Evidence can Pin)
+      ---
+      duration_ms: 1.8477
+      type: 'test'
+      ...
+    # Subtest: enforces the Final Two-Tier Source Taxonomy (API, MANUAL, HYBRID, SEED) and Fulfillment Routing Split (Architecture v2.0)
+    ok 64 - enforces the Final Two-Tier Source Taxonomy (API, MANUAL, HYBRID, SEED) and Fulfillment Routing Split (Architecture v2.0)
+      ---
+      duration_ms: 2.79
+      type: 'test'
+      ...
+    # Subtest: enforces Dynamic Commercial Pricing Policies, Concurrency Allotment Holds & Multi-Dimensional Readiness Governance
+    ok 65 - enforces Dynamic Commercial Pricing Policies, Concurrency Allotment Holds & Multi-Dimensional Readiness Governance
+      ---
+      duration_ms: 4.841
+      type: 'test'
+      ...
+    # Subtest: enforces Clerk Identity Provider Integration, Client SDK Bridge & Server-Side JWT Claims Verification (Architecture v2.1)
+    ok 66 - enforces Clerk Identity Provider Integration, Client SDK Bridge & Server-Side JWT Claims Verification (Architecture v2.1)
+      ---
+      duration_ms: 10.1211
+      type: 'test'
+      ...
+    1..66
+ok 128 - Vacatina Domain & Core Architecture Invariant Tests
+  ---
+  duration_ms: 1336.979
+  type: 'suite'
+  ...
+# Subtest: Vacatina Consular Visa Full Functional Build Suite (Phase 3.3)
+    # Subtest: Visa Gate 1: Destination Registry & Entry Rule Resolution
+    ok 1 - Visa Gate 1: Destination Registry & Entry Rule Resolution
+      ---
+      duration_ms: 20.0157
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 2: Sovereign Citizen Exemption (Same-Country Check)
+    ok 2 - Visa Gate 2: Sovereign Citizen Exemption (Same-Country Check)
+      ---
+      duration_ms: 5.9931
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 3: Direct Manual Consular Catalog Integrity & Commercial Truth
+    ok 3 - Visa Gate 3: Direct Manual Consular Catalog Integrity & Commercial Truth
+      ---
+      duration_ms: 8.7823
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 4: Mandatory Document Checklist & Specifications
+    ok 4 - Visa Gate 4: Mandatory Document Checklist & Specifications
+      ---
+      duration_ms: 1.6006
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 5: Manual Visa Adapter Search & Offer Retrieval
+    ok 5 - Visa Gate 5: Manual Visa Adapter Search & Offer Retrieval
+      ---
+      duration_ms: 331.8044
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 6: Visa Search Orchestrator Facets & Pin-Above-API Ranking
+    ok 6 - Visa Gate 6: Visa Search Orchestrator Facets & Pin-Above-API Ranking
+      ---
+      duration_ms: 8.1947
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 7: Faceted Filtering by Category and Turnaround SLA
+    ok 7 - Visa Gate 7: Faceted Filtering by Category and Turnaround SLA
+      ---
+      duration_ms: 8.2551
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 8: Trip Bucket Staging with 8-State Governance
+    ok 8 - Visa Gate 8: Trip Bucket Staging with 8-State Governance
+      ---
+      duration_ms: 13.5885
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 9: Pre-Staging Revalidation Guard
+    ok 9 - Visa Gate 9: Pre-Staging Revalidation Guard
+      ---
+      duration_ms: 18.0087
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 10 (Negative Test): Strict SEED Quarantine
+    ok 10 - Visa Gate 10 (Negative Test): Strict SEED Quarantine
+      ---
+      duration_ms: 5.5031
+      type: 'test'
+      ...
+    # Subtest: Visa Gate 11: Favorites Service Integration (Decoupled from Staged)
+    ok 11 - Visa Gate 11: Favorites Service Integration (Decoupled from Staged)
+      ---
+      duration_ms: 121.1035
+      type: 'test'
+      ...
+    1..11
+ok 129 - Vacatina Consular Visa Full Functional Build Suite (Phase 3.3)
+  ---
+  duration_ms: 628.2198
+  type: 'test'
+  ...
+# Subtest: Visa Phase 7: eligibility context validation and canonical round-trip
+ok 130 - Visa Phase 7: eligibility context validation and canonical round-trip
+  ---
+  duration_ms: 15.0216
+  type: 'test'
+  ...
+# Subtest: Visa Phase 7: canonical option, no-option and strict invalid identity
+ok 131 - Visa Phase 7: canonical option, no-option and strict invalid identity
+  ---
+  duration_ms: 5.3786
+  type: 'test'
+  ...
+# Subtest: Visa Phase 7: local applicant request preserves context but never claims upload, approval or readiness
+ok 132 - Visa Phase 7: local applicant request preserves context but never claims upload, approval or readiness
+  ---
+  duration_ms: 7.7366
+  type: 'test'
+  ...
+1..132
+# tests 350
+# suites 24
+# pass 350
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29036.1136

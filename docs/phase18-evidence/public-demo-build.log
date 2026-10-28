@@ -1,0 +1,4 @@
+[Vacatina Build] Compiled production Tailwind CSS -> dist/styles/tailwind.css (59132 bytes)
+[Vacatina Build] Assembled dedicated website output -> dist-site/ (index.html, dist/, public/)
+[Vacatina Build] Assembled Vercel Build Output API -> .vercel/output/static
+[Vacatina Build] Finished in 8406ms. Total modules: 105. Zero external CDN dependencies.

@@ -1,0 +1,103 @@
+PASS public direct reload / @ 1440
+PASS public direct reload /trip-builder @ 1440
+PASS public direct reload /flights @ 1440
+PASS public direct reload /hotels @ 1440
+PASS public direct reload /visa-assistance @ 1440
+PASS public direct reload /holiday-packages @ 1440
+PASS public direct reload /cars-transfers @ 1440
+PASS public direct reload /activities @ 1440
+PASS public direct reload /sightseeing-tours @ 1440
+PASS public direct reload /rails @ 1440
+PASS public direct reload /cruises @ 1440
+PASS public direct reload /travel-insurance @ 1440
+PASS public direct reload /trip/review @ 1440
+PASS public direct reload /requests @ 1440
+PASS public direct reload /checkout @ 1440
+PASS public direct reload /admin @ 1440
+PASS public direct reload /admin/listings @ 1440
+PASS public direct reload /account/travel-credit @ 1440
+PASS public direct reload /auth/sign-in @ 1440
+PASS public direct reload /manage-booking @ 1440
+PASS public direct reload /partner @ 1440
+PASS public eleven SCC tabs @ 1440
+PASS public identity and newsletter collection disabled @ 1440
+PASS public flight direct search, detail reload and local-only staging @ 1440
+PASS public submission gated @ 1440
+PASS public direct reload / @ 768
+PASS public direct reload /trip-builder @ 768
+PASS public direct reload /flights @ 768
+PASS public direct reload /hotels @ 768
+PASS public direct reload /visa-assistance @ 768
+PASS public direct reload /holiday-packages @ 768
+PASS public direct reload /cars-transfers @ 768
+PASS public direct reload /activities @ 768
+PASS public direct reload /sightseeing-tours @ 768
+PASS public direct reload /rails @ 768
+PASS public direct reload /cruises @ 768
+PASS public direct reload /travel-insurance @ 768
+PASS public direct reload /trip/review @ 768
+PASS public direct reload /requests @ 768
+PASS public direct reload /checkout @ 768
+PASS public direct reload /admin @ 768
+PASS public direct reload /admin/listings @ 768
+PASS public direct reload /account/travel-credit @ 768
+PASS public direct reload /auth/sign-in @ 768
+PASS public direct reload /manage-booking @ 768
+PASS public direct reload /partner @ 768
+PASS public eleven SCC tabs @ 768
+PASS public identity and newsletter collection disabled @ 768
+PASS public flight direct search, detail reload and local-only staging @ 768
+PASS public submission gated @ 768
+PASS public direct reload / @ 360
+PASS public direct reload /trip-builder @ 360
+PASS public direct reload /flights @ 360
+PASS public direct reload /hotels @ 360
+PASS public direct reload /visa-assistance @ 360
+PASS public direct reload /holiday-packages @ 360
+PASS public direct reload /cars-transfers @ 360
+PASS public direct reload /activities @ 360
+PASS public direct reload /sightseeing-tours @ 360
+PASS public direct reload /rails @ 360
+PASS public direct reload /cruises @ 360
+PASS public direct reload /travel-insurance @ 360
+PASS public direct reload /trip/review @ 360
+PASS public direct reload /requests @ 360
+PASS public direct reload /checkout @ 360
+PASS public direct reload /admin @ 360
+PASS public direct reload /admin/listings @ 360
+PASS public direct reload /account/travel-credit @ 360
+PASS public direct reload /auth/sign-in @ 360
+PASS public direct reload /manage-booking @ 360
+PASS public direct reload /partner @ 360
+PASS public eleven SCC tabs @ 360
+PASS public identity and newsletter collection disabled @ 360
+PASS public flight direct search, detail reload and local-only staging @ 360
+PASS public submission gated @ 360
+PASS Hotels Phase 6 ΓÇö search, room/rate, provenance, review, dialogs and responsive @ 1440
+PASS Hotels Phase 6 ΓÇö search, room/rate, provenance, review, dialogs and responsive @ 768
+PASS Hotels Phase 6 ΓÇö search, room/rate, provenance, review, dialogs and responsive @ 360
+PASS Visa Phase 7 ΓÇö context, manual eligibility, no uploads, review and responsive @ 1440
+PASS Visa Phase 7 ΓÇö context, manual eligibility, no uploads, review and responsive @ 768
+PASS Visa Phase 7 ΓÇö context, manual eligibility, no uploads, review and responsive @ 360
+PASS Phase 8 packages ΓÇö canonical request journey, truth, keyboard controls and responsive @ 1440
+PASS Phase 8 packages ΓÇö canonical request journey, truth, keyboard controls and responsive @ 768
+PASS Phase 8 packages ΓÇö canonical request journey, truth, keyboard controls and responsive @ 360
+PASS Phase 9 cars ΓÇö canonical request journey, truth, keyboard controls and responsive @ 1440
+PASS Phase 9 cars ΓÇö canonical request journey, truth, keyboard controls and responsive @ 768
+PASS Phase 9 cars ΓÇö canonical request journey, truth, keyboard controls and responsive @ 360
+PASS Phase 10 activities ΓÇö canonical request journey, truth, keyboard controls and responsive @ 1440
+PASS Phase 10 activities ΓÇö canonical request journey, truth, keyboard controls and responsive @ 768
+PASS Phase 10 activities ΓÇö canonical request journey, truth, keyboard controls and responsive @ 360
+PASS Phase 11 sightseeing ΓÇö canonical request journey, truth, keyboard controls and responsive @ 1440
+PASS Phase 11 sightseeing ΓÇö canonical request journey, truth, keyboard controls and responsive @ 768
+PASS Phase 11 sightseeing ΓÇö canonical request journey, truth, keyboard controls and responsive @ 360
+PASS Phase 12 rails ΓÇö canonical request journey, truth, keyboard controls and responsive @ 1440
+PASS Phase 12 rails ΓÇö canonical request journey, truth, keyboard controls and responsive @ 768
+PASS Phase 12 rails ΓÇö canonical request journey, truth, keyboard controls and responsive @ 360
+PASS Phase 13 cruises ΓÇö canonical request journey, truth, keyboard controls and responsive @ 1440
+PASS Phase 13 cruises ΓÇö canonical request journey, truth, keyboard controls and responsive @ 768
+PASS Phase 13 cruises ΓÇö canonical request journey, truth, keyboard controls and responsive @ 360
+PASS Phase 14 insurance ΓÇö canonical request journey, truth, keyboard controls and responsive @ 1440
+PASS Phase 14 insurance ΓÇö canonical request journey, truth, keyboard controls and responsive @ 768
+PASS Phase 14 insurance ΓÇö canonical request journey, truth, keyboard controls and responsive @ 360
+PASS zero uncaught browser exceptions
