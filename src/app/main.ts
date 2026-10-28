@@ -56,6 +56,16 @@ import { initializePublicDemo } from '../lib/services/public-demo.service.ts';
 
 export function bootstrapVacatinaApp(): void {
   if (typeof document === 'undefined') return;
+
+  // Canonical URL cleanup: remove utm_source=chatgpt.com without page reload
+  try {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('utm_source') === 'chatgpt.com') {
+      url.searchParams.delete('utm_source');
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+  } catch { /* Ignore URL parsing errors */ }
+
   initializePublicDemo();
 
   initStaticPackageModalCloseWiring();
