@@ -10,7 +10,7 @@ export type FlightSourceType = 'manual' | 'supplier_api';
  * `demo_fixture` and `manual_request` must never be presented as live,
  * instantly confirmable airline inventory.
  */
-export type FlightInventoryMode = 'demo_fixture' | 'manual_request' | 'live_supplier';
+export type FlightInventoryMode = 'demo_fixture' | 'manual_request' | 'live_supplier' | 'sandbox_test';
 
 export type FlightCommercialState = 'informational' | 'request_to_book' | 'live_bookable';
 
@@ -166,6 +166,48 @@ export interface FlightManualInventoryMetadata {
   manualEvidenceRef?: string;
 }
 
+/** Customer-safe Duffel TEST MODE evidence. Never contains server secrets or raw payloads. */
+export interface FlightSandboxService {
+  id: string;
+  type: string;
+  name: string;
+  description: string;
+  priceMinor: number;
+  currency: string;
+  maximumQuantity?: number;
+  passengerIds?: string[];
+  segmentIds?: string[];
+}
+
+export interface FlightSandboxPassenger {
+  id: string;
+  type: 'adult' | 'child' | 'infant_without_seat';
+}
+
+export interface FlightSandboxConditions {
+  refundable: boolean;
+  refundPenaltyMinor?: number;
+  refundPenaltyCurrency?: string;
+  changeable: boolean;
+  changePenaltyMinor?: number;
+  changePenaltyCurrency?: string;
+  description: string;
+}
+
+export interface FlightSandboxProvenance {
+  enabled: true;
+  environment: 'SANDBOX';
+  liveMode: false;
+  nonProduction: true;
+  supplier: 'Duffel';
+  orderEndpoint: string;
+  offerRequestId?: string;
+  services: FlightSandboxService[];
+  passengers: FlightSandboxPassenger[];
+  conditions?: FlightSandboxConditions;
+  seatMapsAvailable: boolean;
+}
+
 /**
  * Authoritative Canonical Flight Offer Model
  * Consumed across public UI, Search Results, Offer Detail, and Trip Bucket.
@@ -235,6 +277,9 @@ export interface CanonicalFlightOffer {
   // Inclusions & Optional Services
   includedServices: string[];
   optionalServices: FlightOptionalService[];
+
+  /** Present only for Duffel TEST MODE offers. Never indicates live inventory. */
+  sandbox?: FlightSandboxProvenance;
 
   // Operational Metadata
   deepLinkMetadata?: Record<string, string>;

@@ -41,6 +41,8 @@ export interface FlightSearchRequest {
   promoCode?: string;
   displayCurrency: string;
   locale: string;
+  /** Selects the inventory lane. Sandbox test inventory is never mixed with demo fixtures. */
+  inventorySource?: 'demo_fixture' | 'sandbox_test';
   createdAt: string;
 }
 

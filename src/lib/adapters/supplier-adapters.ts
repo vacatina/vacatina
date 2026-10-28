@@ -16,23 +16,17 @@ import type {
 } from '../domain/types.ts';
 import { CONFIGURABLE_PRODUCT_CATALOG } from '../mock-data/catalog.ts';
 
-const isDuffelConfigured = Boolean(
-  typeof process !== 'undefined' &&
-  (process.env?.DUFFEL_ACCESS_TOKEN || process.env?.DUFFEL_API_TOKEN || process.env?.DUFFEL_TOKEN) &&
-  !(process.env?.DUFFEL_ACCESS_TOKEN || process.env?.DUFFEL_API_TOKEN || process.env?.DUFFEL_TOKEN)?.includes('placeholder')
-);
-
 export const SUPPLIER_ADAPTER_REGISTRY: SupplierAdapterMetadata[] = [
   {
     domain: 'Flights (Search, Offer Validation, Hold, Order Creation)',
     provider: 'Duffel API (NDC / GDS)',
     documentedStatus: 'VERIFY-LIVE',
     runtimeStatus: 'ADAPTER-READY',
-    credentialsConfigured: isDuffelConfigured,
+    // Browser-safe metadata only. Supplier credentials are validated and used
+    // exclusively on the server and are never exposed to the browser.
+    credentialsConfigured: false,
     inventorySourceMode: 'API',
-    notes: isDuffelConfigured
-      ? 'Typed FlightSupplierAdapter active with Duffel NDC credentials.'
-      : 'Typed FlightSupplierAdapter interface active; using deterministic mock inventory (no DUFFEL_ACCESS_TOKEN in local env).'
+    notes: 'Typed FlightSupplierAdapter interface active; supplier credentials are validated server-side and are never exposed to the browser.'
   },
   {
     domain: 'Hotels (Search, Room Rates, Pre-Book Revalidation)',

@@ -19,6 +19,7 @@ export interface FlightInventoryTruth {
   isDemo: boolean;
   isManual: boolean;
   isLive: boolean;
+  isSandbox: boolean;
   priceLabel: string;
   scheduleLabel: string;
   confirmationLabel: string;
@@ -56,6 +57,7 @@ export function resolveFlightInventoryTruth(offer: TruthSource): FlightInventory
       isDemo: false,
       isManual: true,
       isLive: false,
+      isSandbox: false,
       priceLabel: 'Indicative manual price',
       scheduleLabel: schedulePending
         ? 'Schedule, carrier and baggage pending desk confirmation'
@@ -64,6 +66,26 @@ export function resolveFlightInventoryTruth(offer: TruthSource): FlightInventory
       disclosure: schedulePending
         ? 'Manual request-to-book inventory. Carrier, flight number, schedule, baggage and fare rules are not supplied yet and must be confirmed by the Vacatina flight desk before ticketing.'
         : 'Manual request-to-book inventory. The Vacatina flight desk must confirm availability and fare rules before ticketing.'
+    };
+  }
+
+  if (mode === 'sandbox_test') {
+    return {
+      mode,
+      label: 'Duffel TEST MODE (sandbox)',
+      shortLabel: 'TEST',
+      badgeClasses: 'bg-indigo-50 text-indigo-800 border border-indigo-200',
+      panelClasses: 'bg-indigo-50/70 border border-indigo-200 text-indigo-950',
+      requiresDeskConfirmation: false,
+      isDemo: false,
+      isManual: false,
+      isLive: false,
+      isSandbox: true,
+      priceLabel: 'Sandbox quote (no live ticket)',
+      scheduleLabel: 'Duffel sandbox schedule',
+      confirmationLabel: 'Explicit sandbox test order required',
+      disclosure:
+        'Duffel TEST MODE inventory. This is a real sandbox quote from Duffel, but it is not live airline inventory, no live ticket is issued, and no payment is captured. A production order cannot be created from this lane.'
     };
   }
 
@@ -78,6 +100,7 @@ export function resolveFlightInventoryTruth(offer: TruthSource): FlightInventory
       isDemo: true,
       isManual: false,
       isLive: false,
+      isSandbox: false,
       priceLabel: 'Illustrative demo price',
       scheduleLabel: 'Illustrative schedule — not live airline inventory',
       confirmationLabel: 'Demo fare — desk quote required',
@@ -96,6 +119,7 @@ export function resolveFlightInventoryTruth(offer: TruthSource): FlightInventory
     isDemo: false,
     isManual: false,
     isLive: true,
+    isSandbox: false,
     priceLabel: 'Supplier total price',
     scheduleLabel: 'Supplier-returned schedule',
     confirmationLabel: 'Live supplier confirmation',

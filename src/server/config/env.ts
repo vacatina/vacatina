@@ -29,6 +29,8 @@ export interface VacatinaServerEnv {
   
   DUFFEL_ENV?: 'test' | 'live';
   DUFFEL_ACCESS_TOKEN?: string;
+  /** Sandbox-only activation switch. Never effective in production or live mode. */
+  DUFFEL_TEST_MODE_ENABLED: boolean;
   /** @deprecated Canonical runtime variable is DUFFEL_ACCESS_TOKEN */
   DUFFEL_API_TOKEN?: string;
   /** @deprecated Canonical runtime variable is DUFFEL_ACCESS_TOKEN */
@@ -57,6 +59,8 @@ export function validateServerEnv(envSource: Record<string, string | undefined> 
     let origin: URL;
     try { origin = new URL(envSource.BASE_URL || ''); } catch { throw new Error('[CRITICAL STARTUP ERROR] BASE_URL must be an explicit production HTTPS origin.'); }
     if (origin.protocol !== 'https:' || origin.username || origin.password || ['localhost','127.0.0.1','[::1]'].includes(origin.hostname)) throw new Error('[CRITICAL STARTUP ERROR] BASE_URL must be a production HTTPS origin.');
+    if (envSource.DUFFEL_TEST_MODE_ENABLED === 'true') throw new Error('[CRITICAL STARTUP ERROR] Duffel TEST MODE is sandbox-only and must be disabled in production.');
+    if (envSource.DUFFEL_ACCESS_TOKEN?.startsWith('duffel_test_')) throw new Error('[CRITICAL STARTUP ERROR] A Duffel sandbox token cannot be used in production.');
   }
 
   const getRequired = (key: string, defaultForDev: string): string => {
@@ -134,7 +138,8 @@ export function validateServerEnv(envSource: Record<string, string | undefined> 
         DUFFEL_ENV: duffelEnv as 'test' | 'live',
         DUFFEL_ACCESS_TOKEN: duffelToken,
         DUFFEL_API_TOKEN: duffelToken,
-        DUFFEL_TOKEN: duffelToken
+        DUFFEL_TOKEN: duffelToken,
+        DUFFEL_TEST_MODE_ENABLED: envSource.DUFFEL_TEST_MODE_ENABLED === 'true'
       };
     })(),
     AMADEUS_ENV: (envSource.AMADEUS_ENV || 'test') as any,

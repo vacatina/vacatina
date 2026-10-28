@@ -148,9 +148,12 @@ export interface TripBucketCandidate {
   canonicalOfferId?: string;
   sourceId?: string;
   providerName?: string;
-  inventoryMode?: 'demo_fixture' | 'manual_request' | 'live_supplier' | string;
+  inventoryMode?: 'demo_fixture' | 'manual_request' | 'live_supplier' | 'sandbox_test' | string;
   inventoryLabel?: string;
   truthDisclosure?: string;
+  /** Duffel TEST MODE only: explicit sandbox order lane and selected services. */
+  sandboxOrderable?: boolean;
+  selectedServiceIds?: string[];
   scheduleStatus?: string;
   fareFamilyCode?: string;
   fareFamilyName?: string;

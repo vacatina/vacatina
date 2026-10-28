@@ -30,6 +30,28 @@ import { routerService } from '../../../lib/services/router.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
 import { showToast } from '../../../components/ui/toast.ts';
 import { openCanonicalFlightDetailModal } from './flights-offer-detail-modal.ts';
+import {
+  duffelSandboxFlightAdapter,
+  type SandboxStatus
+} from '../adapters/duffel-sandbox-flight.adapter.ts';
+
+function sandboxStatusMessage(status: SandboxStatus): string {
+  switch (status.reason) {
+    case 'ENABLED': return '';
+    case 'TEST_MODE_FLAG_DISABLED':
+      return 'Duffel TEST MODE is disabled on this server. A developer must enable it with a sandbox credential.';
+    case 'TEST_TOKEN_REQUIRED':
+      return 'Duffel TEST MODE requires a sandbox access token configured on the server.';
+    case 'LIVE_TOKEN_BLOCKED':
+      return 'A live Duffel credential is configured. TEST MODE refuses to use live credentials.';
+    case 'PRODUCTION_RUNTIME_BLOCKED':
+      return 'Duffel TEST MODE is unavailable in the production runtime.';
+    case 'LIVE_ENV_BLOCKED':
+      return 'Duffel is configured for live mode. TEST MODE is sandbox-only and cannot be activated.';
+    default:
+      return 'Duffel TEST MODE is not available on this server.';
+  }
+}
 
 export class FlightsSearchView {
   private currentRequest!: FlightSearchRequest;
@@ -40,6 +62,7 @@ export class FlightsSearchView {
   private errorMessage: string | null = null;
   private validationErrors: Record<string, string> = {};
   private isModifyOpen = false;
+  private sandboxStatus: SandboxStatus | null = null;
 
   public async loadFromQuery(query: URLSearchParams, container: HTMLElement): Promise<void> {
     const parsed = parseFlightSearchQuery(query);
@@ -81,6 +104,27 @@ export class FlightsSearchView {
     this.errorMessage = null;
     this.render(container);
 
+    if (this.currentRequest.inventorySource === 'sandbox_test') {
+      try {
+        this.sandboxStatus = await duffelSandboxFlightAdapter.getStatus();
+        if (!this.sandboxStatus.enabled) {
+          this.isLoading = false;
+          this.errorMessage = sandboxStatusMessage(this.sandboxStatus);
+          this.currentResponse = null;
+          this.render(container);
+          return;
+        }
+      } catch (err) {
+        this.isLoading = false;
+        this.errorMessage = (err as Error).message || 'Duffel TEST MODE status could not be loaded.';
+        this.currentResponse = null;
+        this.render(container);
+        return;
+      }
+    } else {
+      this.sandboxStatus = null;
+    }
+
     try {
       this.currentResponse = await flightSearchService.search(
         this.currentRequest,
@@ -91,6 +135,7 @@ export class FlightsSearchView {
 
       telemetry.track('flight_results_loaded', {
         searchId: this.currentRequest.searchId,
+        source: this.currentRequest.inventorySource || 'demo_fixture',
         total: this.currentResponse.totalCount,
         filtered: this.currentResponse.filteredCount
       });
@@ -112,6 +157,8 @@ export class FlightsSearchView {
     const demoCount = resp ? resp.offers.filter(o => resolveFlightInventoryTruth(o).isDemo).length : 0;
     const manualCount = resp ? resp.offers.filter(o => resolveFlightInventoryTruth(o).isManual).length : 0;
     const liveCount = resp ? resp.offers.filter(o => resolveFlightInventoryTruth(o).isLive).length : 0;
+    const sandboxCount = resp ? resp.offers.filter(o => resolveFlightInventoryTruth(o).isSandbox).length : 0;
+    const isSandboxLane = req.inventorySource === 'sandbox_test';
 
     const fromLabel = formatAirportShort(req.origin);
     const toLabel = formatAirportShort(req.destination);
@@ -142,7 +189,12 @@ export class FlightsSearchView {
               </div>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
+              <label for="flight-inventory-source" class="text-[10px] font-bold uppercase tracking-wider text-brand-muted">Inventory</label>
+              <select id="flight-inventory-source" class="h-9 px-2.5 rounded-xl border ${isSandboxLane ? 'border-indigo-300 bg-indigo-50 text-indigo-950' : 'border-gray-300 bg-white text-brand-black'} text-xs font-bold outline-none focus:border-brand-primary">
+                <option value="demo_fixture" ${!isSandboxLane ? 'selected' : ''}>Demo fixtures (non-production)</option>
+                <option value="sandbox_test" ${isSandboxLane ? 'selected' : ''}>Duffel TEST MODE (sandbox)</option>
+              </select>
               <button type="button" id="btn-toggle-modify-search" class="px-4 py-2 rounded-xl text-xs font-bold border border-gray-300 hover:border-brand-primary text-brand-black hover:text-brand-primary transition-colors flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 <span>${this.isModifyOpen ? 'Close Editor' : 'Modify Search'}</span>
@@ -175,24 +227,30 @@ export class FlightsSearchView {
         </header>
 
         <!-- Inventory Truth Notice Banner -->
-        <div class="bg-amber-50/80 border-b border-amber-100 px-4 py-2.5 text-center text-xs text-amber-950 flex items-center justify-center gap-2">
-          <svg class="w-3.5 h-3.5 text-amber-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span><strong>Inventory disclosure:</strong> demo fixture and request-to-book inventory is not live airline availability. No seat hold, reservation or payment is created by browsing or staging an option.</span>
+        <div class="${isSandboxLane ? 'bg-indigo-950 text-indigo-50 border-b border-indigo-800' : 'bg-amber-50/80 border-b border-amber-100 text-amber-950'} px-4 py-2.5 text-center text-xs flex items-center justify-center gap-2">
+          <svg class="w-3.5 h-3.5 ${isSandboxLane ? 'text-indigo-300' : 'text-amber-700'} shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          ${
+            isSandboxLane
+              ? `<span><strong>Duffel TEST MODE (sandbox):</strong> these are real Duffel sandbox quotes, not live airline inventory. No live ticket or payment is created. Only an explicit sandbox test order can be placed.</span>`
+              : `<span><strong>Inventory disclosure:</strong> demo fixture and request-to-book inventory is not live airline availability. No seat hold, reservation or payment is created by browsing or staging an option.</span>`
+          }
         </div>
 
         <!-- Main Results Layout -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           ${
-            resp && resp.offers.length > 0 && (demoCount > 0 || manualCount > 0 || liveCount > 0)
+            resp && resp.offers.length > 0 && (demoCount > 0 || manualCount > 0 || liveCount > 0 || sandboxCount > 0)
               ? `
-            <div id="flights-inventory-disclosure" role="note" class="mb-4 p-3 rounded-xl border border-gray-200 bg-white text-[11px] text-brand-muted leading-relaxed">
+            <div id="flights-inventory-disclosure" role="note" class="mb-4 p-3 rounded-xl border ${isSandboxLane ? 'border-indigo-200 bg-indigo-50/60' : 'border-gray-200 bg-white'} text-[11px] text-brand-muted leading-relaxed">
               <strong class="text-brand-black">Result sources:</strong>
+              ${sandboxCount > 0 ? `${sandboxCount} Duffel TEST MODE sandbox quote${sandboxCount === 1 ? '' : 's'} (non-production, explicit sandbox order only)` : ''}
+              ${sandboxCount > 0 && (demoCount > 0 || manualCount > 0 || liveCount > 0) ? ' · ' : ''}
               ${demoCount > 0 ? `${demoCount} demo fixture${demoCount === 1 ? '' : 's'} (illustrative, non-production)` : ''}
               ${demoCount > 0 && (manualCount > 0 || liveCount > 0) ? ' · ' : ''}
               ${manualCount > 0 ? `${manualCount} manual request-to-book` : ''}
               ${manualCount > 0 && liveCount > 0 ? ' · ' : ''}
               ${liveCount > 0 ? `${liveCount} live supplier fare${liveCount === 1 ? '' : 's'}` : ''}
-              . Demo and manual options require a Vacatina desk quote or confirmation before booking.
+              . ${isSandboxLane ? 'Test-mode inventory is isolated from demo and production sources.' : 'Demo and manual options require a Vacatina desk quote or confirmation before booking.'}
             </div>
           `
               : ''
@@ -432,7 +490,7 @@ export class FlightsSearchView {
         ? `${offer.baggage.checked.description}`
         : 'Cabin baggage only';
 
-    const ctaLabel = truth.isLive ? 'View Flight' : 'View details';
+    const ctaLabel = truth.isSandbox ? 'View sandbox offer' : truth.isLive ? 'View Flight' : 'View details';
 
     return `
       <article class="bg-white rounded-2xl border border-gray-200 hover:border-brand-primary/40 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between min-w-0" data-offer-id="${offer.offerId}" data-inventory-mode="${truth.mode}">
@@ -506,6 +564,11 @@ export class FlightsSearchView {
             <span>•</span>
             <span>${offer.cabinClass.charAt(0).toUpperCase() + offer.cabinClass.slice(1)}</span>
             ${
+              truth.isSandbox && offer.sandbox?.services?.length
+                ? `<span>•</span><span>${offer.sandbox.services.length} optional sandbox service${offer.sandbox.services.length === 1 ? '' : 's'}</span>`
+                : ''
+            }
+            ${
               offer.mealInformation
                 ? `<span>•</span><span class="truncate max-w-[200px]">${offer.mealInformation}</span>`
                 : ''
@@ -523,7 +586,7 @@ export class FlightsSearchView {
             <span class="text-[10px] uppercase font-bold tracking-wider text-brand-muted block">${truth.priceLabel}</span>
             <div class="flex items-baseline gap-1 flex-wrap">
               <span class="text-xl sm:text-2xl font-black font-display text-brand-black tabular-nums">
-                LKR ${(offer.price.totalMinor / 100).toLocaleString()}
+                ${offer.price.currency} ${(offer.price.totalMinor / 100).toLocaleString()}
               </span>
               <span class="text-xs text-brand-muted">/ itinerary</span>
             </div>
@@ -558,7 +621,21 @@ export class FlightsSearchView {
       });
     }
 
-    // 3. Apply Modified Search
+    // 3. Inventory source selector: sandbox test inventory is an exclusive lane.
+    container.querySelector<HTMLSelectElement>('#flight-inventory-source')?.addEventListener('change', event => {
+      const source = (event.target as HTMLSelectElement).value === 'sandbox_test' ? 'sandbox_test' : 'demo_fixture';
+      this.currentRequest = {
+        ...this.currentRequest,
+        inventorySource: source,
+        searchId: `srch-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+      };
+      this.currentFilters = {};
+      this.currentResponse = null;
+      this.errorMessage = null;
+      routerService.navigateTo(buildFlightSearchQuery(this.currentRequest));
+    });
+
+    // 4. Apply Modified Search
     container.querySelector('#btn-apply-modified-search')?.addEventListener('click', () => {
       const fromInput = container.querySelector<HTMLInputElement>('#mod-from-input');
       const toInput = container.querySelector<HTMLInputElement>('#mod-to-input');
@@ -705,7 +782,9 @@ export class FlightsSearchView {
               showToast(
                 candidate.inventoryMode === 'demo_fixture'
                   ? 'Demo fare staged. No live seat hold was created — request a desk quote to book.'
-                  : 'Flight request staged. The Vacatina desk must confirm schedule, baggage and fare before booking.',
+                  : candidate.inventoryMode === 'sandbox_test'
+                    ? 'Duffel TEST MODE quote staged. No live ticket, seat hold or payment was created. Review your trip to place an explicit sandbox test order.'
+                    : 'Flight request staged. The Vacatina desk must confirm schedule, baggage and fare before booking.',
                 'brand'
               );
             } else {

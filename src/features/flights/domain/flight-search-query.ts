@@ -137,6 +137,7 @@ export function buildFlightSearchQuery(request: FlightSearchRequest): string {
   params.set('cabinClass', request.cabinClass);
   if (request.directFlightsOnly) params.set('directOnly', 'true');
   if (request.nearbyAirports) params.set('nearbyAirports', 'true');
+  if (request.inventorySource === 'sandbox_test') params.set('source', 'sandbox_test');
   if (request.tripType === 'multi_city' && request.legs) {
     request.legs.forEach(leg => {
       params.append(
@@ -293,6 +294,9 @@ export function parseFlightSearchQuery(
 
   const directOnly = ['true', '1', 'yes'].includes((query.get('directOnly') || '').toLowerCase());
   const nearbyAirports = ['true', '1', 'yes'].includes((query.get('nearbyAirports') || '').toLowerCase());
+  const rawSource = (firstParam(query, ['source', 'inventorySource']) || '').trim().toLowerCase();
+  const inventorySource: 'demo_fixture' | 'sandbox_test' =
+    rawSource === 'sandbox_test' || rawSource === 'sandbox' ? 'sandbox_test' : 'demo_fixture';
 
   const request: FlightSearchRequest = {
     searchId: `srch-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -308,6 +312,7 @@ export function parseFlightSearchQuery(
     nearbyAirports,
     displayCurrency: 'LKR',
     locale: 'en',
+    inventorySource,
     createdAt: now.toISOString()
   };
 

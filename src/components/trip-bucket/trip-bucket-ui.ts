@@ -7,7 +7,7 @@
  * - ANTIGRAVITY ULTRA MASTER INSTRUCTION (§58–§66)
  * ============================================================================ */
 
-import type { TripBucketCandidate, TripBucketSummary } from '../../lib/domain/types.ts';
+import type { SupportedCurrency, TripBucketCandidate, TripBucketSummary } from '../../lib/domain/types.ts';
 import { formatCurrencyAmount } from '../../lib/mock-data/catalog.ts';
 import {
   TRIP_BUCKET_STATE_DESCRIPTORS,
@@ -36,6 +36,22 @@ let lastBucketTrigger: HTMLElement | null = null;
 const expandedDetailsItemIds = new Set<string>();
 let currentScrollHidden = false;
 let revalidatingTrip = false;
+
+/** Sandbox quotes are already denominated in their supplier currency, never LKR. */
+function itemAmountLabel(item: TripBucketCandidate, fallbackCurrency: SupportedCurrency): string {
+  if (item.currency && item.currency !== 'LKR' && item.amountMinor !== undefined) {
+    return `${item.currency} ${(item.amountMinor / 100).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+  }
+  return formatCurrencyAmount(item.priceLkr, fallbackCurrency);
+}
+
+function itemPreviousAmountLabel(item: TripBucketCandidate, fallbackCurrency: SupportedCurrency): string {
+  if (!item.previousPriceLkr) return '';
+  if (item.currency && item.currency !== 'LKR') {
+    return `${item.currency} ${item.previousPriceLkr.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+  }
+  return formatCurrencyAmount(item.previousPriceLkr, fallbackCurrency);
+}
 
 export function updateTripControlsVisibility(forceVisible?: boolean, forceHidden?: boolean): void {
   const dock = document.getElementById('floating-trip-dock');
@@ -391,19 +407,19 @@ function syncDrawerContents(
               <div>
                 ${
                   item.previousPriceLkr
-                    ? `<span class="text-[11px] line-through text-brand-muted mr-1.5 tabular-nums">${formatCurrencyAmount(item.previousPriceLkr, currency)}</span>`
+                    ? `<span class="text-[11px] line-through text-brand-muted mr-1.5 tabular-nums">${itemPreviousAmountLabel(item, currency)}</span>`
                     : ''
                 }
                 <span class="text-sm font-bold text-brand-black tabular-nums">${
                   item.priceStatus === 'quote_required'
                     ? 'Quote required'
-                    : item.priceLkr > 0
-                    ? formatCurrencyAmount(item.priceLkr, currency)
+                    : item.priceLkr > 0 || item.amountMinor !== undefined
+                    ? itemAmountLabel(item, currency)
                     : 'Pending selection'
                 }</span>
                 ${
-                  !isReady && item.priceLkr > 0
-                    ? `<span class="block text-[10px] text-brand-muted">(Excluded from ready subtotal: ${formatCurrencyAmount(item.priceLkr, currency)})</span>`
+                  !isReady && (item.priceLkr > 0 || item.amountMinor !== undefined)
+                    ? `<span class="block text-[10px] text-brand-muted">(Excluded from ${item.currency && item.currency !== 'LKR' ? 'LKR ' : 'ready '}subtotal: ${itemAmountLabel(item, currency)})</span>`
                     : ''
                 }
               </div>

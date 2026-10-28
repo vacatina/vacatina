@@ -13,6 +13,8 @@ export interface FlightSegmentEntity {
   segmentId: string;
   carrierCode: string;       // e.g. "UL", "EK", "QR"
   carrierName: string;
+  operatingCarrierCode?: string;
+  operatingCarrierName?: string;
   flightNumber: string;      // e.g. "UL-225"
   aircraftModel?: string;    // e.g. "Airbus A330-300"
   originIata: string;        // e.g. "CMB"
@@ -23,6 +25,65 @@ export interface FlightSegmentEntity {
   arrivalTimeIso: string;
   durationMinutes: number;
   layoverMinutes?: number;
+  cabinClass?: 'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST';
+  bookingClass?: string;
+  baggage?: Array<{ type: string; quantity: number }>;
+}
+
+export interface FlightSliceEntity {
+  sliceId?: string;
+  sliceIndex: number;
+  originIata: string;
+  originCity: string;
+  destinationIata: string;
+  destinationCity: string;
+  departureTimeIso: string;
+  arrivalTimeIso: string;
+  durationMinutes: number;
+  fareBrandName?: string;
+  segments: FlightSegmentEntity[];
+}
+
+export interface FlightServiceEntity {
+  serviceId: string;
+  type: string;
+  name: string;
+  description: string;
+  priceMinor: number;
+  currency: string;
+  maximumQuantity?: number;
+  passengerIds?: string[];
+  segmentIds?: string[];
+  isSeat?: boolean;
+  seatDesignator?: string;
+}
+
+export interface FlightOfferPassengerEntity {
+  passengerId: string;
+  type: 'adult' | 'child' | 'infant_without_seat';
+  givenName?: string;
+  familyName?: string;
+  age?: number;
+}
+
+export interface FlightConditionsEntity {
+  refundable: boolean;
+  refundPenaltyMinor?: number;
+  refundPenaltyCurrency?: string;
+  changeable: boolean;
+  changePenaltyMinor?: number;
+  changePenaltyCurrency?: string;
+  description: string;
+}
+
+export interface FlightTestModeProvenance {
+  enabled: true;
+  environment: 'SANDBOX';
+  liveMode: false;
+  supplier: 'Duffel';
+  nonProduction: true;
+  offerRequestId?: string;
+  orderEndpoint: string;
 }
 
 export interface FlightProductExtension {
@@ -37,6 +98,12 @@ export interface FlightProductExtension {
     pieceCount?: number;
   };
   segments: FlightSegmentEntity[];
+  slices?: FlightSliceEntity[];
+  services?: FlightServiceEntity[];
+  passengers?: FlightOfferPassengerEntity[];
+  conditions?: FlightConditionsEntity;
+  testMode?: FlightTestModeProvenance;
+  offerRequestId?: string;
 }
 
 // ----------------------------------------------------------------------------

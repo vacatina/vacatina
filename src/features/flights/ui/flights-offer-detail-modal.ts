@@ -21,6 +21,10 @@ import { flightTripBucketService } from '../services/flight-trip-bucket.service.
 import { flightFavoritesService } from '../services/flight-favorites.service.ts';
 import { resolveFlightInventoryTruth } from '../domain/flight-inventory-truth.ts';
 import { getLastFlightSearchQuery } from '../domain/flight-search-context.ts';
+import {
+  duffelSandboxFlightAdapter,
+  type SandboxSeatMap
+} from '../adapters/duffel-sandbox-flight.adapter.ts';
 import { routerService } from '../../../lib/services/router.service.ts';
 import { telemetry } from '../../../lib/analytics/telemetry.ts';
 import {
@@ -205,6 +209,13 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
     offer.fareFamiliesAvailable[0]?.familyCode ||
     'standard';
 
+  const selectedServiceIds = new Set<string>();
+  const seatServiceInfo = new Map<string, { passengerId: string; amountMinor: number; currency: string; label: string }>();
+  const selectedSeatByPassenger = new Map<string, string>();
+  let sandboxSeatMaps: SandboxSeatMap[] | null = null;
+  let sandboxSeatMapsError: string | null = null;
+  let sandboxSeatMapsLoading = false;
+
   const modalOverlay = document.createElement('div');
   modalOverlay.id = 'flight-offer-detail-modal';
   modalOverlay.className =
@@ -238,7 +249,14 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
     const selectedFamily: FlightFareFamilyOption | undefined =
       offer.fareFamiliesAvailable.find(f => f.familyCode === selectedFamilyCode);
     const familyDeltaMinor = selectedFamily?.priceDeltaMinor || 0;
-    const finalTotalMinor = offer.price.totalMinor + familyDeltaMinor;
+    const selectedServicesMinor = (offer.sandbox?.services || [])
+      .filter(service => selectedServiceIds.has(service.id))
+      .reduce((sum, service) => sum + service.priceMinor, 0) +
+      Array.from(selectedSeatByPassenger.values())
+        .map(serviceId => seatServiceInfo.get(serviceId)?.amountMinor || 0)
+        .reduce((sum, amount) => sum + amount, 0);
+    const finalTotalMinor = offer.price.totalMinor + familyDeltaMinor + selectedServicesMinor;
+    const displayCurrency = offer.price.currency || 'LKR';
 
     const isSaved = flightFavoritesService.isOfferFavorite(offer.offerId);
     const durationHours = Math.floor(offer.durationMinutes / 60);
@@ -246,19 +264,25 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
 
     const headerMeta = truth.isManual
       ? `${escapeHtml(offer.sourceProvider)} · Schedule pending desk confirmation`
-      : truth.isDemo
-        ? `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · Demo schedule (illustrative)`
-        : `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · ${offer.stopCount === 0 ? 'Direct Non-Stop' : `${offer.stopCount} Stop`} · ${durationHours}h ${durationMins}m`;
+      : truth.isSandbox
+        ? `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · Duffel TEST MODE (sandbox)`
+        : truth.isDemo
+          ? `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · Demo schedule (illustrative)`
+          : `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · ${offer.stopCount === 0 ? 'Direct Non-Stop' : `${offer.stopCount} Stop`} · ${durationHours}h ${durationMins}m`;
 
     const addButtonLabel = truth.isLive
       ? 'Add to Trip Bucket'
       : truth.isManual
         ? 'Request to Book'
-        : 'Stage Demo Option';
+        : truth.isSandbox
+          ? 'Stage Sandbox Quote'
+          : 'Stage Demo Option';
 
     const totalLabel = truth.isLive
       ? 'Total Itinerary Price (All Taxes Included)'
-      : `${truth.priceLabel} (not a live quote)`;
+      : truth.isSandbox
+        ? 'Sandbox quote total (no live ticket)'
+        : `${truth.priceLabel} (not a live quote)`;
 
     const renderSlice = (slice: CanonicalFlightOffer['slices'][number], sIdx: number) => `
       <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200">
@@ -361,8 +385,8 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
                             fam.priceDeltaMinor === 0
                               ? 'Included'
                               : fam.priceDeltaMinor > 0
-                                ? `+LKR ${(fam.priceDeltaMinor / 100).toLocaleString()}`
-                                : `-LKR ${(Math.abs(fam.priceDeltaMinor) / 100).toLocaleString()}`
+                                ? `+${displayCurrency} ${(fam.priceDeltaMinor / 100).toLocaleString()}`
+                                : `-${displayCurrency} ${(Math.abs(fam.priceDeltaMinor) / 100).toLocaleString()}`
                           }
                         </div>
 
@@ -388,6 +412,166 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
                 .join('')}
             </div>
             ${truth.isLive ? '' : `<p class="text-[11px] text-brand-muted mt-2">Fare-family benefits shown here are ${truth.isDemo ? 'illustrative demo details' : 'not yet confirmed by the carrier'}. The Vacatina desk confirms the final fare conditions before ticketing.</p>`}
+          </div>
+        `
+        : '';
+
+    // Duffel TEST MODE extras: optional services and seat maps come only from
+    // the sandbox offer. Nothing here creates a hold or a live booking.
+    const passengerLabels = new Map<string, string>();
+    const passengerShortLabels = new Map<string, string>();
+    const passengerTypeCounts: Record<string, number> = {};
+    for (const passenger of offer.sandbox?.passengers || []) {
+      const nextCount = (passengerTypeCounts[passenger.type] || 0) + 1;
+      passengerTypeCounts[passenger.type] = nextCount;
+      const typeLabel = passenger.type === 'adult' ? 'Adult' : passenger.type === 'child' ? 'Child' : 'Infant';
+      const shortLabel = passenger.type === 'adult' ? 'A' : passenger.type === 'child' ? 'C' : 'I';
+      passengerLabels.set(passenger.id, `${typeLabel} ${nextCount}`);
+      passengerShortLabels.set(passenger.id, `${shortLabel}${nextCount}`);
+    }
+
+    const renderSandboxSeatMaps = (): string => {
+      if (sandboxSeatMapsLoading) {
+        return `<p class="text-[11px] text-indigo-900" role="status">Loading Duffel TEST MODE seat maps…</p>`;
+      }
+      if (sandboxSeatMapsError) {
+        return `<p class="text-[11px] text-red-700" role="alert">${escapeHtml(sandboxSeatMapsError)}</p>`;
+      }
+      if (!sandboxSeatMaps) {
+        return `<p class="text-[11px] text-brand-muted">Seat maps are fetched from Duffel only when you request them. No seat is held until an explicit sandbox test order is created.</p>`;
+      }
+      if (sandboxSeatMaps.length === 0) {
+        return `<p class="text-[11px] text-brand-muted">Duffel TEST MODE did not return seat maps for this sandbox offer.</p>`;
+      }
+      return sandboxSeatMaps
+        .map((map, mapIndex) => {
+          const rows = map.cabins.flatMap(cabin =>
+            cabin.rows.map(row => row.sections.flatMap(section => section.elements))
+          );
+          return `
+            <div class="rounded-xl border border-indigo-200 bg-white p-2.5 space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] font-bold uppercase tracking-wider text-indigo-900">
+                <span>Seat map ${mapIndex + 1}</span>
+                <span class="font-mono normal-case tracking-normal text-brand-muted">Segment ${escapeHtml(map.segmentId || '—')}</span>
+              </div>
+              <div class="space-y-1 max-h-56 overflow-auto pr-1">
+                ${rows
+                  .map(elements => `
+                    <div class="flex flex-wrap gap-1">
+                      ${elements
+                        .map(element => {
+                          if (element.type !== 'seat') {
+                            return `<span class="inline-flex h-7 min-w-7 items-center justify-center rounded border border-transparent text-[10px] text-brand-muted">${escapeHtml(element.designator || '·')}</span>`;
+                          }
+                          const services = element.services || [];
+                          if (!services.length) {
+                            return `<span class="inline-flex h-7 min-w-7 items-center justify-center rounded border border-gray-200 bg-gray-50 text-[10px] text-brand-muted" title="Seat unavailable in TEST MODE">${escapeHtml(element.designator || '·')}</span>`;
+                          }
+                          return services
+                            .map(service => {
+                              const selected = selectedServiceIds.has(service.id);
+                              const passengerLabel = passengerLabels.get(service.passengerId) || 'Passenger';
+                              const shortLabel = passengerShortLabels.get(service.passengerId) || 'P';
+                              const price = `${service.currency || displayCurrency} ${(service.amountMinor / 100).toLocaleString()}`;
+                              const seatLabel = element.designator || element.name || 'Seat';
+                              return `<button
+                                type="button"
+                                data-sandbox-seat-service="${escapeHtml(service.id)}"
+                                data-passenger-id="${escapeHtml(service.passengerId)}"
+                                data-seat-label="${escapeHtml(seatLabel)}"
+                                data-seat-amount="${service.amountMinor}"
+                                data-seat-currency="${escapeHtml(service.currency || displayCurrency)}"
+                                aria-pressed="${selected ? 'true' : 'false'}"
+                                title="${escapeHtml(passengerLabel)} · ${escapeHtml(price)}"
+                                class="inline-flex h-7 items-center gap-1 rounded-lg border px-1.5 text-[10px] font-bold transition-colors ${
+                                  selected
+                                    ? 'border-indigo-600 bg-indigo-600 text-white'
+                                    : 'border-indigo-200 bg-white text-indigo-900 hover:border-indigo-500'
+                                }"
+                              >
+                                <span>${escapeHtml(seatLabel)}</span>
+                                <span class="font-normal opacity-80">${escapeHtml(shortLabel)}</span>
+                              </button>`;
+                            })
+                            .join('');
+                        })
+                        .join('')}
+                    </div>
+                  `)
+                  .join('')}
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    };
+
+    const sandboxSectionHtml =
+      truth.isSandbox && offer.sandbox
+        ? `
+          <div id="sandbox-ancillaries" class="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-4 space-y-4">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div class="min-w-0">
+                <h3 class="text-sm font-bold font-display uppercase tracking-wider text-indigo-950">Duffel sandbox extras</h3>
+                <p class="text-[11px] text-indigo-900/80 leading-relaxed mt-1">
+                  Optional services and seat maps are real Duffel TEST MODE data. Selecting them only updates this sandbox quote;
+                  no seat hold, live ticket or payment is created.
+                </p>
+              </div>
+              <span class="shrink-0 inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-950 text-indigo-50">TEST MODE</span>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-[10px] font-bold uppercase tracking-wider text-indigo-900">Optional services</h4>
+              ${
+                offer.sandbox.services.length > 0
+                  ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      ${offer.sandbox.services
+                        .map(service => {
+                          const checked = selectedServiceIds.has(service.id);
+                          return `
+                            <label class="flex items-start gap-2 p-2.5 rounded-xl border bg-white cursor-pointer transition-colors ${
+                              checked ? 'border-indigo-500' : 'border-indigo-200 hover:border-indigo-400'
+                            }">
+                              <input
+                                type="checkbox"
+                                data-sandbox-service="${escapeHtml(service.id)}"
+                                ${checked ? 'checked' : ''}
+                                class="mt-0.5 h-4 w-4 accent-indigo-600"
+                              />
+                              <span class="min-w-0 flex-1">
+                                <span class="block text-xs font-bold text-brand-black">${escapeHtml(service.name)}</span>
+                                <span class="block text-[11px] text-brand-muted leading-snug">${escapeHtml(service.description || service.type)}</span>
+                              </span>
+                              <span class="shrink-0 text-xs font-bold tabular-nums text-indigo-950">${escapeHtml(service.currency || displayCurrency)} ${(service.priceMinor / 100).toLocaleString()}</span>
+                            </label>
+                          `;
+                        })
+                        .join('')}
+                    </div>`
+                  : `<p class="text-[11px] text-brand-muted">Duffel TEST MODE did not return optional services for this sandbox offer.</p>`
+              }
+            </div>
+
+            <div class="pt-3 border-t border-indigo-200 space-y-2">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <h4 class="text-[10px] font-bold uppercase tracking-wider text-indigo-900">Seat maps</h4>
+                  <p class="text-[11px] text-brand-muted leading-snug">Choose at most one sandbox seat per passenger. Seat prices are quoted by Duffel.</p>
+                </div>
+                <button
+                  type="button"
+                  id="btn-load-sandbox-seat-maps"
+                  class="min-h-[40px] px-3 rounded-xl border border-indigo-300 bg-white text-[11px] font-bold text-indigo-950 hover:border-indigo-600 transition-colors disabled:opacity-60"
+                  ${sandboxSeatMapsLoading ? 'disabled' : ''}
+                >
+                  ${sandboxSeatMapsLoading ? 'Loading…' : sandboxSeatMaps ? 'Refresh seat maps' : 'Load seat maps'}
+                </button>
+              </div>
+              <div id="sandbox-seat-maps" aria-live="polite" class="space-y-2">
+                ${renderSandboxSeatMaps()}
+              </div>
+            </div>
           </div>
         `
         : '';
@@ -441,10 +625,12 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
 
           ${fareFamilyHtml}
 
+          ${sandboxSectionHtml}
+
           <!-- Section 3: Baggage & Fare Conditions -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200 space-y-2">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-brand-muted">${truth.isLive ? 'Baggage Allowances' : truth.isManual ? 'Baggage (to be confirmed)' : 'Baggage (illustrative demo)'}</h4>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-brand-muted">${truth.isLive ? 'Baggage Allowances' : truth.isManual ? 'Baggage (to be confirmed)' : truth.isSandbox ? 'Baggage (Duffel TEST MODE)' : 'Baggage (illustrative demo)'}</h4>
               <div class="text-xs space-y-1">
                 <div><strong>Cabin Baggage:</strong> ${escapeHtml(offer.baggage.cabin.description)}</div>
                 <div><strong>Checked Baggage:</strong> ${escapeHtml(offer.baggage.checked.description)}</div>
@@ -453,7 +639,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
             </div>
 
             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200 space-y-2">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-brand-muted">${truth.isLive ? 'Changes &amp; Cancellation' : 'Changes &amp; Cancellation (pending confirmation)'}</h4>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-brand-muted">${truth.isLive ? 'Changes &amp; Cancellation' : truth.isSandbox ? 'Changes &amp; Cancellation (Duffel TEST MODE)' : 'Changes &amp; Cancellation (pending confirmation)'}</h4>
               <div class="text-xs space-y-1">
                 <div><strong>Changes:</strong> ${escapeHtml(offer.changeRules.description)}</div>
                 <div><strong>Refundability:</strong> ${escapeHtml(offer.refundRules.description)}</div>
@@ -467,32 +653,32 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
             <div class="space-y-2 text-xs">
               <div class="flex justify-between gap-3">
                 <span>Base Airline Fare</span>
-                <span class="tabular-nums font-semibold">LKR ${(offer.price.baseFareMinor / 100).toLocaleString()}</span>
+                <span class="tabular-nums font-semibold">${displayCurrency} ${(offer.price.baseFareMinor / 100).toLocaleString()}</span>
               </div>
               <div class="flex justify-between gap-3">
                 <span>Mandatory Airport Taxes &amp; Security Surcharges</span>
-                <span class="tabular-nums font-semibold">LKR ${(offer.price.taxesMinor / 100).toLocaleString()}</span>
+                <span class="tabular-nums font-semibold">${displayCurrency} ${(offer.price.taxesMinor / 100).toLocaleString()}</span>
               </div>
               <div class="flex justify-between gap-3">
                 <span>Carrier Administration &amp; GDS Fees</span>
-                <span class="tabular-nums font-semibold">LKR ${(offer.price.feesMinor / 100).toLocaleString()}</span>
+                <span class="tabular-nums font-semibold">${displayCurrency} ${(offer.price.feesMinor / 100).toLocaleString()}</span>
               </div>
               ${
                 familyDeltaMinor !== 0
                   ? `
                 <div class="flex justify-between gap-3 text-brand-primary font-bold">
                   <span>Selected Fare Family Upgrade (${escapeHtml(selectedFamily?.familyName)})</span>
-                  <span class="tabular-nums">+LKR ${(familyDeltaMinor / 100).toLocaleString()}</span>
+                  <span class="tabular-nums">+${displayCurrency} ${(familyDeltaMinor / 100).toLocaleString()}</span>
                 </div>
               `
                   : ''
               }
               <div class="border-t border-gray-200 pt-2 flex justify-between gap-3 text-sm font-extrabold text-brand-black">
                 <span>${totalLabel}</span>
-                <span class="text-base text-brand-primary tabular-nums">LKR ${(finalTotalMinor / 100).toLocaleString()}</span>
+                <span class="text-base text-brand-primary tabular-nums">${displayCurrency} ${(finalTotalMinor / 100).toLocaleString()}</span>
               </div>
             </div>
-            ${truth.isLive ? '' : `<p class="mt-3 text-[11px] leading-relaxed text-brand-muted">This amount is an ${truth.isManual ? 'indicative manual estimate' : 'illustrative demo estimate'}, not a live supplier quote. Taxes, fees, availability and total price are confirmed only after the Vacatina desk checks the fare.</p>`}
+            ${truth.isLive ? '' : `<p class="mt-3 text-[11px] leading-relaxed text-brand-muted">This amount is ${truth.isManual ? 'an indicative manual estimate' : truth.isSandbox ? 'a real Duffel TEST MODE sandbox quote including the selected sandbox services' : 'an illustrative demo estimate'}, not a live supplier quote. Taxes, fees, availability and total price are confirmed only after the Vacatina desk checks the fare.</p>`}
           </div>
         </div>
 
@@ -501,7 +687,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
           <div>
             <div class="text-[10px] uppercase font-bold text-brand-muted tracking-wider">${escapeHtml(truth.priceLabel)}</div>
             <div class="text-2xl font-black font-display text-brand-black tabular-nums">
-              LKR ${(finalTotalMinor / 100).toLocaleString()}
+              ${displayCurrency} ${(finalTotalMinor / 100).toLocaleString()}
             </div>
           </div>
 
@@ -542,19 +728,84 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
       });
     });
 
+    // Duffel TEST MODE optional services
+    modalOverlay.querySelectorAll<HTMLInputElement>('input[data-sandbox-service]').forEach(input => {
+      input.addEventListener('change', () => {
+        const serviceId = input.getAttribute('data-sandbox-service');
+        if (!serviceId) return;
+        if (input.checked) selectedServiceIds.add(serviceId);
+        else selectedServiceIds.delete(serviceId);
+        telemetry.track('flight_sandbox_service_toggled', {
+          offerId: offer.offerId,
+          serviceId,
+          selected: input.checked
+        });
+        updateModalContent(`input[data-sandbox-service="${serviceId}"]`);
+      });
+    });
+
+    // Seat maps are fetched only on explicit request from Duffel TEST MODE.
+    modalOverlay.querySelector('#btn-load-sandbox-seat-maps')?.addEventListener('click', async () => {
+      if (sandboxSeatMapsLoading) return;
+      sandboxSeatMapsLoading = true;
+      sandboxSeatMapsError = null;
+      updateModalContent('#btn-load-sandbox-seat-maps');
+      try {
+        sandboxSeatMaps = await duffelSandboxFlightAdapter.getSeatMaps(offer.offerId);
+      } catch (error) {
+        sandboxSeatMapsError = (error as Error).message || 'Duffel TEST MODE seat maps could not be loaded.';
+      } finally {
+        sandboxSeatMapsLoading = false;
+        updateModalContent('#btn-load-sandbox-seat-maps');
+      }
+    });
+
+    // One sandbox seat per passenger; clicking the selected seat clears it.
+    modalOverlay.querySelectorAll<HTMLButtonElement>('button[data-sandbox-seat-service]').forEach(button => {
+      button.addEventListener('click', () => {
+        const serviceId = button.getAttribute('data-sandbox-seat-service');
+        const passengerId = button.getAttribute('data-passenger-id');
+        if (!serviceId || !passengerId) return;
+        const alreadySelected = selectedServiceIds.has(serviceId);
+        const previous = selectedSeatByPassenger.get(passengerId);
+        if (previous) {
+          selectedServiceIds.delete(previous);
+          seatServiceInfo.delete(previous);
+          selectedSeatByPassenger.delete(passengerId);
+        }
+        if (!alreadySelected) {
+          selectedServiceIds.add(serviceId);
+          selectedSeatByPassenger.set(passengerId, serviceId);
+          seatServiceInfo.set(serviceId, {
+            passengerId,
+            amountMinor: Number(button.getAttribute('data-seat-amount')) || 0,
+            currency: button.getAttribute('data-seat-currency') || displayCurrency,
+            label: button.getAttribute('data-seat-label') || 'Seat'
+          });
+        }
+        telemetry.track('flight_sandbox_seat_toggled', {
+          offerId: offer.offerId,
+          serviceId,
+          passengerId,
+          selected: !alreadySelected
+        });
+        updateModalContent(`button[data-sandbox-seat-service="${serviceId}"]`);
+      });
+    });
+
     // Wire Add / Request to Trip Bucket
     modalOverlay.querySelector('#btn-modal-add-trip')?.addEventListener('click', async () => {
       const addBtn = modalOverlay.querySelector<HTMLButtonElement>('#btn-modal-add-trip');
       if (addBtn) {
         addBtn.disabled = true;
-        addBtn.innerHTML = `<span>${truth.isLive ? 'Revalidating Fare…' : 'Staging Request…'}</span>`;
+        addBtn.innerHTML = `<span>${truth.isLive ? 'Revalidating Fare…' : truth.isSandbox ? 'Staging Sandbox Quote…' : 'Staging Request…'}</span>`;
       }
 
       const config: FlightConfigurationSelection = {
         offerId: offer.offerId,
         selectedFareFamilyCode: selectedFamilyCode,
         selectedCabinClass: offer.cabinClass,
-        selectedOptionalServiceIds: []
+        selectedOptionalServiceIds: Array.from(selectedServiceIds)
       };
 
       // Stage synchronously so the trip bucket reflects the request immediately.
@@ -567,24 +818,35 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
 
       if (revalidation.status === 'PRICE_CHANGED') {
         showToast(
-          truth.isLive
-            ? `Airline fare changed to LKR ${(revalidation.newPriceMinor / 100).toLocaleString()}. Please review in your Trip Bucket.`
-            : `Estimate updated to LKR ${(revalidation.newPriceMinor / 100).toLocaleString()}. Desk confirmation is still required.`,
+          truth.isSandbox
+            ? `Duffel TEST MODE price changed to ${offer.price.currency} ${(revalidation.newPriceMinor / 100).toLocaleString()}. Review the new sandbox quote in your Trip Bucket.`
+            : truth.isLive
+              ? `Airline fare changed to LKR ${(revalidation.newPriceMinor / 100).toLocaleString()}. Please review in your Trip Bucket.`
+              : `Estimate updated to LKR ${(revalidation.newPriceMinor / 100).toLocaleString()}. Desk confirmation is still required.`,
           'warning'
         );
       } else if (revalidation.status === 'OFFER_EXPIRED') {
-        showToast('This fare offer has expired. Please search current options.', 'error');
+        showToast(
+          truth.isSandbox
+            ? 'This Duffel TEST MODE offer has expired. Run a fresh sandbox search.'
+            : 'This fare offer has expired. Please search current options.',
+          'error'
+        );
       } else if (revalidation.status === 'UNAVAILABLE') {
         showToast(
           truth.isLive
             ? 'Seats at this fare are no longer available.'
-            : 'This option is no longer available in the current inventory.',
+            : truth.isSandbox
+              ? 'This Duffel TEST MODE offer is no longer available.'
+              : 'This option is no longer available in the current inventory.',
           'error'
         );
       } else if (truth.isManual) {
         showToast('Request staged. The Vacatina flight desk must confirm carrier, schedule, baggage and fare before ticketing.', 'brand');
       } else if (truth.isDemo) {
         showToast('Demo fare staged. No live seat hold was created — request a desk quote to book.', 'brand');
+      } else if (truth.isSandbox) {
+        showToast('Sandbox quote staged. Review your trip to create an explicit Duffel TEST MODE order. No live ticket, seat hold or payment is created.', 'brand');
       } else {
         showToast('Flight added to your Trip Bucket.', 'success');
       }

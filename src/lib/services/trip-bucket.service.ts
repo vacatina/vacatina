@@ -115,12 +115,15 @@ export function computeTripBucketSummary(items: TripBucketCandidate[]): TripBuck
   const pillParts: string[] = [];
 
   for (const item of items) {
+    // Subtotals are LKR-denominated. Native-currency sandbox quotes must not be
+    // added to an LKR total as if the numeric amount were LKR.
+    const countsTowardLkrTotal = !item.currency || item.currency === 'LKR';
     if (item.state === 'ready') {
       readyCount += 1;
-      readySubtotalLkr += item.priceLkr;
+      if (countsTowardLkrTotal) readySubtotalLkr += item.priceLkr;
       pillParts.push(`${item.productLabel} ✓`);
     } else {
-      excludedSubtotalLkr += item.priceLkr;
+      if (countsTowardLkrTotal) excludedSubtotalLkr += item.priceLkr;
       if (item.state === 'needs_action') {
         needsActionCount += 1;
         pillParts.push(`${item.productLabel} — Needs action`);

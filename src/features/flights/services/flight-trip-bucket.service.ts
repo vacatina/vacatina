@@ -97,8 +97,8 @@ export class FlightTripBucketService {
     } else {
       dateSummary =
         offer.tripType === 'round_trip' && retDate
-          ? `${depDate} — ${retDate} (${offer.flightNumber})${truth.isDemo ? ' · demo schedule' : ''}`
-          : `${depDate} · ${offer.flightNumber} (${offer.cabinClass})${truth.isDemo ? ' · demo schedule' : ''}`;
+          ? `${depDate} — ${retDate} (${offer.flightNumber})${truth.isDemo ? ' · demo schedule' : truth.isSandbox ? ' · Duffel sandbox' : ''}`
+          : `${depDate} · ${offer.flightNumber} (${offer.cabinClass})${truth.isDemo ? ' · demo schedule' : truth.isSandbox ? ' · Duffel sandbox' : ''}`;
     }
 
     // 3. Format Traveller summary
@@ -120,9 +120,15 @@ export class FlightTripBucketService {
       ? 'Fare held for 15 minutes upon confirmation'
       : truth.isManual
         ? 'Allocation on-request — no live seat hold'
-        : 'No seat hold — demo fixture';
+        : truth.isSandbox
+          ? 'Duffel sandbox quote — no live seat hold'
+          : 'No seat hold — demo fixture';
     let actionRequiredText: string | undefined;
-    let primaryActionLabel = truth.isManual ? 'Request Desk Confirmation' : 'Modify Flight';
+    let primaryActionLabel = truth.isManual
+      ? 'Request Desk Confirmation'
+      : truth.isSandbox
+        ? 'Create Sandbox Test Order'
+        : 'Modify Flight';
 
     if (overrideState) {
       state = overrideState;
@@ -130,21 +136,37 @@ export class FlightTripBucketService {
       state = 'price_changed';
       actionRequiredText = truth.isLive
         ? 'Upstream fare adjusted by carrier'
-        : 'Fare estimate changed. A desk quote is required before booking.';
+        : truth.isSandbox
+          ? 'Duffel TEST MODE fare changed. Review and accept the new sandbox quote.'
+          : 'Fare estimate changed. A desk quote is required before booking.';
       primaryActionLabel = 'Accept New Price';
       holdStatusText = truth.isLive
         ? 'Fare adjustment pending traveler review'
-        : 'Estimate adjustment pending review';
+        : truth.isSandbox
+          ? 'Sandbox fare adjustment pending review'
+          : 'Estimate adjustment pending review';
     } else if (offer.availabilityStatus === 'EXPIRED') {
       state = 'offer_expired';
-      actionRequiredText = truth.isLive ? 'Offer expired upstream' : 'Demo fare has expired';
+      actionRequiredText = truth.isLive
+        ? 'Offer expired upstream'
+        : truth.isSandbox
+          ? 'Duffel TEST MODE offer expired. Run a fresh sandbox search.'
+          : 'Demo fare has expired';
       primaryActionLabel = 'Find New Flight';
       holdStatusText = 'Expired';
     } else if (offer.availabilityStatus === 'UNAVAILABLE') {
       state = 'unavailable';
-      actionRequiredText = truth.isLive ? 'Seats sold out' : 'Not available in the current demo inventory';
+      actionRequiredText = truth.isLive
+        ? 'Seats sold out'
+        : truth.isSandbox
+          ? 'Duffel TEST MODE offer is no longer available.'
+          : 'Not available in the current demo inventory';
       primaryActionLabel = 'Choose Alternative';
       holdStatusText = 'Unavailable';
+    } else if (truth.isSandbox) {
+      state = 'needs_action';
+      actionRequiredText = 'Duffel TEST MODE quote. Create an explicit sandbox test order — no live ticket or payment is created.';
+      primaryActionLabel = 'Create Sandbox Test Order';
     } else if (offer.bookability === 'request_to_book') {
       state = 'needs_action';
       actionRequiredText = 'Vacatina desk confirmation required for carrier, schedule, baggage and fare.';
@@ -191,11 +213,15 @@ export class FlightTripBucketService {
       inventoryMode: truth.mode,
       inventoryLabel: truth.label,
       truthDisclosure: truth.disclosure,
+      sandboxOrderable: truth.isSandbox,
+      selectedServiceIds: config?.selectedOptionalServiceIds?.length ? [...config.selectedOptionalServiceIds] : undefined,
       scheduleStatus: truth.isManual
         ? offer.manualInventoryMetadata?.scheduleStatus || 'PENDING_OPERATOR_CONFIRMATION'
-        : truth.isDemo
-          ? 'DEMO_ILLUSTRATIVE'
-          : offer.manualInventoryMetadata?.scheduleStatus || 'PUBLISHED',
+        : truth.isSandbox
+          ? 'SANDBOX_QUOTE'
+          : truth.isDemo
+            ? 'DEMO_ILLUSTRATIVE'
+            : offer.manualInventoryMetadata?.scheduleStatus || 'PUBLISHED',
       fareFamilyCode: selectedFamilyCode,
       fareFamilyName: selectedFamilyName,
       travellerCounts: { adults, children, infants },
@@ -210,6 +236,7 @@ export class FlightTripBucketService {
           }
         : undefined,
       currency: offer.price.currency,
+      ...(truth.isSandbox ? { amountMinor: finalPriceMinor, priceStatus: 'quoted' as const } : {}),
       revalidationStatus: 'NOT_REVALIDATED',
       confirmationMode: truth.isLive
         ? 'INSTANT_CONFIRM'
@@ -271,13 +298,20 @@ export class FlightTripBucketService {
     const requiresDeskConfirmation =
       existing.confirmationMode === 'REQUEST_TO_CONFIRM' ||
       existing.inventoryMode === 'demo_fixture' ||
-      existing.inventoryMode === 'manual_request';
+      existing.inventoryMode === 'manual_request' ||
+      existing.inventoryMode === 'sandbox_test';
 
     existing.revalidationStatus = result.status;
     existing.revalidatedAt = result.revalidatedAt;
 
     if (result.status === 'UNCHANGED') {
-      if (requiresDeskConfirmation) {
+      if (existing.inventoryMode === 'sandbox_test') {
+        existing.state = 'needs_action';
+        existing.holdStatusText = 'Duffel sandbox quote revalidated — no live seat hold';
+        existing.actionRequiredText =
+          'Duffel TEST MODE quote is current. Create an explicit sandbox test order when ready; no live ticket or payment is created.';
+        existing.primaryActionLabel = 'Create Sandbox Test Order';
+      } else if (requiresDeskConfirmation) {
         existing.state = 'needs_action';
         existing.holdStatusText =
           existing.inventoryMode === 'demo_fixture'
@@ -300,6 +334,11 @@ export class FlightTripBucketService {
       existing.state = 'price_changed';
       existing.previousPriceLkr = existing.priceLkr;
       existing.priceLkr = Math.round(result.newPriceMinor / 100);
+      if (existing.inventoryMode === 'sandbox_test') {
+        // Sandbox quotes stay in their supplier currency. Keep the displayed
+        // amount in sync with the revalidated total rather than the LKR shadow.
+        existing.amountMinor = result.newPriceMinor;
+      }
       existing.holdStatusText = requiresDeskConfirmation
         ? 'Estimate updated — desk confirmation still required'
         : 'Price updated by airline';

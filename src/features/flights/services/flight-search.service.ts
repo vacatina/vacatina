@@ -19,10 +19,12 @@ import type {
 import type { IFlightAdapter } from '../adapters/flight-adapter.interface.ts';
 import { ManualFlightAdapter } from '../adapters/manual-flight.adapter.ts';
 import { SupplierApiFlightAdapter } from '../adapters/supplier-api-flight.adapter.ts';
+import { duffelSandboxFlightAdapter } from '../adapters/duffel-sandbox-flight.adapter.ts';
 import { findAirportByCode } from '../data/airports.ts';
 
 export class FlightSearchService {
   private adapters: IFlightAdapter[] = [];
+  private sandboxAdapter: IFlightAdapter = duffelSandboxFlightAdapter;
 
   constructor() {
     // Register canonical adapters
@@ -121,6 +123,11 @@ export class FlightSearchService {
       setError('travellers', 'Total passengers cannot exceed 9 per online booking.');
     }
 
+    // 7. Duffel TEST MODE lane is one-way/return only in this phase.
+    if (req.inventorySource === 'sandbox_test' && req.tripType === 'multi_city') {
+      setError('tripType', 'Duffel TEST MODE search supports one-way and return journeys in this phase.');
+    }
+
     return {
       isValid: Object.keys(errors).length === 0,
       errors,
@@ -139,8 +146,10 @@ export class FlightSearchService {
   ): Promise<FlightSearchResponse> {
     const searchTimestamp = new Date().toISOString();
 
-    // Query adapters in parallel
-    const adapterPromises = this.adapters.map(a => a.search(request));
+    // Query adapters in parallel. Sandbox test inventory is an exclusive lane:
+    // demo fixtures and manual request-to-book results are never mixed into it.
+    const adapters = request.inventorySource === 'sandbox_test' ? [this.sandboxAdapter] : this.adapters;
+    const adapterPromises = adapters.map(a => a.search(request));
     const adapterResults = await Promise.all(adapterPromises);
 
     const sourcesQueried: FlightSearchResponse['sourcesQueried'] = [];
@@ -322,11 +331,18 @@ export class FlightSearchService {
    * Retrieves single offer across all adapters.
    */
   public async getOfferById(offerId: string): Promise<CanonicalFlightOffer | null> {
+    if (this.isSandboxOfferId(offerId)) {
+      return this.sandboxAdapter.getOfferById(offerId);
+    }
     for (const adapter of this.adapters) {
       const offer = await adapter.getOfferById(offerId);
       if (offer) return offer;
     }
     return null;
+  }
+
+  private isSandboxOfferId(offerId: string): boolean {
+    return offerId.includes('-off_') || offerId.startsWith('off_');
   }
 
   /**
@@ -336,6 +352,9 @@ export class FlightSearchService {
     offerId: string,
     configuration?: FlightConfigurationSelection
   ): Promise<FlightRevalidationResult> {
+    if (this.isSandboxOfferId(offerId)) {
+      return this.sandboxAdapter.revalidateOffer(offerId, configuration);
+    }
     for (const adapter of this.adapters) {
       const offer = await adapter.getOfferById(offerId);
       if (offer) {
@@ -360,6 +379,9 @@ export class FlightSearchService {
    * Retrieves optional ancillaries for an offer.
    */
   public async getAncillaries(offerId: string): Promise<FlightOptionalService[]> {
+    if (this.isSandboxOfferId(offerId)) {
+      return this.sandboxAdapter.getAncillaries(offerId);
+    }
     for (const adapter of this.adapters) {
       const offer = await adapter.getOfferById(offerId);
       if (offer) {

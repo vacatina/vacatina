@@ -5,7 +5,11 @@ import type { BookingSagaService } from '../services/booking-saga.service.ts';
 import type { PaymentGatewayService } from '../services/payment-gateway.service.ts';
 import { globalUnifiedInventory } from '../inventory/unified-inventory.service.ts';
 import { isSeedOffer } from '../inventory/commercial-truth.ts';
-import { customerOffer } from './customer-offer.ts';
+import { customerOffer, customerSandboxOffer } from './customer-offer.ts';
+import {
+  DuffelSandboxError,
+  getDuffelSandboxService
+} from '../inventory/suppliers/duffel/duffel-sandbox.service.ts';
 
 const products = new Set(['flights','hotels','visa','packages','cars','activities','sightseeing','rails','cruises','insurance']);
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store' } });
@@ -40,6 +44,101 @@ export async function handleCustomerRoutes(request: Request, context: SecurityCo
     try { const value = await request.json(); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); return value; }
     catch { throw Object.assign(new Error('Provide a valid JSON object.'), {status:400,code:'INVALID_JSON'}); }
   };
+
+  /**
+   * Duffel TEST MODE (sandbox-only) customer journey. These routes are kept
+   * separate from the production search/offer/trip-bucket routes so test
+   * inventory can never be blended into sellable production results.
+   */
+  if (path.startsWith('/api/v1/flights/sandbox')) {
+    const sandbox = getDuffelSandboxService();
+    const sandboxFail = (error: unknown) => {
+      if (error instanceof DuffelSandboxError) return fail(error.status, error.code, error.message);
+      return fail(502, 'SANDBOX_UNAVAILABLE', 'The Duffel TEST MODE service could not complete this request.');
+    };
+    try {
+      if (path === '/api/v1/flights/sandbox/status' && method === 'GET') {
+        return json({ ...sandbox.status(), timestamp: new Date().toISOString() });
+      }
+      if (path === '/api/v1/flights/sandbox/search' && method === 'POST') {
+        const input = await body();
+        const result = await sandbox.search({
+          origin: input.origin,
+          destination: input.destination,
+          departureDate: input.departureDate,
+          returnDate: input.returnDate,
+          tripType: input.tripType,
+          adults: input.adults,
+          children: input.children,
+          infants: input.infants,
+          cabinClass: input.cabinClass,
+          currency: input.currency
+        });
+        return json({
+          sandbox: true,
+          environment: 'SANDBOX',
+          liveMode: false,
+          nonProduction: true,
+          offerRequestId: result.offerRequestId,
+          totalResults: result.offers.length,
+          offers: result.offers.map(customerSandboxOffer),
+          warnings: result.offers.length ? [] : ['Duffel TEST MODE returned no matching sandbox offers for this search.']
+        });
+      }
+      const offerMatch = path.match(/^\/api\/v1\/flights\/sandbox\/offers\/([^/]+)(\/(revalidate|seat-maps|quote))?$/);
+      if (offerMatch) {
+        const offerId = decodeURIComponent(offerMatch[1]);
+        const supplierOfferId = url.searchParams.get('supplierOfferId') || undefined;
+        if (!offerMatch[2] && method === 'GET') {
+          const offer = await sandbox.getOffer(offerId, supplierOfferId);
+          return json({ offerId: offer.canonicalOfferId, sandbox: true, liveMode: false, offer: customerSandboxOffer(offer) });
+        }
+        if (offerMatch[3] === 'revalidate' && method === 'POST') {
+          const result = await sandbox.revalidate(offerId, supplierOfferId);
+          return json({
+            offerId,
+            status: result.status,
+            priceChanged: result.status === 'PRICE_CHANGED',
+            currentPrice: result.newPriceMinor ?? 0,
+            previousPrice: result.previousPriceMinor ?? result.newPriceMinor ?? 0,
+            message: result.message,
+            offer: result.updatedOffer ? customerSandboxOffer(result.updatedOffer) : undefined,
+            checkedAt: new Date().toISOString()
+          });
+        }
+        if (offerMatch[3] === 'seat-maps' && method === 'GET') {
+          const maps = await sandbox.seatMaps(offerId, supplierOfferId);
+          return json({ offerId, sandbox: true, liveMode: false, seatMaps: maps });
+        }
+        if (offerMatch[3] === 'quote' && method === 'POST') {
+          const input = await body();
+          const quote = await sandbox.quote({
+            offerId,
+            supplierOfferId,
+            services: input.services
+          });
+          return json(quote);
+        }
+        return fail(405, 'METHOD_NOT_ALLOWED', 'This sandbox action is not supported.');
+      }
+      if (path === '/api/v1/flights/sandbox/orders' && method === 'POST') {
+        if (!sessionId) return fail(401, 'SESSION_REQUIRED', 'Start a travel session before creating a sandbox order.');
+        const input = await body();
+        const ownerId = context?.userId ? `user:${context.userId}` : String(sessionId);
+        const result = await sandbox.createOrder({
+          offerId: input.offerId,
+          supplierOfferId: input.supplierOfferId,
+          passengers: input.passengers,
+          services: input.services,
+          acceptedPriceMinor: input.acceptedPriceMinor
+        }, ownerId, request.headers.get('x-idempotency-key') || '');
+        return json(result, 201);
+      }
+      return fail(404, 'SANDBOX_ROUTE_NOT_FOUND', 'This Duffel TEST MODE action is not available.');
+    } catch (error) {
+      return sandboxFail(error);
+    }
+  }
 
   if ((path === '/api/v1/search' || path.startsWith('/api/v1/search/')) && method === 'POST') {
     const input = await body();

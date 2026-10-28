@@ -1,6 +1,12 @@
 /* ============================================================================
  * Vacatina Duffel NDC / Amadeus Flight Supplier Adapter
  * Authority: docs/12_UNIFIED_INVENTORY_AND_SUPPLIER_ARCHITECTURE.md (Q1/Q2/Q9/Q10/Q11)
+ *
+ * Phase 16: real Duffel TEST MODE search / offer retrieval / revalidation.
+ * - Test-mode offers are always SANDBOX + QUOTE_ONLY, never production-live.
+ * - A configured sandbox token never falls back to fabricated demo offers.
+ * - The legacy deterministic demo engine remains available only when test mode
+ *   is not explicitly enabled (preserves existing fixture-era tests/demos).
  * ============================================================================ */
 
 import { BaseSupplierAdapter, FlightSupplierAdapter } from './base.adapter.ts';
@@ -15,35 +21,102 @@ import type {
   RevalidationResult,
   SearchQueryCriteria
 } from '../types.ts';
+import type { FlightProductExtension, FlightServiceEntity, FlightSliceEntity } from '../product-extensions.ts';
 import { PricingPrecedenceService } from '../pricing-precedence.service.ts';
 import { DeduplicationService } from '../deduplication.service.ts';
+import {
+  DuffelApiError,
+  DuffelClient,
+  type DuffelCreateOrderInput,
+  type DuffelErrorCategory,
+  type DuffelOffer,
+  type DuffelOrder,
+  type DuffelSeatMap
+} from '../suppliers/duffel/duffel-client.ts';
+import { getDuffelSandboxClient } from '../suppliers/duffel/duffel-runtime.ts';
 
 export interface RawDuffelFlightOffer {
   id: string; // "off_0000A..."
   total_amount: string; // "320.00"
   total_currency: string; // "USD"
+  live_mode?: boolean;
   slices: Array<{
-    origin: { iata_code: string; city_name: string };
+    id?: string;
+    fare_brand_name?: string;
+    origin: { iata_code: string; city_name: string; country_name?: string };
     destination: { iata_code: string; city_name: string; country_name?: string };
-    departure_datetime: string; // ISO
-    arrival_datetime: string;   // ISO
-    duration: string;           // "PT4H30M"
+    departure_datetime?: string; // legacy alias
+    arrival_datetime?: string;   // legacy alias
+    departing_at?: string;
+    arriving_at?: string;
+    duration?: string;           // "PT4H30M"
     segments: Array<{
+      id?: string;
       marketing_carrier: { iata_code: string; name: string };
       marketing_carrier_flight_number: string;
-      aircraft?: { name: string };
-      passengers: Array<{
+      operating_carrier?: { iata_code: string; name: string };
+      origin?: { iata_code: string; city_name?: string; name?: string };
+      destination?: { iata_code: string; city_name?: string; name?: string };
+      origin_terminal?: string;
+      destination_terminal?: string;
+      departing_at?: string;
+      arriving_at?: string;
+      duration?: string;
+      aircraft?: { name?: string };
+      passengers?: Array<{
+        passenger_id?: string;
         cabin_class: 'economy' | 'premium_economy' | 'business' | 'first';
+        cabin_class_marketing_name?: string;
+        fare_basis_code?: string;
         baggages?: Array<{ type: string; quantity: number }>;
       }>;
     }>;
   }>;
-  expires_at: string;
+  expires_at?: string;
   payment_requirements?: {
-    requires_instant_payment: boolean;
+    requires_instant_payment?: boolean;
     price_guarantee_expires_at?: string;
   };
+  conditions?: {
+    refund_before_departure?: { allowed: boolean; penalty_amount?: string; penalty_currency?: string };
+    change_before_departure?: { allowed: boolean; penalty_amount?: string; penalty_currency?: string };
+  };
+  passengers?: Array<{ id: string; type: 'adult' | 'child' | 'infant_without_seat'; given_name?: string; family_name?: string; age?: number }>;
+  available_services?: Array<{
+    id: string;
+    type: string;
+    total_amount: string;
+    total_currency: string;
+    maximum_quantity?: number;
+    passenger_ids?: string[];
+    segment_ids?: string[];
+    metadata?: Record<string, unknown>;
+  }>;
+  owner?: { iata_code?: string; name?: string };
 }
+
+export interface PreparedSandboxOrder {
+  supplierOfferId: string;
+  liveMode: false;
+  totalAmount: string;
+  totalMinor: number;
+  currency: string;
+  expiresAt?: string;
+  canonicalOffer: CanonicalOfferEntity;
+  passengers: Array<{ id: string; type: 'adult' | 'child' | 'infant_without_seat' }>;
+}
+
+export interface FlightsDuffelAdapterOptions {
+  environment?: 'sandbox' | 'production';
+  apiToken?: string;
+  strictRealSupplierOnly?: boolean;
+  /** Explicit Phase 16 sandbox activation. Never inferred from a raw token. */
+  enableTestMode?: boolean;
+  /** Injectable client for deterministic tests / controlled verification. */
+  client?: DuffelClient;
+}
+
+const DEFAULT_TEST_PASSENGER_AGES = { child: 8, infant: 1 } as const;
 
 function extractAirport(raw?: string, defaultCode = 'CMB'): { code: string; city: string; country: string } {
   if (!raw) {
@@ -86,6 +159,25 @@ function extractAirport(raw?: string, defaultCode = 'CMB'): { code: string; city
     return { code: match[1], city: raw.replace(/\(.*?\)/g, '').trim(), country: 'International' };
   }
   return { code: raw.slice(0, 3).toUpperCase(), city: raw, country: 'International' };
+}
+
+function parseIsoDurationMinutes(value?: string): number {
+  if (!value) return 0;
+  const match = /^P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?/.exec(value);
+  if (!match) return 0;
+  return (Number(match[1] || 0) * 24 * 60) + (Number(match[2] || 0) * 60) + Number(match[3] || 0);
+}
+
+function minorFromAmount(value: string | undefined): number {
+  const amount = Number(value);
+  return Number.isFinite(amount) ? Math.round(amount * 100) : 0;
+}
+
+function cabinClassFrom(value?: string): 'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST' {
+  if (value === 'business') return 'BUSINESS';
+  if (value === 'first') return 'FIRST';
+  if (value === 'premium_economy') return 'PREMIUM_ECONOMY';
+  return 'ECONOMY';
 }
 
 /**
@@ -142,14 +234,13 @@ export function detectDuffelEnvironment(
   };
 }
 
-export interface FlightsDuffelAdapterOptions {
-  environment?: 'sandbox' | 'production';
-  apiToken?: string;
-  strictRealSupplierOnly?: boolean;
-}
-
 export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightOffer> {
   private knownOffers: Map<string, CanonicalOfferEntity> = new Map();
+  private offerRequestByOfferId: Map<string, string> = new Map();
+  private lastSearchError?: { code: string; message: string; category?: DuffelErrorCategory };
+  private lastOfferRequestId?: string;
+  private readonly testModeEnabled: boolean;
+  private readonly injectedClient?: DuffelClient;
   public readonly strictRealSupplierOnly: boolean;
 
   constructor(
@@ -159,11 +250,15 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
     let env: 'sandbox' | 'production' = 'sandbox';
     let token: string | undefined = apiToken;
     let strict = false;
+    let enableTestMode = false;
+    let injectedClient: DuffelClient | undefined;
 
     if (typeof environmentOrOptions === 'object' && environmentOrOptions !== null) {
       env = environmentOrOptions.environment || 'sandbox';
       token = environmentOrOptions.apiToken || apiToken;
       strict = Boolean(environmentOrOptions.strictRealSupplierOnly);
+      enableTestMode = Boolean(environmentOrOptions.enableTestMode || environmentOrOptions.client);
+      injectedClient = environmentOrOptions.client;
     } else if (typeof environmentOrOptions === 'string') {
       env = environmentOrOptions;
     }
@@ -179,10 +274,13 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
       sandboxBaseUrl: 'https://api.duffel.com/air',
       productionBaseUrl: 'https://api.duffel.com/air',
       apiKey: resolvedToken,
-      timeoutMs: 8000
+      timeoutMs: 15000,
+      integrationLifecycle: enableTestMode ? 'SANDBOX_ACTIVE' : 'SCAFFOLD'
     });
 
     this.strictRealSupplierOnly = strict;
+    this.testModeEnabled = enableTestMode;
+    this.injectedClient = injectedClient;
   }
 
   /**
@@ -196,38 +294,280 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
     return !this.isProduction;
   }
 
-  public normalize(raw: RawDuffelFlightOffer): CanonicalOfferEntity {
-    const slice = raw.slices[0];
-    const segment = slice?.segments[0];
-    const carrier = segment?.marketing_carrier;
-    const originIata = slice?.origin.iata_code || 'CMB';
-    const destIata = slice?.destination.iata_code || 'DXB';
-    const destCity = slice?.destination.city_name || 'Dubai';
-    const destCountry = slice?.destination.country_name || 'United Arab Emirates';
-    const cabin = segment?.passengers[0]?.cabin_class || 'economy';
-    const flightNumber = `${carrier?.iata_code || 'UL'}-${segment?.marketing_carrier_flight_number || '225'}`;
+  public get isTestModeEnabled(): boolean {
+    return this.testModeEnabled;
+  }
 
-    // Calculate raw cost in integer minor currency units
-    const rawCostMinor = Math.round(parseFloat(raw.total_amount) * 100);
-    const rawCurrency = raw.total_currency || 'USD';
+  public getLastSearchError(): { code: string; message: string; category?: DuffelErrorCategory } | undefined {
+    return this.lastSearchError ? { ...this.lastSearchError } : undefined;
+  }
 
-    // Apply 4-layer pricing precedence
-    const pricing = PricingPrecedenceService.calculatePricing({
-      productType: 'flights',
-      rawSupplierCostMinor: rawCostMinor,
-      rawCurrency,
-      targetCurrency: rawCurrency
+  public getLastOfferRequestId(): string | undefined {
+    return this.lastOfferRequestId;
+  }
+
+  private client(): DuffelClient | undefined {
+    if (this.injectedClient) return this.injectedClient;
+    if (!this.testModeEnabled) return undefined;
+    return getDuffelSandboxClient();
+  }
+
+  public resolveSupplierOfferId(offerId: string): string | undefined {
+    if (offerId.startsWith('off_')) return offerId;
+    // Test-mode canonical IDs preserve the raw Duffel offer id after the route,
+    // which makes offer retrieval/revalidation survive a process restart.
+    const reversible = /^vct-fl-duffel-[a-z0-9]{3}-[a-z0-9]{3}-(off_[A-Za-z0-9_]+)$/.exec(offerId);
+    if (reversible) return reversible[1];
+    const known = this.getOffer(offerId);
+    const metadata = known?.sourceMetadata as Record<string, unknown> | undefined;
+    const rawId = typeof metadata?.duffelOfferId === 'string' ? metadata.duffelOfferId : undefined;
+    return rawId?.startsWith('off_') ? rawId : undefined;
+  }
+
+  public async fetchOfferFromSupplier(offerId: string): Promise<CanonicalOfferEntity | undefined> {
+    const client = this.client();
+    const rawId = this.resolveSupplierOfferId(offerId);
+    if (!client || !rawId) return undefined;
+    const response = await client.getOffer(rawId, true);
+    if (response.data.live_mode !== false) {
+      throw new Error('Duffel returned a live-mode offer; TEST MODE refuses to expose it.');
+    }
+    return this.normalize(response.data as unknown as RawDuffelFlightOffer, {
+      offerRequestId: this.offerRequestByOfferId.get(response.data.id)
     });
+  }
+
+  public async fetchSeatMaps(offerId: string): Promise<DuffelSeatMap[]> {
+    const client = this.client();
+    const rawId = this.resolveSupplierOfferId(offerId);
+    if (!client || !rawId) return [];
+    const response = await client.getSeatMaps(rawId);
+    return response.data;
+  }
+
+  /**
+   * Re-prices a test-mode offer with the intended services before an order.
+   * This is the authoritative amount used for the sandbox balance payment.
+   */
+  public async prepareSandboxOrder(
+    offerId: string,
+    services: Array<{ id: string; quantity: number }>
+  ): Promise<PreparedSandboxOrder | undefined> {
+    if (!this.testModeEnabled) {
+      throw new Error('prepareSandboxOrder is only available in Duffel TEST MODE.');
+    }
+    const client = this.client();
+    const rawId = this.resolveSupplierOfferId(offerId);
+    if (!client || !rawId) return undefined;
+    const existing = this.getOffer(offerId);
+    const currency = existing?.pricing.currency || 'USD';
+    const response = await client.priceOffer(rawId, { currency, services });
+    const raw = response.data;
+    if (raw.live_mode !== false) {
+      throw new Error('Duffel returned a live-mode offer during sandbox pricing.');
+    }
+    if (raw.expires_at && Date.parse(raw.expires_at) <= Date.now()) {
+      throw new DuffelApiError({ status: 409, type: 'invalid_state_error', code: 'offer_expired', category: 'CONFLICT' });
+    }
+    const normalized = this.normalize(raw as unknown as RawDuffelFlightOffer, {
+      offerRequestId: this.offerRequestByOfferId.get(raw.id)
+    });
+    const amount = Number(raw.total_amount);
+    return {
+      supplierOfferId: raw.id,
+      liveMode: false,
+      totalAmount: raw.total_amount,
+      totalMinor: Number.isFinite(amount) ? Math.round(amount * 100) : normalized.pricing.finalSellingPriceMinor,
+      currency: raw.total_currency || normalized.pricing.currency,
+      expiresAt: raw.expires_at,
+      canonicalOffer: normalized,
+      passengers: (raw.passengers || []).map(passenger => ({
+        id: passenger.id,
+        type: passenger.type
+      }))
+    };
+  }
+
+  /**
+   * Creates the Duffel sandbox order. The caller owns idempotency and must not
+   * invoke this again after an ambiguous outcome.
+   */
+  public async createSandboxOrder(input: DuffelCreateOrderInput): Promise<DuffelOrder> {
+    if (!this.testModeEnabled) {
+      throw new Error('Duffel sandbox orders require TEST MODE.');
+    }
+    const client = this.client();
+    if (!client) throw new Error('Duffel TEST MODE client is not configured.');
+    const response = await client.createOrder(input);
+    return response.data;
+  }
+
+  public normalize(raw: RawDuffelFlightOffer, options: { offerRequestId?: string } = {}): CanonicalOfferEntity {
+    const firstSlice = raw.slices[0];
+    const firstSegment = firstSlice?.segments[0];
+    const carrier = firstSegment?.marketing_carrier;
+    const operatingCarrier = firstSegment?.operating_carrier || carrier;
+    const originIata = firstSlice?.origin.iata_code || firstSegment?.origin?.iata_code || 'CMB';
+    const destIata = firstSlice?.destination.iata_code || firstSegment?.destination?.iata_code || 'DXB';
+    const destCity = firstSlice?.destination.city_name || firstSegment?.destination?.city_name || 'Dubai';
+    const destCountry = firstSlice?.destination.country_name || 'United Arab Emirates';
+    const originCity = firstSlice?.origin.city_name || firstSegment?.origin?.city_name || originIata;
+    const cabin = firstSegment?.passengers?.[0]?.cabin_class || 'economy';
+    const fareBrandName = firstSlice?.fare_brand_name;
+    const flightNumber = `${carrier?.iata_code || 'UL'}-${firstSegment?.marketing_carrier_flight_number || '225'}`;
+    const departureAt = firstSlice?.departure_datetime || firstSlice?.departing_at || new Date().toISOString();
+    const arrivalAt = firstSlice?.arrival_datetime || firstSlice?.arriving_at || departureAt;
+
+    const rawCostMinor = minorFromAmount(raw.total_amount);
+    const rawCurrency = raw.total_currency || 'USD';
+    const isTestMode = this.testModeEnabled;
+
+    if (isTestMode && raw.live_mode !== false) {
+      throw new Error('Duffel TEST MODE offers must have live_mode = false.');
+    }
+
+    // Sandbox test-mode quotes use the supplier total with no commercial markup so
+    // the displayed quote and the sandbox order amount agree exactly.
+    const pricing = isTestMode
+      ? PricingPrecedenceService.calculatePricing({
+          productType: 'flights',
+          rawSupplierCostMinor: rawCostMinor,
+          rawCurrency,
+          targetCurrency: rawCurrency,
+          manualOverrideMinor: rawCostMinor,
+          overrideReason: 'Duffel TEST MODE supplier total (no commercial markup)'
+        })
+      : PricingPrecedenceService.calculatePricing({
+          productType: 'flights',
+          rawSupplierCostMinor: rawCostMinor,
+          rawCurrency,
+          targetCurrency: rawCurrency
+        });
 
     const rawSuffix = raw.id.startsWith('off_') ? raw.id.slice(4).replace(/^sbox_/, '') : raw.id;
-    const offerId = `vct-fl-duffel-${originIata.toLowerCase()}-${destIata.toLowerCase()}-${rawSuffix.toLowerCase()}`;
-    const expiresAtIso = raw.expires_at || new Date(Date.now() + 900000).toISOString();
+    const offerId = isTestMode
+      ? `vct-fl-duffel-${originIata.toLowerCase()}-${destIata.toLowerCase()}-${raw.id}`
+      : `vct-fl-duffel-${originIata.toLowerCase()}-${destIata.toLowerCase()}-${rawSuffix.toLowerCase()}`;
+    const expiresAtIso = raw.expires_at || new Date(Date.now() + 1800000).toISOString();
 
-    const apiKey = this.getCanonicalToken();
-    const isLiveCredential = Boolean(apiKey && (this.isProduction || apiKey.startsWith('duffel_live_')));
-    const lifecycle: ProviderLifecycle = apiKey
-      ? (isLiveCredential ? 'PRODUCTION_LIVE' : 'SANDBOX_CONNECTED')
-      : 'MOCK';
+    const knownToken = this.getCanonicalToken();
+    const isLiveCredential = Boolean(!isTestMode && knownToken && (this.isProduction || knownToken.startsWith('duffel_live_')));
+    const lifecycle: ProviderLifecycle = isTestMode
+      ? 'SANDBOX_CONNECTED'
+      : knownToken
+        ? (isLiveCredential ? 'PRODUCTION_LIVE' : 'SANDBOX_CONNECTED')
+        : 'MOCK';
+
+    const slices: FlightSliceEntity[] = (raw.slices || []).map((slice, sliceIndex) => {
+      const sliceSegments = slice.segments || [];
+      const mappedSegments = sliceSegments.map((segment, segmentIndex) => ({
+        segmentId: segment.id || `seg_${raw.id}_${sliceIndex}_${segmentIndex}`,
+        carrierCode: segment.marketing_carrier?.iata_code || carrier?.iata_code || 'UL',
+        carrierName: segment.marketing_carrier?.name || carrier?.name || 'Airline',
+        operatingCarrierCode: segment.operating_carrier?.iata_code || segment.marketing_carrier?.iata_code,
+        operatingCarrierName: segment.operating_carrier?.name || segment.marketing_carrier?.name,
+        flightNumber: `${segment.marketing_carrier?.iata_code || carrier?.iata_code || 'UL'}-${segment.marketing_carrier_flight_number || firstSegment?.marketing_carrier_flight_number || '225'}`,
+        aircraftModel: segment.aircraft?.name || firstSegment?.aircraft?.name || 'Commercial Jet',
+        originIata: segment.origin?.iata_code || slice.origin.iata_code || originIata,
+        originTerminal: segment.origin_terminal,
+        destinationIata: segment.destination?.iata_code || slice.destination.iata_code || destIata,
+        destinationTerminal: segment.destination_terminal,
+        departureTimeIso: segment.departing_at || slice.departing_at || slice.departure_datetime || departureAt,
+        arrivalTimeIso: segment.arriving_at || slice.arriving_at || slice.arrival_datetime || arrivalAt,
+        durationMinutes: parseIsoDurationMinutes(segment.duration) || parseIsoDurationMinutes(slice.duration) || 270,
+        cabinClass: cabinClassFrom(segment.passengers?.[0]?.cabin_class || cabin),
+        bookingClass: segment.passengers?.[0]?.fare_basis_code,
+        baggage: segment.passengers?.[0]?.baggages?.map(bag => ({ type: bag.type, quantity: bag.quantity }))
+      }));
+      return {
+        sliceId: slice.id,
+        sliceIndex,
+        originIata: slice.origin.iata_code || originIata,
+        originCity: slice.origin.city_name || originCity,
+        destinationIata: slice.destination.iata_code || destIata,
+        destinationCity: slice.destination.city_name || destCity,
+        departureTimeIso: slice.departing_at || slice.departure_datetime || departureAt,
+        arrivalTimeIso: slice.arriving_at || slice.arrival_datetime || arrivalAt,
+        durationMinutes: parseIsoDurationMinutes(slice.duration) || mappedSegments.reduce((sum, segment) => sum + segment.durationMinutes, 0),
+        fareBrandName: slice.fare_brand_name,
+        segments: mappedSegments
+      };
+    });
+
+    const segments = slices.flatMap(slice => slice.segments);
+    const checkedBaggage = Math.max(0, ...segments.flatMap(segment => (segment.baggage || []).filter(bag => bag.type === 'checked').map(bag => bag.quantity)));
+    const cabinBaggage = Math.max(0, ...segments.flatMap(segment => (segment.baggage || []).filter(bag => bag.type !== 'checked').map(bag => bag.quantity)));
+    const services: FlightServiceEntity[] = (raw.available_services || []).map(service => ({
+      serviceId: service.id,
+      type: service.type,
+      name: typeof service.metadata?.type === 'string' ? `${service.type} (${service.metadata.type})` : service.type,
+      description: typeof service.metadata?.maximum_weight_kg === 'number'
+        ? `Up to ${service.metadata.maximum_weight_kg} kg`
+        : service.type,
+      priceMinor: minorFromAmount(service.total_amount),
+      currency: service.total_currency,
+      maximumQuantity: service.maximum_quantity,
+      passengerIds: service.passenger_ids,
+      segmentIds: service.segment_ids
+    }));
+
+    const refund = raw.conditions?.refund_before_departure;
+    const change = raw.conditions?.change_before_departure;
+    const isRefundable = Boolean(refund?.allowed);
+    const isChangeable = Boolean(change?.allowed);
+
+    const flightExtension: FlightProductExtension = {
+      fareFamily: fareBrandName || (cabin === 'business' ? 'Standard Business' : 'Standard Economy'),
+      cabinClass: cabinClassFrom(cabin),
+      ticketingDeadlineIso: expiresAtIso,
+      isRefundable,
+      isChangeable,
+      baggageAllowance: isTestMode
+        ? {
+            cabinBaggageKg: cabinBaggage > 0 ? 7 : 0,
+            checkedBaggageKg: checkedBaggage > 0 ? (cabin === 'business' ? 32 : 23) : 0,
+            pieceCount: checkedBaggage
+          }
+        : {
+            // Legacy deterministic demo fixtures have no baggage payload; preserve
+            // their historical standard allowances exactly.
+            cabinBaggageKg: 7,
+            checkedBaggageKg: cabin === 'business' ? 64 : 23,
+            pieceCount: cabin === 'business' ? 2 : 1
+          },
+      segments,
+      slices,
+      services,
+      passengers: (raw.passengers || []).map(passenger => ({
+        passengerId: passenger.id,
+        type: passenger.type
+      })),
+      conditions: {
+        refundable: isRefundable,
+        refundPenaltyMinor: refund?.penalty_amount ? minorFromAmount(refund.penalty_amount) : undefined,
+        refundPenaltyCurrency: refund?.penalty_currency,
+        changeable: isChangeable,
+        changePenaltyMinor: change?.penalty_amount ? minorFromAmount(change.penalty_amount) : undefined,
+        changePenaltyCurrency: change?.penalty_currency,
+        description: isTestMode
+          ? 'Duffel TEST MODE fare conditions. Sandbox only; no live ticket is issued.'
+          : 'Airline fare rules apply.'
+      },
+      ...(isTestMode
+        ? {
+            testMode: {
+              enabled: true as const,
+              environment: 'SANDBOX' as const,
+              liveMode: false as const,
+              supplier: 'Duffel' as const,
+              nonProduction: true as const,
+              offerRequestId: options.offerRequestId,
+              orderEndpoint: '/api/v1/flights/sandbox/orders'
+            },
+            offerRequestId: options.offerRequestId
+          }
+        : {})
+    };
 
     const offer: CanonicalOfferEntity = {
       canonicalOfferId: offerId,
@@ -236,55 +576,77 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
       listingKind: 'SELLABLE_INVENTORY',
       compositionType: 'SINGLE',
       fulfillmentMode: 'INSTANT',
-      environmentClass: isLiveCredential ? 'PRODUCTION' : 'SANDBOX',
-      sellability: isLiveCredential ? 'BOOKABLE' : 'QUOTE_ONLY',
+      environmentClass: isTestMode ? 'SANDBOX' : (isLiveCredential ? 'PRODUCTION' : 'SANDBOX'),
+      sellability: isTestMode ? 'QUOTE_ONLY' : (isLiveCredential ? 'BOOKABLE' : 'QUOTE_ONLY'),
       providerLifecycle: lifecycle,
       sourceType: 'API',
       supplierId: this.supplierId,
-      supplierName: `${carrier?.name || 'Airline'} via Duffel NDC`,
+      supplierName: `${carrier?.name || raw.owner?.name || 'Airline'} via Duffel NDC`,
       supplierOfferId: raw.id,
-      title: `${slice?.origin.city_name || originIata} to ${destCity} (${destIata})`,
-      subtitle: `${carrier?.name || 'Scheduled'} · ${flightNumber} · ${cabin.toUpperCase()}`,
+      title: `${originCity} to ${destCity} (${destIata})`,
+      subtitle: `${carrier?.name || 'Scheduled'} · ${flightNumber} · ${cabin.toUpperCase()}${isTestMode ? ' · TEST MODE' : ''}`,
       location: {
         city: destCity,
         country: destCountry,
         countryCode: destIata.slice(0, 2),
         iataCode: destIata
       },
-      availabilityStatus: isLiveCredential ? 'LIVE' : 'CACHED',
-      confirmationMode: 'INSTANT_CONFIRM',
-      bookingMode: 'INSTANT_BOOK',
+      availabilityStatus: isTestMode ? 'CACHED' : (isLiveCredential ? 'LIVE' : 'CACHED'),
+      confirmationMode: isTestMode ? 'REQUEST_TO_CONFIRM' : 'INSTANT_CONFIRM',
+      bookingMode: isTestMode ? 'REQUEST_TO_BOOK' : 'INSTANT_BOOK',
       pricing,
       freshness: {
         lastCheckedAtIso: new Date().toISOString(),
-        ttlSeconds: 900, // 15 min
+        ttlSeconds: isTestMode ? 1800 : 900,
         expiresAtIso,
         isStale: false,
-        revalidationEndpoint: `/api/v1/offers/${offerId}/revalidate`
+        revalidationEndpoint: isTestMode
+          ? `/api/v1/flights/sandbox/offers/${encodeURIComponent(offerId)}/revalidate`
+          : `/api/v1/offers/${encodeURIComponent(offerId)}/revalidate`
       },
-      inclusions: [
-        'Cabin baggage included (7kg)',
-        'Checked baggage allowance (23kg-30kg airline standard)',
-        'Complimentary in-flight dining & beverages'
-      ],
-      exclusions: [
-        'Preferred seat selection prior to online check-in',
-        'In-flight high-speed Wi-Fi access'
-      ],
-      cancellationPolicy: 'Airline fare rules apply. Non-refundable standard fare, changes subject to carrier penalty.',
+      inclusions: isTestMode
+        ? [
+            ...(cabinBaggage > 0 ? ['Cabin baggage included'] : []),
+            ...(checkedBaggage > 0 ? [`Checked baggage included (${checkedBaggage} piece${checkedBaggage === 1 ? '' : 's'})`] : []),
+            'Duffel sandbox test order only'
+          ]
+        : [
+            'Cabin baggage included (7kg)',
+            'Checked baggage allowance (23kg-30kg airline standard)',
+            'Complimentary in-flight dining & beverages'
+          ],
+      exclusions: isTestMode
+        ? ['Live airline ticket', 'Payment capture', 'Production booking']
+        : [
+            'Preferred seat selection prior to online check-in',
+            'In-flight high-speed Wi-Fi access'
+          ],
+      cancellationPolicy: isTestMode
+        ? 'Duffel TEST MODE fare conditions. Sandbox orders are non-production and no live ticket is issued.'
+        : 'Airline fare rules apply. Non-refundable standard fare, changes subject to carrier penalty.',
       pinAboveApi: false,
       deduplicationKey: '',
-      isSandboxSimulated: !isLiveCredential,
-      integrationLifecycle: isLiveCredential ? 'PRODUCTION_LIVE' : 'SCAFFOLD',
+      isSandboxSimulated: isTestMode ? true : !isLiveCredential,
+      integrationLifecycle: isTestMode ? 'SANDBOX_ACTIVE' : (isLiveCredential ? 'PRODUCTION_LIVE' : 'SCAFFOLD'),
       sourceMetadata: {
         duffelOfferId: raw.id,
-        airlineCode: carrier?.iata_code,
+        duffelOfferRequestId: options.offerRequestId,
+        airlineCode: carrier?.iata_code || raw.owner?.iata_code,
         flightNumber,
-        departureTime: slice?.departure_datetime,
-        arrivalTime: slice?.arrival_datetime,
+        departureTime: departureAt,
+        arrivalTime: arrivalAt,
         cabinClass: cabin,
-        isSandboxSimulated: !isLiveCredential,
-        managedContentEnabled: true
+        isSandboxSimulated: isTestMode ? true : !isLiveCredential,
+        managedContentEnabled: true,
+        ...(isTestMode
+          ? {
+              liveMode: false,
+              environment: 'SANDBOX',
+              testMode: true,
+              passengerIds: raw.passengers?.map(passenger => passenger.id) || [],
+              availableServiceIds: services.map(service => service.serviceId)
+            }
+          : {})
       },
       revalidationCapability: {
         canRevalidateOnline: true,
@@ -293,43 +655,32 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
       },
       productExtension: {
         productType: 'flights',
-        flight: {
-          fareFamily: cabin === 'business' ? 'Standard Business' : 'Standard Economy',
-          cabinClass: cabin.toUpperCase() as any,
-          ticketingDeadlineIso: expiresAtIso,
-          isRefundable: false,
-          isChangeable: true,
-          baggageAllowance: {
-            cabinBaggageKg: 7,
-            checkedBaggageKg: cabin === 'business' ? 64 : 23,
-            pieceCount: cabin === 'business' ? 2 : 1
-          },
-          segments: [{
-            segmentId: `seg_${raw.id}_0`,
-            carrierCode: carrier?.iata_code || 'UL',
-            carrierName: carrier?.name || 'Airline',
-            flightNumber,
-            aircraftModel: segment?.aircraft?.name || 'Airbus A330',
-            originIata,
-            originTerminal: '1',
-            destinationIata: destIata,
-            destinationTerminal: '3',
-            departureTimeIso: slice?.departure_datetime || new Date().toISOString(),
-            arrivalTimeIso: slice?.arrival_datetime || new Date().toISOString(),
-            durationMinutes: 270
-          }]
-        }
+        flight: flightExtension
       }
     };
+
+    if (isTestMode) {
+      offer.canonicalSourceType = 'SUPPLIER_API';
+      offer.sourceEnvironment = 'SANDBOX';
+      offer.canonicalBookingMode = 'REQUEST_TO_BOOK';
+      offer.currentAvailabilityMode = 'ON_REQUEST';
+      offer.currentPricingMode = 'INDICATIVE';
+      offer.commercialStatus = 'CANDIDATE_UNVERIFIED';
+    }
 
     offer.deduplicationKey = DeduplicationService.generateDeduplicationKey(offer);
     const finalized = this.applyCanonicalContractDefaults(offer);
 
     // Cache in known offers ledger
     this.knownOffers.set(finalized.canonicalOfferId, finalized);
-    this.knownOffers.set(finalized.supplierOfferId, finalized);
+    if (finalized.supplierOfferId) {
+      this.knownOffers.set(finalized.supplierOfferId, finalized);
+    }
     if (finalized.offerId) {
       this.knownOffers.set(finalized.offerId, finalized);
+    }
+    if (options.offerRequestId) {
+      this.offerRequestByOfferId.set(raw.id, options.offerRequestId);
     }
 
     return finalized;
@@ -346,8 +697,8 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
       }
     }
 
-    // Reconstruct deterministically if it matches the canonical pattern
-    if (offerId.startsWith('vct-fl-duffel-')) {
+    // Legacy reconstruction is only allowed for the deterministic demo engine.
+    if (!this.testModeEnabled && offerId.startsWith('vct-fl-duffel-')) {
       const parts = offerId.replace('vct-fl-duffel-', '').split('-');
       if (parts.length >= 2) {
         const originCode = parts[0].toUpperCase();
@@ -578,76 +929,155 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
   }
 
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {
-    const apiKey = this.getCanonicalToken();
+    this.lastSearchError = undefined;
+    this.lastOfferRequestId = undefined;
 
-    // Live HTTP Request to Duffel NDC API when credentials are present
-    if (apiKey) {
+    if (this.testModeEnabled) {
+      const client = this.client();
+      if (!client) {
+        this.lastSearchError = {
+          code: 'DUFFEL_TEST_MODE_DISABLED',
+          message: 'Duffel TEST MODE is not enabled or no sandbox credential is configured.'
+        };
+        return [];
+      }
+
       try {
-        const controller = new AbortController();
-        const timeoutMs = this.config.timeoutMs || 8000;
-        const timer = setTimeout(() => controller.abort(), timeoutMs);
-
+        const fallbackDate = new Date(Date.now() + 86400000 * 14).toISOString().slice(0, 10);
         const slices = (criteria.slices && criteria.slices.length > 0)
-          ? criteria.slices.map(s => ({
-              origin: extractAirport(s.origin).code,
-              destination: extractAirport(s.destination).code,
-              departure_date: s.departureDate || new Date(Date.now() + 86400000 * 14).toISOString().slice(0, 10)
+          ? criteria.slices.map(slice => ({
+              origin: extractAirport(slice.origin).code,
+              destination: extractAirport(slice.destination).code,
+              departure_date: slice.departureDate || fallbackDate
             }))
-          : [
-              {
-                origin: extractAirport(criteria.origin, 'CMB').code,
-                destination: extractAirport(criteria.destination, 'DXB').code,
-                departure_date: criteria.departureDate || new Date(Date.now() + 86400000 * 14).toISOString().slice(0, 10)
-              }
-            ];
+          : [{
+              origin: extractAirport(criteria.origin, 'CMB').code,
+              destination: extractAirport(criteria.destination, 'DXB').code,
+              departure_date: criteria.departureDate || fallbackDate
+            }];
 
-        const passengers: Array<{ type: 'adult' | 'child' | 'infant_without_seat' }> = [];
-        const adultsCount = Math.max(1, criteria.adults || 1);
-        for (let i = 0; i < adultsCount; i++) passengers.push({ type: 'adult' });
-        const childrenCount = criteria.children || 0;
-        for (let i = 0; i < childrenCount; i++) passengers.push({ type: 'child' });
-        const infantsCount = criteria.infants || 0;
-        for (let i = 0; i < infantsCount; i++) passengers.push({ type: 'infant_without_seat' });
+        const passengers: Array<{ type: 'adult' } | { type: 'child'; age: number } | { type: 'infant_without_seat'; age: number }> = [];
+        for (let index = 0; index < Math.max(1, criteria.adults || 1); index++) passengers.push({ type: 'adult' });
+        for (let index = 0; index < (criteria.children || 0); index++) passengers.push({ type: 'child', age: DEFAULT_TEST_PASSENGER_AGES.child });
+        for (let index = 0; index < (criteria.infants || 0); index++) passengers.push({ type: 'infant_without_seat', age: DEFAULT_TEST_PASSENGER_AGES.infant });
 
-        const response = await fetch(`${this.baseUrl}/offer_requests?return_offers=true`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Duffel-Version': 'v2',
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            data: {
-              slices,
-              passengers,
-              cabin_class: (criteria.cabinClass?.toLowerCase() as any) || 'economy'
-            }
-          }),
-          signal: controller.signal
+        const response = await client.createOfferRequest({
+          slices,
+          passengers,
+          ...(criteria.cabinClass
+            ? { cabin_class: criteria.cabinClass.toLowerCase() as 'economy' | 'premium_economy' | 'business' | 'first' }
+            : {})
         });
-        clearTimeout(timer);
 
-        if (response.ok) {
-          const json = await response.json();
-          const rawOffers: RawDuffelFlightOffer[] = json.data?.offers || [];
-          if (rawOffers.length > 0) {
-            return rawOffers.slice(0, 10).map(raw => this.normalize(raw));
-          }
-        } else {
-          // Log status safely without exposing secret tokens
-          console.warn(`[FlightsDuffelAdapter] Duffel API responded with HTTP ${response.status}`);
+        if (response.data.live_mode !== false) {
+          this.lastSearchError = {
+            code: 'LIVE_MODE_BLOCKED',
+            message: 'Duffel returned a live-mode search response. TEST MODE refuses to expose it.'
+          };
+          return [];
         }
-      } catch (err: any) {
-        console.warn(`[FlightsDuffelAdapter] Live network fetch failed: ${err.message}. Engaging controlled fallback.`);
+
+        this.lastOfferRequestId = response.data.id;
+        const rawOffers = Array.isArray(response.data.offers) ? response.data.offers : [];
+        return rawOffers
+          .filter(offer => offer.live_mode === false)
+          .slice(0, 20)
+          .map(raw => this.normalize(raw as unknown as RawDuffelFlightOffer, { offerRequestId: response.data.id }));
+      } catch (error) {
+        this.lastSearchError = error instanceof DuffelApiError
+          ? { code: error.code, message: error.message, category: error.category }
+          : { code: 'DUFFEL_SEARCH_FAILED', message: 'Duffel test-mode search could not be completed.' };
+        return [];
       }
     }
 
-    // Deterministic Sandbox/Mock Engine matching requested criteria
+    // Deterministic Sandbox/Mock Engine matching requested criteria (legacy demo path).
     return this.generateDeterministicOffers(criteria);
   }
 
   public async revalidate(supplierOfferId: string): Promise<RevalidationResult> {
+    if (this.testModeEnabled) {
+      const client = this.client();
+      const rawId = this.resolveSupplierOfferId(supplierOfferId);
+      if (!client) {
+        return {
+          offerId: supplierOfferId,
+          status: 'RECHECK_REQUIRED',
+          message: 'Duffel TEST MODE is not configured; this offer cannot be revalidated.'
+        };
+      }
+      if (!rawId) {
+        return {
+          offerId: supplierOfferId,
+          status: 'RECHECK_REQUIRED',
+          message: 'The Duffel offer reference could not be resolved. Search again.'
+        };
+      }
+
+      const existing = this.getOffer(supplierOfferId);
+      try {
+        const response = await client.getOffer(rawId, true);
+        if (response.data.live_mode !== false) {
+          return {
+            offerId: supplierOfferId,
+            status: 'UNAVAILABLE',
+            message: 'Duffel returned a live-mode offer. TEST MODE refuses to treat it as sandbox inventory.'
+          };
+        }
+        if (response.data.expires_at && new Date(response.data.expires_at).getTime() <= Date.now()) {
+          return {
+            offerId: supplierOfferId,
+            status: 'EXPIRED',
+            message: 'This Duffel test-mode offer has expired. Run a fresh search.'
+          };
+        }
+
+        const updated = this.normalize(response.data as unknown as RawDuffelFlightOffer, {
+          offerRequestId: this.offerRequestByOfferId.get(response.data.id)
+        });
+        const previousPriceMinor = existing?.pricing.finalSellingPriceMinor;
+        const newPriceMinor = updated.pricing.finalSellingPriceMinor;
+        if (previousPriceMinor !== undefined && previousPriceMinor !== newPriceMinor) {
+          return {
+            offerId: supplierOfferId,
+            status: 'PRICE_CHANGED',
+            updatedOffer: updated,
+            previousPriceMinor,
+            newPriceMinor,
+            message: 'Duffel test-mode fare changed. Review and accept the new sandbox quote.'
+          };
+        }
+        return {
+          offerId: supplierOfferId,
+          status: 'UNCHANGED',
+          updatedOffer: updated,
+          previousPriceMinor,
+          newPriceMinor,
+          message: 'Duffel test-mode offer revalidated (sandbox; no live inventory).'
+        };
+      } catch (error) {
+        if (error instanceof DuffelApiError) {
+          if (error.code === 'offer_expired') {
+            return {
+              offerId: supplierOfferId,
+              status: 'EXPIRED',
+              message: 'This Duffel test-mode offer expired. Run a fresh search.'
+            };
+          }
+          return {
+            offerId: supplierOfferId,
+            status: error.category === 'NOT_FOUND' || error.category === 'CONFLICT' ? 'UNAVAILABLE' : 'RECHECK_REQUIRED',
+            message: error.message
+          };
+        }
+        return {
+          offerId: supplierOfferId,
+          status: 'RECHECK_REQUIRED',
+          message: 'Duffel test-mode revalidation could not be completed.'
+        };
+      }
+    }
+
     const apiKey = this.getCanonicalToken();
     if (apiKey && supplierOfferId.startsWith('off_')) {
       try {
@@ -667,7 +1097,7 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
         clearTimeout(timer);
 
         if (response.ok) {
-          const json = await response.json();
+          const json = await response.json() as any;
           const raw = json.data;
 
           if (raw.expires_at && new Date(raw.expires_at).getTime() <= Date.now()) {
@@ -740,6 +1170,9 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
   }
 
   public async hold(offerId: string): Promise<BookingHoldResult> {
+    if (this.testModeEnabled) {
+      throw new Error('Duffel TEST MODE does not support holds. Create an explicit sandbox test order instead.');
+    }
     return {
       holdReference: `DUF-HLD-${offerId.slice(-6).toUpperCase()}`,
       expiresAtIso: new Date(Date.now() + 900000).toISOString(),
@@ -750,6 +1183,9 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
 
   public async confirm(bookingReference: string): Promise<BookingConfirmResult> {
     this.assertCanExecuteProductionBooking();
+    if (this.testModeEnabled) {
+      throw new Error('Duffel TEST MODE orders must use the dedicated sandbox order endpoint.');
+    }
     const apiKey = this.getCanonicalToken();
     const isLive = Boolean(this.isProduction && apiKey && apiKey.startsWith('duffel_live_'));
 
