@@ -395,12 +395,12 @@ export class FlightsSearchView {
                 this.isLoading
                   ? `
                 <div class="space-y-4" role="status" aria-label="Loading flights">
-                  <div class="h-44 bg-white rounded-2xl border border-gray-200 p-6 animate-pulse space-y-4">
+                  <div class="h-44 bg-white rounded-2xl border border-gray-200 p-6 animate-pulse space-y-4 transition-all duration-300">
                     <div class="h-4 bg-gray-200 rounded-md w-1/4"></div>
                     <div class="h-8 bg-gray-100 rounded-md w-3/4"></div>
                     <div class="h-4 bg-gray-200 rounded-md w-1/2"></div>
                   </div>
-                  <div class="h-44 bg-white rounded-2xl border border-gray-200 p-6 animate-pulse space-y-4">
+                  <div class="h-44 bg-white rounded-2xl border border-gray-200 p-6 animate-pulse space-y-4 transition-all duration-300">
                     <div class="h-4 bg-gray-200 rounded-md w-1/4"></div>
                     <div class="h-8 bg-gray-100 rounded-md w-3/4"></div>
                     <div class="h-4 bg-gray-200 rounded-md w-1/2"></div>
