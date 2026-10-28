@@ -467,7 +467,7 @@ export function buildProject() {
           'referrer-policy': 'strict-origin-when-cross-origin'
           , 'x-robots-tag': 'noindex, nofollow'
           , 'permissions-policy': 'camera=(), microphone=(), geolocation=()'
-          , 'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'"
+          , 'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.clerk.accounts.dev https://api.clerk.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'"
         },
         continue: true
       },
