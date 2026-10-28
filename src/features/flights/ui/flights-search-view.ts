@@ -168,7 +168,7 @@ export class FlightsSearchView {
     const paxSummary = `${req.travellers.adults} Adult${req.travellers.adults > 1 ? 's' : ''}${req.travellers.children > 0 ? `, ${req.travellers.children} Child` : ''} · ${req.cabinClass.charAt(0).toUpperCase() + req.cabinClass.slice(1)}`;
 
     container.innerHTML = `
-      <div id="flights-search-results-page" class="w-full bg-brand-surface min-h-screen text-brand-black pb-20">
+      <div id="flights-search-results-page" class="w-full bg-brand-surface min-h-screen text-brand-black pb-20 animate-fade-in">
         <h1 class="sr-only">Flight search results</h1>
         <!-- Sticky Top Summary & Modify Bar -->
         <header class="bg-white border-b border-gray-200 sticky top-16 z-30 shadow-xs">

@@ -139,7 +139,7 @@ export class FlightsHubView {
     });
 
     container.innerHTML = `
-      <div id="flights-hub-page" class="w-full bg-white text-brand-black pb-16">
+      <div id="flights-hub-page" class="w-full bg-white text-brand-black pb-16 animate-fade-in">
         <!-- Hero Header -->
         <section class="bg-brand-primary text-white pt-10 pb-16 px-4 sm:px-6 lg:px-8">
           <div class="max-w-6xl mx-auto">
@@ -151,7 +151,7 @@ export class FlightsHubView {
                   </svg>
                   Flights · Request-to-book preview
                 </span>
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-display">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-display animate-slide-up">
                   Find &amp; Configure Your Ideal Flight
                 </h1>
                 <p class="mt-2 text-sm sm:text-base text-white/80 max-w-2xl font-sans">
@@ -171,7 +171,7 @@ export class FlightsHubView {
             </div>
 
             <!-- Search Command Panel Container -->
-            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-2xl text-brand-black border border-gray-100">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-xl text-brand-black border border-gray-100 animate-slide-up">
               <!-- Trip Type Selector -->
               <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-5">
                 <div class="inline-flex p-1 bg-gray-100 rounded-xl" role="radiogroup" aria-label="Trip type selection">
@@ -266,7 +266,7 @@ export class FlightsHubView {
         </section>
 
         <!-- Popular Routes from Colombo Discovery -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 animate-slide-up">
           <div class="flex items-center justify-between mb-6">
             <div>
               <h2 class="text-xl sm:text-2xl font-bold font-display text-brand-black">Popular routes from Colombo</h2>
@@ -365,7 +365,7 @@ export class FlightsHubView {
         </section>
 
         <!-- Inventory Truth & Guidance Module -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 animate-slide-up">
           <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-200">
             <h3 class="text-lg font-bold font-display text-brand-black mb-1">How this build handles flight inventory</h3>
             <p class="text-xs text-brand-muted mb-4">No live supplier, seat hold, payment or ticketing is activated in this phase.</p>
