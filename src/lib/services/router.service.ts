@@ -460,6 +460,58 @@ export class CanonicalRouterService {
       return;
     }
 
+    // B2B Flights Portal Routes (separate authenticated portal)
+    if (path === '/b2b/flights') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/b2b-flights-search.ts').then(({ B2BFlightsSearchView }) => {
+        const view = new B2BFlightsSearchView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+    if (path === '/b2b/flights/quotation') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/b2b-flights-quotation.ts').then(({ B2BFlightsQuotationView }) => {
+        const view = new B2BFlightsQuotationView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+    if (path === '/b2b/flights/travellers') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/b2b-flights-travellers.ts').then(({ B2BFlightsTravellersView }) => {
+        const view = new B2BFlightsTravellersView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+    if (path === '/b2b/flights/review') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/b2b-flights-review.ts').then(({ B2BFlightsReviewView }) => {
+        const view = new B2BFlightsReviewView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+    if (path === '/b2b/flights/manage') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/b2b-flights-manage.ts').then(({ B2BFlightsManageView }) => {
+        const view = new B2BFlightsManageView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+
     // 2.2 Hotels Functional Product Hub & Search Routes (Phase 3.2)
     if (path === '/hotels') {
       hotelsHubView.prefillFromQuery(query);

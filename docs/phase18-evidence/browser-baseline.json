@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-28T14:30:41.684Z",
+  "timestamp": "2026-10-28T20:12:47.857Z",
   "version": "4.2.0-ultra-reconstructed-locked",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewportsTested": [
@@ -1575,6 +1575,81 @@
       "name": "Phase 17 — result semantics, display font, Visa tokens and singular counts @ 360",
       "passed": true,
       "details": "{\"flightHeading\":true,\"displayFont\":true,\"hotelHeading\":true,\"hotelCount\":true,\"visaCount\":true,\"noUndefinedGold\":true}"
+    },
+    {
+      "name": "Flights New Routes — Passenger Details @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Flight Trip Review @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Secure Checkout @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Booking Confirmation @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Manage Booking @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Passenger Details @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Flight Trip Review @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Secure Checkout @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Booking Confirmation @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Manage Booking @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Passenger Details @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Flight Trip Review @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Secure Checkout @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Booking Confirmation @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights New Routes — Manage Booking @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
     },
     {
       "name": "Delta Audit — Legal Disclosures & Granular Cookie Preferences Modal (Actionable, Inert Trap, Draft Status & Storage)",

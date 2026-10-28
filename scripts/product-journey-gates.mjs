@@ -261,6 +261,31 @@ export async function verifyHotels(cdp, assertCheck) {
 }
 
 /** Regression coverage for verified Phase 17 defects, without promoting fixture inventory. */
+export async function verifyFlightsNewRoutes(cdp, assertCheck) {
+  const widths = [1440, 768, 360];
+  for (const width of widths) {
+    await cdp.send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 768 });
+    const routes = [
+      { path: '/flights/passengers?adults=2&children=1', heading: 'Passenger Details' },
+      { path: '/flights/review', heading: 'Flight Trip Review' },
+      { path: '/flights/checkout', heading: 'Secure Checkout' },
+      { path: '/flights/confirmation', heading: 'Booking Confirmation' },
+      { path: '/flights/manage', heading: 'Manage Booking' },
+    ];
+    for (const route of routes) {
+      await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('${route.path}')`);
+      await new Promise(r => setTimeout(r, 300));
+      const result = await cdp.evaluate(`(() => {
+        const text = document.body.innerText;
+        const fits = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
+        return { heading: text.includes('${route.heading}'), fits };
+      })()`);
+      assertCheck(`Flights New Routes — ${route.heading} @ ${width}`, result.heading && result.fits, JSON.stringify(result));
+    }
+  }
+  await cdp.send('Emulation.clearDeviceMetricsOverride');
+}
+
 export async function verifyPhase17Acceptance(cdp, assertCheck) {
   for (const width of [1440, 768, 360]) {
     await cdp.setViewport(width, width === 768 ? 1024 : 900, width < 768);
