@@ -7,18 +7,39 @@ import { ReadinessError } from '../persistence/readiness-contracts.ts';
 
 const products = new Set(['flights','hotels','visa','packages','cars','rails','cruises','activities','sightseeing','insurance']);
 const keys = new Set(['destination','origin','departureDate','returnDate','checkIn','checkOut','adults','children','infants','rooms','applicants','applicantCount','citizenshipCountry','citizenshipCountryCode','residenceCountry','purpose','travelDate','serviceType','tripType','pickup','dropoff','pickupTime','returnTime','luggage','driverAge','cabinClass','roomType','boardBasis','selectedRoomId','selectedPlanId','selectedFareFamilyCode','timeSlot','language','ticketType','requestedCategory','cabinType','cabinPreference','departurePort','travellerAges','coverageOption','coveragePreference','policyReviewAcknowledged','durationDays','durationPreference','packageStyle','packageStylePreference','accommodationTier','vehicleCategory','itineraryPreference']);
+for(const key of ['hotelId','roomId','roomName','planId','rateName','boardBasisLabel','checkInDate','checkOutDate','nights','roomsCount','adultsCount','childrenCount','travelWindow','optionId'])keys.add(key);
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export function planningConfiguration(input: unknown): Record<string, string | number | boolean> {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return {};
   const entries = Object.entries(input).filter(([key, value]) => keys.has(key) && ['string','number','boolean'].includes(typeof value));
   if (entries.some(([, value]) => typeof value === 'number' && !Number.isFinite(value))) throw new ReadinessError('INVALID_CONFIGURATION', 400);
   for (const [key,value] of entries) {
-    if (['departureDate','returnDate','checkIn','checkOut','travelDate'].includes(key) && value && (!/^\d{4}-\d{2}-\d{2}$/.test(String(value)) || !Number.isFinite(Date.parse(String(value))) || new Date(String(value)).toISOString().slice(0,10)!==value)) throw new ReadinessError('INVALID_DATE',400);
-    if (['adults','children','infants','rooms','applicants','applicantCount'].includes(key) && (!Number.isSafeInteger(Number(value)) || Number(value)<0 || Number(value)>9)) throw new ReadinessError('INVALID_TRAVELLERS',400);
+    if (['departureDate','returnDate','checkIn','checkOut','checkInDate','checkOutDate','travelDate'].includes(key) && value && (!/^\d{4}-\d{2}-\d{2}$/.test(String(value)) || !Number.isFinite(Date.parse(String(value))) || new Date(String(value)).toISOString().slice(0,10)!==value)) throw new ReadinessError('INVALID_DATE',400);
+    if (['adults','children','infants','rooms','applicants','applicantCount','roomsCount','adultsCount','childrenCount'].includes(key) && (!Number.isSafeInteger(Number(value)) || Number(value)<0 || Number(value)>9)) throw new ReadinessError('INVALID_TRAVELLERS',400);
   }
   return Object.fromEntries(entries.map(([key,value]) => [key, typeof value === 'string' ? value.slice(0,500) : value])) as Record<string,string|number|boolean>;
 }
 function text(value: unknown, max = 200): string { return typeof value === 'string' ? value.trim().slice(0,max) : ''; }
+function selectionConfiguration(candidate:TripBucketCandidate):Record<string,unknown>{
+  const config:Record<string,unknown>=planningConfiguration({...candidate.searchContext,...candidate.configuration});
+  const legs=candidate.configuration?.legs;
+  if(legs!==undefined){
+    if(candidate.productType!=='flights'||!Array.isArray(legs)||legs.length<2||legs.length>6)throw new ReadinessError('INVALID_CONFIGURATION',400);
+    config.legs=legs.map(leg=>{
+      if(!leg||typeof leg!=='object'||!/^[A-Z]{3}$/.test(leg.origin)||!/^[A-Z]{3}$/.test(leg.destination))throw new ReadinessError('INVALID_CONFIGURATION',400);
+      const date=planningConfiguration({departureDate:leg.departureDate}).departureDate;
+      if(!date)throw new ReadinessError('INVALID_DATE',400);
+      return {origin:leg.origin,destination:leg.destination,departureDate:date};
+    });
+  }
+  if(candidate.fareFamilyCode)config.selectedFareFamilyCode=text(candidate.fareFamilyCode);
+  if(candidate.selectedServiceIds){
+    if(!Array.isArray(candidate.selectedServiceIds)||candidate.selectedServiceIds.length>50||candidate.selectedServiceIds.some(id=>typeof id!=='string'||!/^[A-Za-z0-9_.:-]{1,200}$/.test(id)))throw new ReadinessError('INVALID_CONFIGURATION',400);
+    config.selectedServiceIds=[...new Set(candidate.selectedServiceIds)];
+  }
+  if(candidate.productType==='visa')Object.assign(config,{eligibilityState:'MANUAL_REVIEW_REQUIRED',applicationState:'LOCAL_REQUEST_NOT_SUBMITTED',documentUploadState:'NOT_UPLOADED'});
+  return config;
+}
 function revision(actual: number, expected: unknown): void { if (!Number.isSafeInteger(expected) || actual !== expected) throw new ReadinessError('REVISION_CONFLICT'); }
 function owner(context: SecurityContext, record: { ownerId: string; organizationId?: string }): void {
   if (record.ownerId !== context.userId || record.organizationId !== context.organizationId) throw new ReadinessError('RESOURCE_NOT_FOUND',404);
@@ -64,7 +85,11 @@ export class EnquiryService {
         if (!products.has(candidate.productType) || !text(candidate.id) || !text(candidate.offerId || candidate.canonicalOfferId)) throw new ReadinessError('INVALID_SELECTION',400);
         return { id:text(candidate.id),offerId:text(candidate.offerId || candidate.canonicalOfferId),canonicalOfferId:text(candidate.offerId || candidate.canonicalOfferId),
           productType:candidate.productType,productLabel:candidate.productType,title:text(candidate.title),subtitle:'Saved non-commercial planning selection',dateSummary:text(candidate.dateSummary),travellerSummary:text(candidate.travellerSummary),
-          configuration:planningConfiguration(candidate.configuration),travellerCounts:candidate.travellerCounts ? { adults:Number(candidate.travellerCounts.adults)||1,children:Number(candidate.travellerCounts.children)||0,infants:Number(candidate.travellerCounts.infants)||0 } : undefined,
+          configuration:selectionConfiguration(candidate),travellerCounts:candidate.travellerCounts ? { adults:Number(candidate.travellerCounts.adults)||1,children:Number(candidate.travellerCounts.children)||0,infants:Number(candidate.travellerCounts.infants)||0 } : undefined,
+          searchContext:candidate.searchContext?planningConfiguration(candidate.searchContext):undefined,
+          fareFamilyCode:text(candidate.fareFamilyCode)||undefined,fareFamilyName:text(candidate.fareFamilyName)||undefined,
+          selectedServiceIds:candidate.selectedServiceIds?[...new Set(candidate.selectedServiceIds)]:undefined,
+          propertyId:text(candidate.propertyId)||undefined,roomId:text(candidate.roomId)||undefined,ratePlanId:text(candidate.ratePlanId)||undefined,
           state:'needs_action',priceLkr:0,priceStatus:'quote_required',currency:/^[A-Z]{3}$/.test(candidate.currency||'')?candidate.currency:'LKR',sourceType:'SEED',inventoryMode:'demo_fixture',supplierName:'Unverified planning reference',integrationMode:'MOCK',
           sourceId:'BROWSER_PLANNING_REFERENCE',inventoryLabel:'Demo / test planning only',truthDisclosure:'Reference supplied for planning only; no supplier inventory, price, allocation or confirmation is verified.',confirmationMode:'REQUEST_TO_CONFIRM' };
       });

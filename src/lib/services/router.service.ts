@@ -309,6 +309,10 @@ export class CanonicalRouterService {
     }
 
     // Server-backed journeys take precedence over legacy demonstration modals.
+    if ((window as any).__VACATINA_PUBLIC_DEMO__ && /^\/(?:admin|partner|account|auth|manage-booking|bookings|manage)(?:\/|$)/.test(path)) {
+      showJourneyWorkspace().innerHTML = '<section data-public-action-gate class="max-w-5xl mx-auto px-4 py-12"><h1 class="font-heading text-3xl">Demo account and operations unavailable</h1><p class="mt-4">DEMO / TEST only. Authentication, administrative and financial actions, account records and booking management are disabled. Do not enter personal information.</p><a href="/" class="min-h-[44px] inline-flex items-center underline mt-4">Return to travel planning</a></section>';
+      return;
+    }
     if (path === '/checkout' || path.startsWith('/checkout/')) {
       if ((window as any).__VACATINA_PUBLIC_DEMO__) {
         showJourneyWorkspace().innerHTML = '<section class="max-w-5xl mx-auto px-4 py-12"><h1 class="font-heading text-3xl">Demo checkout unavailable</h1><p class="mt-4">DEMO / TEST only. Payments, bookings and collection of personal information are disabled.</p><a href="/trip/review" class="min-h-[44px] inline-flex items-center underline mt-4">Return to trip review</a></section>';

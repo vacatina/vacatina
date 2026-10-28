@@ -13,6 +13,7 @@
 
 import { globalTravelCreditLedgerService } from '../services/travel-credit-ledger.service.ts';
 import type { TravelCreditBalanceSummary, TravelCreditTransaction } from '../domain/travel-credit-models.ts';
+import { showToast } from '../../../components/ui/toast.ts';
 
 function formatLkr(amountMinor: number): string {
   const lkr = amountMinor / 100;
@@ -242,6 +243,10 @@ export async function openTravelCreditModal(
   triggerElement?: HTMLElement | null,
   customerId = 'traveller@vacatina.com'
 ): Promise<void> {
+  if (typeof document !== 'undefined' && document.documentElement.dataset.vacatinaDemo === 'true') {
+    showToast('DEMO / TEST: account balances, financial actions and refund simulation are disabled.','warning');
+    return;
+  }
   const modalContainer = document.getElementById('dialog-container');
   if (!modalContainer) return;
 

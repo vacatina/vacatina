@@ -225,6 +225,17 @@ export class FlightTripBucketService {
       fareFamilyCode: selectedFamilyCode,
       fareFamilyName: selectedFamilyName,
       travellerCounts: { adults, children, infants },
+      configuration: {
+        tripType: searchContext?.tripType || offer.tripType,
+        origin: searchContext?.origin?.airportCode || originCode,
+        destination: searchContext?.destination?.airportCode || destCode,
+        departureDate: searchContext?.departureDate,
+        returnDate: searchContext?.returnDate,
+        adults, children, infants,
+        cabinClass: config?.selectedCabinClass || searchContext?.cabinClass || offer.cabinClass,
+        selectedFareFamilyCode: selectedFamilyCode,
+        ...(searchContext?.legs?.length ? { legs: searchContext.legs.map(leg=>({origin:leg.origin.airportCode,destination:leg.destination.airportCode,departureDate:leg.departureDate})) } : {})
+      },
       searchContext: searchContext
         ? {
             searchId: searchContext.searchId,

@@ -15,6 +15,10 @@ import type { TripBucketCandidate, TravelProductSlug } from '../src/lib/domain/t
 import hostedDemoHandler from '../src/server/runtime/hosted-demo-closed.mjs';
 import { retryLocalFileOperation } from '../src/server/persistence/local-file-operation.ts';
 import { DEMO_RELEASE_TARGET, assertDemoProject, assertDemoRollback, assertDemoEnvironment, assertDemoCandidate } from '../scripts/demo-release-guards.mjs';
+import { ManualFlightAdapter } from '../src/features/flights/adapters/manual-flight.adapter.ts';
+import { flightTripBucketService } from '../src/features/flights/services/flight-trip-bucket.service.ts';
+import { hotelSearchService } from '../src/features/hotels/services/hotel-search.service.ts';
+import { hotelTripBucketService } from '../src/features/hotels/services/hotel-trip-bucket.service.ts';
 
 const customer:SecurityContext={userId:'phase18-customer',email:'',role:'CUSTOMER',organizationId:'isolated-test'};
 const ops:SecurityContext={userId:'phase18-operator',email:'',role:'OPS_SUPERVISOR',organizationId:'isolated-test',isElevatedMfa:true};
@@ -36,7 +40,7 @@ test('Phase 18 all ten configurations and bundle preferences survive durable pro
   await first.save(customer,{items:allProducts.map(p=>candidate(p)),expectedRevision:0,preferences:config,products:['flights','hotels','cars']},'save-all-products');
   const next=new EnquiryService(new LocalReadinessUnitOfWork(file));const trip=(await next.trip(customer))!;
   assert.equal(trip.items.length,10);assert.equal(trip.revision,1);assert.deepEqual(trip.planning!.products,['flights','hotels','cars']);
-  for(const item of trip.planning!.display){assert.deepEqual(item.configuration,config);assert.equal(item.state,'needs_action');assert.equal(item.priceStatus,'quote_required');}
+  for(const item of trip.planning!.display){assert.deepEqual(item.configuration,item.productType==='visa'?{...config,eligibilityState:'MANUAL_REVIEW_REQUIRED',applicationState:'LOCAL_REQUEST_NOT_SUBMITTED',documentUploadState:'NOT_UPLOADED'}:config);assert.equal(item.state,'needs_action');assert.equal(item.priceStatus,'quote_required');}
   assert.equal(trip.items.every(i=>i.item.sellability==='DISCOVERY_ONLY'),true);
   await fs.unlink(file);
 });
@@ -79,7 +83,7 @@ test('Phase 18 two distinct options per product retain identity, declared curren
   const first=new EnquiryService(new LocalReadinessUnitOfWork(file));await first.save(customer,{items,expectedRevision:0},'multi-option-planning');
   const service=new EnquiryService(new LocalReadinessUnitOfWork(file));const restored=(await service.trip(customer))!;
   assert.equal(restored.items.length,20);assert.equal(new Set(restored.items.map(s=>s.item.canonicalOfferId)).size,20);
-  for(const original of items){const selected=restored.planning!.display.find(i=>i.id===original.id)!;assert.deepEqual(selected.configuration,original.configuration);assert.equal(selected.currency,original.currency);assert.equal(selected.state,'needs_action');}
+  for(const original of items){const selected=restored.planning!.display.find(i=>i.id===original.id)!;assert.deepEqual(selected.configuration,original.productType==='visa'?{...original.configuration,eligibilityState:'MANUAL_REVIEW_REQUIRED',applicationState:'LOCAL_REQUEST_NOT_SUBMITTED',documentUploadState:'NOT_UPLOADED'}:original.configuration);assert.equal(selected.currency,original.currency);assert.equal(selected.state,'needs_action');}
   const removed=await service.removeOrRestore(customer,items[1].id,1,false,'remove-second-option');assert.equal(removed.items.length,19);
   assert.equal(removed.planning!.display.some(i=>i.id===items[0].id),true);
   const enquiry=await service.submit(customer,{expectedRevision:2,consent:true},'multi-option-submit','multi-option-correlation');assert.equal(enquiry.display.length,19);
@@ -109,6 +113,21 @@ test('Phase 18 quotation lifecycle requires independent publication and fresh cu
 test('Phase 18 private fields, browser prices and commercial assertions never become authority',async()=>{
   const service=new EnquiryService(new MemoryReadinessUnitOfWork());const item={...candidate('insurance'),state:'ready',priceLkr:100000,configuration:{...config,passportNumber:'MUST-NOT-STORE',accessToken:'MUST-NOT-STORE'}} as TripBucketCandidate;
   const trip=await service.save(customer,{items:[item],expectedRevision:0},'sanitize-planning');assert.ok(!JSON.stringify(trip).includes('MUST-NOT-STORE'));assert.equal(trip.items[0].item.unitSellingPriceMinor,0);assert.equal(trip.items[0].item.state,'NEEDS_ACTION');
+});
+test('Phase 18 actual flight/hotel adapter shapes retain requested choices without restoring commercial authority',async()=>{
+  const file=path.resolve('tmp','phase18-tests',randomUUID()+'.json'),service=new EnquiryService(new LocalReadinessUnitOfWork(file));
+  const flight=(await new ManualFlightAdapter().getOfferById('man-flt-cmb-dxb-ek651'))!;assert.ok(flight);
+  const flightItem=flightTripBucketService.mapFlightOfferToTripCandidate(flight,{offerId:flight.offerId,selectedCabinClass:'business',selectedFareFamilyCode:'FLEX',selectedOptionalServiceIds:['svc_fixture_only']},{tripType:'multi_city',origin:{airportCode:'CMB'} as any,destination:{airportCode:'DXB'} as any,departureDate:'2027-02-01',returnDate:'2027-02-08',travellers:{adults:2,children:1,infants:0},legs:[{legIndex:0,origin:{airportCode:'CMB'} as any,destination:{airportCode:'DXB'} as any,departureDate:'2027-02-01'},{legIndex:1,origin:{airportCode:'DXB'} as any,destination:{airportCode:'LHR'} as any,departureDate:'2027-02-08'}]});
+  const hotel=(await hotelSearchService.getOfferById('vct-dir-bentota-ocean-villa'))!;const room=hotel.roomCategories[0],plan=room.ratePlans[0];
+  const hotelConfig={hotelId:hotel.hotelId,canonicalOfferId:hotel.canonicalOfferId,roomId:room.roomId,roomName:room.name,planId:plan.planId,rateName:plan.rateName,boardBasis:plan.boardBasis,boardBasisLabel:plan.boardBasisLabel,checkInDate:'2027-02-01',checkOutDate:'2027-02-04',nights:3,roomsCount:2,adultsCount:4,childrenCount:1,nightlyRateMinor:plan.nightlyRateMinor,taxesMinor:plan.totalTaxesMinor,totalPriceMinor:plan.totalPriceMinor*6,currency:plan.currency,cancellationPolicyDescription:plan.cancellationPolicyDescription,sourceType:hotel.sourceType,supplierName:hotel.supplierName};
+  const hotelItem=hotelTripBucketService.mapHotelOfferToTripCandidate(hotel,hotelConfig,'needs_action');
+  await service.save(customer,{items:[flightItem,hotelItem],expectedRevision:0},'actual-adapter-shapes');
+  const trip=(await new EnquiryService(new LocalReadinessUnitOfWork(file)).trip(customer))!,savedFlight=trip.planning!.display[0],savedHotel=trip.planning!.display[1];
+  assert.equal(savedFlight.configuration!.origin,'CMB');assert.equal(savedFlight.configuration!.returnDate,'2027-02-08');assert.equal(savedFlight.configuration!.selectedFareFamilyCode,'FLEX');assert.deepEqual(savedFlight.selectedServiceIds,['svc_fixture_only']);assert.deepEqual(savedFlight.travellerCounts,{adults:2,children:1,infants:0});
+  assert.equal(savedFlight.configuration!.cabinClass,'business');assert.deepEqual(savedFlight.configuration!.legs,[{origin:'CMB',destination:'DXB',departureDate:'2027-02-01'},{origin:'DXB',destination:'LHR',departureDate:'2027-02-08'}]);
+  for(const key of ['roomId','planId','checkInDate','checkOutDate','roomsCount','adultsCount','childrenCount'])assert.equal(savedHotel.configuration![key],hotelConfig[key]);
+  assert.equal(savedHotel.propertyId,hotel.hotelId);assert.equal(savedHotel.ratePlanId,plan.planId);assert.equal(savedHotel.configuration!.totalPriceMinor,undefined);
+  assert.ok(trip.items.every(s=>s.item.unitSellingPriceMinor===0&&s.item.sellability==='DISCOVERY_ONLY'&&s.item.state==='NEEDS_ACTION'));await fs.unlink(file);
 });
 test('Phase 18 material search dimensions produce independent fingerprints',()=>{
   const query={productType:'hotels' as const,destination:'Dubai',departureDate:'2027-02-01',returnDate:'2027-02-03',adults:2,rooms:1,currency:'USD',channel:'B2C' as const};
