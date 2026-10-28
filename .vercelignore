@@ -4,3 +4,9 @@ tmp
 screenshots
 .git
 .github
+.data
+.env
+.env.*
+opencode.json
+docs/phase17-evidence
+docs/phase18-evidence

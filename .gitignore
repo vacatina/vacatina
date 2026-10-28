@@ -9,6 +9,8 @@ dist-site/
 
 # Vercel & Deployment
 .vercel/
+demo-release-backup.json
+demo-release-candidate.json
 
 # Environment Variables & Credentials
 .env*

@@ -1,0 +1,145 @@
+name: Sanitized release demo (existing Vercel project)
+on:
+  push:
+    branches: [release/b2c-product-journeys-v1]
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: vacatina-existing-public-demo
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/release/b2c-product-journeys-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck 2>&1 | tee docs/phase18-evidence/ci-typecheck.log
+      - run: npm test 2>&1 | tee docs/phase18-evidence/ci-unit.log
+      - run: npm run build
+      - run: npm run check:browser-boundary
+      - run: npm run check:migrations
+      - run: npm run test:e2e 2>&1 | tee docs/phase18-evidence/ci-baseline.log
+      - run: npm run test:phase18:e2e 2>&1 | tee docs/phase18-evidence/ci-request-operations.log
+      - run: node scripts/scan-demo-release.mjs --history 2>&1 | tee docs/phase18-evidence/ci-history-scan.log
+      - run: npm run build:demo
+      - run: node scripts/scan-demo-release.mjs 2>&1 | tee docs/phase18-evidence/ci-published-scan.log
+      - name: Preserve local verification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase18-verification-${{ github.sha }}
+          path: docs/phase18-evidence/
+          retention-days: 14
+  candidate-and-promote:
+    needs: verify
+    if: github.ref == 'refs/heads/release/b2c-product-journeys-v1' && vars.VACATINA_DEMO_RELEASE_ENABLED == 'true'
+    environment: vacatina-demo-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VACATINA_ROLLBACK_VERIFIED: ${{ vars.VACATINA_ROLLBACK_VERIFIED }}
+      VACATINA_ROLLBACK_EVIDENCE: ${{ vars.VACATINA_ROLLBACK_EVIDENCE }}
+      VACATINA_ROLLBACK_PLAN: ${{ vars.VACATINA_ROLLBACK_PLAN }}
+      VACATINA_ROLLBACK_VERIFIED_AT: ${{ vars.VACATINA_ROLLBACK_VERIFIED_AT }}
+      VACATINA_NATIVE_GIT_ISOLATED: ${{ vars.VACATINA_NATIVE_GIT_ISOLATED }}
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_RELEASE_SHA: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      - name: Verify existing account, domain, environment and rollback evidence
+        run: node scripts/demo-release-preflight.mjs
+      - name: Link only verified existing IDs (never create a project)
+        run: |
+          mkdir -p .vercel
+          node --input-type=module -e "import fs from 'node:fs'; fs.writeFileSync('.vercel/project.json',JSON.stringify({projectId:process.env.VERCEL_PROJECT_ID,orgId:process.env.VERCEL_ORG_ID}));"
+      - run: npm run build:demo
+      - run: node scripts/scan-demo-release.mjs
+      - name: Create staged PRODUCTION artifact without changing domains
+        id: candidate
+        run: |
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/release/b2c-product-journeys-v1" --jq .object.sha)" = "$GITHUB_SHA"
+          URL=$(npx --yes vercel@65.5.0 deploy --prebuilt --prod --skip-domain --token "$VERCEL_TOKEN" --meta githubCommitSha="$GITHUB_SHA" --meta githubCommitRef=release/b2c-product-journeys-v1)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+      - name: Candidate hosted HTTP and browser checks
+        env:
+          CANDIDATE_URL: ${{ steps.candidate.outputs.url }}
+          SMOKE_REPORT: docs/phase18-evidence/candidate-http.json
+          PHASE18_EVIDENCE_DIR: docs/phase18-evidence/candidate-browser
+        run: |
+          node scripts/verify-demo-candidate.mjs
+          node scripts/hosted-demo-smoke.mjs "$CANDIDATE_URL"
+          node scripts/phase18-browser-verify.mjs --public "$CANDIDATE_URL"
+      - name: Promote only the tested production artifact
+        id: promotion
+        env:
+          CANDIDATE_URL: ${{ steps.candidate.outputs.url }}
+        run: |
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/release/b2c-product-journeys-v1" --jq .object.sha)" = "$GITHUB_SHA"
+          node scripts/verify-demo-candidate.mjs
+          echo "attempted=true" >> "$GITHUB_OUTPUT"
+          npx --yes vercel@65.5.0 promote "$CANDIDATE_URL" --token "$VERCEL_TOKEN"
+      - name: Production-domain HTTP and browser acceptance
+        id: post
+        env:
+          CANDIDATE_URL: ${{ steps.candidate.outputs.url }}
+          SMOKE_REPORT: docs/phase18-evidence/production-http.json
+          PHASE18_EVIDENCE_DIR: docs/phase18-evidence/production-browser
+        run: |
+          node scripts/verify-demo-candidate.mjs --promoted
+          node scripts/hosted-demo-smoke.mjs https://vacatina-nu.vercel.app
+          node scripts/phase18-browser-verify.mjs --public https://vacatina-nu.vercel.app
+      - name: Roll back and suspend automation after failed promotion or public smoke
+        if: always() && (failure() || cancelled()) && steps.promotion.outputs.attempted == 'true'
+        run: |
+          PREVIOUS=$(node --input-type=module -e "import fs from 'node:fs';console.log(JSON.parse(fs.readFileSync('demo-release-backup.json')).previousUrl)")
+          npx --yes vercel@65.5.0 rollback "$PREVIOUS" --timeout 120s --token "$VERCEL_TOKEN"
+          node scripts/verify-demo-restoration.mjs
+      - name: Suspend further promotions after a promotion or public smoke failure
+        if: always() && (failure() || cancelled()) && steps.promotion.outputs.attempted == 'true'
+        run: |
+          gh workflow disable release-demo.yml
+      - name: Preserve deployment and rollback evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phase18-release-${{ github.sha }}
+          path: |
+            demo-release-backup.json
+            demo-release-candidate.json
+            docs/phase18-evidence/
+          retention-days: 30
+      - name: Report release identities
+        if: always()
+        env:
+          CANDIDATE_URL: ${{ steps.candidate.outputs.url }}
+          RELEASE_STATUS: ${{ job.status }}
+        run: |
+          echo "Commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Candidate: $CANDIDATE_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "Status: $RELEASE_STATUS" >> "$GITHUB_STEP_SUMMARY"

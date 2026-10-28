@@ -30,8 +30,9 @@ import { verifyHotels, verifyVisa, verifyProductPhase, verifyGlobalIntegration, 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
-const ARTIFACT_DIR = 'C:/Users/Madhusanka/.gemini/antigravity/brain/c2636760-2265-4954-ae61-76df879c0df0';
-const SCREENSHOT_DIR = path.join(ROOT_DIR, 'screenshots');
+const ARTIFACT_DIR = path.join(ROOT_DIR, 'tmp', 'phase18-e2e');
+// Acceptance runs never overwrite the four historical references (or other baselines).
+const SCREENSHOT_DIR = path.join(ARTIFACT_DIR, 'screenshots');
 
 const SERVER_PORT = 4199;
 const CDP_PORT = 9255;
@@ -188,9 +189,12 @@ async function runVerification() {
   const server = await startStaticServer();
 
   const chromePath = [
+    process.env.CHROME_PATH,
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
     'C:/Program Files/Google/Chrome/Application/chrome.exe',
     'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'
-  ].find(p => fs.existsSync(p));
+  ].find(p => p && fs.existsSync(p));
 
   if (!chromePath) {
     throw new Error('Neither Chrome nor Edge found on system.');
@@ -1795,7 +1799,8 @@ async function runVerification() {
     server.close();
   }
 
-  const reportPath = path.join(ROOT_DIR, 'docs', 'BROWSER_VERIFICATION_REPORT.json');
+  const reportPath = path.join(ROOT_DIR, 'docs', 'phase18-evidence', 'browser-baseline.json');
+  fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), 'utf8');
   console.log(
     `\n[Vacatina E2E] All ${report.assertions.length}/${report.assertions.length} browser acceptance assertions across ${report.viewportsTested.length} viewports & ${report.journeysVerified.length} journeys PASSED.`

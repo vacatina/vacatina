@@ -21,6 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { applyCardImageReplacements } from './apply-card-images.mjs';
 import { applyCanonicalArchitecture } from './apply-canonical-architecture.mjs';
 import { buildSync } from 'esbuild';
+import { execFileSync } from 'node:child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +39,7 @@ export function assertBrowserModuleBoundary(inputs) {
 
 export function buildProject() {
   const startMs = Date.now();
+  const publicDemo = process.env.VACATINA_PUBLIC_DEMO === '1' || Boolean(process.env.VERCEL);
   // Rebuild generated output from scratch; never publish stale server modules.
   if (path.dirname(DIST_DIR) !== ROOT_DIR || path.basename(DIST_DIR) !== 'dist') throw new Error('Invalid build output directory');
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
@@ -78,7 +80,8 @@ export function buildProject() {
   const browserBuild = buildSync({ entryPoints: [path.join(SRC_DIR, 'app', 'main.ts')],
     bundle: true, platform: 'browser', format: 'iife', target: ['es2022'],
     write: false, outfile: bundleOutPath, metafile: true, legalComments: 'none',
-    logLevel: 'warning' });
+    define: { __VACATINA_PUBLIC_DEMO_BUILD__: publicDemo ? 'true' : 'false' },
+    minifySyntax: publicDemo, logLevel: 'warning' });
   assertBrowserModuleBoundary(Object.keys(browserBuild.metafile.inputs));
   const bundleJs = browserBuild.outputFiles[0].text;
   fs.writeFileSync(bundleOutPath, bundleJs, 'utf8');
@@ -120,7 +123,7 @@ export function buildProject() {
     .replace(/<script>\s*tailwind\.config\s*=[\s\S]*?<\/script>/, '');
 
   // Complete Head metadata (SEO, OG, Twitter, Canonical, Icons, Manifest, Local CSS)
-  const completeHeadMetadata = `<title>Vacatina — Unified Travel Operating System | Flights, Stays &amp; Visas</title>
+  const completeHeadMetadata = `<base href="/"><title>Vacatina — Unified Travel Operating System | Flights, Stays &amp; Visas</title>
 <meta name="description" content="Discover, compare, configure, and manage flights, stays, visa assistance, holiday packages, and ground transfers in one unified, calm travel operating system.">
 <link rel="canonical" href="https://vacatina.com/">
 <meta name="robots" content="index, follow">
@@ -299,6 +302,12 @@ export function buildProject() {
 
   // Apply Canonical Architecture & Zero Dead-Ends Routing (Click-to-Destination v1.0)
   assembledHtml = applyCanonicalArchitecture(assembledHtml);
+  if (publicDemo) {
+    assembledHtml = assembledHtml.replace(/<html\b/, '<html data-vacatina-demo="true"')
+      .replace('content="index, follow"', 'content="noindex, nofollow"')
+      .replace(/<script[^>]*src="[^"]*clerk[^>]*><\/script>/gi, '')
+      .replace(/(<body[^>]*>)/, '$1<div id="public-demo-notice" role="note" style="background:#1B1464;color:white;padding:8px 16px;font:13px Inter,sans-serif;text-align:center">DEMO / TEST — Planning examples only. No live bookings, payments, visa filings or durably submitted customer requests. Do not enter personal information.</div>');
+  }
 
   // Write index.html (lean static assets in public/brand/web/ + public/cards/ + local compiled Tailwind)
   const projectIndexHtml =
@@ -425,12 +434,24 @@ export function buildProject() {
   fs.mkdirSync(VERCEL_STATIC_DIR, { recursive: true });
 
   fs.cpSync(SITE_DIR, VERCEL_STATIC_DIR, { recursive: true });
+  // Only a closed, credential-free API is packaged for public demo hosting.
+  // A real request backend cannot be enabled by changing an environment flag.
+  const functionDir = path.join(VERCEL_OUTPUT_DIR, 'functions', 'demo-api.func');
+  fs.mkdirSync(functionDir, { recursive: true });
+  fs.copyFileSync(path.join(ROOT_DIR, 'src/server/runtime/hosted-demo-closed.mjs'), path.join(functionDir, 'serve.mjs'));
+  fs.writeFileSync(path.join(functionDir, '.vc-config.json'), JSON.stringify({runtime:'nodejs22.x',handler:'serve.mjs',launcherType:'Nodejs',maxDuration:5}));
+  let commit = 'UNCOMMITTED_LOCAL';
+  try { commit = execFileSync('git',['rev-parse','HEAD'],{cwd:ROOT_DIR,encoding:'utf8'}).trim(); } catch {}
+  const release = JSON.stringify({commit,mode:publicDemo?'PUBLIC_DEMO':'LOCAL_DEVELOPMENT',backendQualified:false,transactionsEnabled:false});
+  fs.writeFileSync(path.join(SITE_DIR,'demo-release.json'),release);
+  fs.writeFileSync(path.join(VERCEL_STATIC_DIR,'demo-release.json'),release);
   const vercelConfig = {
     version: 3,
     routes: [
+      { src: '^/api(?:/.*)?$', dest: '/demo-api' },
       {
         src: '^/dist/(.*)$',
-        headers: { 'cache-control': 'public, max-age=31536000, immutable' },
+        headers: { 'cache-control': 'public, max-age=0, must-revalidate' },
         continue: true
       },
       {
@@ -444,6 +465,9 @@ export function buildProject() {
           'x-content-type-options': 'nosniff',
           'x-frame-options': 'SAMEORIGIN',
           'referrer-policy': 'strict-origin-when-cross-origin'
+          , 'x-robots-tag': 'noindex, nofollow'
+          , 'permissions-policy': 'camera=(), microphone=(), geolocation=()'
+          , 'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'"
         },
         continue: true
       },
