@@ -286,6 +286,31 @@ export async function verifyFlightsNewRoutes(cdp, assertCheck) {
   await cdp.send('Emulation.clearDeviceMetricsOverride');
 }
 
+export async function verifyB2BFlightsRoutes(cdp, assertCheck) {
+  const widths = [1440, 768, 360];
+  for (const width of widths) {
+    await cdp.send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 768 });
+    const routes = [
+      { path: '/b2b/flights', heading: 'B2B Flight Search' },
+      { path: '/b2b/flights/quotation', heading: 'Agent Flight Quotation' },
+      { path: '/b2b/flights/travellers', heading: 'Corporate Traveller Management' },
+      { path: '/b2b/flights/review', heading: 'B2B Flight Booking Review' },
+      { path: '/b2b/flights/manage', heading: 'Agent Flight Booking Management' },
+    ];
+    for (const route of routes) {
+      await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('${route.path}')`);
+      await new Promise(r => setTimeout(r, 300));
+      const result = await cdp.evaluate(`(() => {
+        const text = document.body.innerText;
+        const fits = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
+        return { heading: text.includes('${route.heading}'), fits };
+      })()`);
+      assertCheck(`B2B Flights Routes — ${route.heading} @ ${width}`, result.heading && result.fits, JSON.stringify(result));
+    }
+  }
+  await cdp.send('Emulation.clearDeviceMetricsOverride');
+}
+
 export async function verifyPhase17Acceptance(cdp, assertCheck) {
   for (const width of [1440, 768, 360]) {
     await cdp.setViewport(width, width === 768 ? 1024 : 900, width < 768);

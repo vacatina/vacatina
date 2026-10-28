@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-28T20:12:47.857Z",
+  "timestamp": "2026-10-28T20:23:39.959Z",
   "version": "4.2.0-ultra-reconstructed-locked",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewportsTested": [
@@ -1648,6 +1648,81 @@
     },
     {
       "name": "Flights New Routes — Manage Booking @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — B2B Flight Search @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Agent Flight Quotation @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Corporate Traveller Management @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — B2B Flight Booking Review @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Agent Flight Booking Management @ 1440",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — B2B Flight Search @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Agent Flight Quotation @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Corporate Traveller Management @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — B2B Flight Booking Review @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Agent Flight Booking Management @ 768",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — B2B Flight Search @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Agent Flight Quotation @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Corporate Traveller Management @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — B2B Flight Booking Review @ 360",
+      "passed": true,
+      "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "B2B Flights Routes — Agent Flight Booking Management @ 360",
       "passed": true,
       "details": "{\"heading\":true,\"fits\":true}"
     },

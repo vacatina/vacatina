@@ -25,7 +25,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { buildProject } from './build.mjs';
-import { verifyHotels, verifyVisa, verifyProductPhase, verifyGlobalIntegration, verifyPhase17Acceptance, verifyFlightsNewRoutes, GENERIC_PHASES } from './product-journey-gates.mjs';
+import { verifyHotels, verifyVisa, verifyProductPhase, verifyGlobalIntegration, verifyPhase17Acceptance, verifyFlightsNewRoutes, verifyB2BFlightsRoutes, GENERIC_PHASES } from './product-journey-gates.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1630,6 +1630,7 @@ async function runVerification() {
     await verifyGlobalIntegration(cdp, assertCheck);
     await verifyPhase17Acceptance(cdp, assertCheck);
     await verifyFlightsNewRoutes(cdp, assertCheck);
+    await verifyB2BFlightsRoutes(cdp, assertCheck);
     const deltaChecks = await cdp.evaluate(`(async () => {
       // 1. Legal & Cookie Preferences Modal
       window.__VACATINA_OS__.openLegalAndCookieModal('cookies');
