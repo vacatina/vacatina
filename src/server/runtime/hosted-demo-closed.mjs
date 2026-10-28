@@ -28,7 +28,11 @@ export default function handler(request, response) {
     request.on('data', (chunk) => chunks.push(chunk));
     request.on('end', () => {
       const rawBody = Buffer.concat(chunks);
-      const signatureHeader = request.headers['x-duffel-signature'] || '';
+      // Privacy-safe diagnostic: log only whether the signature header is present
+    const signatureHeader = request.headers['x-duffel-signature'] || '';
+    if (!signatureHeader) {
+      console.log('[WEBHOOK] X-Duffel-Signature header absent');
+    }
 
       // Parse signature header: t=<timestamp>,v1=<signature>
       const parts = signatureHeader.split(',').reduce((acc, part) => {
