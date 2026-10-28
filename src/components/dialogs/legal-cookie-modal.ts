@@ -200,7 +200,7 @@ function renderTabContentHtml(tab: LegalTabId, prefs: CookiePreferences): string
                 <label for="cookie-opt-analytics" class="font-bold text-brand-black text-sm cursor-pointer">Performance &amp; Telemetry</label>
               </div>
               <p class="text-[11px] text-brand-muted">
-                Prototype consent architecture for diagnostic telemetry to evaluate Search Command Center performance, route lookup speeds, and reliability once analytics services are connected.
+                Consent architecture for diagnostic telemetry to evaluate Search Command Center performance, route lookup speeds, and reliability once analytics services are connected.
               </p>
             </div>
             <div class="pt-1">
@@ -230,7 +230,7 @@ function renderTabContentHtml(tab: LegalTabId, prefs: CookiePreferences): string
                 <label for="cookie-opt-marketing" class="font-bold text-brand-black text-sm cursor-pointer">Partner Travel Offers</label>
               </div>
               <p class="text-[11px] text-brand-muted">
-                Prototype preference architecture for destination updates, seasonal route notifications, and promotional bundles once partner channels are connected. No trackers are loaded prior to consent.
+                Preference architecture for destination updates, seasonal route notifications, and promotional bundles once partner channels are connected. No trackers are loaded prior to consent.
               </p>
             </div>
             <div class="pt-1">
@@ -244,7 +244,7 @@ function renderTabContentHtml(tab: LegalTabId, prefs: CookiePreferences): string
       return `
         <div class="space-y-3">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-[11px] font-semibold text-amber-700 mb-2">DRAFT — Requires Legal Review</div>
-          <h4 class="font-heading font-bold text-sm text-brand-black">Security &amp; Privacy — Prototype / Implementation Framework</h4>
+          <h4 class="font-heading font-bold text-sm text-brand-black">Security &amp; Privacy - Implementation Framework</h4>
           <p>The production platform is designed to use encrypted transport, tokenized payment integrations and controlled access to sensitive traveler information. Final security controls and compliance statements must be verified against the deployed infrastructure and contracted providers before publication.</p>
           <h4 class="font-heading font-bold text-sm text-brand-black">1. Traveler Information Handling</h4>
           <p>During travel planning and booking configuration, search criteria, passenger counts, and contact coordinates are processed to coordinate candidate itineraries across flights, stays, visa requirements, and packages.</p>
@@ -290,7 +290,7 @@ function renderTabContentHtml(tab: LegalTabId, prefs: CookiePreferences): string
       return `
         <div class="space-y-3">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-[11px] font-semibold text-amber-700 mb-2">DRAFT — Requires Legal Review</div>
-          <h4 class="font-heading font-bold text-sm text-brand-black">Security &amp; Privacy — Prototype / Implementation Framework</h4>
+          <h4 class="font-heading font-bold text-sm text-brand-black">Security &amp; Privacy - Implementation Framework</h4>
           <p>The production platform is designed to use encrypted transport, tokenized payment integrations and controlled access to sensitive traveler information. Final security controls and compliance statements must be verified against the deployed infrastructure and contracted providers before publication.</p>
           <ul class="list-disc pl-5 space-y-1.5">
             <li><strong>Transport Encryption Design:</strong> Modern encrypted transport (TLS) designed for all web client and API interactions.</li>

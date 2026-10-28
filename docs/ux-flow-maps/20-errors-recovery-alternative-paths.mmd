@@ -1,0 +1,23 @@
+graph TD
+    ERROR[Error States] --> E_INVALID[Invalid Offer → Alert Dialog]
+    ERROR --> E_NO_RESULTS[No Results → Empty State]
+    ERROR --> E_PRICE_CHANGED[Price Changed → Accept/Reject]
+    ERROR --> E_EXPIRED[Offer Expired → Find New]
+    ERROR --> E_UNAVAILABLE[Unavailable → Choose Alternative]
+    ERROR --> E_NETWORK[Network Error → Retry]
+    ERROR --> E_VALIDATION[Validation Error → Inline Message]
+
+    E_INVALID --> E_CLOSE_INVALID[Close → Return to Search]
+    E_NO_RESULTS --> E_MODIFY[Modify Search]
+    E_PRICE_CHANGED --> E_ACCEPT[Accept New Price]
+    E_PRICE_CHANGED --> E_REJECT[Reject → Find Alternative]
+    E_EXPIRED --> E_NEW_SEARCH[Find New Offer]
+    E_UNAVAILABLE --> E_ALTERNATIVE[Choose Alternative]
+    E_NETWORK --> E_RETRY[Retry Request]
+    E_VALIDATION --> E_FIX[Fix Input]
+
+    RECOVERY[Recovery Flows] --> R_REMOVE[Remove Item → Undo Available]
+    RECOVERY --> R_RESTORE[Restore Item → Item Restored]
+    RECOVERY --> R_REVALIDATE[Revalidate → Price Update]
+    RECOVERY --> R_WITHDRAW[Withdraw Enquiry → Status Closed]
+    RECOVERY --> R_REFRESH[Refresh Status → Updated Data]

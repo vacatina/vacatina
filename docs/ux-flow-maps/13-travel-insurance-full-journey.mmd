@@ -1,0 +1,21 @@
+graph TD
+    I_HUB[/"Travel Insurance Hub<br/>/travel-insurance"\] --> I_REGION[Region]
+    I_HUB --> I_RESIDENCE[Residence Country]
+    I_HUB --> I_START[Trip Start Date]
+    I_HUB --> I_END[Trip End Date]
+    I_HUB --> I_COVERAGE[Coverage Type]
+    I_HUB --> I_SEARCH_BTN[Search Submit]
+
+    I_SEARCH_BTN --> I_VALIDATION{Validation}
+    I_VALIDATION -->|Valid| I_SEARCH[Insurance Compare<br/>/travel-insurance/compare]
+    I_VALIDATION -->|Invalid| I_ERROR[Validation Error]
+
+    I_SEARCH --> I_RESULTS[Insurance Results]
+    I_RESULTS --> I_OFFER[Insurance Offer<br/>/travel-insurance/plans/:id]
+    I_OFFER --> I_CONFIG[Insurance Configurator]
+    I_CONFIG --> I_STAGE[Stage as needs_action]
+    I_STAGE --> I_TB[Trip Bucket Drawer]
+
+    I_RESULTS --> I_NO_RESULTS[No Results State]
+    I_TB --> I_REVIEW_CTA[Review Trip CTA]
+    I_REVIEW_CTA --> I_REVIEW[Trip Review<br/>/trip/review]

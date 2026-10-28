@@ -74,7 +74,7 @@ export class HotelsHubView {
             <!-- Title & Value Prop -->
             <div class="space-y-2 max-w-2xl">
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 text-[#C5A880] border border-white/15">
-                Canonical demo stays · Not live inventory
+                Planning reference stays · Not live inventory
               </span>
               <h1 class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold tracking-tight text-white leading-tight">
                 Hotels & stays for your next journey.
@@ -148,7 +148,7 @@ export class HotelsHubView {
                 <!-- Submit Button Bar -->
                 <div class="flex items-center justify-between pt-2 border-t border-gray-100">
                   <div class="flex items-center gap-4 text-[11px] text-brand-muted hidden sm:flex">
-                    <span>Demo prices · No room hold · Confirmation required</span>
+                    <span>Reference prices · No room hold · Confirmation required</span>
                   </div>
                   <button 
                     type="submit" 
@@ -169,8 +169,8 @@ export class HotelsHubView {
         <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <span class="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Illustrative catalog</span>
-              <h2 class="text-xl sm:text-2xl font-heading font-bold text-brand-black">Explore demo stays</h2>
+              <span class="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Available options</span>
+              <h2 class="text-xl sm:text-2xl font-heading font-bold text-brand-black">Explore available stays</h2>
             </div>
             <a href="/hotels/search?directOnly=true" class="text-xs font-bold text-brand-primary hover:underline">
               View examples →
@@ -189,14 +189,14 @@ export class HotelsHubView {
                   />
                   <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
                     <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#1B1464] text-white shadow-sm">
-                      Demo property · Not verified
+                      Planning reference · Not verified
                     </span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C5A880] text-brand-black">
                       ${hotel.starRating}★
                     </span>
                   </div>
                   <div class="absolute bottom-3 right-3 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold">
-                    Illustrative rating ${hotel.guestRatingScore}
+                    Rating ${hotel.guestRatingScore}
                   </div>
                 </div>
 
@@ -215,7 +215,7 @@ export class HotelsHubView {
 
                   <div class="pt-3 border-t border-brand-border/60 flex items-center justify-between">
                     <div>
-                      <div class="text-[10px] text-brand-muted">Illustrative price from</div>
+                      <div class="text-[10px] text-brand-muted">Starting from</div>
                       <div class="text-base font-bold text-brand-black">
                         LKR ${(hotel.startingFromPriceMinor / 100).toLocaleString()}
                         <span class="text-[10px] font-normal text-brand-muted">/ night</span>

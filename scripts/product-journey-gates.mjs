@@ -156,7 +156,7 @@ export async function verifyProductPhase(cdp, assertCheck, definition) {
       if (retry) retry.querySelector('[name=destination]').value = definition.destination;
       retry?.requestSubmit(); await wait(150);
       const button = document.querySelector('[data-journey-offer]');
-      const search = !!button && fits() && document.getElementById('journey-results').textContent.includes('Canonical demo fixture');
+      const search = !!button && fits() && document.getElementById('journey-results').textContent.includes('Planning reference');
       button?.click(); await wait(150);
       const configure = document.getElementById('journey-configure-form');
       const details = !!configure && fits() && document.getElementById('journey-product-workspace').textContent.includes('no live supplier');
@@ -230,11 +230,11 @@ export async function verifyHotels(cdp, assertCheck) {
       document.getElementById('trip-bucket-close')?.click();
       navigate('/hotels?destination=Bentota&checkIn=2027-02-01&checkOut=2027-02-04&rooms=2&adults=2&children=0'); await wait(120);
       const hub = document.querySelector('#hotels-view-mount .hotels-hub-root');
-      const hubGood = !!hub && fits() && hub.textContent.includes('Canonical demo');
+      const hubGood = !!hub && fits() && hub.textContent.includes('Planning reference');
       hub?.querySelector('#hotel-hub-search-btn')?.click(); await wait(220);
       const context = location.search.includes('rooms=2') && location.search.includes('checkIn=2027-02-01');
       const button = document.querySelector('[data-open-hotel]');
-      const resultsGood = !!button && fits() && document.getElementById('hotels-view-mount').textContent.includes('Canonical demo fixture');
+      const resultsGood = !!button && fits() && document.getElementById('hotels-view-mount').textContent.includes('Planning reference');
       button?.click(); await wait(180);
       const modal = document.getElementById('hotel-property-detail-modal');
       const accessible = !!modal && modal.getAttribute('role') === 'dialog' && modal.contains(document.activeElement) && fits();
@@ -246,7 +246,7 @@ export async function verifyHotels(cdp, assertCheck) {
       const staged = !!item && item.state === 'needs_action' && item.configuration.roomsCount === 2 && item.configuration.checkInDate === '2027-02-01' && item.propertyId && item.ratePlanId;
       document.getElementById('drawer-review-trip-cta')?.click(); await wait(130);
       const review = document.getElementById('trip-review-workspace');
-      const reviewed = !!review && review.textContent.includes('Canonical hotel demo fixture') && review.querySelector('#btn-review-checkout')?.disabled && fits();
+      const reviewed = !!review && review.textContent.includes('Planning reference') && review.querySelector('#btn-review-checkout')?.disabled && fits();
       navigate('/hotels/property/phase6-missing'); await wait(130);
       const invalid = document.getElementById('hotel-invalid-dialog');
       const invalidGood = !!invalid && invalid.getAttribute('role') === 'alertdialog' && invalid.contains(document.activeElement);
@@ -325,7 +325,7 @@ export async function verifyPhase17Acceptance(cdp, assertCheck) {
       const hotelHeading=document.querySelector('.hotels-search-view-root h1')?.textContent==='Hotel search results';
       const hotelCount=document.getElementById('hotel-results-count')?.textContent==='1 Stay Example';
       navigate('/visa-assistance/search?destination=United+Kingdom&citizenship=LK&residenceCountry=LK&departureDate=2027-02-01&purpose=tourism&applicants=1'); await wait(300);
-      const visaCount=document.getElementById('visa-results-count')?.textContent.trim()==='Showing 1 demo assistance option';
+      const visaCount=document.getElementById('visa-results-count')?.textContent.trim()==='Showing 1 visa assistance option';
       const noUndefinedGold=!document.querySelector('#visa-view-mount [class*=brand-gold]');
       navigate('/');
       return {flightHeading,displayFont,hotelHeading,hotelCount,visaCount,noUndefinedGold};

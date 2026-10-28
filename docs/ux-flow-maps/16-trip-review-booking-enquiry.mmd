@@ -1,0 +1,23 @@
+graph TD
+    TR[/"Trip Review<br/>/trip/review"\] --> TR_ITEMS[View Items]
+    TR --> TR_REVALIDATE[Revalidate All]
+    TR --> TR_REMOVE[Remove Item]
+    TR --> TR_RESTORE[Restore Item]
+    TR --> TR_ENQUIRY[Submit Enquiry]
+
+    TR_ENQUIRY --> TR_CONSENT[Consent Checkbox]
+    TR_CONSENT --> TR_SUBMIT[Submit Button]
+    TR_SUBMIT --> TR_RESULT[Enquiry Created<br/>ENQ-DEMO-XXXX]
+    TR_RESULT --> TR_TRACK[Track Request<br/>/requests/:id]
+
+    TR --> TR_CHECKOUT[Checkout Button]
+    TR_CHECKOUT --> TR_GATED{Items ready?}
+    TR_GATED -->|No| TR_BLOCKED[Checkout Blocked]
+    TR_GATED -->|Yes| TR_CHECKOUT_PAGE[Checkout<br/>/checkout]
+
+    TR --> TR_WITHDRAW[Withdraw Enquiry]
+    TR_WITHDRAW --> TR_WITHDRAWN[Status: Withdrawn]
+
+    TR_TRACK --> TR_REFRESH[Refresh Status]
+    TR_TRACK --> TR_ACK[Acknowledge Quotation]
+    TR_TRACK --> TR_WITHDRAW2[Withdraw Enquiry]

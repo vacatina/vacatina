@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> needs_action: Item staged
+    needs_action --> refreshing_price: Revalidate clicked
+    refreshing_price --> needs_action: UNCHANGED
+    refreshing_price --> price_changed: PRICE_CHANGED
+    refreshing_price --> offer_expired: EXPIRED
+    refreshing_price --> unavailable: UNAVAILABLE
+    refreshing_price --> revalidation_failed: Error
+    price_changed --> needs_action: Accept new price
+    offer_expired --> needs_action: Find new offer
+    unavailable --> needs_action: Choose alternative
+    revalidation_failed --> needs_action: Retry
+    needs_action --> cancelled: Remove item
+    cancelled --> needs_action: Restore item
+    needs_action --> ready: Desk confirmation (manual only)
+    ready --> cancelled: Remove item

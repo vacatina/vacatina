@@ -1,0 +1,21 @@
+graph TD
+    C_HUB[/"Cars & Transfers Hub<br/>/cars-transfers"\] --> C_SERVICE[Service Type]
+    C_HUB --> C_PICKUP[Pickup Location]
+    C_HUB --> C_DROPOFF[Dropoff Location]
+    C_HUB --> C_DATETIME[Pickup Date/Time]
+    C_HUB --> C_DRIVER[Driver Age]
+    C_HUB --> C_SEARCH_BTN[Search Submit]
+
+    C_SEARCH_BTN --> C_VALIDATION{Validation}
+    C_VALIDATION -->|Valid| C_SEARCH[Cars Search<br/>/cars-transfers/search]
+    C_VALIDATION -->|Invalid| C_ERROR[Validation Error]
+
+    C_SEARCH --> C_RESULTS[Cars Results]
+    C_RESULTS --> C_OFFER[Cars Offer<br/>/cars-transfers/offer/:id]
+    C_OFFER --> C_CONFIG[Cars Configurator]
+    C_CONFIG --> C_STAGE[Stage as needs_action]
+    C_STAGE --> C_TB[Trip Bucket Drawer]
+
+    C_RESULTS --> C_NO_RESULTS[No Results State]
+    C_TB --> C_REVIEW_CTA[Review Trip CTA]
+    C_REVIEW_CTA --> C_REVIEW[Trip Review<br/>/trip/review]

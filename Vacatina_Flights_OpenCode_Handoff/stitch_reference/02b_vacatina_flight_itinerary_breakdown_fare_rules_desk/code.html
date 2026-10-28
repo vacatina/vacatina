@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Vacatina Travel Operating System</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed-variant":"#474747","success":"#15803D","info":"#1D4ED8","surface":"#FFFFFF","tertiary-container":"#441200","surface-container":"#eeeeee","secondary":"#5e5e5e","warning":"#B45309","surface-container-low":"#f3f3f3","inverse-surface":"#2f3131","primary-fixed":"#e3dfff","on-tertiary-fixed-variant":"#73351c","surface-dim":"#dadada","text-muted":"#525252","inverse-primary":"#c4c0ff","tertiary-fixed":"#ffdbcf","on-secondary":"#ffffff","on-primary":"#ffffff","background":"#f9f9f9","surface-variant":"#e2e2e2","surface-container-lowest":"#ffffff","error":"#B91C1C","primary":"#06003e","surface-tint":"#5855a3","on-surface":"#1a1c1c","on-secondary-container":"#646464","on-background":"#1a1c1c","on-tertiary":"#ffffff","secondary-container":"#e4e2e2","outline":"#787682","surface-container-high":"#e8e8e8","border":"#E5E5E5","on-surface-variant":"#474551","on-secondary-fixed":"#1b1c1c","secondary-fixed-dim":"#c8c6c6","surface-subtle":"#F5F5F5","surface-bright":"#f9f9f9","text-primary":"#000000","primary-container":"#1b1464","outline-variant":"#c8c5d2","on-error":"#ffffff","on-error-container":"#93000a","on-primary-fixed":"#13095d","on-tertiary-container":"#c57658","on-primary-fixed-variant":"#403d8a","inverse-on-surface":"#f0f1f1","primary-fixed-dim":"#c4c0ff","on-tertiary-fixed":"#380d00","focus":"#1D4ED8","secondary-fixed":"#e4e2e2","canvas":"#FAFAFA","tertiary-fixed-dim":"#ffb59a","surface-container-highest":"#e2e2e2","on-primary-container":"#8481d3","error-container":"#ffdad6","tertiary":"#1f0500"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"2":"8px","gutter":"1.5rem","16":"64px","margin":"1.5rem","10":"40px","3":"12px","space-xs":"0.25rem","6":"24px","8":"32px","1":"4px","space-xl":"2.5rem","12":"48px","4":"16px","5":"20px","space-sm":"0.5rem","20":"80px","space-lg":"1.5rem","space-md":"1rem"},fontFamily:{"heading-xl":["Plus Jakarta Sans"],"heading-md":["Plus Jakarta Sans"],"body-lg":["Inter"],"label":["Inter"],"display-mobile":["Plus Jakarta Sans"],"body":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"title":["Plus Jakarta Sans"],"display-desktop":["Plus Jakarta Sans"],"heading-lg":["Plus Jakarta Sans"]},fontSize:{"heading-xl":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"700"}],"heading-md":["22px",{lineHeight:"28px",letterSpacing:"0",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"400"}],"label":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"600"}],"display-mobile":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"body":["15px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0",fontWeight:"400"}],"title":["18px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"600"}],"display-desktop":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"heading-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}]}}}};</script></head><body class="bg-canvas font-body text-body text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4"><div class="flex items-center gap-8"><a class="flex items-center gap-2 text-primary font-heading-md text-heading-md tracking-tight" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">travel_explore</span><span>VACATINA</span></a><nav class="hidden min-[1440px]:flex items-center gap-6" data-active-classes="text-primary font-semibold border-b-2 border-primary"><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="home" href="#">Home</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="flights" href="#">Flights</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="hotels" href="#">Hotels</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="visa-assistance" href="#">Visa Assistance</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="holiday-packages" href="#">Holiday Packages</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="cars-and-transfers" href="#">Cars &amp; Transfers</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="more-products" href="#">More</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="resources" href="#">Resources</a></nav></div><div class="flex items-center gap-3"><button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">language</span><span>EN · USD</span></button><button aria-label="Saved Favorites" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-subtle rounded-lg transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">favorite</span></button><button aria-label="Trip Bucket" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px] text-on-surface">workspaces</span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Bucket</span><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-container text-on-primary">3</span></button><div class="flex items-center gap-2 pl-2"><button class="hidden md:inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span>B2C</span><span class="mx-1 text-outline">|</span><span class="text-text-muted">B2B</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-canvas min-h-screen"><div class="flex flex-col w-full">
+<!-- Progress Stepper Protocol Ribbon -->
+<section class="w-full bg-surface shadow-sm">
+<div class="max-w-7xl mx-auto px-6 py-4">
+<div class="flex items-center justify-between overflow-x-auto no-scrollbar gap-4 text-nowrap">
+<div class="flex items-center gap-3 opacity-60">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm text-text-muted">01</span>
+<span class="font-label-sm text-label-sm text-text-muted">Flight Hub</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+<div class="flex items-center gap-3 opacity-60">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm text-text-muted">02</span>
+<span class="font-label-sm text-label-sm text-text-muted">Search Results</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+<!-- Active Stage 02B -->
+<div class="flex items-center gap-3 bg-primary-container px-3.5 py-1.5 rounded-full text-on-primary shadow-sm">
+<span class="w-5 h-5 rounded-full bg-surface text-primary-container flex items-center justify-center font-label-sm text-label-sm font-bold">2B</span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wide">Flight Details &amp; Fare Rules</span>
+<span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+<div class="flex items-center gap-3 opacity-40">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm text-text-muted">03</span>
+<span class="font-label-sm text-label-sm text-text-muted">Seats &amp; Ancillaries</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+<div class="flex items-center gap-3 opacity-40">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm text-text-muted">04</span>
+<span class="font-label-sm text-label-sm text-text-muted">Passenger Details</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+<div class="flex items-center gap-3 opacity-40">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm text-text-muted">05</span>
+<span class="font-label-sm text-label-sm text-text-muted">Review &amp; Staging</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline-variant">chevron_right</span>
+<div class="flex items-center gap-3 opacity-40">
+<span class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm text-text-muted">06</span>
+<span class="font-label-sm text-label-sm text-text-muted">Payment</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Body Workspace Grid -->
+<div class="max-w-7xl mx-auto px-6 py-8 w-full">
+<!-- Top System Flash Notice / Live GDS Hold Protocol -->
+<div class="flex flex-col md:flex-row md:items-center justify-between bg-surface p-4 rounded-xl shadow-sm mb-6 gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-subtle flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[24px]">verified_user</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title text-title text-on-surface">Amadeus GDS Fare Lock Active</span>
+<span class="bg-surface-container px-2 py-0.5 rounded text-xs font-label-sm font-semibold text-text-muted">PNR: HOLD-STG-9418</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">Direct NDC Inventory guaranteed by SriLankan Airlines (UL) global distribution system.</p>
+</div>
+</div>
+<div class="flex items-center gap-4 self-end md:self-auto">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle">
+<span class="material-symbols-outlined text-[18px] text-warning animate-spin" style="animation-duration: 4s;">timelapse</span>
+<span class="font-label-sm text-label-sm text-on-surface">Live Fare Lock:</span>
+<span class="font-title text-title text-error tabular-nums font-bold" id="gds-countdown">14:30</span>
+</div>
+<span class="bg-primary/5 text-primary-container font-label-sm text-label-sm px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">stars</span>
+          Economy Flex
+        </span>
+</div>
+</div>
+<!-- Dual Column Architecture: Core Deep Dive Left (8 cols) + Sticky Ledger Right (4 cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Sector Summary Card: Outbound & Inbound Carrier Overview -->
+<div class="bg-surface p-6 rounded-2xl shadow-sm space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 pb-4 bg-surface-subtle/50 -mx-6 -mt-6 p-6 rounded-t-2xl">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-surface p-2 shadow-sm flex items-center justify-center font-heading-md text-primary-container font-extrabold tracking-tighter">
+                UL
+              </div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-heading-md text-heading-md text-on-surface">Colombo (CMB) <span class="text-text-muted">⇄</span> London Heathrow (LHR)</h1>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">SriLankan Airlines · Roundtrip Non-stop · Widebody Heavy Operation</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-1 rounded-full text-xs font-label-sm bg-success/10 text-success font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Instant E-Ticket Issuance
+              </span>
+</div>
+</div>
+<!-- Outbound Leg Deep-Dive Segment -->
+<div class="bg-surface-subtle p-5 rounded-xl space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded text-xs font-label text-on-primary bg-primary-container uppercase font-bold">Outbound</span>
+<span class="font-title text-title text-on-surface">UL 503 · Non-Stop</span>
+<span class="text-xs text-text-muted font-body-sm">· 10h 30m Duration</span>
+</div>
+<span class="text-xs font-label-sm text-text-muted">Wed, 14 May 2025</span>
+</div>
+<!-- Route Flight Path Graphic -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center pt-2">
+<div class="md:col-span-3">
+<div class="font-heading-lg text-heading-lg text-on-surface font-extrabold tabular-nums">01:15</div>
+<div class="font-label text-label text-on-surface font-bold">CMB · Bandaranaike</div>
+<div class="font-body-sm text-body-sm text-text-muted">Terminal 1 · Gate 06</div>
+</div>
+<div class="md:col-span-6 flex flex-col items-center px-2">
+<div class="text-xs font-label-sm text-text-muted mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">flight</span> Direct Non-stop (8,715 km)
+                </div>
+<div class="relative w-full flex items-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+<div class="flex-1 h-0.5 bg-surface-container-high mx-1 relative">
+<span class="material-symbols-outlined text-[16px] text-primary-container absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">flight_takeoff</span>
+</div>
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+</div>
+<div class="text-[11px] font-mono text-text-muted mt-1">Airbus A330-300 Widebody</div>
+</div>
+<div class="md:col-span-3 text-right">
+<div class="font-heading-lg text-heading-lg text-on-surface font-extrabold tabular-nums">07:45</div>
+<div class="font-label text-label text-on-surface font-bold">LHR · London Heathrow</div>
+<div class="font-body-sm text-body-sm text-text-muted">Terminal 3 · Arrivals</div>
+</div>
+</div>
+<!-- Aircraft Physical Metrics Bento Inset -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 bg-surface p-3 rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">airline_seat_recline_extra</span>
+<div>
+<div class="text-[11px] text-text-muted">Seating Config</div>
+<div class="font-label-sm text-label-sm text-on-surface">2-4-2 Twin Aisle</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">straighten</span>
+<div>
+<div class="text-[11px] text-text-muted">Seat Pitch</div>
+<div class="font-label-sm text-label-sm text-on-surface">32 Inch Pitch</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">wifi</span>
+<div>
+<div class="text-[11px] text-text-muted">Connectivity</div>
+<div class="font-label-sm text-label-sm text-on-surface">Satellite Wi-Fi</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">power</span>
+<div>
+<div class="text-[11px] text-text-muted">In-Seat Power</div>
+<div class="font-label-sm text-label-sm text-on-surface">Universal 110V + USB</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Inbound Leg Deep-Dive Segment -->
+<div class="bg-surface-subtle p-5 rounded-xl space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded text-xs font-label text-on-primary bg-primary uppercase font-bold">Inbound</span>
+<span class="font-title text-title text-on-surface">UL 504 · Non-Stop</span>
+<span class="text-xs text-text-muted font-body-sm">· 10h 35m Duration</span>
+</div>
+<span class="text-xs font-label-sm text-text-muted">Sun, 25 May 2025</span>
+</div>
+<!-- Route Flight Path Graphic -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center pt-2">
+<div class="md:col-span-3">
+<div class="font-heading-lg text-heading-lg text-on-surface font-extrabold tabular-nums">20:40</div>
+<div class="font-label text-label text-on-surface font-bold">LHR · London Heathrow</div>
+<div class="font-body-sm text-body-sm text-text-muted">Terminal 3 · Gate 22</div>
+</div>
+<div class="md:col-span-6 flex flex-col items-center px-2">
+<div class="text-xs font-label-sm text-text-muted mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">flight</span> Direct Non-stop (8,715 km)
+                </div>
+<div class="relative w-full flex items-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+<div class="flex-1 h-0.5 bg-surface-container-high mx-1 relative">
+<span class="material-symbols-outlined text-[16px] text-primary-container absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">flight_takeoff</span>
+</div>
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+</div>
+<div class="text-[11px] font-mono text-text-muted mt-1">Airbus A330-300 Widebody</div>
+</div>
+<div class="md:col-span-3 text-right">
+<div class="font-heading-lg text-heading-lg text-on-surface font-extrabold tabular-nums">12:45 <span class="text-xs text-error font-semibold">+1d</span></div>
+<div class="font-label text-label text-on-surface font-bold">CMB · Bandaranaike</div>
+<div class="font-body-sm text-body-sm text-text-muted">Terminal 1 · Arrivals</div>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 bg-surface p-3 rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">tv</span>
+<div>
+<div class="text-[11px] text-text-muted">Entertainment</div>
+<div class="font-label-sm text-label-sm text-on-surface">11.6" 4K Touchscreen</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">restaurant</span>
+<div>
+<div class="text-[11px] text-text-muted">Meal Service</div>
+<div class="font-label-sm text-label-sm text-on-surface">2 Full Hot Meals</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">luggage</span>
+<div>
+<div class="text-[11px] text-text-muted">Checked Hold</div>
+<div class="font-label-sm text-label-sm text-on-surface">30 kg Included</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">update</span>
+<div>
+<div class="text-[11px] text-text-muted">Punctuality</div>
+<div class="font-label-sm text-label-sm text-on-surface">94.2% On-Time Index</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 4-Tab Policy & Technical Specification Drawer -->
+<div class="bg-surface rounded-2xl shadow-sm overflow-hidden">
+<!-- Tab Navigation Bar -->
+<div class="flex items-center bg-surface-subtle p-1.5 rounded-t-2xl gap-1 overflow-x-auto no-scrollbar">
+<button class="tab-trigger flex items-center gap-2 px-4 py-2.5 rounded-xl font-label text-label transition-all bg-surface text-primary-container shadow-sm font-semibold" id="tab-btn-1" onclick="switchDeskTab(1)">
+<span class="material-symbols-outlined text-[18px]">alt_route</span>
+<span>1. Schedule &amp; Waypoints</span>
+</button>
+<button class="tab-trigger flex items-center gap-2 px-4 py-2.5 rounded-xl font-label text-label transition-all text-text-muted hover:text-on-surface" id="tab-btn-2" onclick="switchDeskTab(2)">
+<span class="material-symbols-outlined text-[18px]">gavel</span>
+<span>2. Fare Rules &amp; Penalties</span>
+</button>
+<button class="tab-trigger flex items-center gap-2 px-4 py-2.5 rounded-xl font-label text-label transition-all text-text-muted hover:text-on-surface" id="tab-btn-3" onclick="switchDeskTab(3)">
+<span class="material-symbols-outlined text-[18px]">luggage</span>
+<span>3. Baggage Entitlement</span>
+</button>
+<button class="tab-trigger flex items-center gap-2 px-4 py-2.5 rounded-xl font-label text-label transition-all text-text-muted hover:text-on-surface" id="tab-btn-4" onclick="switchDeskTab(4)">
+<span class="material-symbols-outlined text-[18px]">room_service</span>
+<span>4. In-Flight Amenities</span>
+</button>
+</div>
+<!-- Tab 1: Detailed Flight Schedule & Waypoints -->
+<div class="tab-pane p-6 space-y-6" id="tab-content-1">
+<div class="space-y-2">
+<h2 class="font-title text-title text-on-surface">Operational Route Matrix &amp; Dispatch Waypoints</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Navigational track over Indian Subcontinent, Arabian Sea, Gulf corridors, and European continental FIR sectors.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-subtle p-4 rounded-xl space-y-2">
+<div class="text-xs font-label-sm text-text-muted flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary-container">local_gas_station</span> Fuel Capacity &amp; Range
+                </div>
+<div class="font-title text-title text-on-surface">97,500 L Fuel Load</div>
+<p class="text-xs text-text-muted leading-relaxed">Operated with ETOPS 180-min diversion certification along Southern Mediterranean corridors.</p>
+</div>
+<div class="bg-surface-subtle p-4 rounded-xl space-y-2">
+<div class="text-xs font-label-sm text-text-muted flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary-container">meeting_room</span> Terminal Operations
+                </div>
+<div class="font-title text-title text-on-surface">CMB T1 / LHR T3</div>
+<p class="text-xs text-text-muted leading-relaxed">Dedicated Fast-Track immigration available at LHR Terminal 3. Check-in desks open 4 hrs prior.</p>
+</div>
+<div class="bg-surface-subtle p-4 rounded-xl space-y-2">
+<div class="text-xs font-label-sm text-text-muted flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary-container">transfer_within_a_station</span> Transfer &amp; Through Baggage
+                </div>
+<div class="font-title text-title text-on-surface">Direct Interline</div>
+<p class="text-xs text-text-muted leading-relaxed">Direct flight point-to-point without transit stop. Seamless check-in through to final destination.</p>
+</div>
+</div>
+<!-- Visual Flight Route Track Map -->
+<div class="relative rounded-xl overflow-hidden bg-primary p-6 text-on-primary">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-on-primary-container">route</span>
+<span class="font-label text-label">Great-Circle Navigation Corridor: Colombo (CMB) ⟶ London (LHR)</span>
+</div>
+<span class="text-xs font-mono bg-surface/10 px-2 py-1 rounded">FL380 / M0.82</span>
+</div>
+<div class="h-28 w-full flex items-center justify-between relative px-8">
+<!-- SVG Navigation Arch -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 500 100">
+<path class="text-on-primary-container opacity-60" d="M 30,80 Q 250,-10 470,80" fill="none" stroke="currentColor" stroke-dasharray="6,4" stroke-width="2"></path>
+</svg>
+<div class="z-10 flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface text-primary flex items-center justify-center font-bold text-xs shadow-md">CMB</div>
+<span class="text-xs font-label-sm mt-1">UTC+5:30</span>
+</div>
+<div class="z-10 flex flex-col items-center bg-primary-container px-3 py-1 rounded-full shadow">
+<span class="material-symbols-outlined text-[18px]">flight</span>
+<span class="text-[10px] font-mono">CRZ ALT 38,000 FT</span>
+</div>
+<div class="z-10 flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface text-primary flex items-center justify-center font-bold text-xs shadow-md">LHR</div>
+<span class="text-xs font-label-sm mt-1">UTC+1:00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Tab 2: Fare Rules, Amendments & Cancellation Terms -->
+<div class="tab-pane p-6 space-y-6 hidden" id="tab-content-2">
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-1 rounded text-xs font-bold bg-primary-container text-on-primary font-label-sm">Fare Basis: KLERLK</span>
+<span class="text-xs font-mono text-text-muted">GDS Tariff Category 16 (Penalties)</span>
+</div>
+<h2 class="font-title text-title text-on-surface">Ticket Flexibility, Change Fees &amp; Refund Schedule</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Amendment Section -->
+<div class="bg-surface-subtle p-5 rounded-xl space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-success">edit_calendar</span>
+<span class="font-label text-label text-on-surface font-bold">Date &amp; Flight Amendments</span>
+</div>
+<span class="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded">Flex Tier</span>
+</div>
+<ul class="space-y-2 font-body-sm text-body-sm text-text-muted">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-success mt-0.5">check</span>
+<span><strong class="text-on-surface">1st Change Free of Penalty:</strong> Permitted up to 24 hours prior to departure (Fare difference may apply).</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-warning mt-0.5">info</span>
+<span><strong class="text-on-surface">Subsequent Changes:</strong> LKR 12,000 per passenger per reissue + applicable tax delta.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-error mt-0.5">close</span>
+<span><strong class="text-on-surface">Within 24 Hours of Outbound:</strong> LKR 18,500 late-amendment penalty fee.</span>
+</li>
+</ul>
+</div>
+<!-- Cancellation & Refund Section -->
+<div class="bg-surface-subtle p-5 rounded-xl space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary-container">cancel</span>
+<span class="font-label text-label text-on-surface font-bold">Refunds &amp; Cancellations</span>
+</div>
+<span class="text-xs font-bold text-primary-container bg-primary-container/10 px-2 py-0.5 rounded">Refundable</span>
+</div>
+<ul class="space-y-2 font-body-sm text-body-sm text-text-muted">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary-container mt-0.5">price_check</span>
+<span><strong class="text-on-surface">Prior to 48 Hours:</strong> Fully refundable subject to standard LKR 25,000 airline handling charge.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-warning mt-0.5">warning</span>
+<span><strong class="text-on-surface">48 Hours to 6 Hours:</strong> Refundable with deduction of LKR 42,000 cancellation fee.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-error mt-0.5">block</span>
+<span><strong class="text-on-surface">No-Show Clause:</strong> Ticket non-refundable after scheduled flight closure. Airport taxes only refundable.</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Statutory GDS Consumer Protection Note -->
+<div class="p-4 rounded-xl bg-surface-subtle text-text-muted flex items-start gap-3 text-xs leading-relaxed">
+<span class="material-symbols-outlined text-[18px] text-text-muted mt-0.5">shield</span>
+<p>All cancellations and ticket voids comply with CAA Sri Lanka regulatory consumer directives. Refund credits process directly back to original settlement source within 7-10 banking settlement days.</p>
+</div>
+</div>
+<!-- Tab 3: Baggage Entitlement & Excess Rates -->
+<div class="tab-pane p-6 space-y-6 hidden" id="tab-content-3">
+<div class="space-y-2">
+<h2 class="font-title text-title text-on-surface">Complimentary Baggage Allowance &amp; Excess Surcharge Desk</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Exact piece and kilogram weight policy authenticated for SriLankan Airlines Colombo - London sector.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Cabin Hand Luggage -->
+<div class="bg-surface-subtle p-5 rounded-xl space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-on-surface font-bold">Carry-On Baggage (In-Cabin)</span>
+<span class="text-xs bg-success/15 text-success font-bold px-2 py-0.5 rounded">Included</span>
+</div>
+<div class="flex items-center gap-4 py-2">
+<div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-primary-container shadow-sm">
+<span class="material-symbols-outlined text-[26px]">shopping_bag</span>
+</div>
+<div>
+<div class="font-title text-title text-on-surface font-bold">1 Piece up to 7 kg</div>
+<div class="text-xs text-text-muted">Max dimensions: 56 cm × 36 cm × 23 cm</div>
+</div>
+</div>
+<p class="text-xs text-text-muted bg-surface p-2.5 rounded-lg">Plus 1 slim personal item: laptop messenger sleeve, duty-free parcel, or compact handbag free of surcharge.</p>
+</div>
+<!-- Checked Hold Luggage -->
+<div class="bg-surface-subtle p-5 rounded-xl space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-on-surface font-bold">Checked Baggage (Cargo Hold)</span>
+<span class="text-xs bg-success/15 text-success font-bold px-2 py-0.5 rounded">30 kg Included</span>
+</div>
+<div class="flex items-center gap-4 py-2">
+<div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-primary-container shadow-sm">
+<span class="material-symbols-outlined text-[26px]">luggage</span>
+</div>
+<div>
+<div class="font-title text-title text-on-surface font-bold">Standard 30 kg Allowance</div>
+<div class="text-xs text-text-muted">Total linear dimension sum ≤ 158 cm</div>
+</div>
+</div>
+<p class="text-xs text-text-muted bg-surface p-2.5 rounded-lg">Up to 2 pieces allowed within the combined 30 kg ceiling for Economy Flex ticket holders.</p>
+</div>
+</div>
+<!-- Excess Luggage Pre-Purchase Matrix -->
+<div class="bg-surface p-4 rounded-xl shadow-sm space-y-3">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label text-label text-on-surface font-bold">Pre-Book Additional Baggage (Save 35% vs Airport Counter)</span>
+<p class="text-xs text-text-muted">Instant GDS baggage tag allocation added directly to your boarding itinerary.</p>
+</div>
+<span class="text-xs font-semibold text-primary-container">Pre-departure Rate</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<div class="bg-surface-subtle p-3 rounded-lg flex items-center justify-between">
+<div>
+<div class="font-label text-label text-on-surface">+5 kg Add-on</div>
+<div class="text-xs text-text-muted">Personal essentials</div>
+</div>
+<div class="font-label text-label text-primary-container font-bold tabular-nums">LKR 4,800</div>
+</div>
+<div class="bg-surface-subtle p-3 rounded-lg flex items-center justify-between">
+<div>
+<div class="font-label text-label text-on-surface">+10 kg Add-on</div>
+<div class="text-xs text-text-muted">Standard suitcase</div>
+</div>
+<div class="font-label text-label text-primary-container font-bold tabular-nums">LKR 9,200</div>
+</div>
+<div class="bg-primary/5 p-3 rounded-lg flex items-center justify-between">
+<div>
+<div class="font-label text-label text-on-surface">+23 kg Full Bag</div>
+<div class="text-xs text-text-muted">Additional piece</div>
+</div>
+<div class="font-label text-label text-primary-container font-bold tabular-nums">LKR 18,500</div>
+</div>
+</div>
+</div>
+<!-- Sports Equipment Clause -->
+<div class="p-3 bg-surface-subtle rounded-lg flex items-center gap-3 text-xs text-text-muted">
+<span class="material-symbols-outlined text-[18px] text-primary-container">surfing</span>
+<span><strong>Surfboards, Golf Bags &amp; Diving Gear:</strong> Carried free within your total 30 kg entitlement provided maximum length does not exceed 300 cm.</span>
+</div>
+</div>
+<!-- Tab 4: In-Flight Amenities & Hospitality Matrix -->
+<div class="tab-pane p-6 space-y-6 hidden" id="tab-content-4">
+<div class="space-y-2">
+<h2 class="font-title text-title text-on-surface">A330-300 Economy Cabin Service Specifications</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Curated onboard hospitality, dining schedule, and hardware specifications.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-subtle p-4 rounded-xl space-y-2">
+<div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">restaurant_menu</span>
+</div>
+<div class="font-label text-label text-on-surface font-bold">Two Full Hot Meals</div>
+<p class="text-xs text-text-muted">Main dinner banquet served after departure, followed by continental hot breakfast 90 mins prior to landing at LHR.</p>
+</div>
+<div class="bg-surface-subtle p-4 rounded-xl space-y-2">
+<div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">liquor</span>
+</div>
+<div class="font-label text-label text-on-surface font-bold">Complimentary Bar</div>
+<p class="text-xs text-text-muted">Selection of international wines, Ceylon tea blends, spirits, and soft beverages throughout the 10.5-hour journey.</p>
+</div>
+<div class="bg-surface-subtle p-4 rounded-xl space-y-2">
+<div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">headset</span>
+</div>
+<div class="font-label text-label text-on-surface font-bold">Audio-Video On Demand</div>
+<p class="text-xs text-text-muted">120+ Hollywood &amp; South Asian movies, TV series, 3D live interactive flight radar map, and noise-damping headphones.</p>
+</div>
+</div>
+<div class="p-4 bg-surface rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[24px] text-primary-container">shopping_bag</span>
+<div>
+<div class="font-label text-label text-on-surface font-bold">Serendib Duty-Free Pre-Order Guarantee</div>
+<div class="text-xs text-text-muted">Pre-reserve onboard perfumes, luxury watches, and Ceylon Spices delivered to your seat.</div>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-variant font-label-sm text-label-sm text-on-surface transition-colors" type="button">
+                Browse Catalog
+              </button>
+</div>
+</div>
+</div>
+<!-- Special Assistance & Medical Passenger Requests -->
+<div class="bg-surface p-6 rounded-2xl shadow-sm space-y-6">
+<div class="flex items-center justify-between pb-3">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[22px] text-primary-container">accessibility_new</span>
+<h2 class="font-heading-md text-heading-md text-on-surface">Special Assistance &amp; Dietary Preferences</h2>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">Designate accessibility protocols and complimentary dietary choices prior to seat selection.</p>
+</div>
+<span class="px-2.5 py-1 rounded text-xs font-semibold bg-surface-subtle text-text-muted">Free Service</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- Wheelchair Assistance Selector -->
+<div class="bg-surface-subtle p-4 rounded-xl space-y-3">
+<label class="block font-label text-label text-on-surface font-semibold" for="wheelchair-select">
+                Mobility &amp; Wheelchair Protocol
+              </label>
+<select class="w-full h-12 bg-surface px-3 rounded-xl text-on-surface font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-focus" id="wheelchair-select">
+<option value="none">No Wheelchair Assistance Required</option>
+<option value="wchr">WCHR - Ramp Wheelchair (Can ascend/descend steps)</option>
+<option value="wchs">WCHS - Step Assistance (Cannot climb aircraft stairs)</option>
+<option value="wchc">WCHC - Complete Immobility (Cabin wheelchair to seat)</option>
+</select>
+<p class="text-xs text-text-muted">Ground dispatch team assigned at CMB T1 Departure &amp; LHR Arrival Gate.</p>
+</div>
+<!-- Dietary Meals Pre-Order -->
+<div class="bg-surface-subtle p-4 rounded-xl space-y-3">
+<label class="block font-label text-label text-on-surface font-semibold" for="meal-select">
+                Special In-Flight Dietary Meal
+              </label>
+<select class="w-full h-12 bg-surface px-3 rounded-xl text-on-surface font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-focus" id="meal-select">
+<option value="standard">Standard Onboard Menu Choice</option>
+<option value="avml">AVML - Asian Vegetarian Meal (Spiced / Indian style)</option>
+<option value="hnml">HNML - Hindu Non-Vegetarian (No beef/pork)</option>
+<option value="dbml">DBML - Diabetic Nutritional Meal</option>
+<option value="chml">CHML - Child Meal (Kid-friendly nutritious)</option>
+<option value="mohm">MOML - Halal Certified Preparation</option>
+<option value="vjml">VJML - Vegetarian Jain Meal</option>
+</select>
+<p class="text-xs text-text-muted">Served first prior to general trolley cabin meal distribution.</p>
+</div>
+</div>
+<!-- Secondary Accommodations: Bassinet & Meet & Greet Chaperone -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+<div class="flex items-start gap-3 p-3 rounded-xl bg-surface-subtle">
+<input class="mt-1 w-4 h-4 rounded text-primary-container focus:ring-focus" id="bassinet-opt" type="checkbox"/>
+<label class="cursor-pointer" for="bassinet-opt">
+<span class="block font-label-sm text-label-sm text-on-surface font-bold">Infant Bassinet Bed (Baby Cot)</span>
+<span class="block text-xs text-text-muted">Available for infants under 10 kg / height &lt; 74 cm. Requires bulkhead seat row in Screen 03.</span>
+</label>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-xl bg-surface-subtle">
+<input class="mt-1 w-4 h-4 rounded text-primary-container focus:ring-focus" id="chaperone-opt" type="checkbox"/>
+<label class="cursor-pointer" for="chaperone-opt">
+<span class="block font-label-sm text-label-sm text-on-surface font-bold">Meet &amp; Greet Airport Escort</span>
+<span class="block text-xs text-text-muted">Dedicated ground coordinator for unaccompanied minors or elderly solo travelers.</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Sticky Fare Ledger & Decision Center (4 cols) -->
+<div class="lg:col-span-4 sticky top-24 space-y-6">
+<!-- Main Ledger Card -->
+<div class="bg-surface p-6 rounded-2xl shadow-sm space-y-5">
+<div class="flex items-center justify-between pb-3 bg-surface-subtle/50 -mx-6 -mt-6 p-6 rounded-t-2xl">
+<div>
+<span class="text-xs font-label-sm uppercase tracking-wider text-text-muted font-bold">Fare Audit Ledger</span>
+<div class="font-title text-title text-on-surface">1 Adult Passenger</div>
+</div>
+<span class="px-2.5 py-1 rounded-full text-xs font-label-sm bg-primary/10 text-primary-container font-semibold">
+              Roundtrip
+            </span>
+</div>
+<!-- Flight Sector Quick Visual Summary -->
+<div class="space-y-2 bg-surface-subtle p-3 rounded-xl">
+<div class="flex items-center justify-between text-xs font-label-sm text-on-surface">
+<span>CMB ➔ LHR (UL 503)</span>
+<span class="text-text-muted">14 May</span>
+</div>
+<div class="flex items-center justify-between text-xs font-label-sm text-on-surface">
+<span>LHR ➔ CMB (UL 504)</span>
+<span class="text-text-muted">25 May</span>
+</div>
+<div class="text-[11px] text-text-muted pt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-success">verified</span>
+              Economy Flex (Fare Basis KLERLK)
+            </div>
+</div>
+<!-- Price Breakdown Ledger -->
+<div class="space-y-3 font-body-sm text-body-sm">
+<div class="flex justify-between items-center text-text-muted">
+<span>Base Airfare (Adult × 1)</span>
+<span class="font-mono text-on-surface tabular-nums">LKR 248,500</span>
+</div>
+<div class="flex justify-between items-center text-text-muted">
+<span class="flex items-center gap-1">
+                Aviation Fuel Surcharge (YQ)
+                <span class="material-symbols-outlined text-[14px] text-outline" title="Aviation carrier bunker surcharge">help</span>
+</span>
+<span class="font-mono text-on-surface tabular-nums">LKR 18,200</span>
+</div>
+<div class="flex justify-between items-center text-text-muted">
+<span>Airport Embarkation &amp; LHR APD Tax</span>
+<span class="font-mono text-on-surface tabular-nums">LKR 8,800</span>
+</div>
+<div class="flex justify-between items-center text-success text-xs pt-1">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">sell</span> Vacatina Platform Discount
+              </span>
+<span class="font-mono tabular-nums font-semibold">- LKR 0</span>
+</div>
+<!-- Grand Total Module -->
+<div class="pt-4 bg-surface-subtle p-4 rounded-xl mt-2 space-y-1">
+<div class="text-xs text-text-muted uppercase font-label-sm">Total Payable Flight Fare</div>
+<div class="flex items-baseline justify-between">
+<span class="font-display-mobile text-display-mobile text-primary-container font-extrabold tabular-nums tracking-tight">
+<span class="text-xs font-semibold mr-1">LKR</span>275,500
+                </span>
+<span class="text-xs text-text-muted font-body-sm">All taxes included</span>
+</div>
+</div>
+</div>
+<!-- Call to Actions -->
+<div class="space-y-3 pt-2">
+<button class="w-full h-12 bg-primary-container hover:bg-primary text-on-primary font-label text-label font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99]" onclick="confirmAndNavigate()" type="button">
+<span>Confirm Fare &amp; Select Seats</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-full h-11 bg-surface hover:bg-surface-subtle text-primary-container font-label text-label font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors" onclick="saveToBucket()" type="button">
+<span class="material-symbols-outlined text-[18px]">workspaces</span>
+<span>Save Flight to Trip Bucket (Draft)</span>
+</button>
+</div>
+<!-- Trust Badges & Guarantee Micro-Bar -->
+<div class="pt-3 space-y-2 text-xs text-text-muted">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-success">lock</span>
+<span>256-Bit SSL Encrypted GDS Session</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary-container">sync</span>
+<span>Automatic Price Protection for next 14 mins</span>
+</div>
+</div>
+</div>
+<!-- Agency Trust & Support Module -->
+<div class="bg-surface p-5 rounded-2xl shadow-sm space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+</div>
+<div>
+<div class="font-label text-label text-on-surface">Vacatina Ticketing Desk</div>
+<div class="text-xs text-text-muted font-mono">+94113606200</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted leading-relaxed">
+            Need urgent corporate fare matching or multi-city transit visas? Our authorized IATA agents can hold your PNR reservation offline.
+          </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple 4-Tab Switching Logic
+  function switchDeskTab(tabIndex) {
+    // Hide all tab panes
+    for (let i = 1; i <= 4; i++) {
+      const pane = document.getElementById('tab-content-' + i);
+      const btn = document.getElementById('tab-btn-' + i);
+      if (pane) pane.classList.add('hidden');
+      if (btn) {
+        btn.classList.remove('bg-surface', 'text-primary-container', 'shadow-sm', 'font-semibold');
+        btn.classList.add('text-text-muted');
+      }
+    }
+
+    // Activate selected tab
+    const activePane = document.getElementById('tab-content-' + tabIndex);
+    const activeBtn = document.getElementById('tab-btn-' + tabIndex);
+    if (activePane) activePane.classList.remove('hidden');
+    if (activeBtn) {
+      activeBtn.classList.remove('text-text-muted');
+      activeBtn.classList.add('bg-surface', 'text-primary-container', 'shadow-sm', 'font-semibold');
+    }
+  }
+
+  // Interactive Live GDS Countdown Timer
+  let timeLeft = 14 * 60 + 30; // 14 mins 30 secs
+  const countdownEl = document.getElementById('gds-countdown');
+
+  setInterval(function() {
+    if (timeLeft <= 0) {
+      countdownEl.innerText = '00:00 EXPIRED';
+      return;
+    }
+    timeLeft--;
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    countdownEl.innerText = 
+      (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+  }, 1000);
+
+  // Workflow Handlers
+  function confirmAndNavigate() {
+    // Dispatch action to step 03 Seat Configurator
+    alert('Fare Rules Confirmed. Proceeding to Screen 03 (Seat Configurator & Baggage Allocation)...');
+  }
+
+  function saveToBucket() {
+    alert('Itinerary UL 503/504 staged to your Vacatina Trip Bucket in [Ready] state.');
+  }
+</script></main><footer class="w-full bg-primary-container text-on-primary pt-16 pb-8"><div class="max-w-7xl mx-auto px-6"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12"><div class="space-y-4"><div class="flex items-center gap-2 font-heading-md text-heading-md text-on-primary"><span class="material-symbols-outlined text-[24px]">travel_explore</span><span>VACATINA</span></div><p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">The authoritative travel operating system engineered for end-to-end flight, itinerary composition, and enterprise mobility management.</p><div class="pt-2 space-y-1.5"><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">call</span><span>+94113606200</span></div><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">mail</span><span>info@vacatina.com</span></div></div></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Products &amp; Mobility</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="flights" href="#">Flight Search Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="hotels" href="#">Accommodations &amp; Resorts</a></li><li><a class="hover:text-on-primary transition-colors" data-path="holiday-packages" href="#">Bespoke Holiday Packages</a></li><li><a class="hover:text-on-primary transition-colors" data-path="cars-and-transfers" href="#">Ground Transportation</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Rail &amp; Coastal Cruising</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Travel Operations</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="visa-assistance" href="#">Global Visa Protocol</a></li><li><a class="hover:text-on-primary transition-colors" data-path="flight-booking-flow" href="#">Trip Bucket Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Baggage &amp; Fare Rules</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Comprehensive Travel Insurance</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Real-Time Airline Timetables</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Enterprise &amp; Compliance</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Corporate Portal Access</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">IATA Accredited Agency</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Global Distribution Network</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">PCI-DSS Level 1 Security</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">API Solutions &amp; Partners</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Statutory &amp; Quality</h4><div class="space-y-3 font-body-sm text-body-sm text-on-primary-container"><p>Operating with certified Global Distribution System standards and verified ticketing agency integrity.</p><div class="p-3 rounded-lg bg-primary/40 space-y-1 text-on-primary"><div class="font-label-sm text-label-sm font-semibold">Customer Operations Support</div><div class="text-xs text-on-primary-container">Available Daily for Global Travelers</div><div class="text-xs text-on-primary-container font-mono">Tel: +94113606200</div></div></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-primary-container"><p>© 2025 Vacatina Travel Operating System. All rights reserved.</p><div class="flex flex-wrap items-center gap-6 font-label-sm text-label-sm"><a class="hover:text-on-primary transition-colors" data-path="privacy-policy" href="#">Privacy Statement</a><a class="hover:text-on-primary transition-colors" data-path="terms-of-service" href="#">Booking Terms &amp; Conditions</a><a class="hover:text-on-primary transition-colors" data-path="statutory-compliance" href="#">Statutory Regulatory Notice</a><a class="hover:text-on-primary transition-colors" data-path="security-standards" href="#">Data Security Protocol</a></div></div></div></footer></body></html>

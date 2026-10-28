@@ -1,0 +1,26 @@
+graph TD
+    H_HUB[/"Hotels Hub<br/>/hotels"\] --> H_DEST[Destination Input]
+    H_HUB --> H_CHECKIN[Check-in Date]
+    H_HUB --> H_CHECKOUT[Check-out Date]
+    H_HUB --> H_ROOMS[Rooms/Guests]
+    H_HUB --> H_SEARCH_BTN[Search Submit]
+
+    H_SEARCH_BTN --> H_VALIDATION{Validation}
+    H_VALIDATION -->|Valid| H_SEARCH[Hotel Search<br/>/hotels/search]
+    H_VALIDATION -->|Invalid| H_ERROR[Validation Error]
+
+    H_SEARCH --> H_RESULTS[Hotel Results]
+    H_RESULTS --> H_PROP_CARD[Property Card Click]
+    H_PROP_CARD --> H_PROPERTY[Property Detail<br/>/hotels/property/:id]
+
+    H_PROPERTY --> H_ROOM[Select Room Category]
+    H_PROPERTY --> H_RATE[Select Rate Plan]
+    H_PROPERTY --> H_CONFIG[Configure Stay]
+    H_CONFIG --> H_STAGE[Stage as needs_action]
+    H_STAGE --> H_TB[Trip Bucket Drawer]
+
+    H_RESULTS --> H_NO_RESULTS[No Results State]
+    H_NO_RESULTS --> H_MODIFY[Modify Search]
+
+    H_TB --> H_REVIEW_CTA[Review Trip CTA]
+    H_REVIEW_CTA --> H_REVIEW[Trip Review<br/>/trip/review]

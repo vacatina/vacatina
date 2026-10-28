@@ -1,0 +1,31 @@
+Screen ID,Source URL,Section,Control label,Action type,Target screen ID,Target URL or component state,Required inputs,Validation,Success behavior,Failure behavior,Back behavior,API dependency,Database dependency,Implementation status,Source-code evidence,Notes
+NAV-01,/,Desktop Nav,Home,Navigation,HOMEPAGE,/,None,None,Homepage renders,None,None,None,None,IMPLEMENTED_AND_VERIFIED,router.service.ts line 291,None
+NAV-02,/,Desktop Nav,Flights,Navigation,FLIGHTS_HUB,/flights,None,None,Flights hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 352,None
+NAV-03,/,Desktop Nav,Hotels,Navigation,HOTELS_HUB,/hotels,None,None,Hotels hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 398,None
+NAV-04,/,Desktop Nav,Visa,Navigation,VISA_HUB,/visa-assistance,None,None,Visa hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 436,None
+NAV-05,/,Desktop Nav,Packages,Navigation,PKG_HUB,/holiday-packages,None,None,Packages hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 649,None
+NAV-06,/,Desktop Nav,Cars,Navigation,CARS_HUB,/cars-transfers,None,None,Cars hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 581,None
+NAV-07,/,Desktop Nav,Rails,Navigation,RAILS_HUB,/rails,None,None,Rails hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 594,None
+NAV-08,/,Desktop Nav,Cruises,Navigation,CRUISES_HUB,/cruises,None,None,Cruises hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 670,None
+NAV-09,/,Desktop Nav,Activities,Navigation,ACTIVITIES_HUB,/activities,None,None,Activities hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 656,None
+NAV-10,/,Desktop Nav,Sightseeing,Navigation,SIGHTSEEING_HUB,/sightseeing-tours,None,None,Sightseeing hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 663,None
+NAV-11,/,Desktop Nav,Insurance,Navigation,INSURANCE_HUB,/travel-insurance,None,None,Insurance hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 530,None
+NAV-12,/,Desktop Nav,Locale,Modal,LOCALE_MODAL,Language/Currency Modal,None,None,Modal opens,None,Close button,none,none,IMPLEMENTED_AND_VERIFIED,header-nav.ts,None
+NAV-13,/,Desktop Nav,Favorites,Navigation,FAVORITES,/favorites,None,None,Favorites list renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 691,None
+NAV-14,/,Desktop Nav,Trip Bucket,Drawer,TB_DRAWER,Trip Bucket Drawer,None,None,Drawer opens,None,Close button,none,none,IMPLEMENTED_AND_VERIFIED,trip-bucket-ui.ts,None
+NAV-15,/,Desktop Nav,Auth,Modal,AUTH_MODAL,Auth Modal,None,None,Modal opens,None,Close button,Clerk API,Fresh credentials required,IMPLEMENTED_NOT_VERIFIED,clerk-auth.service.ts,None
+NAV-16,/,Mobile Nav,Hamburger,Drawer,MOBILE_NAV,Mobile Nav Drawer,None,None,Drawer opens,None,Close/Escape,none,none,IMPLEMENTED_AND_VERIFIED,browser-verify.mjs Journey J,None
+NAV-17,/,Mobile Nav,Home,Navigation,HOMEPAGE,/,None,None,Homepage renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 291,None
+NAV-18,/,Mobile Nav,Flights,Navigation,FLIGHTS_HUB,/flights,None,None,Flights hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 352,None
+NAV-19,/,Mobile Nav,Hotels,Navigation,HOTELS_HUB,/hotels,None,None,Hotels hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 398,None
+NAV-20,/,Mobile Nav,Visa,Navigation,VISA_HUB,/visa-assistance,None,None,Visa hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 436,None
+NAV-21,/,Mobile Nav,Packages,Navigation,PKG_HUB,/holiday-packages,None,None,Packages hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 649,None
+NAV-22,/,Mobile Nav,Cars,Navigation,CARS_HUB,/cars-transfers,None,None,Cars hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 581,None
+NAV-23,/,Mobile Nav,Rails,Navigation,RAILS_HUB,/rails,None,None,Rails hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 594,None
+NAV-24,/,Mobile Nav,Cruises,Navigation,CRUISES_HUB,/cruises,None,None,Cruises hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 670,None
+NAV-25,/,Mobile Nav,Activities,Navigation,ACTIVITIES_HUB,/activities,None,None,Activities hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 656,None
+NAV-26,/,Mobile Nav,Sightseeing,Navigation,SIGHTSEEING_HUB,/sightseeing-tours,None,None,Sightseeing hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 663,None
+NAV-27,/,Mobile Nav,Insurance,Navigation,INSURANCE_HUB,/travel-insurance,None,None,Insurance hub renders,None,Back button,none,none,IMPLEMENTED_AND_VERIFIED,router.service.ts line 530,None
+NAV-28,/,Mobile Nav,Account,Navigation,ACCOUNT,/account,None,None,Account overview renders,None,Back button,none,none,IMPLEMENTED_NOT_VERIFIED,router.service.ts line 742,Requires Clerk auth
+NAV-29,/,Mobile Nav,Support,Navigation,SUPPORT,/support,None,None,Support page renders,None,Back button,none,none,IMPLEMENTED_NOT_VERIFIED,router.service.ts line 752,Not browser-tested
+NAV-30,/,Mobile Nav,Close,State Change,MOBILE_NAV_CLOSE,Drawer closes,None,None,Drawer closes,None,None,none,none,IMPLEMENTED_AND_VERIFIED,browser-verify.mjs Journey J,None

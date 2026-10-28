@@ -66,7 +66,7 @@ export class BundleWorkspace {
     this.render();
     if ((window as any).__VACATINA_PUBLIC_DEMO__) {
       this.localPlanning = true; this.loading = false;
-      this.error = 'Browser-only demo: preferences are held on this page, not durably submitted. No booking or payment is available.';
+      this.error = 'Preferences are held on this page and are not durably submitted. No booking or payment is available.';
       this.render(); return;
     }
     try {

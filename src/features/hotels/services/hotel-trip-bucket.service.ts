@@ -87,7 +87,7 @@ export class HotelTripBucketService {
       roomId: config.roomId,
       ratePlanId: config.planId,
       inventoryMode: hotel.inventoryMode,
-      inventoryLabel: hotel.inventoryMode ? 'Canonical hotel demo fixture' : undefined,
+      inventoryLabel: hotel.inventoryMode ? 'Planning reference' : undefined,
       truthDisclosure: hotel.inventoryMode ? HOTEL_DEMO_DISCLOSURE : undefined,
       providerName: `${hotel.supplierName}${hotel.inventoryMode ? ' (fixture reference only)' : ''}`,
       currency: config.currency,

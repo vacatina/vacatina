@@ -1,0 +1,28 @@
+graph TD
+    V_HUB[/"Visa Hub<br/>/visa-assistance"\] --> V_COUNTRY[Destination Country]
+    V_HUB --> V_CITIZEN[Citizenship Country]
+    V_HUB --> V_RESIDENCE[Residence Country]
+    V_HUB --> V_DATE[Travel Date]
+    V_HUB --> V_PURPOSE[Travel Purpose]
+    V_HUB --> V_SEARCH_BTN[Search Submit]
+
+    V_SEARCH_BTN --> V_VALIDATION{Validation}
+    V_VALIDATION -->|Valid| V_SEARCH[Visa Search<br/>/visa-assistance/search]
+    V_VALIDATION -->|Invalid| V_ERROR[Validation Error]
+
+    V_SEARCH --> V_RESULTS[Visa Results]
+    V_RESULTS --> V_APPLY_BTN[Apply Button]
+    V_APPLY_BTN --> V_APPLY[Visa Apply<br/>/visa-assistance/apply/:id]
+
+    V_APPLY --> V_MODAL[Application Modal]
+    V_MODAL --> V_APPLICANT[Applicant Data Entry]
+    V_MODAL --> V_NO_UPLOAD[No Document Upload]
+    V_MODAL --> V_STAGE_BTN[Stage Button]
+    V_STAGE_BTN --> V_STAGE[Stage as needs_action]
+    V_STAGE --> V_TB[Trip Bucket Drawer]
+
+    V_RESULTS --> V_NO_RESULTS[No Results State]
+    V_NO_RESULTS --> V_MODIFY[Modify Search]
+
+    V_TB --> V_REVIEW_CTA[Review Trip CTA]
+    V_REVIEW_CTA --> V_REVIEW[Trip Review<br/>/trip/review]

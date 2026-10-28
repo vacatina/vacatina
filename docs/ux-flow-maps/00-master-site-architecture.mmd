@@ -1,0 +1,104 @@
+graph TD
+    HOME[/"Home Page<br/>/ (index.html)"\] --> SCC[Search Command Center<br/>11 Tabs]
+    HOME --> NAV[Global Navigation]
+    HOME --> TB[Trip Bucket Drawer]
+    HOME --> FOOTER[Footer Links]
+
+    SCC --> BUNDLE[Bundle Tab]
+    SCC --> FLIGHTS[Flights Tab]
+    SCC --> HOTELS[Hotels Tab]
+    SCC --> VISA[Visa Tab]
+    SCC --> PACKAGES[Packages Tab]
+    SCC --> CARS[Cars Tab]
+    SCC --> RAILS[Rails Tab]
+    SCC --> CRUISES[Cruises Tab]
+    SCC --> ACTIVITIES[Activities Tab]
+    SCC --> SIGHTSEEING[Sightseeing Tab]
+    SCC --> INSURANCE[Insurance Tab]
+
+    BUNDLE --> BUNDLE_SEARCH[Bundle Search Form]
+    BUNDLE_SEARCH --> BUNDLE_RESULTS[Bundle Results]
+    BUNDLE_RESULTS --> BUNDLE_CONFIG[Bundle Configurator]
+    BUNDLE_CONFIG --> TB
+
+    FLIGHTS --> FLIGHT_HUB[Flights Hub<br/>/flights]
+    FLIGHT_HUB --> FLIGHT_SEARCH[Flight Search<br/>/flights/search]
+    FLIGHT_SEARCH --> FLIGHT_RESULTS[Flight Results]
+    FLIGHT_RESULTS --> FLIGHT_OFFER[Flight Offer Detail<br/>/flights/offer/:id]
+    FLIGHT_OFFER --> FLIGHT_CONFIG[Flight Configurator]
+    FLIGHT_CONFIG --> TB
+
+    HOTELS --> HOTEL_HUB[Hotels Hub<br/>/hotels]
+    HOTEL_HUB --> HOTEL_SEARCH[Hotel Search<br/>/hotels/search]
+    HOTEL_SEARCH --> HOTEL_RESULTS[Hotel Results]
+    HOTEL_RESULTS --> HOTEL_PROP[Property Detail<br/>/hotels/property/:id]
+    HOTEL_PROP --> HOTEL_CONFIG[Room/Rate Configurator]
+    HOTEL_CONFIG --> TB
+
+    VISA --> VISA_HUB[Visa Hub<br/>/visa-assistance]
+    VISA_HUB --> VISA_SEARCH[Visa Search<br/>/visa-assistance/search]
+    VISA_SEARCH --> VISA_RESULTS[Visa Results]
+    VISA_RESULTS --> VISA_APPLY[Visa Apply<br/>/visa-assistance/apply/:id]
+    VISA_APPLY --> TB
+
+    PACKAGES --> PKG_HUB[Holiday Packages Hub<br/>/holiday-packages]
+    PKG_HUB --> PKG_SEARCH[Package Search<br/>/holiday-packages/search]
+    PKG_SEARCH --> PKG_RESULTS[Package Results]
+    PKG_RESULTS --> PKG_OFFER[Package Offer<br/>/holiday-packages/offer/:id]
+    PKG_OFFER --> TB
+
+    CARS --> CARS_HUB[Cars Hub<br/>/cars-transfers]
+    CARS_HUB --> CARS_SEARCH[Cars Search<br/>/cars-transfers/search]
+    CARS_SEARCH --> CARS_RESULTS[Cars Results]
+    CARS_RESULTS --> CARS_OFFER[Cars Offer<br/>/cars-transfers/offer/:id]
+    CARS_OFFER --> TB
+
+    RAILS --> RAILS_HUB[Rails Hub<br/>/rails]
+    RAILS_HUB --> RAILS_SEARCH[Rails Search<br/>/rails/search]
+    RAILS_SEARCH --> RAILS_RESULTS[Rails Results]
+    RAILS_RESULTS --> RAILS_OFFER[Rails Offer<br/>/rails/journeys/:id]
+    RAILS_OFFER --> TB
+
+    CRUISES --> CRUISES_HUB[Cruises Hub<br/>/cruises]
+    CRUISES_HUB --> CRUISES_SEARCH[Cruises Search<br/>/cruises/search]
+    CRUISES_SEARCH --> CRUISES_RESULTS[Cruises Results]
+    CRUISES_RESULTS --> CRUISES_OFFER[Cruises Offer<br/>/cruises/offer/:id]
+    CRUISES_OFFER --> TB
+
+    ACTIVITIES --> ACT_HUB[Activities Hub<br/>/activities]
+    ACT_HUB --> ACT_SEARCH[Activities Search<br/>/activities/search]
+    ACT_SEARCH --> ACT_RESULTS[Activities Results]
+    ACT_RESULTS --> ACT_OFFER[Activities Offer<br/>/activities/offer/:id]
+    ACT_OFFER --> TB
+
+    SIGHTSEEING --> SIGHT_HUB[Sightseeing Hub<br/>/sightseeing-tours]
+    SIGHT_HUB --> SIGHT_SEARCH[Sightseeing Search<br/>/sightseeing-tours/search]
+    SIGHT_SEARCH --> SIGHT_RESULTS[Sightseeing Results]
+    SIGHT_RESULTS --> SIGHT_OFFER[Sightseeing Offer<br/>/sightseeing-tours/offer/:id]
+    SIGHT_OFFER --> TB
+
+    INSURANCE --> INS_HUB[Insurance Hub<br/>/travel-insurance]
+    INS_HUB --> INS_SEARCH[Insurance Search<br/>/travel-insurance/compare]
+    INS_SEARCH --> INS_RESULTS[Insurance Results]
+    INS_RESULTS --> INS_OFFER[Insurance Offer<br/>/travel-insurance/plans/:id]
+    INS_OFFER --> TB
+
+    TB --> TB_DRAWER[Trip Bucket Drawer]
+    TB_DRAWER --> TB_REVIEW[Trip Review<br/>/trip/review]
+    TB_REVIEW --> ENQUIRY[Enquiry Submission<br/>/requests/:id]
+    TB_REVIEW --> CHECKOUT[Checkout<br/>/checkout]
+
+    NAV --> ACCOUNT[Account Routes<br/>/account/*]
+    NAV --> ADMIN[Admin Portal<br/>/admin]
+    NAV --> PARTNER[Partner Portal<br/>/partner]
+    NAV --> SUPPORT[Support<br/>/support]
+    NAV --> LEGAL[Legal Pages<br/>/legal/*]
+    NAV --> FAVORITES[Favorites<br/>/favorites]
+    NAV --> RESOURCES[Resources<br/>/resources]
+
+    ENQUIRY --> REQ_TRACK[Request Tracking<br/>/requests]
+    ENQUIRY --> OPS_QUEUE[Operator Queue<br/>/admin]
+
+    style HOME fill:#1B1464,color:#fff
+    style SCC fill:#2d2480,color:#fff
+    style TB fill:#4a3fa0,color:#fff

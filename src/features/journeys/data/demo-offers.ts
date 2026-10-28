@@ -3,7 +3,7 @@ import type { JourneyOffer, JourneyConfiguration } from '../domain/journey-model
 import { journeyOfferId } from '../domain/journey-models.ts';
 import type { TravelProductSlug } from '../../../lib/domain/types.ts';
 
-export const JOURNEY_DEMO_DISCLOSURE = 'Canonical demo fixture — no live supplier, availability, reservation or confirmation. This selection is a local planning request only; current price and conditions require operator confirmation.';
+export const JOURNEY_DEMO_DISCLOSURE = 'Planning reference - no live supplier, availability, reservation or confirmation. This selection is a local planning request only; current price and conditions require operator confirmation.';
 
 export function demoOffer(productType: TravelProductSlug, title: string, destination: string, extension: Record<string, unknown>): JourneyOffer {
   return {

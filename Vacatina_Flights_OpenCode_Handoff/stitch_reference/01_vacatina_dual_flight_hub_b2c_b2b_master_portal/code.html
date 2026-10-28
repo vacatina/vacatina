@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"background":"#f9f9f9","surface-bright":"#f9f9f9","surface-variant":"#e2e2e2","on-tertiary-fixed":"#380d00","on-background":"#1a1c1c","error-container":"#ffdad6","secondary-fixed-dim":"#c8c6c6","on-secondary-fixed":"#1b1c1c","on-secondary":"#ffffff","surface-container-high":"#e8e8e8","on-error":"#ffffff","text-primary":"#000000","on-primary":"#ffffff","secondary-fixed":"#e4e2e2","canvas":"#FAFAFA","on-surface":"#1a1c1c","primary-container":"#1b1464","error":"#B91C1C","border":"#E5E5E5","success":"#15803D","surface":"#FFFFFF","on-secondary-container":"#646464","surface-container":"#eeeeee","surface-container-lowest":"#ffffff","info":"#1D4ED8","outline":"#787682","warning":"#B45309","inverse-primary":"#c4c0ff","on-primary-fixed-variant":"#403d8a","inverse-on-surface":"#f0f1f1","outline-variant":"#c8c5d2","on-secondary-fixed-variant":"#474747","surface-container-highest":"#e2e2e2","on-tertiary":"#ffffff","secondary":"#5e5e5e","text-muted":"#525252","on-error-container":"#93000a","surface-subtle":"#F5F5F5","inverse-surface":"#2f3131","on-tertiary-fixed-variant":"#73351c","primary-fixed-dim":"#c4c0ff","on-primary-fixed":"#13095d","tertiary-fixed":"#ffdbcf","surface-container-low":"#f3f3f3","tertiary":"#1f0500","tertiary-fixed-dim":"#ffb59a","surface-dim":"#dadada","secondary-container":"#e4e2e2","primary-fixed":"#e3dfff","on-primary-container":"#8481d3","on-surface-variant":"#474551","focus":"#1D4ED8","primary":"#06003e","tertiary-container":"#441200","on-tertiary-container":"#c57658","surface-tint":"#5855a3"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-md":"1rem","12":"48px","8":"32px","1":"4px","2":"8px","6":"24px","20":"80px","16":"64px","margin":"1.5rem","space-xl":"2.5rem","5":"20px","4":"16px","space-sm":"0.5rem","3":"12px","space-lg":"1.5rem","10":"40px","space-xs":"0.25rem","gutter":"1.5rem"},fontFamily:{"body":["Inter"],"title":["Plus Jakarta Sans"],"label-sm":["Inter"],"heading-lg":["Plus Jakarta Sans"],"heading-xl":["Plus Jakarta Sans"],"display-mobile":["Plus Jakarta Sans"],"display-desktop":["Plus Jakarta Sans"],"body-sm":["Inter"],"heading-md":["Plus Jakarta Sans"],"body-lg":["Inter"],"label":["Inter"]},fontSize:{"body":["15px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"400"}],"title":["18px",{"lineHeight":"24px","letterSpacing":"0","fontWeight":"600"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"600"}],"heading-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"heading-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"700"}],"display-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"800"}],"display-desktop":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0","fontWeight":"400"}],"heading-md":["22px",{"lineHeight":"28px","letterSpacing":"0","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"400"}],"label":["14px",{"lineHeight":"20px","letterSpacing":"0","fontWeight":"600"}]}}}};</script></head><body class="bg-canvas font-body text-on-surface antialiased min-h-screen flex flex-col justify-between"><header class="fixed top-0 left-0 right-0 z-50 bg-surface shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-[76px] w-full px-8 flex items-center justify-between gap-6"><div class="flex items-center gap-6"><div class="flex items-center gap-3"><img alt="London iconic landmark Big Ben and the Palace of Westminster from across the River Thames on a clear crisp day with classic red bus in distance, high resolution editorial travel photography" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WmYxqlxqYCw8ALAoiA3Y9OoL9GBEyJBXCRyYrDYpWlLAGS6VL3eJGFWyiX30X2tIbLbOHJaab_B9iui83E3aX4CM3Gl0q8E4UrvPL2MVdr9utW12VNWShZBODMfmt6g-rm8q4SPmJIAT8KZ7ko8Vhk_yAcwlGDh59sHG97BHAOg5dO3kJn4X37-P6g9naTburBUwEpGYVCNpEZUjpVLxk08lwbfeC2QZmXMA91xbsLpe88HfGG1ZRikaAm"/><div class="flex flex-col"><span class="font-title text-title text-primary tracking-tight leading-none uppercase font-bold">vacatina</span><span class="font-label-sm text-[10px] text-text-muted leading-tight tracking-normal">we treasure your holidays</span></div></div><nav class="hidden xl:flex items-center gap-6 ml-4" data-active-classes="text-primary font-title font-semibold relative after:absolute after:bottom-[-26px] after:left-0 after:right-0 after:h-[2px] after:bg-primary-container"><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="home" href="#">Home</a><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="flights" href="#">Flights</a><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="hotels" href="#">Hotels</a><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="visa-assistance" href="#">Visa Assistance</a><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="holiday-packages" href="#">Holiday Packages</a><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="cars-and-transfers" href="#">Cars &amp; Transfers</a><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="more-services" href="#">More</a><a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors py-2" data-path="resources" href="#">Resources</a></nav></div><div class="flex items-center gap-5"><button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface hover:bg-surface-variant transition-colors" type="button"><span class="material-symbols-outlined text-[18px] text-secondary">language</span><span class="font-label-sm text-label-sm text-on-surface">EN · USD</span></button><button aria-label="Saved Favorites" class="p-2 rounded-lg text-secondary hover:text-primary hover:bg-surface-subtle transition-colors relative" type="button"><span class="material-symbols-outlined text-[22px]">favorite</span></button><button aria-label="Trip Bucket Workspace" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-subtle hover:bg-surface-variant transition-colors text-on-surface relative" type="button"><span class="material-symbols-outlined text-[20px] text-primary">shopping_bag</span><span class="font-label text-label hidden md:inline text-on-surface">Trip Bucket</span><span class="flex items-center justify-center w-5 h-5 rounded-full bg-primary-container text-on-primary font-label-sm text-[11px] font-bold">3</span></button><div class="flex items-center gap-3 pl-3"><div class="hidden sm:flex flex-col text-right"><span class="font-label text-label leading-tight text-on-surface">Alex M.</span><span class="font-label-sm text-[11px] text-text-muted leading-tight">Pro Member</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-[76px] bg-canvas flex-1"><div class="flex flex-col w-full">
+<!-- DUAL-MODE COMMAND HEADER STRIP -->
+<section class="w-full bg-surface shadow-sm py-4 px-6 md:px-10 transition-all duration-300">
+<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+<!-- MODE SWITCHER -->
+<div class="flex items-center gap-4 flex-wrap">
+<div class="p-1 rounded-xl bg-surface-subtle flex items-center shadow-inner">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg font-label text-label transition-all duration-200 bg-surface text-primary shadow-sm" id="btn-mode-b2c" onclick="switchMode('b2c')">
+<span class="material-symbols-outlined text-[18px]">travel_explore</span>
+<span>Leisure &amp; Direct</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg font-label text-label transition-all duration-200 text-secondary hover:text-primary" id="btn-mode-b2b" onclick="switchMode('b2b')">
+<span class="material-symbols-outlined text-[18px]">corporate_fare</span>
+<span>B2B Agency Portal</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary-container text-on-primary ml-1">PRO</span>
+</button>
+</div>
+<div class="h-6 w-px bg-surface-variant hidden sm:block"></div>
+<!-- GLOBAL GDS CONNECTIVITY TELEMETRY -->
+<div class="flex items-center gap-3 text-secondary">
+<span class="inline-flex items-center gap-1.5 font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+            NDC &amp; Amadeus Live
+          </span>
+<span class="text-surface-variant">•</span>
+<span class="font-label-sm text-label-sm hidden md:inline">258 Carriers Linked</span>
+<span class="text-surface-variant hidden md:inline">•</span>
+<span class="font-label-sm text-label-sm text-success hidden md:inline">0% Booking Surcharge</span>
+</div>
+</div>
+<!-- B2B ENTERPRISE STATUS PILL (Toggled by JS) -->
+<div class="hidden flex-wrap items-center gap-3 p-2 px-3 rounded-xl bg-surface-subtle" id="b2b-enterprise-status">
+<div class="flex items-center gap-1.5 text-text-muted">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="font-label-sm text-label-sm font-semibold text-primary">IATA #07312984</span>
+</div>
+<span class="text-surface-variant">•</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-text-muted">Credit Line:</span>
+<span class="font-label-sm text-label-sm font-bold text-success font-mono">LKR 12,500,000</span>
+</div>
+<span class="text-surface-variant">•</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-text-muted">Client Markup:</span>
+<select class="bg-surface font-label-sm text-label-sm font-semibold rounded px-2 py-0.5 shadow-sm text-primary focus:outline-none" id="markup-selector" onchange="updateFares()">
+<option value="0">Net Rate (+0%)</option>
+<option selected="" value="5">Client Markup (+5%)</option>
+<option value="10">Corporate Markup (+10%)</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- SEARCH ENGINE & CONSOLE HERO CONTAINER -->
+<section class="w-full px-6 md:px-10 pt-8 pb-12">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
+<!-- HERO TITLE & SUBTITLE -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface text-primary text-xs font-semibold uppercase tracking-wider mb-2 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">flight_takeoff</span>
+<span id="hero-badge">Vacatina Global Flights Engine</span>
+</div>
+<h1 class="font-heading-xl text-heading-xl text-primary tracking-tight" id="hero-title">
+            Seamless Flights, Unrivaled Authority.
+          </h1>
+<p class="font-body text-body text-text-muted mt-1 max-w-2xl" id="hero-desc">
+            Real-time direct inventory and consolidated multi-GDS availability across global hubs. Clear taxes, zero markups, instant PNR issuance.
+          </p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 bg-surface px-3 py-1.5 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-info">lock</span>
+<span class="font-label-sm text-label-sm text-text-muted">24h Instant Price Hold Guaranteed</span>
+</div>
+</div>
+</div>
+<!-- SEARCH CONSOLE CARD -->
+<div class="w-full bg-surface rounded-2xl shadow-md p-6 lg:p-8 flex flex-col gap-6">
+<!-- TRIP TYPE SELECTOR & CABIN CLASS -->
+<div class="flex flex-wrap items-center justify-between gap-4 pb-2">
+<div class="flex items-center gap-1 bg-surface-subtle p-1 rounded-xl">
+<button class="px-4 py-1.5 rounded-lg font-label text-label bg-surface text-primary shadow-sm">Round Trip</button>
+<button class="px-4 py-1.5 rounded-lg font-label text-label text-secondary hover:text-primary">One Way</button>
+<button class="px-4 py-1.5 rounded-lg font-label text-label text-secondary hover:text-primary">Multi-City</button>
+</div>
+<!-- PASSENGER & CABIN SELECTION -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-surface-subtle px-3 py-2 rounded-xl text-primary font-label text-label">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span>1 Adult, Economy</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">expand_more</span>
+</div>
+<!-- B2B SPECIFIC QUICK FILTERS -->
+<div class="hidden items-center gap-3" id="b2b-quick-filters">
+<label class="flex items-center gap-2 cursor-pointer bg-surface-subtle px-3 py-2 rounded-xl text-primary font-label text-label hover:bg-surface-variant transition-colors">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-0" type="checkbox"/>
+<span class="text-xs font-semibold">Net Direct Wholesale</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer bg-surface-subtle px-3 py-2 rounded-xl text-primary font-label text-label hover:bg-surface-variant transition-colors">
+<input class="w-4 h-4 rounded text-primary focus:ring-0" type="checkbox"/>
+<span class="text-xs font-semibold">10+ Group Request</span>
+</label>
+</div>
+</div>
+</div>
+<!-- AIRPORT / DATE INPUT MATRIX -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+<!-- ORIGIN -->
+<div class="lg:col-span-3 bg-surface-subtle rounded-xl p-3.5 flex flex-col gap-0.5 hover:bg-surface-variant/80 transition-colors relative group">
+<span class="font-label-sm text-[11px] text-text-muted uppercase tracking-wider">From (Origin)</span>
+<div class="flex items-center justify-between">
+<span class="font-heading-md text-heading-md font-bold text-primary">CMB</span>
+<span class="font-body-sm text-body-sm text-secondary truncate ml-2">Colombo, Sri Lanka</span>
+</div>
+<span class="font-body-sm text-[12px] text-text-muted truncate">Bandaranaike Intl Airport</span>
+</div>
+<!-- SWAP ICON BUTTON -->
+<div class="lg:col-span-1 flex items-center justify-center -my-2 lg:my-0">
+<button aria-label="Swap origins and destinations" class="w-10 h-10 rounded-full bg-surface shadow-md hover:shadow-lg flex items-center justify-center text-primary hover:bg-surface-subtle transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+</button>
+</div>
+<!-- DESTINATION -->
+<div class="lg:col-span-3 bg-surface-subtle rounded-xl p-3.5 flex flex-col gap-0.5 hover:bg-surface-variant/80 transition-colors relative group">
+<span class="font-label-sm text-[11px] text-text-muted uppercase tracking-wider">To (Destination)</span>
+<div class="flex items-center justify-between">
+<span class="font-heading-md text-heading-md font-bold text-primary">LHR</span>
+<span class="font-body-sm text-body-sm text-secondary truncate ml-2">London, UK</span>
+</div>
+<span class="font-body-sm text-[12px] text-text-muted truncate">Heathrow Airport</span>
+</div>
+<!-- DEPARTURE & RETURN DATES -->
+<div class="lg:col-span-3 grid grid-cols-2 gap-2">
+<div class="bg-surface-subtle rounded-xl p-3.5 flex flex-col gap-0.5 hover:bg-surface-variant/80 transition-colors">
+<span class="font-label-sm text-[11px] text-text-muted uppercase tracking-wider">Depart</span>
+<span class="font-title text-title text-primary font-bold">14 Oct</span>
+<span class="font-body-sm text-[12px] text-text-muted">Tuesday, 2025</span>
+</div>
+<div class="bg-surface-subtle rounded-xl p-3.5 flex flex-col gap-0.5 hover:bg-surface-variant/80 transition-colors">
+<span class="font-label-sm text-[11px] text-text-muted uppercase tracking-wider">Return</span>
+<span class="font-title text-title text-primary font-bold">28 Oct</span>
+<span class="font-body-sm text-[12px] text-text-muted">Tuesday, 2025</span>
+</div>
+</div>
+<!-- SEARCH ACTION BUTTON -->
+<div class="lg:col-span-2 h-full flex items-stretch">
+<button class="w-full min-h-[58px] rounded-xl bg-primary-container text-on-primary font-label text-label flex items-center justify-center gap-2 shadow-md hover:opacity-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">search</span>
+<span>Find Flights</span>
+</button>
+</div>
+</div>
+<!-- B2B CORPORATE CODE EXTENSION DRAWER -->
+<div class="hidden bg-surface-subtle rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4" id="b2b-corporate-drawer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">token</span>
+<div class="flex flex-col">
+<span class="font-label text-label font-bold text-primary">Corporate Contract &amp; Private Fare Matrix</span>
+<span class="font-body-sm text-body-sm text-text-muted">Automated application of negotiated carrier kickbacks, overrides, and zero GDS surcharge.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto">
+<input class="px-3 py-2 rounded-lg bg-surface font-label-sm text-label-sm text-primary placeholder:text-text-muted shadow-sm focus:outline-none w-full sm:w-56" placeholder="Corporate Fare Code (e.g. COR-LK902)" type="text"/>
+<button class="px-4 py-2 rounded-lg bg-surface text-primary font-label-sm text-label-sm font-bold shadow-sm hover:bg-surface-variant">Apply</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- POPULAR FLIGHT CORRIDORS -->
+<section class="w-full px-6 md:px-10 py-10 bg-canvas">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<!-- SECTION HEADER -->
+<div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+<div>
+<span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-secondary">Pre-Negotiated Corridors</span>
+<h2 class="font-heading-lg text-heading-lg text-primary tracking-tight mt-1">High-Volume Commercial Routes</h2>
+<p class="font-body text-body text-text-muted">Live seat inventory with guaranteed baggage allowance and immediate split PNR generation.</p>
+</div>
+<!-- CORRIDOR FILTERS -->
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary font-label-sm text-label-sm">All Hubs</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface text-secondary hover:text-primary font-label-sm text-label-sm shadow-sm">Middle East</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface text-secondary hover:text-primary font-label-sm text-label-sm shadow-sm">Europe</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface text-secondary hover:text-primary font-label-sm text-label-sm shadow-sm">Asia Pacific</button>
+</div>
+</div>
+<!-- CORRIDOR CARDS GRID (4 ASYMMETRIC BENTO ITEMS) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- CARD 1: DUBAI (DXB) -->
+<div class="bg-surface rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group">
+<div class="h-44 w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Futuristic Dubai skyline at golden hour with the Burj Khalifa reflecting twilight colors against a sleek architectural backdrop, high end editorial luxury travel photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVEsMYkUxKHzspmeTTuGb3YU5Yfb_IeM33IwACcZQP0rQMICYBC3yaDnBhHkGxlfvo_mjpwD2lGO0OvicdMc53uk9iEe2mk5iHATFF4bkI_FKh6ASWtbxhJNpoYJAgHgiqgeBC7Qfy2RKgbhQuaSdFwXrPsUMP4Dw7q95c7ngdMXYDlY2ELDWngsZJKRiQLpCM1abg5inQDYLTWmKj7W-lhYE4o67LvOXahAe60pmJ"/>
+<div class="absolute top-3 left-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary">
+              Non-Stop &amp; 1-Stop
+            </div>
+<div class="absolute top-3 right-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> 18 Seats Left
+            </div>
+</div>
+<div class="p-5 flex flex-col flex-1 justify-between gap-4">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-heading-md text-heading-md font-bold text-primary">CMB → DXB</span>
+<span class="font-label-sm text-label-sm text-secondary">4h 30m</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-1">Dubai Intl Airport · Emirates &amp; flydubai</p>
+<div class="flex items-center gap-2 mt-3">
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">30kg Check-in</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">Meal Included</span>
+</div>
+</div>
+<!-- DYNAMIC FARE COMPONENT -->
+<div class="pt-3 bg-surface-subtle rounded-xl p-3">
+<div class="flex items-baseline justify-between">
+<span class="font-body-sm text-body-sm text-text-muted">Retail Rate:</span>
+<span class="font-title text-title font-bold text-primary font-mono fare-retail">LKR 92,500</span>
+</div>
+<!-- B2B EXTRA ATTRIBUTES -->
+<div class="b2b-fare-row hidden flex-col gap-1 mt-2 pt-2 border-t border-surface-variant">
+<div class="flex items-baseline justify-between text-xs">
+<span class="text-text-muted">Wholesale Net:</span>
+<span class="font-bold text-success font-mono fare-net">LKR 86,000</span>
+</div>
+<div class="flex items-baseline justify-between text-[11px] text-info">
+<span>Agent Yield:</span>
+<span class="font-bold font-mono fare-commission">LKR 6,500 (7.0%)</span>
+</div>
+</div>
+<button class="w-full mt-3 py-2 rounded-lg bg-surface text-primary hover:bg-primary-container hover:text-on-primary transition-colors font-label-sm text-label-sm font-semibold shadow-sm flex items-center justify-center gap-1">
+<span>Select Corridor</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 2: LONDON HEATHROW (LHR) -->
+<div class="bg-surface rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group">
+<div class="h-44 w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Classic London Tower Bridge and River Thames with gentle evening lights and a moody twilight sky, authentic editorial travel photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJeoJcAVr4od-VpGyURerJmfF1rzx0AUsszn6ppnM1gRK0eR9uThZNyhFrKR_tSbvgK0zb4MWOPRM_eAmp1QelM7xqjp-NZhYApG-n2-KwKvghNnu6uwMBgVOxJm0O0ptK94HvA6_LexERF8M75-F50nIA92DOr8YUj_HP8YVidxO484SNvxUqHZ1wavjUYfUhRoaeVmwl9T8AT3B373TlRZQ4dgZx_cx87B_ikRpb"/>
+<div class="absolute top-3 left-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary">
+              Direct Flagship
+            </div>
+<div class="absolute top-3 right-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> High Demand
+            </div>
+</div>
+<div class="p-5 flex flex-col flex-1 justify-between gap-4">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-heading-md text-heading-md font-bold text-primary">CMB → LHR</span>
+<span class="font-label-sm text-label-sm text-secondary">10h 45m</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-1">London Heathrow · SriLankan Airlines &amp; Qatar</p>
+<div class="flex items-center gap-2 mt-3">
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">2x 23kg Bags</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">Wide-body A330</span>
+</div>
+</div>
+<!-- DYNAMIC FARE COMPONENT -->
+<div class="pt-3 bg-surface-subtle rounded-xl p-3">
+<div class="flex items-baseline justify-between">
+<span class="font-body-sm text-body-sm text-text-muted">Retail Rate:</span>
+<span class="font-title text-title font-bold text-primary font-mono fare-retail">LKR 248,500</span>
+</div>
+<!-- B2B EXTRA ATTRIBUTES -->
+<div class="b2b-fare-row hidden flex-col gap-1 mt-2 pt-2 border-t border-surface-variant">
+<div class="flex items-baseline justify-between text-xs">
+<span class="text-text-muted">Wholesale Net:</span>
+<span class="font-bold text-success font-mono fare-net">LKR 231,000</span>
+</div>
+<div class="flex items-baseline justify-between text-[11px] text-info">
+<span>Agent Yield:</span>
+<span class="font-bold font-mono fare-commission">LKR 17,500 (7.0%)</span>
+</div>
+</div>
+<button class="w-full mt-3 py-2 rounded-lg bg-surface text-primary hover:bg-primary-container hover:text-on-primary transition-colors font-label-sm text-label-sm font-semibold shadow-sm flex items-center justify-center gap-1">
+<span>Select Corridor</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 3: MALDIVES (MLE) -->
+<div class="bg-surface rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group">
+<div class="h-44 w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Serene crystal clear turquoise lagoon in Maldives with wooden overwater villas and pristine white sandy beach beneath warm sunlight, high quality luxury travel imagery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsFoM1cybit7oRrys5fMHiTF2hTVqW5sEdt2tUnzB6fUH7oDsPEJcM6a4iksSK2Wzo6JfG_2Mfds6XhHdi5tXJOh9DVrX5CgGAwEr9xAumlgF6XBlrycNjtY3wFR9JUke9IfkKc1E76cSVCTGofEIf9czWHy_4MplHbV5REWetx7GYpDfiDjxv4b3Tp5y-1OCcYMX-DePFiii6IQGgG3Svhi-wOvT9Yk6CHzxL3SWc"/>
+<div class="absolute top-3 left-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary">
+              Island Shuttle
+            </div>
+<div class="absolute top-3 right-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> Daily Direct
+            </div>
+</div>
+<div class="p-5 flex flex-col flex-1 justify-between gap-4">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-heading-md text-heading-md font-bold text-primary">CMB → MLE</span>
+<span class="font-label-sm text-label-sm text-secondary">1h 25m</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-1">Velana Intl Airport · SriLankan Airlines Direct</p>
+<div class="flex items-center gap-2 mt-3">
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">Island Transit</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">30kg Check-in</span>
+</div>
+</div>
+<!-- DYNAMIC FARE COMPONENT -->
+<div class="pt-3 bg-surface-subtle rounded-xl p-3">
+<div class="flex items-baseline justify-between">
+<span class="font-body-sm text-body-sm text-text-muted">Retail Rate:</span>
+<span class="font-title text-title font-bold text-primary font-mono fare-retail">LKR 68,000</span>
+</div>
+<!-- B2B EXTRA ATTRIBUTES -->
+<div class="b2b-fare-row hidden flex-col gap-1 mt-2 pt-2 border-t border-surface-variant">
+<div class="flex items-baseline justify-between text-xs">
+<span class="text-text-muted">Wholesale Net:</span>
+<span class="font-bold text-success font-mono fare-net">LKR 62,500</span>
+</div>
+<div class="flex items-baseline justify-between text-[11px] text-info">
+<span>Agent Yield:</span>
+<span class="font-bold font-mono fare-commission">LKR 5,500 (8.1%)</span>
+</div>
+</div>
+<button class="w-full mt-3 py-2 rounded-lg bg-surface text-primary hover:bg-primary-container hover:text-on-primary transition-colors font-label-sm text-label-sm font-semibold shadow-sm flex items-center justify-center gap-1">
+<span>Select Corridor</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 4: SINGAPORE (SIN) -->
+<div class="bg-surface rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group">
+<div class="h-44 w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Singapore Marina Bay and futuristic Gardens by the Bay with lush green architecture and clean reflections at twilight, high resolution architectural photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm7g_Fu8CfWBtWH6Xi4vXozki5j5LhDSfXxQHwHQji2ebGnhMLTADbWhdpQpLptNPdC-fb0n9FJir4v1zto6lFVrwOgWF3NJVO_BwjMJ7B_tm7D87Ew1Awd5oJ36nOi_NWgtTDs-vOlr5Wjx5e3QwX_gl66eoxic_f1c59FlQdRJv7mLQBzOJs56G4pAVOhpH2ck_m4tmnIJV95Vhwax7I2rdCW9P7JJ5fgMRTFliA"/>
+<div class="absolute top-3 left-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary">
+              Changi Flagship
+            </div>
+<div class="absolute top-3 right-3 bg-surface/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> High Frequency
+            </div>
+</div>
+<div class="p-5 flex flex-col flex-1 justify-between gap-4">
+<div>
+<div class="flex items-center justify-between">
+<span class="font-heading-md text-heading-md font-bold text-primary">CMB → SIN</span>
+<span class="font-label-sm text-label-sm text-secondary">3h 50m</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-1">Singapore Changi · Singapore Airlines &amp; Scoot</p>
+<div class="flex items-center gap-2 mt-3">
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">Changi Stopover</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-secondary">Fast Pass</span>
+</div>
+</div>
+<!-- DYNAMIC FARE COMPONENT -->
+<div class="pt-3 bg-surface-subtle rounded-xl p-3">
+<div class="flex items-baseline justify-between">
+<span class="font-body-sm text-body-sm text-text-muted">Retail Rate:</span>
+<span class="font-title text-title font-bold text-primary font-mono fare-retail">LKR 115,000</span>
+</div>
+<!-- B2B EXTRA ATTRIBUTES -->
+<div class="b2b-fare-row hidden flex-col gap-1 mt-2 pt-2 border-t border-surface-variant">
+<div class="flex items-baseline justify-between text-xs">
+<span class="text-text-muted">Wholesale Net:</span>
+<span class="font-bold text-success font-mono fare-net">LKR 106,000</span>
+</div>
+<div class="flex items-baseline justify-between text-[11px] text-info">
+<span>Agent Yield:</span>
+<span class="font-bold font-mono fare-commission">LKR 9,000 (7.8%)</span>
+</div>
+</div>
+<button class="w-full mt-3 py-2 rounded-lg bg-surface text-primary hover:bg-primary-container hover:text-on-primary transition-colors font-label-sm text-label-sm font-semibold shadow-sm flex items-center justify-center gap-1">
+<span>Select Corridor</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- DUAL-CHANNEL VALUE PROPOSITION & SYSTEM TRUST -->
+<section class="w-full px-6 md:px-10 py-12 bg-surface">
+<div class="max-w-7xl mx-auto flex flex-col gap-10">
+<div class="text-center max-w-3xl mx-auto flex flex-col gap-2">
+<span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-secondary">Unmatched Operational Integrity</span>
+<h2 class="font-heading-lg text-heading-lg text-primary tracking-tight">Engineered for Individual Ease. Structured for Enterprise Volume.</h2>
+<p class="font-body text-body text-text-muted">Whether securing a family getaway or provisioning 200 corporate transit itineraries across Europe, Vacatina delivers unyielding booking confidence.</p>
+</div>
+<!-- VALUE SPLIT GRID -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- B2C VALUE COLUMN -->
+<div class="bg-surface-subtle rounded-2xl p-8 flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-surface flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-[24px]">verified_user</span>
+</div>
+<div>
+<h3 class="font-heading-md text-heading-md font-bold text-primary">Direct Traveler Assurance</h3>
+<p class="font-body-sm text-body-sm text-text-muted">Complete peace of mind from search to arrival.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-success">check_circle</span>
+                Zero Hidden Charges
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Taxes, airport levies, and fuel adjustments displayed upfront before check-out.</p>
+</div>
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-success">check_circle</span>
+                24h Free Change
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Flexibility on eligible partner carriers within 24 hours of ticket confirmation.</p>
+</div>
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-success">check_circle</span>
+                Instant PNR Generation
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Immediate GDS reservation number sent directly to your email and SMS.</p>
+</div>
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-success">check_circle</span>
+                Human WhatsApp Desk
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Dedicated live flight dispatcher ready on WhatsApp 24/7 for disruption support.</p>
+</div>
+</div>
+</div>
+<!-- B2B VALUE COLUMN -->
+<div class="bg-surface-subtle rounded-2xl p-8 flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined text-[24px]">domain</span>
+</div>
+<div>
+<h3 class="font-heading-md text-heading-md font-bold text-primary">Agency &amp; Procurement Engine</h3>
+<p class="font-body-sm text-body-sm text-text-muted">Enterprise control, wholesale margins, and corporate billing.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-info">account_balance_wallet</span>
+                LKR 12.5M Credit Line
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Consolidated bi-weekly clearing with no merchant processing fees.</p>
+</div>
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-info">picture_as_pdf</span>
+                White-Label PDFs
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Generate branded client quotes in one click featuring your agency logo &amp; markup.</p>
+</div>
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-info">layers</span>
+                Multi-GDS Consolidation
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Simultaneous aggregation of Sabre, Amadeus, and direct NDC private fares.</p>
+</div>
+<div class="bg-surface p-4 rounded-xl shadow-sm flex flex-col gap-1">
+<span class="font-label text-label font-bold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-info">schedule_send</span>
+                Automated Split Ticketing
+              </span>
+<p class="font-body-sm text-[12px] text-text-muted">Issue individual tickets for large group passenger lists effortlessly.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PERSISTENT TRIP WORKSPACE DOCK ANCHOR -->
+<div class="sticky bottom-6 z-40 w-full px-6 pointer-events-none">
+<div class="max-w-4xl mx-auto bg-primary-container text-on-primary rounded-2xl shadow-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 pointer-events-auto">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px] text-on-primary">shopping_bag</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-label text-label font-bold">Trip Workspace</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-success/20 text-success">2 Ready</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-warning/20 text-warning">1 Action</span>
+</div>
+<span class="font-body-sm text-[12px] text-surface-variant">Staged: CMB → LHR Flight, The Savoy London Hotel, Heathrow Express</span>
+</div>
+</div>
+<div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+<div class="flex flex-col text-right">
+<span class="font-label-sm text-[11px] text-surface-variant">Subtotal Estimate</span>
+<span class="font-title text-title font-bold font-mono">LKR 505,000</span>
+</div>
+<button class="px-5 py-2.5 rounded-xl bg-surface text-primary font-label text-label font-bold shadow-md hover:bg-surface-subtle transition-all flex items-center gap-1.5">
+<span>Review Trip Bucket</span>
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE DUAL-CHANNEL CLIENT SCRIPT -->
+<script>
+  let currentMode = 'b2c';
+
+  function switchMode(mode) {
+    currentMode = mode;
+    const btnB2C = document.getElementById('btn-mode-b2c');
+    const btnB2B = document.getElementById('btn-mode-b2b');
+    const b2bStatus = document.getElementById('b2b-enterprise-status');
+    const b2bQuickFilters = document.getElementById('b2b-quick-filters');
+    const b2bDrawer = document.getElementById('b2b-corporate-drawer');
+    const heroTitle = document.getElementById('hero-title');
+    const heroDesc = document.getElementById('hero-desc');
+    const heroBadge = document.getElementById('hero-badge');
+    const b2bFareRows = document.querySelectorAll('.b2b-fare-row');
+
+    if (mode === 'b2b') {
+      btnB2B.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-label text-label transition-all duration-200 bg-surface text-primary shadow-sm";
+      btnB2C.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-label text-label transition-all duration-200 text-secondary hover:text-primary";
+      
+      b2bStatus.classList.remove('hidden');
+      b2bStatus.classList.add('flex');
+      
+      b2bQuickFilters.classList.remove('hidden');
+      b2bQuickFilters.classList.add('flex');
+      
+      b2bDrawer.classList.remove('hidden');
+      b2bDrawer.classList.add('flex');
+
+      heroBadge.textContent = "B2B Agency & Corporate Portal";
+      heroTitle.textContent = "Wholesale Airfare Distribution & Procurement.";
+      heroDesc.textContent = "Direct access to negotiated net rates, group allocation desks, sub-agency markups, and consolidated deferred billing lines.";
+
+      b2bFareRows.forEach(row => {
+        row.classList.remove('hidden');
+        row.classList.add('flex');
+      });
+
+    } else {
+      btnB2C.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-label text-label transition-all duration-200 bg-surface text-primary shadow-sm";
+      btnB2B.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-label text-label transition-all duration-200 text-secondary hover:text-primary";
+      
+      b2bStatus.classList.remove('flex');
+      b2bStatus.classList.add('hidden');
+      
+      b2bQuickFilters.classList.remove('flex');
+      b2bQuickFilters.classList.add('hidden');
+      
+      b2bDrawer.classList.remove('flex');
+      b2bDrawer.classList.add('hidden');
+
+      heroBadge.textContent = "Vacatina Global Flights Engine";
+      heroTitle.textContent = "Seamless Flights, Unrivaled Authority.";
+      heroDesc.textContent = "Real-time direct inventory and consolidated multi-GDS availability across global hubs. Clear taxes, zero markups, instant PNR issuance.";
+
+      b2bFareRows.forEach(row => {
+        row.classList.remove('flex');
+        row.classList.add('hidden');
+      });
+    }
+    updateFares();
+  }
+
+  function updateFares() {
+    const markupSelect = document.getElementById('markup-selector');
+    const markupPercent = parseInt(markupSelect.value, 10);
+    
+    // Net base prices
+    const routes = [
+      { net: 86000, retailElementIndex: 0 },
+      { net: 231000, retailElementIndex: 1 },
+      { net: 62500, retailElementIndex: 2 },
+      { net: 106000, retailElementIndex: 3 }
+    ];
+
+    const retailElements = document.querySelectorAll('.fare-retail');
+    const netElements = document.querySelectorAll('.fare-net');
+    const commissionElements = document.querySelectorAll('.fare-commission');
+
+    routes.forEach((route, idx) => {
+      const net = route.net;
+      let finalPrice;
+      
+      if (currentMode === 'b2b') {
+        const markedUp = Math.round(net * (1 + markupPercent / 100));
+        finalPrice = markedUp;
+        if (commissionElements[idx]) {
+          const yieldVal = markedUp - net;
+          commissionElements[idx].textContent = `LKR ${yieldVal.toLocaleString()} (${markupPercent}%)`;
+        }
+      } else {
+        // Standard consumer published rate
+        finalPrice = Math.round(net * 1.075);
+      }
+
+      if (retailElements[idx]) {
+        retailElements[idx].textContent = `LKR ${finalPrice.toLocaleString()}`;
+      }
+      if (netElements[idx]) {
+        netElements[idx].textContent = `LKR ${net.toLocaleString()}`;
+      }
+    });
+  }
+</script></main><footer class="w-full bg-primary-container text-on-primary"><div class="w-full px-8 py-16"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10"><div class="flex flex-col gap-4"><div class="flex items-center gap-3"><span class="font-title text-heading-md text-on-primary tracking-tight font-bold">vacatina</span></div><p class="font-body-sm text-body-sm text-surface-variant max-w-xs">The calm, authoritative travel operating system. Precision flight search, seamless comparison, and intelligent itinerary composition.</p><div class="flex flex-col gap-2 pt-2"><a class="font-label text-label text-surface-bright hover:underline flex items-center gap-2" href="tel:+94113606200"><span class="material-symbols-outlined text-[16px]">call</span>+94113606200</a><a class="font-label text-label text-surface-bright hover:underline flex items-center gap-2" href="mailto:info@vacatina.com"><span class="material-symbols-outlined text-[16px]">mail</span>info@vacatina.com</a></div></div><div class="flex flex-col gap-3"><span class="font-title text-label text-on-primary uppercase tracking-wider font-semibold">Travel Vertical</span><nav class="flex flex-col gap-2"><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Flights Engine</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Hotels &amp; Lodging</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Holiday Packages</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Airport Transfers</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Sightseeing &amp; Tours</a></nav></div><div class="flex flex-col gap-3"><span class="font-title text-label text-on-primary uppercase tracking-wider font-semibold">Trip Workspace</span><nav class="flex flex-col gap-2"><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Trip Bucket</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Live Fare Tracker</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Split Bookings</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Seat Blueprint</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Baggage Configurator</a></nav></div><div class="flex flex-col gap-3"><span class="font-title text-label text-on-primary uppercase tracking-wider font-semibold">Visa &amp; Compliance</span><nav class="flex flex-col gap-2"><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Visa Assistance</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Consulate Guidelines</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Travel Insurance</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Transit Protocols</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Document Vault</a></nav></div><div class="flex flex-col gap-3"><span class="font-title text-label text-on-primary uppercase tracking-wider font-semibold">Company &amp; Legal</span><nav class="flex flex-col gap-2"><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">About Vacatina</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Carrier Standards</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Privacy Policy</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Terms of Service</a><a class="font-body-sm text-body-sm text-surface-variant hover:text-on-primary transition-colors" href="#">Support Desk</a></nav></div></div><div class="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-surface-variant font-body-sm text-body-sm"><p>© 2025 Vacatina Global Travel OS. All rights reserved.</p><p class="text-xs text-secondary-fixed-dim">Enterprise GDS Multihop Routing · Verified Booking Engine</p></div></div></footer></body></html>

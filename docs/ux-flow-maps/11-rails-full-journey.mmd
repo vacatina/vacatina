@@ -1,0 +1,20 @@
+graph TD
+    R_HUB[/"Rail Journeys Hub<br/>/rails"\] --> R_FROM[From Station]
+    R_HUB --> R_TO[To Station]
+    R_HUB --> R_DATE[Departure Date]
+    R_HUB --> R_CLASS[Rail Class]
+    R_HUB --> R_SEARCH_BTN[Search Submit]
+
+    R_SEARCH_BTN --> R_VALIDATION{Validation}
+    R_VALIDATION -->|Valid| R_SEARCH[Rails Search<br/>/rails/search]
+    R_VALIDATION -->|Invalid| R_ERROR[Validation Error]
+
+    R_SEARCH --> R_RESULTS[Rails Results]
+    R_RESULTS --> R_OFFER[Rails Offer<br/>/rails/journeys/:id]
+    R_OFFER --> R_CONFIG[Rails Configurator]
+    R_CONFIG --> R_STAGE[Stage as needs_action]
+    R_STAGE --> R_TB[Trip Bucket Drawer]
+
+    R_RESULTS --> R_NO_RESULTS[No Results State]
+    R_TB --> R_REVIEW_CTA[Review Trip CTA]
+    R_REVIEW_CTA --> R_REVIEW[Trip Review<br/>/trip/review]

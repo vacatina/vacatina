@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Vacatina Travel Operating System</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed-variant":"#474747","success":"#15803D","info":"#1D4ED8","surface":"#FFFFFF","tertiary-container":"#441200","surface-container":"#eeeeee","secondary":"#5e5e5e","warning":"#B45309","surface-container-low":"#f3f3f3","inverse-surface":"#2f3131","primary-fixed":"#e3dfff","on-tertiary-fixed-variant":"#73351c","surface-dim":"#dadada","text-muted":"#525252","inverse-primary":"#c4c0ff","tertiary-fixed":"#ffdbcf","on-secondary":"#ffffff","on-primary":"#ffffff","background":"#f9f9f9","surface-variant":"#e2e2e2","surface-container-lowest":"#ffffff","error":"#B91C1C","primary":"#06003e","surface-tint":"#5855a3","on-surface":"#1a1c1c","on-secondary-container":"#646464","on-background":"#1a1c1c","on-tertiary":"#ffffff","secondary-container":"#e4e2e2","outline":"#787682","surface-container-high":"#e8e8e8","border":"#E5E5E5","on-surface-variant":"#474551","on-secondary-fixed":"#1b1c1c","secondary-fixed-dim":"#c8c6c6","surface-subtle":"#F5F5F5","surface-bright":"#f9f9f9","text-primary":"#000000","primary-container":"#1b1464","outline-variant":"#c8c5d2","on-error":"#ffffff","on-error-container":"#93000a","on-primary-fixed":"#13095d","on-tertiary-container":"#c57658","on-primary-fixed-variant":"#403d8a","inverse-on-surface":"#f0f1f1","primary-fixed-dim":"#c4c0ff","on-tertiary-fixed":"#380d00","focus":"#1D4ED8","secondary-fixed":"#e4e2e2","canvas":"#FAFAFA","tertiary-fixed-dim":"#ffb59a","surface-container-highest":"#e2e2e2","on-primary-container":"#8481d3","error-container":"#ffdad6","tertiary":"#1f0500"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"2":"8px","gutter":"1.5rem","16":"64px","margin":"1.5rem","10":"40px","3":"12px","space-xs":"0.25rem","6":"24px","8":"32px","1":"4px","space-xl":"2.5rem","12":"48px","4":"16px","5":"20px","space-sm":"0.5rem","20":"80px","space-lg":"1.5rem","space-md":"1rem"},fontFamily:{"heading-xl":["Plus Jakarta Sans"],"heading-md":["Plus Jakarta Sans"],"body-lg":["Inter"],"label":["Inter"],"display-mobile":["Plus Jakarta Sans"],"body":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"title":["Plus Jakarta Sans"],"display-desktop":["Plus Jakarta Sans"],"heading-lg":["Plus Jakarta Sans"]},fontSize:{"heading-xl":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"700"}],"heading-md":["22px",{lineHeight:"28px",letterSpacing:"0",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"400"}],"label":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"600"}],"display-mobile":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"body":["15px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0",fontWeight:"400"}],"title":["18px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"600"}],"display-desktop":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"heading-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}]}}}};</script></head><body class="bg-canvas font-body text-body text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4"><div class="flex items-center gap-8"><a class="flex items-center gap-2 text-primary font-heading-md text-heading-md tracking-tight" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">travel_explore</span><span>VACATINA</span></a><nav class="hidden min-[1440px]:flex items-center gap-6" data-active-classes="text-primary font-semibold border-b-2 border-primary"><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="home" href="#">Home</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="flights" href="#">Flights</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="hotels" href="#">Hotels</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="visa-assistance" href="#">Visa Assistance</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="holiday-packages" href="#">Holiday Packages</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="cars-and-transfers" href="#">Cars &amp; Transfers</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="more-products" href="#">More</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="resources" href="#">Resources</a></nav></div><div class="flex items-center gap-3"><button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">language</span><span>EN · USD</span></button><button aria-label="Saved Favorites" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-subtle rounded-lg transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">favorite</span></button><button aria-label="Trip Bucket" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px] text-on-surface">workspaces</span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Bucket</span><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-container text-on-primary">3</span></button><div class="flex items-center gap-2 pl-2"><button class="hidden md:inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span>B2C</span><span class="mx-1 text-outline">|</span><span class="text-text-muted">B2B</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-canvas min-h-screen"><div class="flex flex-col w-full">
+<!-- Progress & Context Ribbon -->
+<div class="w-full bg-surface shadow-sm">
+<div class="max-w-7xl mx-auto px-6 py-4">
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+<!-- Stepper -->
+<nav aria-label="Booking Pipeline" class="flex items-center gap-2 overflow-x-auto text-label-sm font-label-sm">
+<div class="flex items-center gap-1.5 text-text-muted">
+<span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold">01</span>
+<span>Flight Hub</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<div class="flex items-center gap-1.5 text-text-muted">
+<span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold">02</span>
+<span>Search &amp; Results</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<div class="flex items-center gap-1.5 text-primary-container font-bold">
+<span class="w-5 h-5 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-[10px]">03</span>
+<span class="text-primary-container">Seat &amp; Ancillaries</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[10px] font-semibold tracking-wide uppercase">Active Stage</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<div class="flex items-center gap-1.5 text-text-muted opacity-60">
+<span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold">04</span>
+<span>Review &amp; Staging</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<div class="flex items-center gap-1.5 text-text-muted opacity-60">
+<span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold">05</span>
+<span>Checkout</span>
+</div>
+</nav>
+<!-- Right Side Hold Counter & Ledger Switcher -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- GDS Timer -->
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle text-body-sm font-body-sm text-on-surface">
+<span class="w-2 h-2 rounded-full bg-warning animate-pulse"></span>
+<span class="text-text-muted">GDS Inventory Hold:</span>
+<span class="font-semibold text-primary tabular-nums tracking-tight" id="gds-countdown">13:45 remaining</span>
+</div>
+<!-- Retail Gross vs Net Fare Switcher -->
+<div class="inline-flex items-center p-1 rounded-lg bg-surface-container text-label-sm font-label-sm">
+<button class="px-3 py-1 rounded bg-surface text-primary shadow-sm font-semibold transition-all" id="mode-b2c" type="button">
+              B2C Retail Gross
+            </button>
+<button class="px-3 py-1 rounded text-text-muted hover:text-on-surface transition-all" id="mode-b2b" type="button">
+              B2B Corporate Net
+            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Primary Flight Dossier Banner -->
+<div class="max-w-7xl mx-auto px-6 py-6 w-full">
+<div class="p-6 rounded-2xl bg-surface shadow-sm flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
+<div class="flex flex-col md:flex-row md:items-center gap-6">
+<!-- Airline Crest / Carrier Identification -->
+<div class="w-14 h-14 rounded-xl bg-primary-container text-on-primary flex flex-col items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">flight_takeoff</span>
+<span class="text-[9px] font-bold tracking-widest uppercase mt-0.5">UL 503</span>
+</div>
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-3">
+<h1 class="font-heading-md text-heading-md text-primary tracking-tight">SriLankan Airlines · UL 503</h1>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-subtle text-text-muted text-label-sm font-label-sm font-semibold">Airbus A330-300 Widebody</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-success text-label-sm font-label-sm font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> Non-stop 11h 00m
+            </span>
+</div>
+<div class="flex flex-wrap items-center gap-4 text-body-sm font-body-sm text-text-muted">
+<span class="font-semibold text-on-surface">Thu, 12 Nov 2026</span>
+<span>·</span>
+<span class="font-medium text-on-surface">Colombo (CMB) 01:15</span>
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+<span class="font-medium text-on-surface">London Heathrow (LHR) 07:45</span>
+<span>·</span>
+<span>Terminal 3 Arrival</span>
+</div>
+</div>
+</div>
+<!-- Passenger Profile & Tier Status -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-surface-subtle flex-shrink-0">
+<div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-primary-container shadow-sm font-semibold">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+</div>
+<div class="pr-2">
+<div class="font-label text-label text-on-surface">Mr. Alex Morgan</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm">
+<span class="text-amber-800 font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">stars</span> UL-FlySMILES Gold
+            </span>
+<span class="text-text-muted">· 1 Adult</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Blueprint Workspace & Ancillary Rail -->
+<div class="max-w-7xl mx-auto px-6 pb-28 w-full">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT WORKSPACE: Aircraft Cabin Blueprint (Cols 7) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Cabin Selector & Leg Switcher -->
+<div class="bg-surface rounded-2xl p-5 shadow-sm space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div>
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-text-muted">Aircraft Deck Specification</span>
+<h2 class="font-heading-md text-heading-md text-primary">Airbus A330-300 Cabin Blueprint</h2>
+</div>
+<!-- Outbound / Return Toggle -->
+<div class="inline-flex rounded-lg bg-surface-subtle p-1 text-label-sm font-label-sm">
+<button class="px-3 py-1.5 rounded-md bg-surface text-primary-container font-semibold shadow-sm flex items-center gap-1.5" type="button">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Outbound: UL 503</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-text-muted hover:text-on-surface flex items-center gap-1.5" type="button">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<span>Inbound: UL 504</span>
+</button>
+</div>
+</div>
+<!-- Cabin Tier Switcher Tabs -->
+<div class="flex items-center gap-2 pt-2">
+<button class="px-4 py-2 rounded-lg bg-primary-container text-on-primary font-label text-label flex items-center gap-2 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">airline_seat_recline_normal</span>
+<span>Economy Cabin (2-4-2 Config)</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-surface-subtle text-text-muted hover:text-on-surface font-label text-label flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">airline_seat_flat</span>
+<span>Serendib Business (1-2-1 Lie-Flat)</span>
+</button>
+</div>
+</div>
+<!-- Fuselage Blueprint Container -->
+<div class="bg-surface rounded-3xl p-6 shadow-sm relative overflow-hidden">
+<!-- Cockpit / Forward Direction Indicator -->
+<div class="flex flex-col items-center justify-center pb-8 pt-2">
+<div class="w-36 h-12 rounded-t-full bg-surface-container flex items-center justify-center text-text-muted text-[11px] font-bold tracking-widest uppercase">
+<div class="flex items-center gap-1 text-outline">
+<span class="material-symbols-outlined text-[16px]">navigation</span>
+<span>Flight Direction</span>
+</div>
+</div>
+<div class="w-full max-w-sm h-1 bg-surface-variant rounded-full mt-1"></div>
+</div>
+<!-- Forward Bulkhead / Galley & Lavatory Zone -->
+<div class="max-w-md mx-auto mb-6 p-3 rounded-xl bg-surface-subtle flex items-center justify-between text-label-sm font-label-sm text-text-muted px-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">soup_kitchen</span>
+<span>Forward Galley 2L</span>
+</div>
+<span class="text-outline">|</span>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">wc</span>
+<span>Lavatories (2L/2R)</span>
+</div>
+</div>
+<!-- Interactive Seat Legend -->
+<div class="max-w-xl mx-auto mb-8 p-4 rounded-xl bg-surface-bright grid grid-cols-2 sm:grid-cols-5 gap-3 text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-surface shadow-sm flex items-center justify-center text-[10px] text-text-muted">16A</div>
+<span class="text-on-surface text-xs">Standard (Free)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-sky-50 text-info font-bold text-[10px] flex items-center justify-center shadow-sm">14A</div>
+<span class="text-on-surface text-xs">Legroom (+8.5k)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-purple-50 text-surface-tint font-bold text-[10px] flex items-center justify-center shadow-sm">12A</div>
+<span class="text-on-surface text-xs">Preferred (+4.2k)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-primary-container text-on-primary font-bold text-[11px] flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</div>
+<span class="text-on-surface text-xs">Selected</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-surface-container text-outline flex items-center justify-center text-[10px]">✕</div>
+<span class="text-on-surface text-xs">Occupied</span>
+</div>
+</div>
+<!-- Emergency Exit Row Indicator Left & Right -->
+<div class="relative max-w-xl mx-auto">
+<!-- Wing Overhang Visual Marks -->
+<div class="absolute -left-6 top-48 bottom-48 w-3 bg-surface-container-high rounded-l-full hidden sm:block opacity-60"></div>
+<div class="absolute -right-6 top-48 bottom-48 w-3 bg-surface-container-high rounded-r-full hidden sm:block opacity-60"></div>
+<!-- Seat Layout Headers: A C | D E F G | H K -->
+<div class="grid grid-cols-11 gap-1.5 text-center font-label-sm text-label-sm text-text-muted font-bold pb-3 px-2">
+<div class="w-8">A</div>
+<div class="w-8">C</div>
+<div class="w-4 text-[10px] text-outline">|</div>
+<div class="w-8">D</div>
+<div class="w-8">E</div>
+<div class="w-8">F</div>
+<div class="w-8">G</div>
+<div class="w-4 text-[10px] text-outline">|</div>
+<div class="w-8">H</div>
+<div class="w-8">K</div>
+<div class="w-7 text-[10px] text-outline">ROW</div>
+</div>
+<!-- ROWS GRID CONTAINER -->
+<div class="space-y-2.5 px-2">
+<!-- ROW 12: Bulkhead / Bassinet Zone -->
+<div class="grid grid-cols-11 gap-1.5 items-center">
+<!-- 12A (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<!-- 12C (Preferred Available) -->
+<button class="seat-btn w-8 h-9 rounded-lg bg-purple-50 text-surface-tint hover:bg-purple-100 text-[11px] font-bold flex items-center justify-center transition-all shadow-sm" data-price="4200" data-seat-id="12C" data-type="Preferred Bulkhead" type="button">12C</button>
+<div class="w-4"></div>
+<!-- 12D (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<!-- 12E (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<!-- 12F (Preferred Available) -->
+<button class="seat-btn w-8 h-9 rounded-lg bg-purple-50 text-surface-tint hover:bg-purple-100 text-[11px] font-bold flex items-center justify-center transition-all shadow-sm" data-price="4200" data-seat-id="12F" data-type="Preferred Bulkhead" type="button">12F</button>
+<!-- 12G (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-4"></div>
+<!-- 12H (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<!-- 12K (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-7 text-center font-mono text-[11px] text-outline font-semibold">12</div>
+</div>
+<!-- ROW 14: Emergency Exit Door Zone (Extra Legroom) -->
+<div class="p-1 rounded-xl bg-sky-50/50">
+<div class="grid grid-cols-11 gap-1.5 items-center">
+<!-- 14A: Currently Selected Active Seat -->
+<button class="seat-btn active-seat w-8 h-9 rounded-lg bg-primary-container text-on-primary font-bold text-[11px] flex items-center justify-center shadow-md scale-105 transition-all ring-2 ring-focus ring-offset-1" data-price="8500" data-seat-id="14A" data-type="Extra Legroom Exit Window" type="button">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</button>
+<!-- 14C (Available Extra Legroom) -->
+<button class="seat-btn w-8 h-9 rounded-lg bg-sky-50 text-info hover:bg-sky-100 text-[11px] font-bold flex items-center justify-center transition-all shadow-sm" data-price="8500" data-seat-id="14C" data-type="Extra Legroom Exit Aisle" type="button">14C</button>
+<div class="w-4 text-center text-[10px] text-info font-bold">⇥</div>
+<!-- 14D (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<!-- 14E (Available Extra Legroom) -->
+<button class="seat-btn w-8 h-9 rounded-lg bg-sky-50 text-info hover:bg-sky-100 text-[11px] font-bold flex items-center justify-center transition-all shadow-sm" data-price="8500" data-seat-id="14E" data-type="Extra Legroom Middle" type="button">14E</button>
+<!-- 14F (Available Extra Legroom) -->
+<button class="seat-btn w-8 h-9 rounded-lg bg-sky-50 text-info hover:bg-sky-100 text-[11px] font-bold flex items-center justify-center transition-all shadow-sm" data-price="8500" data-seat-id="14F" data-type="Extra Legroom Middle" type="button">14F</button>
+<!-- 14G (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-4 text-center text-[10px] text-info font-bold">⇤</div>
+<!-- 14H (Available Extra Legroom) -->
+<button class="seat-btn w-8 h-9 rounded-lg bg-sky-50 text-info hover:bg-sky-100 text-[11px] font-bold flex items-center justify-center transition-all shadow-sm" data-price="8500" data-seat-id="14H" data-type="Extra Legroom Exit Aisle" type="button">14H</button>
+<!-- 14K (Occupied) -->
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-7 text-center font-mono text-[11px] text-info font-bold">14</div>
+</div>
+</div>
+<!-- ROW 15 Standard Economy -->
+<div class="grid grid-cols-11 gap-1.5 items-center">
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="15C" data-type="Standard Economy Aisle" type="button">15C</button>
+<div class="w-4"></div>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="15D" data-type="Standard Economy Aisle" type="button">15D</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="15E" data-type="Standard Economy Middle" type="button">15E</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="15F" data-type="Standard Economy Middle" type="button">15F</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="15G" data-type="Standard Economy Aisle" type="button">15G</button>
+<div class="w-4"></div>
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="15K" data-type="Standard Economy Window" type="button">15K</button>
+<div class="w-7 text-center font-mono text-[11px] text-outline font-semibold">15</div>
+</div>
+<!-- ROW 16 Standard Economy -->
+<div class="grid grid-cols-11 gap-1.5 items-center">
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="16A" data-type="Standard Economy Window" type="button">16A</button>
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-4"></div>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="16D" data-type="Standard Economy Aisle" type="button">16D</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="16E" data-type="Standard Economy Middle" type="button">16E</button>
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="16G" data-type="Standard Economy Aisle" type="button">16G</button>
+<div class="w-4"></div>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="16H" data-type="Standard Economy Aisle" type="button">16H</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="16K" data-type="Standard Economy Window" type="button">16K</button>
+<div class="w-7 text-center font-mono text-[11px] text-outline font-semibold">16</div>
+</div>
+<!-- ROW 17 Standard Economy -->
+<div class="grid grid-cols-11 gap-1.5 items-center">
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-4"></div>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="17D" data-type="Standard Economy Aisle" type="button">17D</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="17E" data-type="Standard Economy Middle" type="button">17E</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="17F" data-type="Standard Economy Middle" type="button">17F</button>
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-4"></div>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="17H" data-type="Standard Economy Aisle" type="button">17H</button>
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<div class="w-7 text-center font-mono text-[11px] text-outline font-semibold">17</div>
+</div>
+<!-- ROW 18 Standard Economy -->
+<div class="grid grid-cols-11 gap-1.5 items-center">
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="18A" data-type="Standard Economy Window" type="button">18A</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="18C" data-type="Standard Economy Aisle" type="button">18C</button>
+<div class="w-4"></div>
+<button class="w-8 h-9 rounded-lg bg-surface-container text-outline text-[11px] font-semibold flex items-center justify-center cursor-not-allowed" disabled="" type="button">✕</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="18E" data-type="Standard Economy Middle" type="button">18E</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="18F" data-type="Standard Economy Middle" type="button">18F</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="18G" data-type="Standard Economy Aisle" type="button">18G</button>
+<div class="w-4"></div>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="18H" data-type="Standard Economy Aisle" type="button">18H</button>
+<button class="seat-btn w-8 h-9 rounded-lg bg-surface hover:bg-surface-subtle text-on-surface text-[11px] font-medium flex items-center justify-center shadow-sm" data-price="0" data-seat-id="18K" data-type="Standard Economy Window" type="button">18K</button>
+<div class="w-7 text-center font-mono text-[11px] text-outline font-semibold">18</div>
+</div>
+</div>
+</div>
+<!-- Active Selection Tooltip / Seat Dossier Card -->
+<div class="mt-8 p-4 rounded-2xl bg-surface-subtle flex flex-col sm:flex-row items-center justify-between gap-4" id="seat-details-card">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex flex-col items-center justify-center font-bold">
+<span class="text-title font-title leading-none" id="active-seat-code">14A</span>
+<span class="text-[9px] uppercase tracking-wider text-on-primary-container mt-0.5">Win</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h4 class="font-title text-title text-primary" id="active-seat-title">Extra Legroom Exit Row Window</h4>
+<span class="px-2 py-0.5 rounded-full bg-sky-100 text-info font-label-sm text-label-sm font-semibold">Exit Row</span>
+</div>
+<p class="text-body-sm font-body-sm text-text-muted mt-0.5" id="active-seat-specs">34" Seat Pitch · 18" Width · Unobstructed Leg Stretch · Forward Wings View</p>
+</div>
+</div>
+<div class="text-right flex-shrink-0">
+<div class="text-label-sm font-label-sm text-text-muted">Ancillary Seat Surcharge</div>
+<div class="font-heading-md text-heading-md text-primary tabular-nums font-bold" id="active-seat-price-badge">
+                +LKR 8,500
+              </div>
+</div>
+</div>
+<!-- Return Leg Placeholder Switch Notification -->
+<div class="mt-4 p-3 rounded-xl bg-surface-bright flex items-center justify-between text-body-sm font-body-sm text-text-muted">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">sync_alt</span>
+<span>Inbound Segment: <strong class="text-on-surface">UL 504 (LHR → CMB)</strong> Fri 27 Nov · Assigned to <strong class="text-on-surface">16K</strong> (Complimentary Standard Window).</span>
+</div>
+<button class="text-info font-semibold hover:underline text-label-sm font-label-sm" type="button">
+              Change Inbound Seat
+            </button>
+</div>
+</div>
+</div>
+<!-- RIGHT WORKSPACE: Ancillaries & Fare Inclusions Configurator Rail (Cols 5) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- MODULE A: Baggage Allowance & Extra Bags -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm space-y-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-subtle text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">luggage</span>
+</div>
+<div>
+<h3 class="font-title text-title text-primary">Baggage Entitlement &amp; Extras</h3>
+<span class="text-label-sm font-label-sm text-text-muted">Economy Value Fare Baseline</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-success text-label-sm font-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Included
+            </span>
+</div>
+<!-- Baseline Inclusions -->
+<div class="p-3.5 rounded-xl bg-surface-subtle space-y-2">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-2 text-on-surface font-medium">
+<span class="material-symbols-outlined text-[18px] text-text-muted">work</span>
+<span>Cabin Hand Luggage</span>
+</div>
+<span class="font-semibold tabular-nums text-on-surface">1 × 7kg (Free)</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-2 text-on-surface font-medium">
+<span class="material-symbols-outlined text-[18px] text-text-muted">luggage</span>
+<span>Checked Hold Baggage</span>
+</div>
+<span class="font-semibold tabular-nums text-on-surface">1 × 30kg (Free)</span>
+</div>
+<div class="pt-1 text-[11px] text-text-muted flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">straighten</span>
+<span>Max standard dimensions: 158 cm (Length + Width + Height)</span>
+</div>
+</div>
+<!-- Extra Baggage Option 1 -->
+<div class="p-4 rounded-xl bg-surface-bright space-y-3">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="font-label text-label text-on-surface font-bold">Additional 23kg Checked Bag</h4>
+<p class="text-body-sm font-body-sm text-text-muted mt-0.5">Pre-purchased carrier rate (Save 20% vs airport counter)</p>
+</div>
+<div class="text-right">
+<span class="font-title text-title text-primary font-bold tabular-nums">LKR 18,500</span>
+<span class="block text-[11px] text-text-muted">per piece</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-variant text-on-surface flex items-center justify-center font-bold text-lg transition-colors" id="bag-minus" type="button">
+                  −
+                </button>
+<span class="w-8 text-center font-title text-title tabular-nums font-bold text-primary" id="bag-count">0</span>
+<button class="w-8 h-8 rounded-lg bg-primary-container text-on-primary hover:bg-primary flex items-center justify-center font-bold text-lg transition-colors" id="bag-plus" type="button">
+                  +
+                </button>
+</div>
+<span class="text-label-sm font-label-sm text-text-muted font-medium" id="bag-status-label">No additional bags added</span>
+</div>
+</div>
+<!-- Extra Baggage Option 2: Heavy Sports / Golf -->
+<div class="p-4 rounded-xl bg-surface-bright flex items-center justify-between">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5 font-label text-label text-on-surface font-bold">
+<span class="material-symbols-outlined text-[18px] text-outline">sports_golf</span>
+<span>Sports Equipment / Golf Bag (32kg)</span>
+</div>
+<p class="text-body-sm font-body-sm text-text-muted">Special oversized sports handling permit</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-title text-title text-primary font-bold tabular-nums">LKR 28,000</span>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-variant text-primary font-label-sm text-label-sm font-semibold" type="button">
+                Add
+              </button>
+</div>
+</div>
+</div>
+<!-- MODULE B: In-Flight Dining & Special Dietary Selection -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-subtle text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">restaurant</span>
+</div>
+<div>
+<h3 class="font-title text-title text-primary">In-Flight Dining &amp; Dietary</h3>
+<span class="text-label-sm font-label-sm text-text-muted">Complimentary Multi-Course Service</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-success text-label-sm font-label-sm font-bold">Free</span>
+</div>
+<div class="p-4 rounded-xl bg-surface-subtle space-y-3">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-text-muted">Default Service:</span>
+<span class="font-medium text-on-surface">Standard Ceylon Spiced Chicken / Halal Multi-Course</span>
+</div>
+<div class="space-y-1">
+<label class="block font-label-sm text-label-sm text-on-surface font-semibold" for="meal-select">
+                Request Special Dietary Requirement (UL Cabin Catering):
+              </label>
+<select class="w-full h-11 px-3 rounded-xl bg-surface border-0 shadow-sm text-body-sm font-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-focus" id="meal-select">
+<option value="STD">Standard Menu Selection (Chef's Choice on Board)</option>
+<option selected="" value="AVML">Asian Vegetarian Meal (AVML) - Recommended</option>
+<option value="DBML">Diabetic Meal (DBML)</option>
+<option value="SFML">Seafood Meal (SFML)</option>
+<option value="CHML">Child Meal (CHML)</option>
+<option value="GFML">Gluten Intolerant Meal (GFML)</option>
+<option value="VGML">Strict Vegan Vegetarian (VGML)</option>
+</select>
+</div>
+</div>
+</div>
+<!-- MODULE C: Fast-Track & Ground Airport Services -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm space-y-4">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-subtle text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">room_service</span>
+</div>
+<div>
+<h3 class="font-title text-title text-primary">Ground &amp; Transit Concierge</h3>
+<span class="text-label-sm font-label-sm text-text-muted">Airport Hospitality &amp; Fast-Track Passes</span>
+</div>
+</div>
+<div class="space-y-3">
+<!-- Heathrow Fast-track Checkbox -->
+<label class="p-4 rounded-xl bg-surface-bright flex items-start justify-between cursor-pointer hover:bg-surface-subtle transition-colors group">
+<div class="flex items-start gap-3">
+<input class="mt-1 w-5 h-5 rounded text-primary-container focus:ring-focus" id="addon-vip" type="checkbox"/>
+<div>
+<div class="font-label text-label text-on-surface font-semibold group-hover:text-primary">
+                    Heathrow VIP Meet &amp; Assist (Arrival T3)
+                  </div>
+<p class="text-body-sm font-body-sm text-text-muted mt-0.5">
+                    Personal tarmac liaison escort through fast-track UK border control and baggage porterage.
+                  </p>
+</div>
+</div>
+<span class="font-label text-label font-bold text-primary tabular-nums flex-shrink-0 ml-3">
+                +LKR 32,000
+              </span>
+</label>
+<!-- Colombo Silk Route Lounge Checkbox -->
+<label class="p-4 rounded-xl bg-surface-bright flex items-start justify-between cursor-pointer hover:bg-surface-subtle transition-colors group">
+<div class="flex items-start gap-3">
+<input class="mt-1 w-5 h-5 rounded text-primary-container focus:ring-focus" id="addon-lounge" type="checkbox"/>
+<div>
+<div class="font-label text-label text-on-surface font-semibold group-hover:text-primary">
+                    CMB Bandaranaike Silk Route Lounge
+                  </div>
+<p class="text-body-sm font-body-sm text-text-muted mt-0.5">
+                    Premium pre-flight departure lounge access, dedicated private security checkpoint, buffet &amp; showers.
+                  </p>
+</div>
+</div>
+<span class="font-label text-label font-bold text-primary tabular-nums flex-shrink-0 ml-3">
+                +LKR 14,000
+              </span>
+</label>
+</div>
+</div>
+<!-- MODULE D: Itemized Flight Dossier & Staging Box -->
+<div class="bg-primary text-on-primary rounded-2xl p-6 shadow-md space-y-6">
+<div class="flex items-center justify-between pb-3">
+<div>
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-on-primary-container">Itinerary Financial Ledger</span>
+<h3 class="font-heading-md text-heading-md text-on-primary">Calculated Flight Dossier</h3>
+</div>
+<span class="px-2.5 py-1 rounded bg-surface/10 text-on-primary text-label-sm font-label-sm font-mono">UL-9842A</span>
+</div>
+<!-- Itemized Breakdown -->
+<div class="space-y-3 font-body-sm text-body-sm">
+<div class="flex items-center justify-between text-on-primary">
+<span>Base Airfare (Return CMB ⇄ LHR)</span>
+<span class="tabular-nums font-semibold">LKR 248,500</span>
+</div>
+<div class="flex items-center justify-between text-on-primary-container">
+<span>Outbound Seat Selection (<span id="ledger-seat-code">14A Extra Legroom</span>)</span>
+<span class="tabular-nums font-semibold text-on-primary" id="ledger-seat-val">LKR 8,500</span>
+</div>
+<div class="flex items-center justify-between text-on-primary-container">
+<span>Inbound Seat Selection (16K Window)</span>
+<span class="tabular-nums font-semibold text-on-primary">Included (LKR 0)</span>
+</div>
+<div class="hidden flex items-center justify-between text-on-primary-container" id="ledger-bag-row">
+<span>Additional 23kg Checked Bag (×<span id="ledger-bag-count">1</span>)</span>
+<span class="tabular-nums font-semibold text-on-primary" id="ledger-bag-val">LKR 18,500</span>
+</div>
+<div class="hidden flex items-center justify-between text-on-primary-container" id="ledger-vip-row">
+<span>Heathrow VIP Meet &amp; Assist Escort</span>
+<span class="tabular-nums font-semibold text-on-primary">LKR 32,000</span>
+</div>
+<div class="hidden flex items-center justify-between text-on-primary-container" id="ledger-lounge-row">
+<span>CMB Silk Route Departure Lounge</span>
+<span class="tabular-nums font-semibold text-on-primary">LKR 14,000</span>
+</div>
+<div class="flex items-center justify-between text-on-primary-container">
+<span>Taxes, Aviation Security &amp; Statutory Levies</span>
+<span class="tabular-nums font-semibold text-on-primary">Included</span>
+</div>
+</div>
+<!-- Total Due -->
+<div class="pt-4 flex items-baseline justify-between">
+<div>
+<span class="text-label-sm font-label-sm text-on-primary-container">Updated Flight Total (1 Passenger)</span>
+<div class="text-[11px] text-on-primary-container">Gross Retail All-Inclusive Tariff</div>
+</div>
+<div class="text-right">
+<span class="font-heading-xl text-heading-xl text-on-primary tabular-nums font-bold" id="ledger-grand-total">
+                LKR 257,000
+              </span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="space-y-3 pt-2">
+<button class="w-full h-12 rounded-xl bg-surface text-primary hover:bg-surface-bright font-label text-label font-bold flex items-center justify-center gap-2 shadow-sm transition-all" id="btn-continue-checkout" type="button">
+<span>Continue to Review &amp; Passenger Details</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-full h-11 rounded-xl bg-primary-container hover:bg-primary-container/80 text-on-primary font-label text-label font-semibold flex items-center justify-center gap-2 transition-all" id="btn-stage-bucket" type="button">
+<span class="material-symbols-outlined text-[18px]">workspaces</span>
+<span>Stage Configuration to Trip Bucket</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Persistent Floating Trip Workspace Dock -->
+<div class="fixed bottom-0 left-0 w-full z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+<div class="max-w-7xl mx-auto px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label text-label text-primary font-bold">Your Trip Workspace</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-success text-[11px] font-bold">Ready</span>
+</div>
+<div class="text-body-sm font-body-sm text-text-muted">
+            3 Items Staged: <span class="text-on-surface font-medium">UL 503 Flight</span>, <span class="text-on-surface font-medium">The Savoy London (5N)</span>, <span class="text-on-surface font-medium">UK Standard Visitor Visa Protocol</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right hidden md:block">
+<span class="text-label-sm font-label-sm text-text-muted">Workspace Subtotal (Ready Items)</span>
+<div class="font-heading-md text-heading-md text-primary font-bold tabular-nums" id="workspace-subtotal">
+            LKR 532,000
+          </div>
+</div>
+<button class="px-5 py-2.5 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label text-label font-semibold flex items-center gap-2 shadow-sm transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">workspaces</span>
+<span>Review Trip Bucket (3)</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Behavior Handler -->
+<script>
+  (function() {
+    let baseFlightPrice = 248500;
+    let currentSeatPrice = 8500;
+    let bagCount = 0;
+    let bagUnitPrice = 18500;
+    let vipServicePrice = 32000;
+    let loungePrice = 14000;
+    let baseWorkspaceOtherItems = 275000; // Hotel + Visa
+    let currentMode = 'b2c';
+
+    // Countdown Timer logic
+    let remainingSeconds = 13 * 60 + 45;
+    const timerElem = document.getElementById('gds-countdown');
+    if (timerElem) {
+      setInterval(() => {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          const mins = Math.floor(remainingSeconds / 60);
+          const secs = remainingSeconds % 60;
+          timerElem.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')} remaining`;
+        }
+      }, 1000);
+    }
+
+    // Calculation helper
+    function recalculateTotal() {
+      const isVipChecked = document.getElementById('addon-vip').checked;
+      const isLoungeChecked = document.getElementById('addon-lounge').checked;
+
+      let flightTotal = baseFlightPrice + currentSeatPrice + (bagCount * bagUnitPrice);
+      if (isVipChecked) flightTotal += vipServicePrice;
+      if (isLoungeChecked) flightTotal += loungePrice;
+
+      // Adjust for B2B Net calculation simulation (-8% on base flight)
+      if (currentMode === 'b2b') {
+        flightTotal = Math.round(flightTotal * 0.94);
+      }
+
+      const formattedTotal = 'LKR ' + flightTotal.toLocaleString();
+      document.getElementById('ledger-grand-total').textContent = formattedTotal;
+
+      // Workspace total
+      const overallWorkspace = flightTotal + baseWorkspaceOtherItems;
+      document.getElementById('workspace-subtotal').textContent = 'LKR ' + overallWorkspace.toLocaleString();
+    }
+
+    // Seat click handlers
+    const seatButtons = document.querySelectorAll('.seat-btn');
+    seatButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Deselect previous
+        seatButtons.forEach(b => {
+          if (b.classList.contains('active-seat')) {
+            b.classList.remove('active-seat', 'bg-primary-container', 'text-on-primary', 'scale-105', 'ring-2', 'ring-focus', 'ring-offset-1');
+            const origType = b.getAttribute('data-type');
+            if (origType && origType.includes('Extra Legroom')) {
+              b.classList.add('bg-sky-50', 'text-info');
+            } else if (origType && origType.includes('Preferred')) {
+              b.classList.add('bg-purple-50', 'text-surface-tint');
+            } else {
+              b.classList.add('bg-surface', 'text-on-surface');
+            }
+            b.innerHTML = b.getAttribute('data-seat-id') || 'Seat';
+          }
+        });
+
+        // Set active
+        this.classList.add('active-seat', 'bg-primary-container', 'text-on-primary', 'scale-105', 'ring-2', 'ring-focus', 'ring-offset-1');
+        this.classList.remove('bg-sky-50', 'bg-purple-50', 'bg-surface', 'text-info', 'text-surface-tint', 'text-on-surface');
+        this.innerHTML = '<span class="material-symbols-outlined text-[14px]">check</span>';
+
+        const seatId = this.getAttribute('data-seat-id');
+        const seatPrice = parseInt(this.getAttribute('data-price') || '0', 10);
+        const seatType = this.getAttribute('data-type') || 'Standard Seat';
+
+        currentSeatPrice = seatPrice;
+
+        // Update Dossier card
+        document.getElementById('active-seat-code').textContent = seatId;
+        document.getElementById('active-seat-title').textContent = seatType;
+        document.getElementById('active-seat-price-badge').textContent = seatPrice > 0 ? `+LKR ${seatPrice.toLocaleString()}` : 'Included (LKR 0)';
+        document.getElementById('ledger-seat-code').textContent = `${seatId} ${seatType}`;
+        document.getElementById('ledger-seat-val').textContent = seatPrice > 0 ? `LKR ${seatPrice.toLocaleString()}` : 'Included (LKR 0)';
+
+        recalculateTotal();
+      });
+    });
+
+    // Baggage Counters
+    const bagPlus = document.getElementById('bag-plus');
+    const bagMinus = document.getElementById('bag-minus');
+    const bagCountElem = document.getElementById('bag-count');
+    const bagStatusLabel = document.getElementById('bag-status-label');
+    const ledgerBagRow = document.getElementById('ledger-bag-row');
+    const ledgerBagCount = document.getElementById('ledger-bag-count');
+    const ledgerBagVal = document.getElementById('ledger-bag-val');
+
+    bagPlus.addEventListener('click', () => {
+      if (bagCount < 4) {
+        bagCount++;
+        updateBaggageUI();
+      }
+    });
+
+    bagMinus.addEventListener('click', () => {
+      if (bagCount > 0) {
+        bagCount--;
+        updateBaggageUI();
+      }
+    });
+
+    function updateBaggageUI() {
+      bagCountElem.textContent = bagCount;
+      if (bagCount > 0) {
+        bagStatusLabel.textContent = `${bagCount} × 23kg extra baggage added`;
+        ledgerBagRow.classList.remove('hidden');
+        ledgerBagCount.textContent = bagCount;
+        ledgerBagVal.textContent = 'LKR ' + (bagCount * bagUnitPrice).toLocaleString();
+      } else {
+        bagStatusLabel.textContent = 'No additional bags added';
+        ledgerBagRow.classList.add('hidden');
+      }
+      recalculateTotal();
+    }
+
+    // Ancillary Checkbox Listeners
+    const vipCheckbox = document.getElementById('addon-vip');
+    const loungeCheckbox = document.getElementById('addon-lounge');
+    const ledgerVipRow = document.getElementById('ledger-vip-row');
+    const ledgerLoungeRow = document.getElementById('ledger-lounge-row');
+
+    vipCheckbox.addEventListener('change', () => {
+      if (vipCheckbox.checked) {
+        ledgerVipRow.classList.remove('hidden');
+      } else {
+        ledgerVipRow.classList.add('hidden');
+      }
+      recalculateTotal();
+    });
+
+    loungeCheckbox.addEventListener('change', () => {
+      if (loungeCheckbox.checked) {
+        ledgerLoungeRow.classList.remove('hidden');
+      } else {
+        ledgerLoungeRow.classList.add('hidden');
+      }
+      recalculateTotal();
+    });
+
+    // Mode Toggle (B2C / B2B)
+    const btnB2C = document.getElementById('mode-b2c');
+    const btnB2B = document.getElementById('mode-b2b');
+
+    btnB2C.addEventListener('click', () => {
+      currentMode = 'b2c';
+      btnB2C.classList.add('bg-surface', 'text-primary', 'shadow-sm', 'font-semibold');
+      btnB2C.classList.remove('text-text-muted');
+      btnB2B.classList.remove('bg-surface', 'text-primary', 'shadow-sm', 'font-semibold');
+      btnB2B.classList.add('text-text-muted');
+      recalculateTotal();
+    });
+
+    btnB2B.addEventListener('click', () => {
+      currentMode = 'b2b';
+      btnB2B.classList.add('bg-surface', 'text-primary', 'shadow-sm', 'font-semibold');
+      btnB2B.classList.remove('text-text-muted');
+      btnB2C.classList.remove('bg-surface', 'text-primary', 'shadow-sm', 'font-semibold');
+      btnB2C.classList.add('text-text-muted');
+      recalculateTotal();
+    });
+
+    // Bucket Stage Button micro-feedback
+    const stageBtn = document.getElementById('btn-stage-bucket');
+    stageBtn.addEventListener('click', () => {
+      const origText = stageBtn.innerHTML;
+      stageBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">sync</span> <span>Staging Dossier to Bucket...</span>';
+      stageBtn.disabled = true;
+      setTimeout(() => {
+        stageBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">done_all</span> <span>Staged in Trip Bucket</span>';
+        setTimeout(() => {
+          stageBtn.innerHTML = origText;
+          stageBtn.disabled = false;
+        }, 2000);
+      }, 700);
+    });
+
+    // Initial calc pass
+    recalculateTotal();
+  })();
+</script></main><footer class="w-full bg-primary-container text-on-primary pt-16 pb-8"><div class="max-w-7xl mx-auto px-6"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12"><div class="space-y-4"><div class="flex items-center gap-2 font-heading-md text-heading-md text-on-primary"><span class="material-symbols-outlined text-[24px]">travel_explore</span><span>VACATINA</span></div><p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">The authoritative travel operating system engineered for end-to-end flight, itinerary composition, and enterprise mobility management.</p><div class="pt-2 space-y-1.5"><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">call</span><span>+94113606200</span></div><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">mail</span><span>info@vacatina.com</span></div></div></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Products &amp; Mobility</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="flights" href="#">Flight Search Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="hotels" href="#">Accommodations &amp; Resorts</a></li><li><a class="hover:text-on-primary transition-colors" data-path="holiday-packages" href="#">Bespoke Holiday Packages</a></li><li><a class="hover:text-on-primary transition-colors" data-path="cars-and-transfers" href="#">Ground Transportation</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Rail &amp; Coastal Cruising</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Travel Operations</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="visa-assistance" href="#">Global Visa Protocol</a></li><li><a class="hover:text-on-primary transition-colors" data-path="flight-booking-flow" href="#">Trip Bucket Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Baggage &amp; Fare Rules</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Comprehensive Travel Insurance</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Real-Time Airline Timetables</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Enterprise &amp; Compliance</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Corporate Portal Access</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">IATA Accredited Agency</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Global Distribution Network</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">PCI-DSS Level 1 Security</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">API Solutions &amp; Partners</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Statutory &amp; Quality</h4><div class="space-y-3 font-body-sm text-body-sm text-on-primary-container"><p>Operating with certified Global Distribution System standards and verified ticketing agency integrity.</p><div class="p-3 rounded-lg bg-primary/40 space-y-1 text-on-primary"><div class="font-label-sm text-label-sm font-semibold">Customer Operations Support</div><div class="text-xs text-on-primary-container">Available Daily for Global Travelers</div><div class="text-xs text-on-primary-container font-mono">Tel: +94113606200</div></div></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-primary-container"><p>© 2025 Vacatina Travel Operating System. All rights reserved.</p><div class="flex flex-wrap items-center gap-6 font-label-sm text-label-sm"><a class="hover:text-on-primary transition-colors" data-path="privacy-policy" href="#">Privacy Statement</a><a class="hover:text-on-primary transition-colors" data-path="terms-of-service" href="#">Booking Terms &amp; Conditions</a><a class="hover:text-on-primary transition-colors" data-path="statutory-compliance" href="#">Statutory Regulatory Notice</a><a class="hover:text-on-primary transition-colors" data-path="security-standards" href="#">Data Security Protocol</a></div></div></div></footer></body></html>

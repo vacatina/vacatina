@@ -193,7 +193,7 @@ export class FlightsSearchView {
             <div class="flex flex-wrap items-center gap-3">
               <label for="flight-inventory-source" class="text-[10px] font-bold uppercase tracking-wider text-brand-muted">Inventory</label>
               <select id="flight-inventory-source" class="h-9 px-2.5 rounded-xl border ${isSandboxLane ? 'border-indigo-300 bg-indigo-50 text-indigo-950' : 'border-gray-300 bg-white text-brand-black'} text-xs font-bold outline-none focus:border-brand-primary">
-                <option value="demo_fixture" ${!isSandboxLane ? 'selected' : ''}>Demo fixtures (non-production)</option>
+                <option value="demo_fixture" ${!isSandboxLane ? 'selected' : ''}>Available options (planning reference)</option>
                 <option value="sandbox_test" ${isSandboxLane ? 'selected' : ''}>Duffel TEST MODE (sandbox)</option>
               </select>
               <button type="button" id="btn-toggle-modify-search" class="px-4 py-2 rounded-xl text-xs font-bold border border-gray-300 hover:border-brand-primary text-brand-black hover:text-brand-primary transition-colors flex items-center gap-1.5">
@@ -233,7 +233,7 @@ export class FlightsSearchView {
           ${
             isSandboxLane
               ? `<span><strong>Duffel TEST MODE (sandbox):</strong> these are real Duffel sandbox quotes, not live airline inventory. No live ticket or payment is created. Only an explicit sandbox test order can be placed.</span>`
-              : `<span><strong>Inventory disclosure:</strong> demo fixture and request-to-book inventory is not live airline availability. No seat hold, reservation or payment is created by browsing or staging an option.</span>`
+              : `<span><strong>Inventory notice:</strong> available and request-to-book inventory is not live airline availability. No seat hold, reservation or payment is created by browsing or staging an option.</span>`
           }
         </div>
 
@@ -246,12 +246,12 @@ export class FlightsSearchView {
               <strong class="text-brand-black">Result sources:</strong>
               ${sandboxCount > 0 ? `${sandboxCount} Duffel TEST MODE sandbox quote${sandboxCount === 1 ? '' : 's'} (non-production, explicit sandbox order only)` : ''}
               ${sandboxCount > 0 && (demoCount > 0 || manualCount > 0 || liveCount > 0) ? ' · ' : ''}
-              ${demoCount > 0 ? `${demoCount} demo fixture${demoCount === 1 ? '' : 's'} (illustrative, non-production)` : ''}
+              ${demoCount > 0 ? `${demoCount} planning option${demoCount === 1 ? '' : 's'} (reference, not live)` : ''}
               ${demoCount > 0 && (manualCount > 0 || liveCount > 0) ? ' · ' : ''}
               ${manualCount > 0 ? `${manualCount} manual request-to-book` : ''}
               ${manualCount > 0 && liveCount > 0 ? ' · ' : ''}
               ${liveCount > 0 ? `${liveCount} live supplier fare${liveCount === 1 ? '' : 's'}` : ''}
-              . ${isSandboxLane ? 'Test-mode inventory is isolated from demo and production sources.' : 'Demo and manual options require a Vacatina desk quote or confirmation before booking.'}
+              . ${isSandboxLane ? 'Test-mode inventory is isolated from planning and production sources.' : 'Planning and manual options require a Vacatina desk quote or confirmation before booking.'}
             </div>
           `
               : ''
@@ -782,7 +782,7 @@ export class FlightsSearchView {
             if (candidate.state === 'needs_action') {
               showToast(
                 candidate.inventoryMode === 'demo_fixture'
-                  ? 'Demo fare staged. No live seat hold was created — request a desk quote to book.'
+                  ? 'Option staged. No live seat hold was created - request a desk quote to book.'
                   : candidate.inventoryMode === 'sandbox_test'
                     ? 'Duffel TEST MODE quote staged. No live ticket, seat hold or payment was created. Review your trip to place an explicit sandbox test order.'
                     : 'Flight request staged. The Vacatina desk must confirm schedule, baggage and fare before booking.',

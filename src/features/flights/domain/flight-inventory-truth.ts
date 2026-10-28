@@ -92,7 +92,7 @@ export function resolveFlightInventoryTruth(offer: TruthSource): FlightInventory
   if (mode === 'demo_fixture') {
     return {
       mode,
-      label: 'Demo fixture (non-production)',
+      label: 'Planning reference (non-production)',
       shortLabel: 'DEMO',
       badgeClasses: 'bg-slate-100 text-slate-700 border border-slate-200',
       panelClasses: 'bg-slate-50 border border-slate-200 text-slate-700',
@@ -101,11 +101,11 @@ export function resolveFlightInventoryTruth(offer: TruthSource): FlightInventory
       isManual: false,
       isLive: false,
       isSandbox: false,
-      priceLabel: 'Illustrative demo price',
-      scheduleLabel: 'Illustrative schedule — not live airline inventory',
-      confirmationLabel: 'Demo fare — desk quote required',
+      priceLabel: 'Planning reference price',
+      scheduleLabel: 'Schedule subject to confirmation',
+      confirmationLabel: 'Fare - desk quote required',
       disclosure:
-        'Demonstration fixture inventory for this phase. Schedules, fares, availability and baggage are illustrative, not live airline data. No seat hold, reservation or ticketing is created.'
+        'Planning reference inventory for this phase. Schedules, fares, availability and baggage are subject to confirmation, not live airline data. No seat hold, reservation or ticketing is created.'
     };
   }
 

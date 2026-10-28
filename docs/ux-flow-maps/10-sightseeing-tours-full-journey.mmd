@@ -1,0 +1,19 @@
+graph TD
+    S_HUB[/"Sightseeing Tours Hub<br/>/sightseeing-tours"\] --> S_DEST[Destination]
+    S_HUB --> S_DATE[Date]
+    S_HUB --> S_TYPE[Tour Type]
+    S_HUB --> S_SEARCH_BTN[Search Submit]
+
+    S_SEARCH_BTN --> S_VALIDATION{Validation}
+    S_VALIDATION -->|Valid| S_SEARCH[Sightseeing Search<br/>/sightseeing-tours/search]
+    S_VALIDATION -->|Invalid| S_ERROR[Validation Error]
+
+    S_SEARCH --> S_RESULTS[Sightseeing Results]
+    S_RESULTS --> S_OFFER[Sightseeing Offer<br/>/sightseeing-tours/offer/:id]
+    S_OFFER --> S_CONFIG[Sightseeing Configurator]
+    S_CONFIG --> S_STAGE[Stage as needs_action]
+    S_STAGE --> S_TB[Trip Bucket Drawer]
+
+    S_RESULTS --> S_NO_RESULTS[No Results State]
+    S_TB --> S_REVIEW_CTA[Review Trip CTA]
+    S_REVIEW_CTA --> S_REVIEW[Trip Review<br/>/trip/review]

@@ -1,0 +1,19 @@
+graph TD
+    A_HUB[/"Activities Hub<br/>/activities"\] --> A_DEST[Destination]
+    A_HUB --> A_DATE[Date]
+    A_HUB --> A_CATEGORY[Category]
+    A_HUB --> A_SEARCH_BTN[Search Submit]
+
+    A_SEARCH_BTN --> A_VALIDATION{Validation}
+    A_VALIDATION -->|Valid| A_SEARCH[Activities Search<br/>/activities/search]
+    A_VALIDATION -->|Invalid| A_ERROR[Validation Error]
+
+    A_SEARCH --> A_RESULTS[Activities Results]
+    A_RESULTS --> A_OFFER[Activities Offer<br/>/activities/offer/:id]
+    A_OFFER --> A_CONFIG[Activities Configurator]
+    A_CONFIG --> A_STAGE[Stage as needs_action]
+    A_STAGE --> A_TB[Trip Bucket Drawer]
+
+    A_RESULTS --> A_NO_RESULTS[No Results State]
+    A_TB --> A_REVIEW_CTA[Review Trip CTA]
+    A_REVIEW_CTA --> A_REVIEW[Trip Review<br/>/trip/review]

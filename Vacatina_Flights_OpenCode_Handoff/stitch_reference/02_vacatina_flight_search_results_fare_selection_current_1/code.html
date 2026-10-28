@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Vacatina Travel Operating System</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed-variant":"#474747","success":"#15803D","info":"#1D4ED8","surface":"#FFFFFF","tertiary-container":"#441200","surface-container":"#eeeeee","secondary":"#5e5e5e","warning":"#B45309","surface-container-low":"#f3f3f3","inverse-surface":"#2f3131","primary-fixed":"#e3dfff","on-tertiary-fixed-variant":"#73351c","surface-dim":"#dadada","text-muted":"#525252","inverse-primary":"#c4c0ff","tertiary-fixed":"#ffdbcf","on-secondary":"#ffffff","on-primary":"#ffffff","background":"#f9f9f9","surface-variant":"#e2e2e2","surface-container-lowest":"#ffffff","error":"#B91C1C","primary":"#06003e","surface-tint":"#5855a3","on-surface":"#1a1c1c","on-secondary-container":"#646464","on-background":"#1a1c1c","on-tertiary":"#ffffff","secondary-container":"#e4e2e2","outline":"#787682","surface-container-high":"#e8e8e8","border":"#E5E5E5","on-surface-variant":"#474551","on-secondary-fixed":"#1b1c1c","secondary-fixed-dim":"#c8c6c6","surface-subtle":"#F5F5F5","surface-bright":"#f9f9f9","text-primary":"#000000","primary-container":"#1b1464","outline-variant":"#c8c5d2","on-error":"#ffffff","on-error-container":"#93000a","on-primary-fixed":"#13095d","on-tertiary-container":"#c57658","on-primary-fixed-variant":"#403d8a","inverse-on-surface":"#f0f1f1","primary-fixed-dim":"#c4c0ff","on-tertiary-fixed":"#380d00","focus":"#1D4ED8","secondary-fixed":"#e4e2e2","canvas":"#FAFAFA","tertiary-fixed-dim":"#ffb59a","surface-container-highest":"#e2e2e2","on-primary-container":"#8481d3","error-container":"#ffdad6","tertiary":"#1f0500"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"2":"8px","gutter":"1.5rem","16":"64px","margin":"1.5rem","10":"40px","3":"12px","space-xs":"0.25rem","6":"24px","8":"32px","1":"4px","space-xl":"2.5rem","12":"48px","4":"16px","5":"20px","space-sm":"0.5rem","20":"80px","space-lg":"1.5rem","space-md":"1rem"},fontFamily:{"heading-xl":["Plus Jakarta Sans"],"heading-md":["Plus Jakarta Sans"],"body-lg":["Inter"],"label":["Inter"],"display-mobile":["Plus Jakarta Sans"],"body":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"title":["Plus Jakarta Sans"],"display-desktop":["Plus Jakarta Sans"],"heading-lg":["Plus Jakarta Sans"]},fontSize:{"heading-xl":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"700"}],"heading-md":["22px",{lineHeight:"28px",letterSpacing:"0",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"400"}],"label":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"600"}],"display-mobile":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"body":["15px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0",fontWeight:"400"}],"title":["18px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"600"}],"display-desktop":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"heading-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}]}}}};</script></head><body class="bg-canvas font-body text-body text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4"><div class="flex items-center gap-8"><a class="flex items-center gap-2 text-primary font-heading-md text-heading-md tracking-tight" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">travel_explore</span><span>VACATINA</span></a><nav class="hidden min-[1440px]:flex items-center gap-6" data-active-classes="text-primary font-semibold border-b-2 border-primary"><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="home" href="#">Home</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="flights" href="#">Flights</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="hotels" href="#">Hotels</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="visa-assistance" href="#">Visa Assistance</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="holiday-packages" href="#">Holiday Packages</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="cars-and-transfers" href="#">Cars &amp; Transfers</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="more-products" href="#">More</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="resources" href="#">Resources</a></nav></div><div class="flex items-center gap-3"><button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">language</span><span>EN · USD</span></button><button aria-label="Saved Favorites" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-subtle rounded-lg transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">favorite</span></button><button aria-label="Trip Bucket" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px] text-on-surface">workspaces</span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Bucket</span><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-container text-on-primary">3</span></button><div class="flex items-center gap-2 pl-2"><button class="hidden md:inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span>B2C</span><span class="mx-1 text-outline">|</span><span class="text-text-muted">B2B</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-canvas min-h-screen"><div class="flex flex-col w-full">
+<!-- SEARCH MODIFICATION STRIP & SYSTEM STATE MONITOR -->
+<section class="w-full bg-surface shadow-sm">
+<div class="max-w-7xl mx-auto px-6 py-4">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<!-- Route / Schedule / Traveler Overview -->
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-3 bg-surface-subtle px-3.5 py-2 rounded-xl">
+<span class="material-symbols-outlined text-primary-container text-[20px]">flight_takeoff</span>
+<div>
+<div class="flex items-center gap-1.5 font-title text-title text-on-surface tracking-tight leading-none">
+<span class="font-bold">CMB</span>
+<span class="material-symbols-outlined text-[15px] text-text-muted">sync_alt</span>
+<span class="font-bold">LHR</span>
+</div>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] leading-tight block pt-0.5">Colombo Bandaranaike ⇄ London Heathrow</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 bg-surface-subtle px-3.5 py-2 rounded-xl">
+<span class="material-symbols-outlined text-text-muted text-[18px]">calendar_month</span>
+<div class="text-left leading-none">
+<span class="font-label text-label text-on-surface block">12 Nov – 27 Nov 2026</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block pt-0.5">Round Trip · 15 Nights</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 bg-surface-subtle px-3.5 py-2 rounded-xl">
+<span class="material-symbols-outlined text-text-muted text-[18px]">person</span>
+<div class="text-left leading-none">
+<span class="font-label text-label text-on-surface block">1 Adult · Economy</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block pt-0.5">Standard Fare Search</span>
+</div>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high hover:bg-surface-variant text-primary font-label text-label transition-colors" id="modify-query-btn">
+<span class="material-symbols-outlined text-[17px]">edit</span>
+<span>Modify</span>
+</button>
+</div>
+<!-- B2B/B2C Mode Selector & GDS Hold Telemetry -->
+<div class="flex items-center gap-3 self-end lg:self-center">
+<!-- GDS Pipe Status Badge -->
+<div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container text-text-muted font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+<span>Amadeus &amp; NDC Pipe Active</span>
+</div>
+<!-- Live Fare Hold Timer -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-warning/10 text-warning font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span class="tabular-nums" id="session-timer">14:45</span>
+<span class="text-[11px] font-normal text-text-muted hidden sm:inline">Hold</span>
+</div>
+<!-- B2C/B2B Wholesale Margin Toggle -->
+<div class="flex items-center bg-surface-subtle p-1 rounded-xl">
+<button class="px-3 py-1 rounded-lg text-xs font-semibold bg-surface shadow-sm text-primary font-label-sm transition-all" id="b2c-mode-btn">B2C Retail</button>
+<button class="px-3 py-1 rounded-lg text-xs font-semibold text-text-muted hover:text-on-surface font-label-sm transition-all" id="b2b-mode-btn">B2B Net + Markup</button>
+</div>
+</div>
+</div>
+<!-- Expandable Query Editor Drawer (Hidden by default) -->
+<div class="hidden mt-4 pt-4 border-t-0 bg-surface-subtle rounded-2xl p-4 transition-all" id="query-drawer">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+<div>
+<label class="font-label-sm text-label-sm text-text-muted block mb-1">Departure Station</label>
+<input class="w-full h-11 px-3 bg-surface rounded-xl font-body text-body text-on-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-focus" type="text" value="CMB - Colombo Bandaranaike"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-text-muted block mb-1">Destination Station</label>
+<input class="w-full h-11 px-3 bg-surface rounded-xl font-body text-body text-on-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-focus" type="text" value="LHR - London Heathrow"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-text-muted block mb-1">Departure &amp; Return Dates</label>
+<input class="w-full h-11 px-3 bg-surface rounded-xl font-body text-body text-on-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-focus" type="text" value="12 Nov 2026 - 27 Nov 2026"/>
+</div>
+<div class="flex items-end gap-2">
+<button class="w-full h-11 rounded-xl bg-primary-container text-on-primary font-label text-label flex items-center justify-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">search</span>
+              Update Search
+            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7-DAY FLEXIBLE FARE DISCOVERY RIBBON -->
+<section class="w-full bg-surface-container-low py-3">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[18px]">calendar_view_week</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-text-muted font-bold">7-Day Flexible Fare Discovery Matrix (CMB ⇄ LHR)</span>
+</div>
+<span class="font-label-sm text-label-sm text-text-muted">Fares include all statutory taxes &amp; fuel surcharges</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+<!-- Day 1 -->
+<div class="bg-surface hover:bg-surface-subtle p-2.5 rounded-xl cursor-pointer transition-all text-center group">
+<span class="font-label-sm text-label-sm text-text-muted block">Tue, 10 Nov</span>
+<span class="font-title text-title text-on-surface tabular-nums font-bold block mt-1">LKR 268,200</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block mt-0.5">1-Stop (QR)</span>
+</div>
+<!-- Day 2 -->
+<div class="bg-surface hover:bg-surface-subtle p-2.5 rounded-xl cursor-pointer transition-all text-center group">
+<span class="font-label-sm text-label-sm text-text-muted block">Wed, 11 Nov</span>
+<span class="font-title text-title text-on-surface tabular-nums font-bold block mt-1">LKR 254,100</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block mt-0.5">1-Stop (EK)</span>
+</div>
+<!-- Day 3 (Selected - Lowest Non-Stop) -->
+<div class="bg-primary-container text-on-primary p-2.5 rounded-xl cursor-pointer shadow-md text-center relative overflow-hidden ring-2 ring-primary-container">
+<div class="absolute top-0 right-0 left-0 bg-success text-on-primary text-[9px] uppercase tracking-wider font-bold py-0.5">
+            Best Value · Non-Stop
+          </div>
+<span class="font-label-sm text-label-sm text-on-primary-container block pt-2">Thu, 12 Nov</span>
+<span class="font-title text-title text-on-primary tabular-nums font-extrabold block mt-0.5">LKR 248,500</span>
+<span class="font-body-sm text-body-sm text-on-primary-container text-[11px] block">Direct (UL 503)</span>
+</div>
+<!-- Day 4 -->
+<div class="bg-surface hover:bg-surface-subtle p-2.5 rounded-xl cursor-pointer transition-all text-center group">
+<span class="font-label-sm text-label-sm text-text-muted block">Fri, 13 Nov</span>
+<span class="font-title text-title text-on-surface tabular-nums font-bold block mt-1">LKR 285,400</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block mt-0.5">Non-Stop (UL)</span>
+</div>
+<!-- Day 5 -->
+<div class="bg-surface hover:bg-surface-subtle p-2.5 rounded-xl cursor-pointer transition-all text-center group">
+<span class="font-label-sm text-label-sm text-text-muted block">Sat, 14 Nov</span>
+<span class="font-title text-title text-on-surface tabular-nums font-bold block mt-1">LKR 312,000</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block mt-0.5">1-Stop (SQ)</span>
+</div>
+<!-- Day 6 -->
+<div class="bg-surface hover:bg-surface-subtle p-2.5 rounded-xl cursor-pointer transition-all text-center group">
+<span class="font-label-sm text-label-sm text-text-muted block">Sun, 15 Nov</span>
+<span class="font-title text-title text-on-surface tabular-nums font-bold block mt-1">LKR 298,600</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block mt-0.5">1-Stop (QR)</span>
+</div>
+<!-- Day 7 -->
+<div class="bg-surface hover:bg-surface-subtle p-2.5 rounded-xl cursor-pointer transition-all text-center group">
+<span class="font-label-sm text-label-sm text-text-muted block">Mon, 16 Nov</span>
+<span class="font-title text-title text-on-surface tabular-nums font-bold block mt-1">LKR 262,400</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px] block mt-0.5">1-Stop (EK)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- WORKSPACE BODY: FILTER RAIL & FARE MATRIX RESULTS -->
+<main class="w-full py-8">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT FILTER RAIL (4 Cols on lg) -->
+<aside class="lg:col-span-4 xl:col-span-3 space-y-6">
+<!-- B2B Export / Split Tools Card -->
+<div class="bg-surface p-4 rounded-2xl shadow-sm">
+<div class="flex items-center justify-between pb-3">
+<span class="font-label text-label text-primary font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+                Enterprise Tools
+              </span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-[10px] font-bold">B2B Pro</span>
+</div>
+<div class="space-y-2 pt-1">
+<button class="w-full py-2 px-3 rounded-xl bg-surface-subtle hover:bg-surface-container font-label-sm text-label-sm text-on-surface text-left flex items-center justify-between transition-colors">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-text-muted">picture_as_pdf</span>
+                  Generate White-Label PDF
+                </span>
+<span class="material-symbols-outlined text-[14px] text-text-muted">chevron_right</span>
+</button>
+<button class="w-full py-2 px-3 rounded-xl bg-surface-subtle hover:bg-surface-container font-label-sm text-label-sm text-on-surface text-left flex items-center justify-between transition-colors">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-text-muted">call_split</span>
+                  Instant Split PNR Config
+                </span>
+<span class="material-symbols-outlined text-[14px] text-text-muted">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Master Filter Controls -->
+<div class="bg-surface p-5 rounded-2xl shadow-sm space-y-6">
+<div class="flex items-center justify-between pb-2">
+<h3 class="font-title text-title text-on-surface font-bold">Filter Options</h3>
+<button class="font-label-sm text-label-sm text-info hover:underline">Reset All</button>
+</div>
+<!-- Stops Filter -->
+<div class="space-y-3">
+<span class="font-label text-label text-on-surface block font-bold">Flight Routing / Stops</span>
+<div class="space-y-2 font-body-sm text-body-sm text-on-surface">
+<label class="flex items-center justify-between cursor-pointer p-1.5 rounded-lg hover:bg-surface-subtle">
+<div class="flex items-center gap-2.5">
+<input checked="" class="w-4 h-4 rounded text-primary-container focus:ring-0 cursor-pointer accent-primary-container" type="checkbox"/>
+<span>Direct / Non-Stop</span>
+</div>
+<span class="tabular-nums font-semibold text-text-muted">from 248.5k (2)</span>
+</label>
+<label class="flex items-center justify-between cursor-pointer p-1.5 rounded-lg hover:bg-surface-subtle">
+<div class="flex items-center gap-2.5">
+<input checked="" class="w-4 h-4 rounded text-primary-container focus:ring-0 cursor-pointer accent-primary-container" type="checkbox"/>
+<span>1 Stop Max</span>
+</div>
+<span class="tabular-nums font-semibold text-text-muted">from 295.0k (14)</span>
+</label>
+<label class="flex items-center justify-between cursor-pointer p-1.5 rounded-lg hover:bg-surface-subtle">
+<div class="flex items-center gap-2.5">
+<input class="w-4 h-4 rounded text-primary-container focus:ring-0 cursor-pointer accent-primary-container" type="checkbox"/>
+<span>2+ Stops</span>
+</div>
+<span class="tabular-nums font-semibold text-text-muted">from 241.0k (8)</span>
+</label>
+</div>
+</div>
+<!-- Operating Carrier Filter -->
+<div class="space-y-3 pt-3">
+<span class="font-label text-label text-on-surface block font-bold">Airlines</span>
+<div class="space-y-2 font-body-sm text-body-sm text-on-surface">
+<label class="flex items-center justify-between cursor-pointer p-1.5 rounded-lg hover:bg-surface-subtle">
+<div class="flex items-center gap-2.5">
+<input checked="" class="w-4 h-4 rounded accent-primary-container cursor-pointer" type="checkbox"/>
+<span class="font-medium">SriLankan Airlines (UL)</span>
+</div>
+<span class="tabular-nums text-text-muted">LKR 248,500</span>
+</label>
+<label class="flex items-center justify-between cursor-pointer p-1.5 rounded-lg hover:bg-surface-subtle">
+<div class="flex items-center gap-2.5">
+<input checked="" class="w-4 h-4 rounded accent-primary-container cursor-pointer" type="checkbox"/>
+<span class="font-medium">Qatar Airways (QR)</span>
+</div>
+<span class="tabular-nums text-text-muted">LKR 295,000</span>
+</label>
+<label class="flex items-center justify-between cursor-pointer p-1.5 rounded-lg hover:bg-surface-subtle">
+<div class="flex items-center gap-2.5">
+<input checked="" class="w-4 h-4 rounded accent-primary-container cursor-pointer" type="checkbox"/>
+<span class="font-medium">Emirates (EK)</span>
+</div>
+<span class="tabular-nums text-text-muted">LKR 310,000</span>
+</label>
+<label class="flex items-center justify-between cursor-pointer p-1.5 rounded-lg hover:bg-surface-subtle">
+<div class="flex items-center gap-2.5">
+<input class="w-4 h-4 rounded accent-primary-container cursor-pointer" type="checkbox"/>
+<span class="font-medium">Singapore Airlines (SQ)</span>
+</div>
+<span class="tabular-nums text-text-muted">LKR 335,200</span>
+</label>
+</div>
+</div>
+<!-- Departure Window -->
+<div class="space-y-3 pt-3">
+<span class="font-label text-label text-on-surface block font-bold">Departure Window (CMB)</span>
+<div class="grid grid-cols-3 gap-1.5">
+<button class="p-2 rounded-xl bg-surface-subtle hover:bg-surface-container text-center group">
+<span class="material-symbols-outlined text-[18px] text-text-muted block mx-auto">wb_twilight</span>
+<span class="text-[10px] font-semibold text-text-muted block mt-1">00-06</span>
+<span class="text-[9px] text-success block font-bold">Best</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-subtle hover:bg-surface-container text-center group">
+<span class="material-symbols-outlined text-[18px] text-text-muted block mx-auto">wb_sunny</span>
+<span class="text-[10px] font-semibold text-text-muted block mt-1">06-12</span>
+<span class="text-[9px] text-text-muted block">Morning</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-subtle hover:bg-surface-container text-center group">
+<span class="material-symbols-outlined text-[18px] text-text-muted block mx-auto">bedtime</span>
+<span class="text-[10px] font-semibold text-text-muted block mt-1">18-24</span>
+<span class="text-[9px] text-text-muted block">Night</span>
+</button>
+</div>
+</div>
+<!-- Inclusions & Baggage -->
+<div class="space-y-3 pt-3">
+<span class="font-label text-label text-on-surface block font-bold">Fare Inclusions</span>
+<div class="space-y-2 font-body-sm text-body-sm text-on-surface">
+<label class="flex items-center gap-2.5 cursor-pointer p-1 rounded hover:bg-surface-subtle">
+<input checked="" class="w-4 h-4 rounded accent-primary-container" type="checkbox"/>
+<span>30kg+ Checked Baggage</span>
+</label>
+<label class="flex items-center gap-2.5 cursor-pointer p-1 rounded hover:bg-surface-subtle">
+<input class="w-4 h-4 rounded accent-primary-container" type="checkbox"/>
+<span>Free Date Change Permitted</span>
+</label>
+<label class="flex items-center gap-2.5 cursor-pointer p-1 rounded hover:bg-surface-subtle">
+<input checked="" class="w-4 h-4 rounded accent-primary-container" type="checkbox"/>
+<span>Hot Meals Included</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Destination Transit Intel Card -->
+<div class="bg-gradient-to-br from-primary-container to-primary text-on-primary p-5 rounded-2xl shadow-sm relative overflow-hidden">
+<div class="relative z-10 space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-primary-container font-semibold">Destination Protocol</span>
+<span class="material-symbols-outlined text-[18px] text-on-primary-container">info</span>
+</div>
+<h4 class="font-title text-title font-bold leading-snug">London Heathrow (LHR) ETA Mandatory</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">Sri Lankan passport holders require an approved transit visa or direct UK Entry clearance. Fast-track visa assistance available.</p>
+<a class="inline-flex items-center gap-1.5 font-label-sm text-label-sm text-inverse-primary hover:underline font-semibold pt-1" data-path="visa-assistance" href="#">
+<span>Configure UK Visa Assistance</span>
+<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+</a>
+</div>
+<div class="absolute -bottom-8 -right-8 w-28 h-28 bg-surface/5 rounded-full blur-xl pointer-events-none"></div>
+</div>
+<!-- London Big Ben Destination Preview Card -->
+<div class="bg-surface rounded-2xl overflow-hidden shadow-sm">
+<img class="w-full h-36 object-cover" data-alt="Iconic view of London featuring the Palace of Westminster and Big Ben under bright day skies with a red double decker bus crossing Westminster Bridge over the River Thames" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-MNqSvLz7ONFKBTfHgp718PnL_vo9y8QY9hdZHSBRfayu6NJmz2u9yh9g1XIxZ6aenCDCsvyAnooSPaBppnnhZlvFE2PZ42NhuN4W5BfH8dRdYFveBWr_-0EFX4zJJm7xrp4ueuL48ydel1BDZxlyuSNm62Q_DAwcAHPtZezZzmmQBrtgVG_hAvvksuYpQKcPGEB48Fws6lPcWbZ1dwZkGLfpd4SBE8rnEj6TIDY6"/>
+<div class="p-4 space-y-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-text-muted font-bold block">Destination Guide</span>
+<h5 class="font-title text-title text-on-surface font-bold">London, United Kingdom</h5>
+<p class="font-body-sm text-body-sm text-text-muted text-[12px]">Heathrow Express connects directly to Central Paddington in 15 mins.</p>
+</div>
+</div>
+</aside>
+<!-- PRIMARY FLIGHT RESULTS & FARE FAMILY MATRIX (8 Cols on lg) -->
+<section class="lg:col-span-8 xl:col-span-9 space-y-6">
+<!-- Sort Bar & Quick Summary Stats -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-surface p-3.5 rounded-2xl shadow-sm">
+<div class="flex items-center gap-2">
+<span class="font-label text-label text-on-surface font-bold">24 Flights Found</span>
+<span class="text-text-muted font-body-sm text-body-sm">· Prices per passenger</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-text-muted">Sort by:</span>
+<select class="bg-surface-subtle font-label-sm text-label-sm px-3 py-1.5 rounded-xl font-semibold text-on-surface focus:outline-none cursor-pointer">
+<option selected="">Cheapest &amp; Fastest (Recommended)</option>
+<option>Price: Lowest First</option>
+<option>Duration: Shortest First</option>
+<option>Earliest Departure</option>
+</select>
+</div>
+</div>
+<!-- RESULT 1: RECOMMENDED FLAGSHIP (SRILANKAN AIRLINES NON-STOP WITH EXPANDED MATRIX) -->
+<div class="bg-surface rounded-2xl shadow-sm overflow-hidden ring-1 ring-primary/10">
+<!-- Header Status Ribbon -->
+<div class="bg-surface-subtle px-6 py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-success text-on-primary font-label-sm text-[11px] font-bold">
+                  ★ RECOMMENDED OPERATOR
+                </span>
+<span class="font-label-sm text-label-sm text-text-muted hidden sm:inline">Fastest direct routing · Only non-stop option</span>
+</div>
+<div class="flex items-center gap-2 text-text-muted font-body-sm text-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[16px] text-success">check_circle</span>
+<span>Immediate Seat Confirmation</span>
+</div>
+</div>
+<!-- Core Flight Legs Brief -->
+<div class="p-6">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+<!-- Carrier Info -->
+<div class="md:col-span-3 flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-surface-subtle flex items-center justify-center font-title text-title font-extrabold text-primary-container shadow-inner">
+                    UL
+                  </div>
+<div>
+<h4 class="font-title text-title text-on-surface font-bold leading-tight">SriLankan</h4>
+<span class="font-body-sm text-body-sm text-text-muted text-[12px]">UL 503 · A330-300</span>
+<span class="block text-[11px] text-text-muted font-mono">Widebody Jet</span>
+</div>
+</div>
+<!-- Timetable Path -->
+<div class="md:col-span-6 flex items-center justify-between gap-3 text-center">
+<!-- Departure -->
+<div class="text-left">
+<span class="font-heading-md text-heading-md text-on-surface font-extrabold tabular-nums block leading-none">01:15</span>
+<span class="font-label text-label text-primary font-bold block pt-1">CMB</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px]">Bandaranaike Intl</span>
+</div>
+<!-- Path Graphical Indicator -->
+<div class="flex-1 px-3 flex flex-col items-center">
+<span class="font-label-sm text-label-sm text-text-muted tabular-nums font-semibold mb-1">11h 00m</span>
+<div class="relative w-full flex items-center">
+<div class="w-full h-0.5 bg-surface-variant"></div>
+<span class="absolute left-1/2 -translate-x-1/2 bg-surface px-1 text-success">
+<span class="material-symbols-outlined text-[16px]">flight</span>
+</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-success mt-1">Non-Stop Direct</span>
+</div>
+<!-- Arrival -->
+<div class="text-right">
+<span class="font-heading-md text-heading-md text-on-surface font-extrabold tabular-nums block leading-none">07:45</span>
+<span class="font-label text-label text-primary font-bold block pt-1">LHR</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px]">Heathrow Terminal 3</span>
+</div>
+</div>
+<!-- Base Fare & Quick Action CTA -->
+<div class="md:col-span-3 text-right flex flex-col items-end justify-center">
+<span class="text-[11px] text-text-muted uppercase font-bold tracking-wider">Round Trip from</span>
+<div class="font-heading-md text-heading-md text-primary font-extrabold tabular-nums leading-tight">
+                    LKR 248,500
+                  </div>
+<span class="text-[11px] text-success font-medium">B2C Retail Gross</span>
+</div>
+</div>
+<!-- Return Leg Micro Strip -->
+<div class="mt-4 pt-3 bg-surface-subtle p-3 rounded-xl flex items-center justify-between text-xs text-text-muted">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-text-muted">flight_land</span>
+<span class="font-bold text-on-surface">Return Flight:</span>
+<span>27 Nov 2026 · UL 504 · LHR 20:40 → CMB 12:45 (+1d) · 10h 35m Non-Stop</span>
+</div>
+<button class="text-primary hover:underline font-semibold font-label-sm text-label-sm">Flight Details</button>
+</div>
+<!-- 3-TIER FARE FAMILY MATRIX COMPARISON -->
+<div class="mt-6 pt-5">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label text-label text-on-surface font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary-container">tune</span>
+                    Compare SriLankan Fare Families for this Itinerary
+                  </span>
+<span class="text-xs text-text-muted">Select desired comfort tier before staging</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- TIER 1: ECONOMY VALUE (SELECTED) -->
+<div class="bg-surface-subtle p-4 rounded-xl relative ring-2 ring-primary-container transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-title text-title font-bold text-on-surface">Economy Value</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary text-[10px] font-bold">Selected</span>
+</div>
+<div class="font-heading-md text-heading-md font-extrabold text-on-surface tabular-nums mb-3">
+                        LKR 248,500
+                      </div>
+<ul class="space-y-2 text-xs text-text-muted mb-4">
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">luggage</span>
+<span class="text-on-surface font-medium">1 × 30kg Checked Baggage</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">backpack</span>
+<span>7kg Cabin Bag</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-text-muted">airline_seat_recline_normal</span>
+<span>Seat selection during online check-in</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-warning">change_circle</span>
+<span>Date Change: LKR 18,000 fee</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-error">cancel</span>
+<span>Non-Refundable cancellation</span>
+</li>
+</ul>
+</div>
+<div class="pt-2">
+<span class="text-[11px] text-text-muted block text-center font-medium">Baseline selection</span>
+</div>
+</div>
+<!-- TIER 2: ECONOMY FLEX -->
+<div class="bg-surface p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-title text-title font-bold text-on-surface">Economy Flex</span>
+<span class="text-xs text-info font-bold">+LKR 19,500</span>
+</div>
+<div class="font-heading-md text-heading-md font-extrabold text-on-surface tabular-nums mb-3">
+                        LKR 268,000
+                      </div>
+<ul class="space-y-2 text-xs text-text-muted mb-4">
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">luggage</span>
+<span class="text-on-surface font-medium">2 × 23kg Checked Bags</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">backpack</span>
+<span>7kg Cabin Bag</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">airline_seat_recline_normal</span>
+<span class="text-on-surface font-medium">Free Advance Seat Pick</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">change_circle</span>
+<span class="text-on-surface font-medium">1 Free Date Change</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-warning">cancel</span>
+<span>Refundable with fee (LKR 25,000)</span>
+</li>
+</ul>
+</div>
+<button class="w-full py-2 rounded-xl bg-surface-subtle hover:bg-surface-container text-primary font-label-sm text-label-sm font-semibold transition-colors">
+                      Upgrade to Flex
+                    </button>
+</div>
+<!-- TIER 3: BUSINESS CLASS -->
+<div class="bg-surface p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-title text-title font-bold text-on-surface">Serendib Business</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-primary text-[10px] font-bold">Premium</span>
+</div>
+<div class="font-heading-md text-heading-md font-extrabold text-primary tabular-nums mb-3">
+                        LKR 720,000
+                      </div>
+<ul class="space-y-2 text-xs text-text-muted mb-4">
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">bed</span>
+<span class="text-on-surface font-bold">Lie-Flat 180° Bed Suite</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">luggage</span>
+<span class="text-on-surface font-medium">2 × 32kg Checked Baggage</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">meeting_room</span>
+<span class="text-on-surface font-medium">Lounge Access (CMB &amp; LHR T3)</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">verified_user</span>
+<span class="text-on-surface font-medium">Priority Check-in &amp; Boarding</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-success">change_circle</span>
+<span>Zero Change Penalty</span>
+</li>
+</ul>
+</div>
+<button class="w-full py-2 rounded-xl bg-surface-subtle hover:bg-surface-container text-primary font-label-sm text-label-sm font-semibold transition-colors">
+                      Select Business
+                    </button>
+</div>
+</div>
+</div>
+<!-- DUAL CTA ACTION STRIP -->
+<div class="mt-6 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-surface-subtle p-3.5 rounded-2xl">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-success">lock</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Fare guaranteed for 14m 45s under GDS Session Token #UL-84920</span>
+</div>
+<div class="flex items-center gap-2.5 w-full sm:w-auto">
+<!-- Stage to Bucket Button -->
+<button class="flex-1 sm:flex-initial h-11 px-4 rounded-xl bg-surface text-primary hover:bg-surface-variant font-label text-label flex items-center justify-center gap-2 transition-all shadow-sm" id="stage-ul-btn">
+<span class="material-symbols-outlined text-[18px]">workspaces</span>
+<span>Stage to Trip Bucket</span>
+</button>
+<!-- Direct Primary Checkout -->
+<button class="flex-1 sm:flex-initial h-11 px-6 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label text-label flex items-center justify-center gap-2 transition-all shadow-sm">
+<span>Select &amp; Configure Seats</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- RESULT 2: QATAR AIRWAYS (1-STOP VIA DOHA) -->
+<div class="bg-surface rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+<!-- Carrier -->
+<div class="md:col-span-3 flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/10 flex items-center justify-center font-title text-title font-extrabold text-tertiary-container">
+                  QR
+                </div>
+<div>
+<h4 class="font-title text-title text-on-surface font-bold leading-tight">Qatar Airways</h4>
+<span class="font-body-sm text-body-sm text-text-muted text-[12px]">QR 669 + QR 007</span>
+<span class="block text-[11px] text-text-muted font-mono">B787-9 Dreamliner</span>
+</div>
+</div>
+<!-- Flight Timetable -->
+<div class="md:col-span-6 flex items-center justify-between gap-3 text-center">
+<div class="text-left">
+<span class="font-heading-md text-heading-md text-on-surface font-extrabold tabular-nums block leading-none">03:45</span>
+<span class="font-label text-label text-primary font-bold block pt-1">CMB</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px]">12 Nov</span>
+</div>
+<div class="flex-1 px-3 flex flex-col items-center">
+<span class="font-label-sm text-label-sm text-text-muted tabular-nums font-semibold mb-1">14h 05m</span>
+<div class="relative w-full flex items-center">
+<div class="w-full h-0.5 bg-surface-variant"></div>
+<span class="absolute left-1/2 -translate-x-1/2 bg-surface px-1 text-warning">
+<span class="material-symbols-outlined text-[16px]">change_circle</span>
+</span>
+</div>
+<span class="text-[10px] font-medium text-warning mt-1">1 Stop: DOH (1h 45m)</span>
+</div>
+<div class="text-right">
+<span class="font-heading-md text-heading-md text-on-surface font-extrabold tabular-nums block leading-none">12:20</span>
+<span class="font-label text-label text-primary font-bold block pt-1">LHR</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px]">Heathrow T4</span>
+</div>
+</div>
+<!-- Price & Quick Actions -->
+<div class="md:col-span-3 text-right flex flex-col items-end justify-center">
+<span class="text-[11px] text-text-muted uppercase font-bold tracking-wider">Round Trip from</span>
+<div class="font-heading-md text-heading-md text-primary font-extrabold tabular-nums leading-tight">
+                  LKR 295,000
+                </div>
+<div class="flex items-center gap-2 mt-2 w-full justify-end">
+<button class="p-2 rounded-xl bg-surface-subtle hover:bg-surface-variant text-primary" title="Add to Bucket">
+<span class="material-symbols-outlined text-[20px]">workspaces</span>
+</button>
+<button class="h-9 px-4 rounded-xl bg-surface-subtle hover:bg-surface-variant text-primary font-label text-label font-semibold transition-colors">
+                    View Tiers
+                  </button>
+</div>
+</div>
+</div>
+</div>
+<!-- RESULT 3: EMIRATES (1-STOP VIA DUBAI WITH A380 LEG) -->
+<div class="bg-surface rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+<!-- Carrier -->
+<div class="md:col-span-3 flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center font-title text-title font-extrabold text-error">
+                  EK
+                </div>
+<div>
+<h4 class="font-title text-title text-on-surface font-bold leading-tight">Emirates</h4>
+<span class="font-body-sm text-body-sm text-text-muted text-[12px]">EK 651 + EK 029</span>
+<span class="block text-[11px] text-text-muted font-mono">B777-300ER &amp; A380</span>
+</div>
+</div>
+<!-- Flight Timetable -->
+<div class="md:col-span-6 flex items-center justify-between gap-3 text-center">
+<div class="text-left">
+<span class="font-heading-md text-heading-md text-on-surface font-extrabold tabular-nums block leading-none">09:55</span>
+<span class="font-label text-label text-primary font-bold block pt-1">CMB</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px]">12 Nov</span>
+</div>
+<div class="flex-1 px-3 flex flex-col items-center">
+<span class="font-label-sm text-label-sm text-text-muted tabular-nums font-semibold mb-1">15h 15m</span>
+<div class="relative w-full flex items-center">
+<div class="w-full h-0.5 bg-surface-variant"></div>
+<span class="absolute left-1/2 -translate-x-1/2 bg-surface px-1 text-warning">
+<span class="material-symbols-outlined text-[16px]">change_circle</span>
+</span>
+</div>
+<span class="text-[10px] font-medium text-warning mt-1">1 Stop: DXB (2h 10m)</span>
+</div>
+<div class="text-right">
+<span class="font-heading-md text-heading-md text-on-surface font-extrabold tabular-nums block leading-none">19:40</span>
+<span class="font-label text-label text-primary font-bold block pt-1">LHR</span>
+<span class="font-body-sm text-body-sm text-text-muted text-[11px]">Heathrow T3</span>
+</div>
+</div>
+<!-- Price & Quick Actions -->
+<div class="md:col-span-3 text-right flex flex-col items-end justify-center">
+<span class="text-[11px] text-text-muted uppercase font-bold tracking-wider">Round Trip from</span>
+<div class="font-heading-md text-heading-md text-primary font-extrabold tabular-nums leading-tight">
+                  LKR 310,000
+                </div>
+<div class="flex items-center gap-2 mt-2 w-full justify-end">
+<button class="p-2 rounded-xl bg-surface-subtle hover:bg-surface-variant text-primary" title="Add to Bucket">
+<span class="material-symbols-outlined text-[20px]">workspaces</span>
+</button>
+<button class="h-9 px-4 rounded-xl bg-surface-subtle hover:bg-surface-variant text-primary font-label text-label font-semibold transition-colors">
+                    View Tiers
+                  </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dubai Skyline Transit Showcase Visual Card -->
+<div class="bg-surface rounded-2xl overflow-hidden shadow-sm flex flex-col md:flex-row items-center">
+<div class="w-full md:w-1/2 h-48 md:h-full">
+<img class="w-full h-full object-cover" data-alt="Dramatic high-angle panoramic sunset over Dubai skyline showing modern Burj Khalifa towers, Dubai canal waterways, luxury yachts, and warm golden hour light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSqNSYRF17vrdJ5NLNmWAXyQBzKcAys1xQolHa0na_ZYIAc4rCzmcDuKr_bcX2TzLaNEvrF5gvcDaYm8I8RLkuidto1I2jZtDQyPSrcaMaNJKLtIIBzYqiESslLKnT40jWyVmstc7EWiXRGaTrXfMk2ggp8O0oMYclNOrepB8kiIjufZ5QQauQFp1QmcMZhJo-Zsnt8Z-m1swJJEwheRH_1eIqFQQYsPll2UcyroR2"/>
+</div>
+<div class="p-6 md:w-1/2 space-y-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-warning text-[18px]">connecting_airports</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-text-muted font-bold">Complimentary Stopovers</span>
+</div>
+<h4 class="font-title text-title font-bold text-on-surface">Dubai &amp; Doha Transit Visa Free Programs</h4>
+<p class="font-body-sm text-body-sm text-text-muted">Transform your 1-stop journey into a multi-city experience. Add up to 4 nights in Dubai or Doha without airline fare penalty.</p>
+<button class="font-label-sm text-label-sm text-info hover:underline font-bold flex items-center gap-1">
+<span>Explore Multi-City Stopover Builder</span>
+<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- PERSISTENT FLOATING TRIP WORKSPACE DOCK -->
+<aside class="sticky bottom-4 z-40 max-w-5xl mx-auto w-full px-6 pointer-events-none">
+<div class="bg-primary text-on-primary rounded-2xl shadow-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 pointer-events-auto ring-1 ring-surface/10">
+<!-- Bucket Quick Indicator -->
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">workspaces</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h5 class="font-title text-title text-on-primary font-bold">Your Trip Workspace</h5>
+<span class="px-2 py-0.5 rounded-full bg-success/20 text-success text-[11px] font-bold">2 Ready</span>
+<span class="px-2 py-0.5 rounded-full bg-warning/20 text-warning text-[11px] font-bold">1 Needs Action</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container text-[12px]">SriLankan CMB-LHR staged · Staged subtotal: <span class="font-bold text-on-primary tabular-nums">LKR 505,000</span></p>
+</div>
+</div>
+<!-- Action Trigger -->
+<div class="flex items-center gap-2.5 w-full sm:w-auto">
+<button class="w-full sm:w-auto h-10 px-5 rounded-xl bg-surface text-primary hover:bg-surface-variant font-label text-label font-semibold flex items-center justify-center gap-2 transition-all shadow-sm" id="view-workspace-drawer-btn">
+<span>Review Trip Bucket (3)</span>
+<span class="material-symbols-outlined text-[18px]">keyboard_arrow_up</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- INLINE INTERACTION BEHAVIOR SCRIPT -->
+<script>
+    // Live countdown timer for 14:45 hold
+    let totalSeconds = 14 * 60 + 45;
+    const timerDisplay = document.getElementById('session-timer');
+    if (timerDisplay) {
+      setInterval(() => {
+        if (totalSeconds <= 0) return;
+        totalSeconds--;
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    // Toggle query modification drawer
+    const modifyBtn = document.getElementById('modify-query-btn');
+    const queryDrawer = document.getElementById('query-drawer');
+    if (modifyBtn && queryDrawer) {
+      modifyBtn.addEventListener('click', () => {
+        queryDrawer.classList.toggle('hidden');
+      });
+    }
+
+    // Dual channel B2C / B2B toggle button styling
+    const b2cBtn = document.getElementById('b2c-mode-btn');
+    const b2bBtn = document.getElementById('b2b-mode-btn');
+    if (b2cBtn && b2bBtn) {
+      b2cBtn.addEventListener('click', () => {
+        b2cBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-surface shadow-sm text-primary font-label-sm transition-all";
+        b2bBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold text-text-muted hover:text-on-surface font-label-sm transition-all";
+      });
+      b2bBtn.addEventListener('click', () => {
+        b2bBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-surface shadow-sm text-primary font-label-sm transition-all";
+        b2cBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold text-text-muted hover:text-on-surface font-label-sm transition-all";
+      });
+    }
+
+    // Interactive Stage button confirmation feedback
+    const stageUlBtn = document.getElementById('stage-ul-btn');
+    if (stageUlBtn) {
+      stageUlBtn.addEventListener('click', () => {
+        stageUlBtn.innerHTML = `<span class="material-symbols-outlined text-[18px] text-success">check</span><span>Staged to Bucket!</span>`;
+        stageUlBtn.classList.add('bg-success/10', 'text-success');
+        setTimeout(() => {
+          stageUlBtn.innerHTML = `<span class="material-symbols-outlined text-[18px]">workspaces</span><span>Stage to Trip Bucket</span>`;
+          stageUlBtn.classList.remove('bg-success/10', 'text-success');
+        }, 2200);
+      });
+    }
+  </script>
+</div></main><footer class="w-full bg-primary-container text-on-primary pt-16 pb-8"><div class="max-w-7xl mx-auto px-6"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12"><div class="space-y-4"><div class="flex items-center gap-2 font-heading-md text-heading-md text-on-primary"><span class="material-symbols-outlined text-[24px]">travel_explore</span><span>VACATINA</span></div><p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">The authoritative travel operating system engineered for end-to-end flight, itinerary composition, and enterprise mobility management.</p><div class="pt-2 space-y-1.5"><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">call</span><span>+94113606200</span></div><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">mail</span><span>info@vacatina.com</span></div></div></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Products &amp; Mobility</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="flights" href="#">Flight Search Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="hotels" href="#">Accommodations &amp; Resorts</a></li><li><a class="hover:text-on-primary transition-colors" data-path="holiday-packages" href="#">Bespoke Holiday Packages</a></li><li><a class="hover:text-on-primary transition-colors" data-path="cars-and-transfers" href="#">Ground Transportation</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Rail &amp; Coastal Cruising</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Travel Operations</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="visa-assistance" href="#">Global Visa Protocol</a></li><li><a class="hover:text-on-primary transition-colors" data-path="flight-booking-flow" href="#">Trip Bucket Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Baggage &amp; Fare Rules</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Comprehensive Travel Insurance</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Real-Time Airline Timetables</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Enterprise &amp; Compliance</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Corporate Portal Access</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">IATA Accredited Agency</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Global Distribution Network</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">PCI-DSS Level 1 Security</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">API Solutions &amp; Partners</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Statutory &amp; Quality</h4><div class="space-y-3 font-body-sm text-body-sm text-on-primary-container"><p>Operating with certified Global Distribution System standards and verified ticketing agency integrity.</p><div class="p-3 rounded-lg bg-primary/40 space-y-1 text-on-primary"><div class="font-label-sm text-label-sm font-semibold">Customer Operations Support</div><div class="text-xs text-on-primary-container">Available Daily for Global Travelers</div><div class="text-xs text-on-primary-container font-mono">Tel: +94113606200</div></div></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-primary-container"><p>© 2025 Vacatina Travel Operating System. All rights reserved.</p><div class="flex flex-wrap items-center gap-6 font-label-sm text-label-sm"><a class="hover:text-on-primary transition-colors" data-path="privacy-policy" href="#">Privacy Statement</a><a class="hover:text-on-primary transition-colors" data-path="terms-of-service" href="#">Booking Terms &amp; Conditions</a><a class="hover:text-on-primary transition-colors" data-path="statutory-compliance" href="#">Statutory Regulatory Notice</a><a class="hover:text-on-primary transition-colors" data-path="security-standards" href="#">Data Security Protocol</a></div></div></div></footer></body></html>

@@ -78,7 +78,7 @@ export class JourneyService {
         title: canonical.title, subtitle: 'Local planning request · Quote and operator confirmation required', dateSummary: `${configuration.departureDate}${configuration.returnDate ? ` – ${configuration.returnDate}` : ''}`,
         travellerSummary: `${configuration.adults} adults · ${configuration.children} children · ${configuration.infants} infants`,
         configuration: { ...configuration }, priceLkr: 0, priceStatus: 'quote_required', currency: canonical.currency, state: 'needs_action',
-        inventoryMode: 'demo_fixture', inventoryLabel: 'Canonical demo fixture · Not live inventory', truthDisclosure: JOURNEY_DEMO_DISCLOSURE,
+        inventoryMode: 'demo_fixture', inventoryLabel: 'Planning reference · Not live inventory', truthDisclosure: JOURNEY_DEMO_DISCLOSURE,
         sourceType: 'MANUAL', sourceId: canonical.sourceId, providerName: canonical.providerName, supplierName: canonical.providerName || 'Local demo catalog', integrationMode: 'MOCK',
         confirmationMode: 'REQUEST_TO_CONFIRM', availabilityStatus: 'ON_REQUEST', revalidationStatus: 'LOCAL_FIXTURE_CHECK', revalidatedAt: new Date().toISOString(),
         lastCheckedAt: canonical.lastCheckedAt, validUntil: canonical.offerExpiresAt, primaryActionLabel: 'Review operator request',

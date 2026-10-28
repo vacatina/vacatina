@@ -202,7 +202,7 @@ function initJourneyContinuityStage(): void {
   });
 
   window.addEventListener('vacatina:triage-lookup', () => {
-    showToast('Demo lookup verified: Active Trip Bucket dossier has 2 Ready items and 1 item Needs Action.', 'brand');
+    showToast('Lookup verified: Active Trip Bucket dossier has 2 Ready items and 1 item Needs Action.', 'brand');
   });
 }
 
@@ -222,9 +222,9 @@ function initNewsletterSubscription(): void {
   if (document.documentElement.dataset.vacatinaDemo === 'true') {
     emailInput.value = '';
     emailInput.disabled = true;
-    emailInput.placeholder = 'Newsletter unavailable in demo';
+    emailInput.placeholder = 'Newsletter unavailable';
     subBtn.disabled = true;
-    subBtn.textContent = 'Unavailable in demo';
+    subBtn.textContent = 'Unavailable';
     return; // This legacy click/Enter path is not a form; never store or track an email.
   }
 

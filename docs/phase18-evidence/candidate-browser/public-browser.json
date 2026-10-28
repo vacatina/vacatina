@@ -1,0 +1,1088 @@
+{
+  "target": "https://vacatina-clo0m5dpa-vacatinas-projects.vercel.app",
+  "status": "PASS",
+  "mode": "PUBLIC_READ_ONLY",
+  "checks": [
+    {
+      "name": "public direct reload / @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /trip-builder @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /flights @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /hotels @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /visa-assistance @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /holiday-packages @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /cars-transfers @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /activities @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /sightseeing-tours @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /rails @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /cruises @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /travel-insurance @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /trip/review @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /requests @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /checkout @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /admin @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /admin/listings @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /account/travel-credit @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /auth/sign-in @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /manage-booking @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /partner @ 1440",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public eleven SCC tabs @ 1440",
+      "status": "PASS",
+      "details": [
+        {
+          "name": "bundle",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "flights",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "hotels",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "visa",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "packages",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "cars",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "rails",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "cruises",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "activities",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "sightseeing",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "insurance",
+          "selected": true,
+          "panel": true
+        }
+      ]
+    },
+    {
+      "name": "public identity and newsletter collection disabled @ 1440",
+      "status": "PASS",
+      "details": {
+        "newsletterDisabled": true,
+        "notStored": true,
+        "noAuthFallback": true,
+        "sdkNotReady": true
+      }
+    },
+    {
+      "name": "public flight direct search, detail reload and local-only staging @ 1440",
+      "status": "PASS",
+      "details": {
+        "state": "needs_action"
+      }
+    },
+    {
+      "name": "public submission gated @ 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "public direct reload / @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /trip-builder @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /flights @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /hotels @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /visa-assistance @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /holiday-packages @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /cars-transfers @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /activities @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /sightseeing-tours @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /rails @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /cruises @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /travel-insurance @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /trip/review @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /requests @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /checkout @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /admin @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /admin/listings @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /account/travel-credit @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /auth/sign-in @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /manage-booking @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /partner @ 768",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public eleven SCC tabs @ 768",
+      "status": "PASS",
+      "details": [
+        {
+          "name": "bundle",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "flights",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "hotels",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "visa",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "packages",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "cars",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "rails",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "cruises",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "activities",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "sightseeing",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "insurance",
+          "selected": true,
+          "panel": true
+        }
+      ]
+    },
+    {
+      "name": "public identity and newsletter collection disabled @ 768",
+      "status": "PASS",
+      "details": {
+        "newsletterDisabled": true,
+        "notStored": true,
+        "noAuthFallback": true,
+        "sdkNotReady": true
+      }
+    },
+    {
+      "name": "public flight direct search, detail reload and local-only staging @ 768",
+      "status": "PASS",
+      "details": {
+        "state": "needs_action"
+      }
+    },
+    {
+      "name": "public submission gated @ 768",
+      "status": "PASS"
+    },
+    {
+      "name": "public direct reload / @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /trip-builder @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /flights @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /hotels @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /visa-assistance @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /holiday-packages @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /cars-transfers @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /activities @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /sightseeing-tours @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /rails @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /cruises @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /travel-insurance @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /trip/review @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /requests @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 1,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /checkout @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /admin @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /admin/listings @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /account/travel-credit @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /auth/sign-in @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /manage-booking @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public direct reload /partner @ 360",
+      "status": "PASS",
+      "details": {
+        "demo": true,
+        "fits": true,
+        "headings": 2,
+        "noSdk": true,
+        "legacyClosed": true
+      }
+    },
+    {
+      "name": "public eleven SCC tabs @ 360",
+      "status": "PASS",
+      "details": [
+        {
+          "name": "bundle",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "flights",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "hotels",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "visa",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "packages",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "cars",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "rails",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "cruises",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "activities",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "sightseeing",
+          "selected": true,
+          "panel": true
+        },
+        {
+          "name": "insurance",
+          "selected": true,
+          "panel": true
+        }
+      ]
+    },
+    {
+      "name": "public identity and newsletter collection disabled @ 360",
+      "status": "PASS",
+      "details": {
+        "newsletterDisabled": true,
+        "notStored": true,
+        "noAuthFallback": true,
+        "sdkNotReady": true
+      }
+    },
+    {
+      "name": "public flight direct search, detail reload and local-only staging @ 360",
+      "status": "PASS",
+      "details": {
+        "state": "needs_action"
+      }
+    },
+    {
+      "name": "public submission gated @ 360",
+      "status": "PASS"
+    },
+    {
+      "name": "Hotels Phase 6 — search, room/rate, provenance, review, dialogs and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hubGood\":true,\"context\":true,\"resultsGood\":true,\"accessible\":true,\"escape\":true,\"staged\":true,\"reviewed\":true,\"invalidGood\":true,\"empty\":true}"
+    },
+    {
+      "name": "Hotels Phase 6 — search, room/rate, provenance, review, dialogs and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hubGood\":true,\"context\":true,\"resultsGood\":true,\"accessible\":true,\"escape\":true,\"staged\":true,\"reviewed\":true,\"invalidGood\":true,\"empty\":true}"
+    },
+    {
+      "name": "Hotels Phase 6 — search, room/rate, provenance, review, dialogs and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hubGood\":true,\"context\":true,\"resultsGood\":true,\"accessible\":true,\"escape\":true,\"staged\":true,\"reviewed\":true,\"invalidGood\":true,\"empty\":true}"
+    },
+    {
+      "name": "Visa Phase 7 — context, manual eligibility, no uploads, review and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"search\":true,\"accessible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"escape\":true,\"empty\":true}"
+    },
+    {
+      "name": "Visa Phase 7 — context, manual eligibility, no uploads, review and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"search\":true,\"accessible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"escape\":true,\"empty\":true}"
+    },
+    {
+      "name": "Visa Phase 7 — context, manual eligibility, no uploads, review and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"search\":true,\"accessible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"escape\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 8 packages — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 8 packages — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 8 packages — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 9 cars — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 9 cars — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 9 cars — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 10 activities — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 10 activities — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 10 activities — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 11 sightseeing — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 11 sightseeing — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 11 sightseeing — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 12 rails — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 12 rails — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 12 rails — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 13 cruises — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 13 cruises — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 13 cruises — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 14 insurance — canonical request journey, truth, keyboard controls and responsive @ 1440",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 14 insurance — canonical request journey, truth, keyboard controls and responsive @ 768",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "Phase 14 insurance — canonical request journey, truth, keyboard controls and responsive @ 360",
+      "status": "PASS",
+      "details": "{\"hub\":true,\"validation\":true,\"search\":true,\"details\":true,\"labels\":true,\"ctaVisible\":true,\"staged\":true,\"review\":true,\"invalid\":true,\"empty\":true}"
+    },
+    {
+      "name": "zero uncaught browser exceptions",
+      "status": "PASS",
+      "details": []
+    }
+  ],
+  "exceptions": [],
+  "consoleErrors": []
+}

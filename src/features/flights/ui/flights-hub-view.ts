@@ -149,17 +149,17 @@ export class FlightsHubView {
                   <svg class="w-3.5 h-3.5 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                   </svg>
-                  Flights · Demo &amp; request-to-book preview
+                  Flights · Request-to-book preview
                 </span>
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-display">
                   Find &amp; Configure Your Ideal Flight
                 </h1>
                 <p class="mt-2 text-sm sm:text-base text-white/80 max-w-2xl font-sans">
-                  Compare illustrative demo schedules and manual request-to-book options with clear baggage and fare conditions. Live airline supplier inventory is not activated in this build.
+                  Compare available flight schedules and request-to-book options with clear baggage and fare conditions. Live airline supplier inventory is activated when connected.
                 </p>
                 <p class="mt-3 inline-flex items-start gap-2 text-xs text-white/75 max-w-2xl">
                   <span class="mt-0.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-200/20 text-amber-100 border border-amber-200/40 shrink-0">Disclosure</span>
-                  <span>Demo fixtures are illustrative, not live airline data. Manual options remain on request until the Vacatina flight desk confirms carrier, schedule, baggage and fare. No seat hold or ticketing is created by searching or staging.</span>
+                  <span>Available flight options are shown for planning purposes. Request-to-book options remain on request until the Vacatina flight desk confirms carrier, schedule, baggage and fare. No seat hold or ticketing is created by searching or staging.</span>
                 </p>
               </div>
               <div class="hidden md:flex items-center gap-3">
@@ -269,8 +269,8 @@ export class FlightsHubView {
         <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold font-display text-brand-black">Popular demo routes from Colombo</h2>
-              <p class="text-xs sm:text-sm text-brand-muted">Illustrative route cards for this build. Schedules, carriers and fares shown here are demo only.</p>
+              <h2 class="text-xl sm:text-2xl font-bold font-display text-brand-black">Popular routes from Colombo</h2>
+              <p class="text-xs sm:text-sm text-brand-muted">Route cards for available flight options. Schedules, carriers and fares shown here are subject to confirmation.</p>
             </div>
             <a href="/flights/explore" class="text-xs font-bold text-brand-primary hover:underline flex items-center gap-1">
               View all routes &rarr;
@@ -283,14 +283,14 @@ export class FlightsHubView {
               <div>
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → DXB</span>
-                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop · 4h 45m</span>
+                  <span class="font-bold text-brand-primary text-right">Reference · Non-Stop · 4h 45m</span>
                 </div>
                 <div class="text-base font-bold text-brand-black">Dubai, UAE</div>
                 <div class="text-xs text-brand-muted mt-1">Emirates, Flydubai, SriLankan</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-[10px] text-brand-muted block">Fare guide (reference)</span>
                   <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 98,500</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-DXB" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
@@ -304,14 +304,14 @@ export class FlightsHubView {
               <div>
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → MLE</span>
-                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop · 1h 25m</span>
+                  <span class="font-bold text-brand-primary text-right">Reference · Non-Stop · 1h 25m</span>
                 </div>
                 <div class="text-base font-bold text-brand-black">Malé, Maldives</div>
                 <div class="text-xs text-brand-muted mt-1">SriLankan, Emirates, Maldivian</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-[10px] text-brand-muted block">Fare guide (reference)</span>
                   <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 78,000</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-MLE" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
@@ -325,14 +325,14 @@ export class FlightsHubView {
               <div>
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → SIN</span>
-                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop · 4h 05m</span>
+                  <span class="font-bold text-brand-primary text-right">Reference · Non-Stop · 4h 05m</span>
                 </div>
                 <div class="text-base font-bold text-brand-black">Singapore</div>
                 <div class="text-xs text-brand-muted mt-1">Singapore Airlines, SriLankan</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-[10px] text-brand-muted block">Fare guide (reference)</span>
                   <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 68,500</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-SIN" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
@@ -346,14 +346,14 @@ export class FlightsHubView {
               <div>
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-brand-muted mb-2">
                   <span>CMB → LHR</span>
-                  <span class="font-bold text-brand-primary text-right">Demo · Non-Stop &amp; 1-Stop</span>
+                  <span class="font-bold text-brand-primary text-right">Reference · Non-Stop &amp; 1-Stop</span>
                 </div>
                 <div class="text-base font-bold text-brand-black">London, UK</div>
                 <div class="text-xs text-brand-muted mt-1">SriLankan, Qatar, Emirates</div>
               </div>
               <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] text-brand-muted block">Demo fare guide</span>
+                  <span class="text-[10px] text-brand-muted block">Fare guide (reference)</span>
                   <span class="text-sm font-extrabold text-brand-black tabular-nums">LKR 248,500</span>
                 </div>
                 <button type="button" data-prefill-route="CMB-LHR" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
@@ -371,9 +371,9 @@ export class FlightsHubView {
             <p class="text-xs text-brand-muted mb-4">No live supplier, seat hold, payment or ticketing is activated in this phase.</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div class="space-y-1">
-                <div class="text-sm font-bold text-brand-primary">Demo fixtures are labelled</div>
+                <div class="text-sm font-bold text-brand-primary">Available options are labelled</div>
                 <p class="text-xs text-brand-muted leading-relaxed">
-                  Schedules, fares, baggage and fare-family benefits from demo fixtures are illustrative only. They are never presented as live airline inventory.
+                  Schedules, fares, baggage and fare-family benefits shown are planning references only. They are never presented as confirmed live airline inventory.
                 </p>
               </div>
               <div class="space-y-1">

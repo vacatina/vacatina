@@ -226,8 +226,8 @@ test('Vacatina Flights Phase 5 Journey Suite', async (t) => {
     assert.equal(demoTruth.mode, 'demo_fixture');
     assert.equal(demoTruth.isLive, false);
     assert.equal(demoTruth.requiresDeskConfirmation, true);
-    assert.ok(demoTruth.disclosure.includes('Demonstration fixture'));
-    assert.ok(demoTruth.priceLabel.toLowerCase().includes('illustrative'));
+    assert.ok(demoTruth.disclosure.includes('Planning reference'));
+    assert.ok(demoTruth.priceLabel.toLowerCase().includes('planning'));
 
     const manual = await flightSearchService.getOfferById('man-flt-cmb-dxb-ek651');
     assert.ok(manual);
@@ -298,7 +298,7 @@ test('Vacatina Flights Phase 5 Journey Suite', async (t) => {
     assert.equal(staged.searchContext?.departureDate, '2026-11-20');
     assert.deepEqual(staged.travellerCounts, { adults: 2, children: 1, infants: 0 });
     assert.ok(staged.providerName?.includes('demo'));
-    assert.ok(staged.truthDisclosure?.includes('Demonstration fixture'));
+    assert.ok(staged.truthDisclosure?.includes('Planning reference'));
     assert.equal(staged.scheduleStatus, 'DEMO_ILLUSTRATIVE');
 
     const unconfigured = flightTripBucketService.mapFlightOfferToTripCandidate(
@@ -351,7 +351,7 @@ test('Vacatina Flights Phase 5 Journey Suite', async (t) => {
     assert.equal(demoAfter.confirmationMode, 'REQUEST_TO_CONFIRM');
     assert.equal(demoAfter.revalidationStatus, 'UNCHANGED');
     assert.ok(demoAfter.revalidatedAt);
-    assert.ok(demoAfter.holdStatusText?.toLowerCase().includes('demo fixture checked locally'));
+    assert.ok(demoAfter.holdStatusText?.toLowerCase().includes('planning reference checked locally'));
     assert.ok(demoAfter.actionRequiredText?.toLowerCase().includes('no live airline'));
 
     const demoResolved = tripBucketService.resolveItemAction(demoAfter.id);
@@ -443,7 +443,7 @@ test('Vacatina Flights Phase 5 Journey Suite', async (t) => {
     assert.equal(mixed.canCheckout, false);
     assert.equal(mixed.nonLiveCount, 2);
     assert.equal(mixed.blockedItems.length, 2);
-    assert.ok(mixed.blockers.find(entry => entry.id === demo.id)?.blockers.some(reason => reason.includes('Demo fixture')));
+    assert.ok(mixed.blockers.find(entry => entry.id === demo.id)?.blockers.some(reason => reason.includes('Planning reference')));
     assert.ok(mixed.blockers.find(entry => entry.id === manual.id)?.blockers.some(reason => reason.includes('Manual request-to-book')));
 
     const live = evaluateTripReviewHandoff([liveReady]);
@@ -453,7 +453,7 @@ test('Vacatina Flights Phase 5 Journey Suite', async (t) => {
 
     const readyButDemo = evaluateTripReviewHandoff([demoReady]);
     assert.equal(readyButDemo.canCheckout, false);
-    assert.ok(readyButDemo.blockers[0].blockers.some(reason => reason.includes('Demo fixture')));
+    assert.ok(readyButDemo.blockers[0].blockers.some(reason => reason.includes('Planning reference')));
 
     const confirmationPending = evaluateTripReviewHandoff([livePending]);
     assert.equal(confirmationPending.canCheckout, false);

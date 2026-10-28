@@ -159,7 +159,7 @@ function renderInvalidOfferDialog(offerId: string): void {
           No reservation, seat hold, price, or booking has been created.
         </div>
         <p class="text-xs text-brand-muted leading-relaxed">
-          Return to your previous search or start a new search from the Flights hub. Demo fixture and manual
+          Return to your previous search or start a new search from the Flights hub. Planning reference and manual
           request-to-book options always require a fresh desk quote before booking.
         </p>
 
@@ -267,7 +267,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
       : truth.isSandbox
         ? `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · Duffel TEST MODE (sandbox)`
         : truth.isDemo
-          ? `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · Demo schedule (illustrative)`
+          ? `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · Planning schedule (subject to confirmation)`
           : `${escapeHtml(offer.marketingCarrier.name)} · ${escapeHtml(offer.flightNumber)} · ${offer.stopCount === 0 ? 'Direct Non-Stop' : `${offer.stopCount} Stop`} · ${durationHours}h ${durationMins}m`;
 
     const addButtonLabel = truth.isLive
@@ -276,7 +276,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
         ? 'Request to Book'
         : truth.isSandbox
           ? 'Stage Sandbox Quote'
-          : 'Stage Demo Option';
+          : 'Stage Option';
 
     const totalLabel = truth.isLive
       ? 'Total Itinerary Price (All Taxes Included)'
@@ -308,12 +308,12 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
                   <span class="text-xs font-bold px-2 py-1 bg-white rounded-md border border-gray-200 font-mono">${escapeHtml(seg.flightNumber)}</span>
                   <div class="min-w-0">
                     <div class="text-sm font-bold text-brand-black">${escapeHtml(seg.origin.city)} (${escapeHtml(seg.origin.airportCode)}) → ${escapeHtml(seg.destination.city)} (${escapeHtml(seg.destination.airportCode)})</div>
-                    <div class="text-xs text-brand-muted">${escapeHtml(seg.aircraft || 'Commercial Jet')} · Operated by ${escapeHtml(seg.operatingCarrier.name)}${truth.isDemo ? ' · illustrative demo detail' : ''}</div>
+                    <div class="text-xs text-brand-muted">${escapeHtml(seg.aircraft || 'Commercial Jet')} · Operated by ${escapeHtml(seg.operatingCarrier.name)}${truth.isDemo ? ' · planning reference detail' : ''}</div>
                   </div>
                 </div>
                 <div class="text-right shrink-0">
                   <div class="text-xs font-bold text-brand-black tabular-nums">${new Date(seg.departureAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} — ${new Date(seg.arrivalAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                  <div class="text-[11px] text-brand-muted">${Math.floor(seg.durationMinutes / 60)}h ${seg.durationMinutes % 60}m${truth.isDemo ? ' · demo' : ''}</div>
+                  <div class="text-[11px] text-brand-muted">${Math.floor(seg.durationMinutes / 60)}h ${seg.durationMinutes % 60}m${truth.isDemo ? ' · planning reference' : ''}</div>
                 </div>
               </div>
             `;
@@ -336,7 +336,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div class="text-sm font-bold text-brand-black">${escapeHtml(offer.origin.airportName)} (${escapeHtml(offer.origin.airportCode)})</div>
-                <div class="text-xs text-brand-muted">Departure: ${new Date(offer.departureAt).toLocaleString()}${truth.isDemo ? ' · demo' : ''}</div>
+                <div class="text-xs text-brand-muted">Departure: ${new Date(offer.departureAt).toLocaleString()}${truth.isDemo ? ' · planning reference' : ''}</div>
               </div>
               <div class="sm:text-center">
                 <div class="text-xs text-brand-muted">${durationHours}h ${durationMins}m</div>
@@ -344,7 +344,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
               </div>
               <div class="sm:text-right">
                 <div class="text-sm font-bold text-brand-black">${escapeHtml(offer.destination.airportName)} (${escapeHtml(offer.destination.airportCode)})</div>
-                <div class="text-xs text-brand-muted">Arrival: ${new Date(offer.arrivalAt).toLocaleString()}${truth.isDemo ? ' · demo' : ''}</div>
+                <div class="text-xs text-brand-muted">Arrival: ${new Date(offer.arrivalAt).toLocaleString()}${truth.isDemo ? ' · planning reference' : ''}</div>
               </div>
             </div>
           `;
@@ -411,7 +411,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
                 })
                 .join('')}
             </div>
-            ${truth.isLive ? '' : `<p class="text-[11px] text-brand-muted mt-2">Fare-family benefits shown here are ${truth.isDemo ? 'illustrative demo details' : 'not yet confirmed by the carrier'}. The Vacatina desk confirms the final fare conditions before ticketing.</p>`}
+            ${truth.isLive ? '' : `<p class="text-[11px] text-brand-muted mt-2">Fare-family benefits shown here are ${truth.isDemo ? 'planning reference details' : 'not yet confirmed by the carrier'}. The Vacatina desk confirms the final fare conditions before ticketing.</p>`}
           </div>
         `
         : '';
@@ -630,7 +630,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
           <!-- Section 3: Baggage & Fare Conditions -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200 space-y-2">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-brand-muted">${truth.isLive ? 'Baggage Allowances' : truth.isManual ? 'Baggage (to be confirmed)' : truth.isSandbox ? 'Baggage (Duffel TEST MODE)' : 'Baggage (illustrative demo)'}</h4>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-brand-muted">${truth.isLive ? 'Baggage Allowances' : truth.isManual ? 'Baggage (to be confirmed)' : truth.isSandbox ? 'Baggage (Duffel TEST MODE)' : 'Baggage (planning reference)'}</h4>
               <div class="text-xs space-y-1">
                 <div><strong>Cabin Baggage:</strong> ${escapeHtml(offer.baggage.cabin.description)}</div>
                 <div><strong>Checked Baggage:</strong> ${escapeHtml(offer.baggage.checked.description)}</div>
@@ -678,7 +678,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
                 <span class="text-base text-brand-primary tabular-nums">${displayCurrency} ${(finalTotalMinor / 100).toLocaleString()}</span>
               </div>
             </div>
-            ${truth.isLive ? '' : `<p class="mt-3 text-[11px] leading-relaxed text-brand-muted">This amount is ${truth.isManual ? 'an indicative manual estimate' : truth.isSandbox ? 'a real Duffel TEST MODE sandbox quote including the selected sandbox services' : 'an illustrative demo estimate'}, not a live supplier quote. Taxes, fees, availability and total price are confirmed only after the Vacatina desk checks the fare.</p>`}
+            ${truth.isLive ? '' : `<p class="mt-3 text-[11px] leading-relaxed text-brand-muted">This amount is ${truth.isManual ? 'an indicative manual estimate' : truth.isSandbox ? 'a real Duffel TEST MODE sandbox quote including the selected sandbox services' : 'a planning reference estimate'}, not a live supplier quote. Taxes, fees, availability and total price are confirmed only after the Vacatina desk checks the fare.</p>`}
           </div>
         </div>
 
@@ -844,7 +844,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
       } else if (truth.isManual) {
         showToast('Request staged. The Vacatina flight desk must confirm carrier, schedule, baggage and fare before ticketing.', 'brand');
       } else if (truth.isDemo) {
-        showToast('Demo fare staged. No live seat hold was created — request a desk quote to book.', 'brand');
+        showToast('Option staged. No live seat hold was created - request a desk quote to book.', 'brand');
       } else if (truth.isSandbox) {
         showToast('Sandbox quote staged. Review your trip to create an explicit Duffel TEST MODE order. No live ticket, seat hold or payment is created.', 'brand');
       } else {

@@ -394,6 +394,72 @@ export class CanonicalRouterService {
       return;
     }
 
+    if (path === '/flights/passengers') {
+      const mount = showFlightsView();
+      const adults = Math.max(1, Math.min(9, parseInt(query.get('adults') || query.get('travellers') || '1', 10)));
+      const children = Math.max(0, Math.min(9, parseInt(query.get('children') || '0', 10)));
+      const infants = Math.max(0, Math.min(9, parseInt(query.get('infants') || '0', 10)));
+      const passengers: any[] = [];
+      for (let i = 0; i < adults; i++) passengers.push({ id: `adult-${i}`, type: 'adult', title: '', firstName: '', lastName: '', dateOfBirth: '', nationality: '', passportNumber: '', passportExpiry: '', passportIssuingCountry: '', frequentFlyerProgram: '', frequentFlyerNumber: '' });
+      for (let i = 0; i < children; i++) passengers.push({ id: `child-${i}`, type: 'child', title: '', firstName: '', lastName: '', dateOfBirth: '', nationality: '', passportNumber: '', passportExpiry: '', passportIssuingCountry: '', frequentFlyerProgram: '', frequentFlyerNumber: '' });
+      for (let i = 0; i < infants; i++) passengers.push({ id: `infant-${i}`, type: 'infant', title: '', firstName: '', lastName: '', dateOfBirth: '', nationality: '', passportNumber: '', passportExpiry: '', passportIssuingCountry: '', frequentFlyerProgram: '', frequentFlyerNumber: '' });
+      import('../../features/flights/ui/flights-passenger-details.ts').then(({ FlightsPassengerDetailsView }) => {
+        const view = new FlightsPassengerDetailsView({
+          onContinue: () => { showToast('Passenger details captured. Backend persistence required to proceed to booking.', 'brand'); },
+          onBack: () => this.navigateTo('/flights/search'),
+        });
+        view.setPassengers(passengers.length ? passengers : [{ id: 'adult-0', type: 'adult', title: '', firstName: '', lastName: '', dateOfBirth: '', nationality: '', passportNumber: '', passportExpiry: '', passportIssuingCountry: '', frequentFlyerProgram: '', frequentFlyerNumber: '' }]);
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+
+    if (path === '/flights/review') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-trip-review.ts').then(({ FlightsTripReviewView }) => {
+        const view = new FlightsTripReviewView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+
+    if (path === '/flights/checkout') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-checkout.ts').then(({ FlightsCheckoutView }) => {
+        const view = new FlightsCheckoutView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+
+    if (path === '/flights/confirmation') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-confirmation.ts').then(({ FlightsConfirmationView }) => {
+        const view = new FlightsConfirmationView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+
+    if (path === '/flights/manage') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-manage-booking.ts').then(({ FlightsManageBookingView }) => {
+        const view = new FlightsManageBookingView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+
     // 2.2 Hotels Functional Product Hub & Search Routes (Phase 3.2)
     if (path === '/hotels') {
       hotelsHubView.prefillFromQuery(query);

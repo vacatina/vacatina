@@ -113,9 +113,9 @@ function renderHotelModal(
               ? 'bg-[#1B1464] text-white'
               : 'bg-brand-primary/10 text-brand-primary'
           }">
-            Demo fixture · Not live
+            Planning reference · Not live
           </span>
-          <span class="text-xs font-bold text-brand-muted">${hotel.starRating}★ illustrative class</span>
+          <span class="text-xs font-bold text-brand-muted">${hotel.starRating}★ star class (reference)</span>
           <span class="text-xs text-brand-muted hidden sm:inline">· 📍 ${hotel.location.city}, ${hotel.location.country}</span>
         </div>
 
@@ -152,7 +152,7 @@ function renderHotelModal(
           </h2>
           <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs text-brand-muted">
             <span>📍 ${hotel.location.address}</span>
-            <span>· Illustrative rating <strong>${hotel.guestRatingScore} / 10</strong> (not verified guest reviews)</span>
+            <span>· Rating (reference) <strong>${hotel.guestRatingScore} / 10</strong> (not verified guest reviews)</span>
             <span>· Check-in: <strong>${hotel.checkInTime}</strong> · Check-out: <strong>${hotel.checkOutTime}</strong></span>
           </div>
         </div>
@@ -256,7 +256,7 @@ function renderHotelModal(
                               ${hotelEscape(plan.currency)} ${(plan.totalPriceMinor * nights * roomsCount / 100).toLocaleString()}
                             </div>
                             <div class="text-[10px] text-brand-muted">
-                              Illustrative total · ${nights} nights · ${roomsCount} rooms
+                              Estimated total · ${nights} nights · ${roomsCount} rooms
                             </div>
                           </div>
                           <button 

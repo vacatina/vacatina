@@ -97,8 +97,8 @@ export class FlightTripBucketService {
     } else {
       dateSummary =
         offer.tripType === 'round_trip' && retDate
-          ? `${depDate} — ${retDate} (${offer.flightNumber})${truth.isDemo ? ' · demo schedule' : truth.isSandbox ? ' · Duffel sandbox' : ''}`
-          : `${depDate} · ${offer.flightNumber} (${offer.cabinClass})${truth.isDemo ? ' · demo schedule' : truth.isSandbox ? ' · Duffel sandbox' : ''}`;
+          ? `${depDate} — ${retDate} (${offer.flightNumber})${truth.isDemo ? ' · planning reference' : truth.isSandbox ? ' · Duffel sandbox' : ''}`
+          : `${depDate} · ${offer.flightNumber} (${offer.cabinClass})${truth.isDemo ? ' · planning reference' : truth.isSandbox ? ' · Duffel sandbox' : ''}`;
     }
 
     // 3. Format Traveller summary
@@ -122,7 +122,7 @@ export class FlightTripBucketService {
         ? 'Allocation on-request — no live seat hold'
         : truth.isSandbox
           ? 'Duffel sandbox quote — no live seat hold'
-          : 'No seat hold — demo fixture';
+          : 'No seat hold - planning reference';
     let actionRequiredText: string | undefined;
     let primaryActionLabel = truth.isManual
       ? 'Request Desk Confirmation'
@@ -180,9 +180,9 @@ export class FlightTripBucketService {
     } else if (truth.isDemo) {
       state = 'needs_action';
       actionRequiredText =
-        'Demo fixture fare — not live airline inventory. Request a desk quote before booking.';
+        'Planning reference fare - not live airline inventory. Request a desk quote before booking.';
       primaryActionLabel = 'Request Desk Quote';
-      holdStatusText = 'No seat hold — demo fixture';
+      holdStatusText = 'No seat hold - planning reference';
     } else if (!config?.selectedFareFamilyCode && offer.fareFamiliesAvailable && offer.fareFamiliesAvailable.length > 1) {
       state = 'needs_action';
       actionRequiredText = 'Select preferred fare family (Lite / Classic / Flex)';
@@ -326,7 +326,7 @@ export class FlightTripBucketService {
         existing.state = 'needs_action';
         existing.holdStatusText =
           existing.inventoryMode === 'demo_fixture'
-            ? 'Demo fixture checked locally — no live seat hold'
+            ? 'Planning reference checked locally - no live seat hold'
             : 'On request — no live seat hold placed';
         existing.actionRequiredText =
           existing.inventoryMode === 'demo_fixture'

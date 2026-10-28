@@ -1,0 +1,21 @@
+graph TD
+    CR_HUB[/"Cruises Hub<br/>/cruises"\] --> CR_REGION[Region]
+    CR_HUB --> CR_PORT[Departure Port]
+    CR_HUB --> CR_WINDOW[Travel Window]
+    CR_HUB --> CR_CABIN[Cabin Preference]
+    CR_HUB --> CR_DURATION[Duration]
+    CR_HUB --> CR_SEARCH_BTN[Search Submit]
+
+    CR_SEARCH_BTN --> CR_VALIDATION{Validation}
+    CR_VALIDATION -->|Valid| CR_SEARCH[Cruises Search<br/>/cruises/search]
+    CR_VALIDATION -->|Invalid| CR_ERROR[Validation Error]
+
+    CR_SEARCH --> CR_RESULTS[Cruises Results]
+    CR_RESULTS --> CR_OFFER[Cruises Offer<br/>/cruises/offer/:id]
+    CR_OFFER --> CR_CONFIG[Cruises Configurator]
+    CR_CONFIG --> CR_STAGE[Stage as needs_action]
+    CR_STAGE --> CR_TB[Trip Bucket Drawer]
+
+    CR_RESULTS --> CR_NO_RESULTS[No Results State]
+    CR_TB --> CR_REVIEW_CTA[Review Trip CTA]
+    CR_REVIEW_CTA --> CR_REVIEW[Trip Review<br/>/trip/review]

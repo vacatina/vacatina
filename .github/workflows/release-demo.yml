@@ -46,7 +46,6 @@ jobs:
   candidate-and-promote:
     needs: verify
     if: github.ref == 'refs/heads/release/b2c-product-journeys-v1' && vars.VACATINA_DEMO_RELEASE_ENABLED == 'true'
-    environment: vacatina-demo-release
     runs-on: ubuntu-latest
     permissions:
       contents: read

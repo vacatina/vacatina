@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Vacatina Travel Operating System</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed-variant":"#474747","success":"#15803D","info":"#1D4ED8","surface":"#FFFFFF","tertiary-container":"#441200","surface-container":"#eeeeee","secondary":"#5e5e5e","warning":"#B45309","surface-container-low":"#f3f3f3","inverse-surface":"#2f3131","primary-fixed":"#e3dfff","on-tertiary-fixed-variant":"#73351c","surface-dim":"#dadada","text-muted":"#525252","inverse-primary":"#c4c0ff","tertiary-fixed":"#ffdbcf","on-secondary":"#ffffff","on-primary":"#ffffff","background":"#f9f9f9","surface-variant":"#e2e2e2","surface-container-lowest":"#ffffff","error":"#B91C1C","primary":"#06003e","surface-tint":"#5855a3","on-surface":"#1a1c1c","on-secondary-container":"#646464","on-background":"#1a1c1c","on-tertiary":"#ffffff","secondary-container":"#e4e2e2","outline":"#787682","surface-container-high":"#e8e8e8","border":"#E5E5E5","on-surface-variant":"#474551","on-secondary-fixed":"#1b1c1c","secondary-fixed-dim":"#c8c6c6","surface-subtle":"#F5F5F5","surface-bright":"#f9f9f9","text-primary":"#000000","primary-container":"#1b1464","outline-variant":"#c8c5d2","on-error":"#ffffff","on-error-container":"#93000a","on-primary-fixed":"#13095d","on-tertiary-container":"#c57658","on-primary-fixed-variant":"#403d8a","inverse-on-surface":"#f0f1f1","primary-fixed-dim":"#c4c0ff","on-tertiary-fixed":"#380d00","focus":"#1D4ED8","secondary-fixed":"#e4e2e2","canvas":"#FAFAFA","tertiary-fixed-dim":"#ffb59a","surface-container-highest":"#e2e2e2","on-primary-container":"#8481d3","error-container":"#ffdad6","tertiary":"#1f0500"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"2":"8px","gutter":"1.5rem","16":"64px","margin":"1.5rem","10":"40px","3":"12px","space-xs":"0.25rem","6":"24px","8":"32px","1":"4px","space-xl":"2.5rem","12":"48px","4":"16px","5":"20px","space-sm":"0.5rem","20":"80px","space-lg":"1.5rem","space-md":"1rem"},fontFamily:{"heading-xl":["Plus Jakarta Sans"],"heading-md":["Plus Jakarta Sans"],"body-lg":["Inter"],"label":["Inter"],"display-mobile":["Plus Jakarta Sans"],"body":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"title":["Plus Jakarta Sans"],"display-desktop":["Plus Jakarta Sans"],"heading-lg":["Plus Jakarta Sans"]},fontSize:{"heading-xl":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"700"}],"heading-md":["22px",{lineHeight:"28px",letterSpacing:"0",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"400"}],"label":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"600"}],"display-mobile":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"body":["15px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0",fontWeight:"400"}],"title":["18px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"600"}],"display-desktop":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"heading-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}]}}}};</script></head><body class="bg-canvas font-body text-body text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4"><div class="flex items-center gap-8"><a class="flex items-center gap-2 text-primary font-heading-md text-heading-md tracking-tight" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">travel_explore</span><span>VACATINA</span></a><nav class="hidden min-[1440px]:flex items-center gap-6" data-active-classes="text-primary font-semibold border-b-2 border-primary"><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="home" href="#">Home</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="flights" href="#">Flights</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="hotels" href="#">Hotels</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="visa-assistance" href="#">Visa Assistance</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="holiday-packages" href="#">Holiday Packages</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="cars-and-transfers" href="#">Cars &amp; Transfers</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="more-products" href="#">More</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="resources" href="#">Resources</a></nav></div><div class="flex items-center gap-3"><button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">language</span><span>EN · USD</span></button><button aria-label="Saved Favorites" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-subtle rounded-lg transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">favorite</span></button><button aria-label="Trip Bucket" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px] text-on-surface">workspaces</span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Bucket</span><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-container text-on-primary">3</span></button><div class="flex items-center gap-2 pl-2"><button class="hidden md:inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span>B2C</span><span class="mx-1 text-outline">|</span><span class="text-text-muted">B2B</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-canvas min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive Staged Progression & Inventory Guarantee Ticker -->
+<section class="w-full bg-surface shadow-sm">
+<div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- 5-Step Journey Progression Bar -->
+<nav aria-label="Booking Pipeline" class="w-full md:w-auto overflow-x-auto py-1">
+<ol class="flex items-center gap-2 sm:gap-4 min-w-max text-label-sm font-label-sm">
+<li class="flex items-center gap-1.5 text-text-muted">
+<span class="w-6 h-6 rounded-full bg-surface-subtle flex items-center justify-center font-semibold text-text-muted">01</span>
+<span>Flight Hub</span>
+<span class="material-symbols-outlined text-[16px] text-outline-variant ml-1">chevron_right</span>
+</li>
+<li class="flex items-center gap-1.5 text-text-muted">
+<span class="w-6 h-6 rounded-full bg-surface-subtle flex items-center justify-center font-semibold text-text-muted">02</span>
+<span>Search &amp; Selection</span>
+<span class="material-symbols-outlined text-[16px] text-outline-variant ml-1">chevron_right</span>
+</li>
+<li class="flex items-center gap-1.5 text-text-muted">
+<span class="w-6 h-6 rounded-full bg-surface-subtle flex items-center justify-center font-semibold text-text-muted">03</span>
+<span>Seats &amp; In-Flight</span>
+<span class="material-symbols-outlined text-[16px] text-outline-variant ml-1">chevron_right</span>
+</li>
+<li class="flex items-center gap-1.5 text-text-muted">
+<span class="w-6 h-6 rounded-full bg-surface-subtle flex items-center justify-center font-semibold text-text-muted">04</span>
+<span>Verification Desk</span>
+<span class="material-symbols-outlined text-[16px] text-outline-variant ml-1">chevron_right</span>
+</li>
+<li class="flex items-center gap-1.5 text-primary font-semibold">
+<span class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold">05</span>
+<span class="text-primary underline decoration-primary underline-offset-4 font-bold">Review &amp; Dossier Staging</span>
+<span class="material-symbols-outlined text-[16px] text-primary ml-1">chevron_right</span>
+</li>
+<li class="flex items-center gap-1.5 text-text-muted opacity-60">
+<span class="w-6 h-6 rounded-full bg-surface-subtle flex items-center justify-center font-semibold text-text-muted">06</span>
+<span>Secure Issuance</span>
+</li>
+</ol>
+</nav>
+<!-- Inventory Live Lock & Tariff Mode Switcher -->
+<div class="flex items-center gap-3 w-full md:w-auto justify-end">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[18px] text-warning animate-pulse">timer</span>
+<span>GDS Session:</span>
+<span class="font-mono text-primary font-semibold">#GDS-UL-98420</span>
+<span class="text-text-muted">|</span>
+<span class="font-mono font-bold text-error [font-variant-numeric:tabular-nums]" id="inventory-countdown">09:45</span>
+<span class="text-text-muted hidden sm:inline">held</span>
+</div>
+<div class="inline-flex items-center p-1 rounded-lg bg-surface-container text-label-sm font-label-sm">
+<button class="px-2.5 py-1 rounded bg-surface shadow-sm font-semibold text-primary" id="toggle-b2c" type="button">Retail B2C</button>
+<button class="px-2.5 py-1 rounded text-text-muted hover:text-on-surface font-semibold" id="toggle-b2b" type="button">Agency B2B</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Dossier Lead Banner & Context Masthead -->
+<header class="w-full bg-surface-subtle py-8 shadow-sm">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<div class="space-y-2">
+<div class="flex flex-wrap items-center gap-3">
+<span class="px-3 py-1 rounded-full text-label-sm font-label-sm bg-primary-container text-on-primary">Comprehensive Travel Dossier</span>
+<span class="px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface text-on-surface font-mono shadow-sm">Dossier ID: VAC-DOSSIER-2026-8840</span>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container-high text-success font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+              All 4 Candidate Verticals Staged &amp; Locked
+            </span>
+</div>
+<h1 class="font-heading-xl text-heading-xl text-primary tracking-tight">London Business &amp; Cultural Expedition</h1>
+<p class="font-body text-body text-text-muted">
+            15 Nights Composite Mobility Schedule • Lead Passenger: <strong class="text-on-surface font-semibold">Mr. Alexander Scott Morgan</strong> (FlySMILES Gold #UL-78291044)
+          </p>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface shadow-sm hover:bg-surface-variant text-primary font-label text-label transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Client PDF Pack</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface shadow-sm hover:bg-surface-variant text-primary font-label text-label transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">share</span>
+<span>Share Encrypted Itinerary</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Grid Workspace: Left Ledger vs Right Financial Ledger -->
+<section class="max-w-7xl mx-auto px-6 py-8 w-full">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT COLUMN: Staged Component Dossier Breakdown (8 Columns) -->
+<div class="lg:col-span-8 space-y-6">
+<!-- Notification Banner: Ready for Single Transaction -->
+<div class="rounded-2xl p-4 bg-surface shadow-sm flex items-start gap-3.5">
+<div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-info text-[20px]">verified_user</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-title text-title text-on-surface">Integrated Multi-Vertical Candidate Staging</h3>
+<p class="font-body-sm text-body-sm text-text-muted mt-0.5">
+              Flight tickets, 5-star hotel allocation, UK consular visa dossier, and VIP express ground transfer are packaged under single PNR reference continuity. No segmented bookings required.
+            </p>
+</div>
+</div>
+<!-- VERTICAL 01: Air Mobility Protocol (Flights) -->
+<article class="rounded-2xl bg-surface shadow-sm p-6 space-y-6">
+<header class="flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">flight_takeoff</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-text-muted">Vertical 01 · Aviation Segment</span>
+<h2 class="font-heading-md text-heading-md text-primary">SriLankan Airlines • Non-Stop Roundtrip</h2>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-success font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">task_alt</span> READY
+              </span>
+<span class="font-label text-label text-primary font-bold [font-variant-numeric:tabular-nums]">LKR 275,500</span>
+</div>
+</header>
+<!-- Outbound Flight Ledger -->
+<div class="rounded-xl bg-surface-subtle p-5 space-y-4">
+<div class="flex flex-wrap items-center justify-between text-label-sm font-label-sm text-text-muted">
+<span class="font-semibold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">flight_takeoff</span> Outbound: UL 503 • Airbus A330-300 Widebody
+              </span>
+<span class="bg-surface px-2.5 py-0.5 rounded text-on-surface">Economy Flex Tier</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+<div>
+<div class="font-heading-md text-heading-md text-primary [font-variant-numeric:tabular-nums]">01:15</div>
+<div class="font-title text-title text-on-surface font-semibold">Colombo (CMB)</div>
+<div class="font-body-sm text-body-sm text-text-muted">Bandaranaike Intl • Thu 12 Nov 2026</div>
+</div>
+<div class="flex flex-col items-center justify-center text-center space-y-1">
+<span class="font-label-sm text-label-sm text-text-muted [font-variant-numeric:tabular-nums]">10h 30m · Non-stop</span>
+<div class="w-full flex items-center gap-1">
+<div class="h-0.5 flex-1 bg-surface-container-highest"></div>
+<span class="material-symbols-outlined text-primary text-[18px]">flight</span>
+<div class="h-0.5 flex-1 bg-surface-container-highest"></div>
+</div>
+<span class="text-label-sm font-label-sm text-success">Guaranteed Direct Routing</span>
+</div>
+<div class="sm:text-right">
+<div class="font-heading-md text-heading-md text-primary [font-variant-numeric:tabular-nums]">07:45</div>
+<div class="font-title text-title text-on-surface font-semibold">London Heathrow (LHR)</div>
+<div class="font-body-sm text-body-sm text-text-muted">Terminal 3 • Thu 12 Nov 2026</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-2 text-label-sm font-label-sm text-on-surface">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">airline_seat_recline_extra</span>
+                Seat 14A (Exit Row, Extra Legroom)
+              </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">restaurant</span>
+                Asian Vegetarian Meal (AVML)
+              </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">luggage</span>
+                30kg Standard + 23kg Pre-Purchased Extra Bag
+              </span>
+</div>
+</div>
+<!-- Inbound Flight Ledger -->
+<div class="rounded-xl bg-surface-subtle p-5 space-y-4">
+<div class="flex flex-wrap items-center justify-between text-label-sm font-label-sm text-text-muted">
+<span class="font-semibold text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">flight_land</span> Return: UL 504 • Airbus A330-300 Widebody
+              </span>
+<span class="bg-surface px-2.5 py-0.5 rounded text-on-surface">Economy Flex Tier</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+<div>
+<div class="font-heading-md text-heading-md text-primary [font-variant-numeric:tabular-nums]">20:40</div>
+<div class="font-title text-title text-on-surface font-semibold">London Heathrow (LHR)</div>
+<div class="font-body-sm text-body-sm text-text-muted">Terminal 3 • Fri 27 Nov 2026</div>
+</div>
+<div class="flex flex-col items-center justify-center text-center space-y-1">
+<span class="font-label-sm text-label-sm text-text-muted [font-variant-numeric:tabular-nums]">10h 35m · Non-stop</span>
+<div class="w-full flex items-center gap-1">
+<div class="h-0.5 flex-1 bg-surface-container-highest"></div>
+<span class="material-symbols-outlined text-primary text-[18px]">flight</span>
+<div class="h-0.5 flex-1 bg-surface-container-highest"></div>
+</div>
+<span class="text-label-sm font-label-sm text-success">+1 Day Arrival</span>
+</div>
+<div class="sm:text-right">
+<div class="font-heading-md text-heading-md text-primary [font-variant-numeric:tabular-nums]">12:45 <span class="text-label-sm font-label-sm font-normal text-text-muted">+1d</span></div>
+<div class="font-title text-title text-on-surface font-semibold">Colombo (CMB)</div>
+<div class="font-body-sm text-body-sm text-text-muted">Sat 28 Nov 2026</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-2 text-label-sm font-label-sm text-on-surface">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">airline_seat_recline_normal</span>
+                Seat 16K (Forward Window)
+              </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">restaurant</span>
+                Standard Gourmet Selection
+              </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">luggage</span>
+                30kg Checked Allowance
+              </span>
+</div>
+</div>
+<!-- Fare Details & Baggage Specification -->
+<div class="flex flex-wrap items-center justify-between text-body-sm font-body-sm bg-surface-container-low px-4 py-3 rounded-lg text-text-muted">
+<div>Rate Code: <span class="font-mono text-primary font-semibold">ECON-FLEX-UL/04</span> • FlySMILES Gold +100% Miles Accrual</div>
+<div class="text-success font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">change_circle</span> Complimentary 1x Date Change Permitted
+            </div>
+</div>
+</article>
+<!-- VERTICAL 02: Luxury Accommodation Segment -->
+<article class="rounded-2xl bg-surface shadow-sm p-6 space-y-6">
+<header class="flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">apartment</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-text-muted">Vertical 02 · Hospitality Segment</span>
+<h2 class="font-heading-md text-heading-md text-primary">The Savoy, London • Fairmont Managed</h2>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-success font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">task_alt</span> READY
+              </span>
+<span class="font-label text-label text-primary font-bold [font-variant-numeric:tabular-nums]">LKR 256,500</span>
+</div>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+<div class="md:col-span-4 h-48 rounded-xl overflow-hidden relative shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Panoramic daytime view of the River Thames and Palace of Westminster with Big Ben in London bathed in soft natural daylight under crisp skies, representing luxury riverside stay setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9vxCf4oTOr8eSC4QY6nW6D56TuutRReAVWTTtvSxPO5mIWyGCnESQ0BbwPVwL2Tea8LJS9hzuZyzJ2IbQrecbcO7iN6MzoalFAhkgxxLubjBh9GmGPmLPYnnKL5OfePnn8vOp_E8Hm7jCPuVEvC3hP30DbAyg63gxWd5S_5xw6gfaQhxQEMdN98Ltj1wVdTGOZCL-KuTLwgQQpQT_Fo7VxzQt-Tztp8K34rhVOAFu"/>
+<div class="absolute top-2 left-2 px-2.5 py-1 rounded bg-primary-container/90 text-on-primary text-label-sm font-label-sm backdrop-blur-sm">
+                5 Stars · Strand, London
+              </div>
+</div>
+<div class="md:col-span-8 space-y-3">
+<div class="flex flex-wrap items-center justify-between text-body-sm font-body-sm">
+<span class="font-title text-title text-on-surface font-semibold">1x Deluxe King River Thames View Room</span>
+<span class="font-label text-label text-text-muted">5 Nights Stay</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">
+                Check-in: <strong class="text-on-surface font-semibold">Thu 12 Nov 2026 (15:00)</strong> — Check-out: <strong class="text-on-surface font-semibold">Tue 17 Nov 2026 (12:00)</strong>
+</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-label-sm font-label-sm text-on-surface">
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-subtle">
+<span class="material-symbols-outlined text-success text-[16px]">coffee</span>
+                  Daily English Gourmet Breakfast Included
+                </div>
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-subtle">
+<span class="material-symbols-outlined text-success text-[16px]">room_service</span>
+                  Dedicated 24/7 Floor Butler Protocol
+                </div>
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-subtle">
+<span class="material-symbols-outlined text-success text-[16px]">wifi</span>
+                  High-Speed Executive Workspace Wi-Fi
+                </div>
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-subtle">
+<span class="material-symbols-outlined text-success text-[16px]">event_available</span>
+                  Flexible Cancellation up to 09 Nov 2026
+                </div>
+</div>
+</div>
+</div>
+</article>
+<!-- VERTICAL 03: Consular Protocol & Visa Verification -->
+<article class="rounded-2xl bg-surface shadow-sm p-6 space-y-6">
+<header class="flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">assignment_turned_in</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-text-muted">Vertical 03 · Consular Services</span>
+<h2 class="font-heading-md text-heading-md text-primary">UK Standard Visitor Visa Desk (6-Month Multiple)</h2>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-success font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">link</span> READY &amp; LINKED
+              </span>
+<span class="font-label text-label text-primary font-bold [font-variant-numeric:tabular-nums]">LKR 45,000</span>
+</div>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="p-4 rounded-xl bg-surface-subtle space-y-1">
+<span class="text-label-sm font-label-sm text-text-muted">Document Validation</span>
+<div class="font-title text-title text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-success text-[18px]">verified</span> Passport OCR Passed
+              </div>
+<p class="font-body-sm text-body-sm text-text-muted">Doc #N78410294 • Valid thru Aug 2030</p>
+</div>
+<div class="p-4 rounded-xl bg-surface-subtle space-y-1">
+<span class="text-label-sm font-label-sm text-text-muted">UKVI Application Reference</span>
+<div class="font-title text-title text-primary font-mono font-semibold">GWF-091823901</div>
+<p class="font-body-sm text-body-sm text-text-muted">VFS Global Dossier: VAC-UK-8821</p>
+</div>
+<div class="p-4 rounded-xl bg-surface-subtle space-y-1">
+<span class="text-label-sm font-label-sm text-text-muted">Pre-Screening Status</span>
+<div class="font-title text-title text-success font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">fact_check</span> 100% Pre-Audited
+              </div>
+<p class="font-body-sm text-body-sm text-text-muted">Biometric Appointment Slot Locked</p>
+</div>
+</div>
+</article>
+<!-- VERTICAL 04: Ground Transit & Comprehensive Travel Shield -->
+<article class="rounded-2xl bg-surface shadow-sm p-6 space-y-6">
+<header class="flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">directions_subway</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-text-muted">Vertical 04 · Ground Mobility &amp; Shield</span>
+<h2 class="font-heading-md text-heading-md text-primary">Heathrow Express VIP First + Medical Shield</h2>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-success font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">task_alt</span> READY
+              </span>
+<span class="font-label text-label text-primary font-bold [font-variant-numeric:tabular-nums]">LKR 23,000</span>
+</div>
+</header>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="p-4 rounded-xl bg-surface-subtle space-y-2">
+<div class="flex items-center gap-2 text-primary font-semibold font-title text-title">
+<span class="material-symbols-outlined text-[20px]">train</span>
+                Heathrow Express First Class
+              </div>
+<p class="font-body-sm text-body-sm text-text-muted">
+                15-Minute Direct Transit: LHR Terminal 3 to London Paddington. Open return ticket with priority lounge boarding.
+              </p>
+</div>
+<div class="p-4 rounded-xl bg-surface-subtle space-y-2">
+<div class="flex items-center gap-2 text-primary font-semibold font-title text-title">
+<span class="material-symbols-outlined text-[20px]">health_and_safety</span>
+                Vacatina Global Shield Elite
+              </div>
+<p class="font-body-sm text-body-sm text-text-muted">
+                £10,000,000 Emergency Medical Cover, Missed Connection Auto-Reroute, Flight Delay Disruption Reimbursement.
+              </p>
+</div>
+</div>
+</article>
+<!-- Traveler Confirmation & Document Review Card -->
+<div class="rounded-2xl bg-surface shadow-sm p-6 space-y-4">
+<h3 class="font-title text-title text-primary">Traveler Verification &amp; Passport Registry Check</h3>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-surface-subtle">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary font-heading-md text-heading-md flex items-center justify-center font-bold">
+                AM
+              </div>
+<div>
+<div class="font-title text-title text-on-surface font-semibold">Mr. Alexander Scott Morgan</div>
+<div class="font-body-sm text-body-sm text-text-muted">
+                  DOB: 14 Jul 1988 • Sri Lankan Citizen • Pass: N78410294 (Exp: 18 Aug 2030)
+                </div>
+</div>
+</div>
+<a class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface shadow-sm text-primary text-label-sm font-label-sm hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+              Modify Details
+            </a>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Financial Ledger, Staging Engine & Action Gateways (4 Columns) -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- Sticky Master Dossier Price Breakdown Card -->
+<div class="rounded-2xl bg-surface shadow-md p-6 space-y-6 lg:sticky lg:top-24">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-text-muted">Dossier Cost Center</span>
+<span class="px-2.5 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container text-success font-bold">100% Staged</span>
+</div>
+<h2 class="font-heading-lg text-heading-lg text-primary tracking-tight">Composite Ledger</h2>
+</div>
+<!-- Price Line Items -->
+<div class="space-y-3 font-body-sm text-body-sm">
+<div class="flex justify-between items-center text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-text-muted">flight</span>
+                Airfare (CMB ⇄ LHR + Bag/Seat)
+              </span>
+<span class="font-mono font-semibold [font-variant-numeric:tabular-nums]">LKR 275,500</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-text-muted">apartment</span>
+                The Savoy Hotel (5 Nights)
+              </span>
+<span class="font-mono font-semibold [font-variant-numeric:tabular-nums]">LKR 256,500</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-text-muted">assignment_ind</span>
+                UK Consular Desk &amp; VFS Fast-Track
+              </span>
+<span class="font-mono font-semibold [font-variant-numeric:tabular-nums]">LKR 45,000</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-text-muted">view_compact</span>
+                Heathrow Express VIP + Travel Shield
+              </span>
+<span class="font-mono font-semibold [font-variant-numeric:tabular-nums]">LKR 23,000</span>
+</div>
+<div class="pt-2 flex justify-between items-center text-text-muted text-xs">
+<span>Mandatory Taxes, Airport Passenger Levy &amp; VAT</span>
+<span class="font-mono">Included in Base</span>
+</div>
+<!-- B2B Commission & Net Tariff Pane (Hidden by Default, toggled via JS) -->
+<div class="hidden p-3 rounded-xl bg-surface-subtle space-y-2 mt-2" id="b2b-panel">
+<div class="flex justify-between items-center text-xs font-semibold text-primary">
+<span>Agency Commission (8.5%)</span>
+<span class="font-mono text-success">+ LKR 51,000</span>
+</div>
+<div class="flex justify-between items-center text-xs font-semibold text-text-muted">
+<span>Net Wholesale Cost to Firm</span>
+<span class="font-mono">LKR 549,000</span>
+</div>
+</div>
+</div>
+<!-- Total Readout -->
+<div class="pt-4 p-4 rounded-xl bg-surface-subtle space-y-1">
+<div class="flex justify-between items-baseline">
+<span class="font-title text-title text-on-surface font-semibold">Consolidated Total</span>
+<div class="text-right">
+<div class="font-heading-xl text-heading-xl text-primary font-bold [font-variant-numeric:tabular-nums]">
+                  LKR 600,000
+                </div>
+<div class="text-[11px] text-text-muted">Zero foreign conversion surcharge</div>
+</div>
+</div>
+</div>
+<!-- Primary Actions -->
+<div class="space-y-3 pt-2">
+<button class="w-full h-12 rounded-xl bg-primary-container text-on-primary font-label text-label font-bold flex items-center justify-center gap-2 hover:bg-primary transition-all shadow-md active:scale-[0.99]" type="button">
+<span>Proceed to Unified Issuance &amp; Checkout</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<button class="w-full h-11 rounded-xl bg-surface shadow-sm hover:bg-surface-subtle text-primary font-label text-label font-semibold flex items-center justify-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">lock_clock</span>
+<span>Save &amp; Lock in Trip Bucket Workspace</span>
+</button>
+</div>
+<!-- Policy & Guarantee Disclaimers -->
+<div class="space-y-2 pt-2 text-label-sm font-label-sm text-text-muted">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-success text-[16px]">check_circle</span>
+<span>Immediate E-Ticket (13-digit IATA) generated on clearance</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-success text-[16px]">check_circle</span>
+<span>Hotel confirmation vouchered under lead passenger name</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-success text-[16px]">check_circle</span>
+<span>24-hour full refund cooling-off privilege included</span>
+</div>
+</div>
+<!-- B2B Enterprise Utilities Box -->
+<div class="p-4 rounded-xl bg-surface-container space-y-3">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-text-muted font-bold">Enterprise Mobility Actions</span>
+<div class="space-y-2">
+<button class="w-full text-left font-label-sm text-label-sm text-primary hover:underline flex items-center justify-between" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+                  Download Co-Branded Client Proposal
+                </span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</button>
+<button class="w-full text-left font-label-sm text-label-sm text-primary hover:underline flex items-center justify-between" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                  Generate Corporate PO Authorization Slip
+                </span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</button>
+<button class="w-full text-left font-label-sm text-label-sm text-primary hover:underline flex items-center justify-between" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">lock_person</span>
+                  Routing for Managerial Approval Desk
+                </span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Co-Traveler Inspiration Spotlight -->
+<div class="rounded-2xl bg-surface shadow-sm p-5 space-y-4">
+<div class="relative h-44 rounded-xl overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Two well-dressed male business travelers seated in a bright airport terminal lounge with luggage, reviewing travel paperwork together with floor-to-ceiling apron view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGRueVnKtKo_W1cn6k_jS-Ky7Ga9LwlZqaAp-OEGRw7gzY0c5zFN7sndVqBlOJPRUF09qO7NvE_daQJATbiwZAVZ53Kh9tXe63XLYK-fNGSJE-bpw1PvUaQ9HOuRRWAFvAlt_sYAu0DdMI5havFg2MUE5kuhLQdnELmOxriniaYWCPYIWKmkjTVzaQUBJbpXqTE8DoSN0g1aMgEdEt2GGoLlg6jiQ3mExGVc4kwEGE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent flex items-end p-4">
+<div class="text-on-primary">
+<p class="font-label text-label font-bold">Group &amp; Companion Itinerary Mode</p>
+<p class="font-body-sm text-body-sm opacity-90">Seamless co-booking with synchronized seating</p>
+</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">
+            Adding companions? Sync their UK consular application forms directly into this dossier before final issuance to secure adjoining flight rows and hotel suite interconnectivity.
+          </p>
+</div>
+</aside>
+</div>
+</section>
+<!-- Trust, Regulatory Security & Compliance Strip -->
+<section class="w-full bg-surface shadow-sm mt-8">
+<div class="max-w-7xl mx-auto px-6 py-8">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+<div class="space-y-1">
+<div class="w-10 h-10 rounded-full bg-surface-subtle mx-auto flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">verified</span>
+</div>
+<div class="font-title text-title text-on-surface font-semibold">IATA Accredited Agency</div>
+<div class="font-body-sm text-body-sm text-text-muted">Global Registry Agency #14309</div>
+</div>
+<div class="space-y-1">
+<div class="w-10 h-10 rounded-full bg-surface-subtle mx-auto flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">shield_person</span>
+</div>
+<div class="font-title text-title text-on-surface font-semibold">ATOL &amp; PCI-DSS Level 1</div>
+<div class="font-body-sm text-body-sm text-text-muted">256-bit Bank Grade Financial Shield</div>
+</div>
+<div class="space-y-1">
+<div class="w-10 h-10 rounded-full bg-surface-subtle mx-auto flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">support_agent</span>
+</div>
+<div class="font-title text-title text-on-surface font-semibold">24/7 Air Operations Desk</div>
+<div class="font-body-sm text-body-sm text-text-muted">Direct Support: +94113606200</div>
+</div>
+<div class="space-y-1">
+<div class="w-10 h-10 rounded-full bg-surface-subtle mx-auto flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">sync_saved_locally</span>
+</div>
+<div class="font-title text-title text-on-surface font-semibold">Guaranteed Price Lock</div>
+<div class="font-body-sm text-body-sm text-text-muted">Zero Post-Booking Fuel Surcharges</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Persistent Floating Trip Workspace Candidate Dock -->
+<div class="sticky bottom-4 z-40 max-w-5xl mx-auto px-6 w-full">
+<div class="p-4 rounded-2xl bg-primary text-on-primary shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px] text-on-primary">layers</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title text-title text-on-primary font-bold">Staged Trip Workspace</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-success text-on-primary">4 READY ITEMS</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary/80">
+            Dossier VAC-DOSSIER-2026-8840 • Candidate Total: <strong class="text-on-primary font-mono [font-variant-numeric:tabular-nums]">LKR 600,000</strong>
+</p>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+<button class="px-4 py-2 rounded-xl bg-on-primary/10 hover:bg-on-primary/20 text-on-primary text-label font-label transition-colors font-semibold" type="button">
+          Trip Bucket Engine (3)
+        </button>
+<button class="px-5 py-2.5 rounded-xl bg-surface text-primary hover:bg-surface-variant font-label text-label font-bold transition-all shadow-md" type="button">
+          Proceed to Issuance →
+        </button>
+</div>
+</div>
+</div>
+<script>
+    // Live Inventory Hold Countdown Simulation
+    let holdSeconds = 585; // 09:45
+    const countdownEl = document.getElementById('inventory-countdown');
+
+    if (countdownEl) {
+      setInterval(() => {
+        if (holdSeconds > 0) {
+          holdSeconds--;
+          const minutes = Math.floor(holdSeconds / 60).toString().padStart(2, '0');
+          const seconds = (holdSeconds % 60).toString().padStart(2, '0');
+          countdownEl.textContent = `${minutes}:${seconds}`;
+        } else {
+          countdownEl.textContent = "00:00 - Refresh Required";
+          countdownEl.classList.remove('text-error');
+          countdownEl.classList.add('text-warning');
+        }
+      }, 1000);
+    }
+
+    // Interactive B2C / B2B Rate View Toggle
+    const b2cBtn = document.getElementById('toggle-b2c');
+    const b2bBtn = document.getElementById('toggle-b2b');
+    const b2bPanel = document.getElementById('b2b-panel');
+
+    if (b2cBtn && b2bBtn && b2bPanel) {
+      b2cBtn.addEventListener('click', () => {
+        b2cBtn.className = "px-2.5 py-1 rounded bg-surface shadow-sm font-semibold text-primary";
+        b2bBtn.className = "px-2.5 py-1 rounded text-text-muted hover:text-on-surface font-semibold";
+        b2bPanel.classList.add('hidden');
+      });
+
+      b2bBtn.addEventListener('click', () => {
+        b2bBtn.className = "px-2.5 py-1 rounded bg-surface shadow-sm font-semibold text-primary";
+        b2cBtn.className = "px-2.5 py-1 rounded text-text-muted hover:text-on-surface font-semibold";
+        b2bPanel.classList.remove('hidden');
+      });
+    }
+  </script>
+</div></main><footer class="w-full bg-primary-container text-on-primary pt-16 pb-8"><div class="max-w-7xl mx-auto px-6"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12"><div class="space-y-4"><div class="flex items-center gap-2 font-heading-md text-heading-md text-on-primary"><span class="material-symbols-outlined text-[24px]">travel_explore</span><span>VACATINA</span></div><p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">The authoritative travel operating system engineered for end-to-end flight, itinerary composition, and enterprise mobility management.</p><div class="pt-2 space-y-1.5"><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">call</span><span>+94113606200</span></div><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">mail</span><span>info@vacatina.com</span></div></div></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Products &amp; Mobility</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="flights" href="#">Flight Search Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="hotels" href="#">Accommodations &amp; Resorts</a></li><li><a class="hover:text-on-primary transition-colors" data-path="holiday-packages" href="#">Bespoke Holiday Packages</a></li><li><a class="hover:text-on-primary transition-colors" data-path="cars-and-transfers" href="#">Ground Transportation</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Rail &amp; Coastal Cruising</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Travel Operations</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="visa-assistance" href="#">Global Visa Protocol</a></li><li><a class="hover:text-on-primary transition-colors" data-path="flight-booking-flow" href="#">Trip Bucket Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Baggage &amp; Fare Rules</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Comprehensive Travel Insurance</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Real-Time Airline Timetables</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Enterprise &amp; Compliance</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Corporate Portal Access</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">IATA Accredited Agency</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Global Distribution Network</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">PCI-DSS Level 1 Security</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">API Solutions &amp; Partners</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Statutory &amp; Quality</h4><div class="space-y-3 font-body-sm text-body-sm text-on-primary-container"><p>Operating with certified Global Distribution System standards and verified ticketing agency integrity.</p><div class="p-3 rounded-lg bg-primary/40 space-y-1 text-on-primary"><div class="font-label-sm text-label-sm font-semibold">Customer Operations Support</div><div class="text-xs text-on-primary-container">Available Daily for Global Travelers</div><div class="text-xs text-on-primary-container font-mono">Tel: +94113606200</div></div></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-primary-container"><p>© 2025 Vacatina Travel Operating System. All rights reserved.</p><div class="flex flex-wrap items-center gap-6 font-label-sm text-label-sm"><a class="hover:text-on-primary transition-colors" data-path="privacy-policy" href="#">Privacy Statement</a><a class="hover:text-on-primary transition-colors" data-path="terms-of-service" href="#">Booking Terms &amp; Conditions</a><a class="hover:text-on-primary transition-colors" data-path="statutory-compliance" href="#">Statutory Regulatory Notice</a><a class="hover:text-on-primary transition-colors" data-path="security-standards" href="#">Data Security Protocol</a></div></div></div></footer></body></html>

@@ -1,0 +1,24 @@
+graph TD
+    AUTH[Authentication] --> SIGNIN[Sign In → Clerk or Fallback]
+    AUTH --> SIGNUP[Sign Up → Clerk or Fallback]
+    AUTH --> SIGNOUT[Sign Out]
+
+    SIGNIN --> CLERK{Clerk Available?}
+    CLERK -->|Yes| CLERK_MODAL[Clerk Modal]
+    CLERK -->|No| FALLBACK[Native Auth Modal]
+    CLERK_MODAL --> SESSION[Session Token]
+    FALLBACK --> SIMULATE[Email Simulation]
+    SIMULATE --> SESSION
+    SESSION --> ACCOUNT[Account Routes]
+
+    ACCOUNT --> ACC_OVERVIEW[Account Overview<br/>/account]
+    ACCOUNT --> ACC_TRIPS[My Trips<br/>/account/trips]
+    ACCOUNT --> ACC_VISA[Visa Applications<br/>/account/visa-applications]
+    ACCOUNT --> ACC_TRAVELERS[Profile & Co-Travelers<br/>/account/travelers]
+    ACCOUNT --> ACC_PREFS[Preferences<br/>/account/preferences]
+    ACCOUNT --> ACC_CREDIT[Travel Credit<br/>/account/travel-credit]
+
+    FAVORITES[Favorites] --> FAV_ADD[Add Favorite]
+    FAVORITES --> FAV_REMOVE[Remove Favorite]
+    FAVORITES --> FAV_LIST[Favorites List<br/>/favorites]
+    FAV_LIST --> FAV_CLICK[Click Favorite → Product Page]

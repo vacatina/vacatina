@@ -2,7 +2,7 @@ import type { CanonicalHotelOffer, HotelSelectedConfiguration } from './hotel-mo
 import type { HotelSearchRequest } from './hotel-search-models.ts';
 import { isJourneyDate, journeyEscape } from '../../journeys/domain/journey-models.ts';
 
-export const HOTEL_DEMO_DISCLOSURE = 'Canonical demo fixture — property, ratings, room, meal plan, cancellation terms and prices are illustrative, not verified hotel inventory. No supplier is connected and no room is held.';
+export const HOTEL_DEMO_DISCLOSURE = 'Property, ratings, room, meal plan, cancellation terms and prices are planning references, not verified hotel inventory. No supplier is connected and no room is held.';
 export const hotelEscape = journeyEscape;
 
 export function hotelDemoOffer(hotel: CanonicalHotelOffer): CanonicalHotelOffer {

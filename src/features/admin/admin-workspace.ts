@@ -10,8 +10,8 @@ export function adminWorkspaceHtml(): string {
     const root = document.getElementById('admin-inventory-workspace');
     if (!root) return;
     if (capabilities.operations) await renderEnquiryOperations(root);
-    else if ((window as any).__VACATINA_PUBLIC_DEMO__) root.textContent = 'Demo only: hosted authentication and operations are disabled. No administrative mutation is available.';
-    else if (capabilities.mode === 'LOCAL_DURABLE_DEMO') root.textContent = 'This local demo has no authorized operations identity. No administrative actions are enabled.';
+    else if ((window as any).__VACATINA_PUBLIC_DEMO__) root.textContent = 'Hosted authentication and operations are disabled. No administrative mutation is available.';
+    else if (capabilities.mode === 'LOCAL_DURABLE_DEMO') root.textContent = 'This local session has no authorized operations identity. No administrative actions are enabled.';
     else await loadAdminInventory();
   });
   return `<div id="admin-inventory-workspace" class="p-5 md:p-8 max-w-6xl mx-auto" aria-live="polite"><p role="status">Loading your operations workspace…</p></div>`;

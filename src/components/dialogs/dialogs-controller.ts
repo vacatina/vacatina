@@ -194,7 +194,7 @@ export function openHolidayPackageDetailsModal(
   if (extraContainer) {
     extraContainer.innerHTML = `
       <div class="p-3 rounded-xl bg-brand-canvas border border-brand-border">
-        <div class="font-bold text-brand-black uppercase text-[10px] tracking-wider mb-1.5">Sample Day-by-Day Itinerary</div>
+        <div class="font-bold text-brand-black uppercase text-[10px] tracking-wider mb-1.5">Day-by-Day Itinerary:</div>
         <ul class="space-y-1.5 text-brand-muted">
           ${detail.itinerary
             .map(

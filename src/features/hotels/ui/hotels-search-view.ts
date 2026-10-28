@@ -324,7 +324,7 @@ export class HotelsSearchView {
                                 ? 'bg-[#1B1464] text-white shadow-md'
                                 : 'bg-brand-black/70 backdrop-blur-sm text-white'
                             }">
-                              Canonical demo fixture
+                              Planning reference
                             </span>
                           </div>
                           
@@ -364,7 +364,7 @@ export class HotelsSearchView {
                                 ★ ${hotel.guestRatingScore} / 10
                               </span>
                               <span class="text-brand-muted text-[11px]">
-                                (illustrative rating, not verified reviews)
+                                (rating reference, not verified reviews)
                               </span>
                             </div>
 
@@ -381,7 +381,7 @@ export class HotelsSearchView {
                           <!-- Pricing & CTA Bar -->
                           <div class="pt-3 border-t border-brand-border/60 flex flex-wrap gap-3 items-center justify-between">
                             <div>
-                              <div class="text-[10px] text-brand-muted">Illustrative price from</div>
+                              <div class="text-[10px] text-brand-muted">Starting price from</div>
                               <div class="text-lg font-bold text-brand-black">
                                 LKR ${(hotel.startingFromPriceMinor / 100).toLocaleString()}
                                 <span class="text-[10px] font-normal text-brand-muted">/ night</span>

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Vacatina Travel Operating System</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed-variant":"#474747","success":"#15803D","info":"#1D4ED8","surface":"#FFFFFF","tertiary-container":"#441200","surface-container":"#eeeeee","secondary":"#5e5e5e","warning":"#B45309","surface-container-low":"#f3f3f3","inverse-surface":"#2f3131","primary-fixed":"#e3dfff","on-tertiary-fixed-variant":"#73351c","surface-dim":"#dadada","text-muted":"#525252","inverse-primary":"#c4c0ff","tertiary-fixed":"#ffdbcf","on-secondary":"#ffffff","on-primary":"#ffffff","background":"#f9f9f9","surface-variant":"#e2e2e2","surface-container-lowest":"#ffffff","error":"#B91C1C","primary":"#06003e","surface-tint":"#5855a3","on-surface":"#1a1c1c","on-secondary-container":"#646464","on-background":"#1a1c1c","on-tertiary":"#ffffff","secondary-container":"#e4e2e2","outline":"#787682","surface-container-high":"#e8e8e8","border":"#E5E5E5","on-surface-variant":"#474551","on-secondary-fixed":"#1b1c1c","secondary-fixed-dim":"#c8c6c6","surface-subtle":"#F5F5F5","surface-bright":"#f9f9f9","text-primary":"#000000","primary-container":"#1b1464","outline-variant":"#c8c5d2","on-error":"#ffffff","on-error-container":"#93000a","on-primary-fixed":"#13095d","on-tertiary-container":"#c57658","on-primary-fixed-variant":"#403d8a","inverse-on-surface":"#f0f1f1","primary-fixed-dim":"#c4c0ff","on-tertiary-fixed":"#380d00","focus":"#1D4ED8","secondary-fixed":"#e4e2e2","canvas":"#FAFAFA","tertiary-fixed-dim":"#ffb59a","surface-container-highest":"#e2e2e2","on-primary-container":"#8481d3","error-container":"#ffdad6","tertiary":"#1f0500"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"2":"8px","gutter":"1.5rem","16":"64px","margin":"1.5rem","10":"40px","3":"12px","space-xs":"0.25rem","6":"24px","8":"32px","1":"4px","space-xl":"2.5rem","12":"48px","4":"16px","5":"20px","space-sm":"0.5rem","20":"80px","space-lg":"1.5rem","space-md":"1rem"},fontFamily:{"heading-xl":["Plus Jakarta Sans"],"heading-md":["Plus Jakarta Sans"],"body-lg":["Inter"],"label":["Inter"],"display-mobile":["Plus Jakarta Sans"],"body":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"title":["Plus Jakarta Sans"],"display-desktop":["Plus Jakarta Sans"],"heading-lg":["Plus Jakarta Sans"]},fontSize:{"heading-xl":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"700"}],"heading-md":["22px",{lineHeight:"28px",letterSpacing:"0",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"400"}],"label":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"600"}],"display-mobile":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"body":["15px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0",fontWeight:"400"}],"title":["18px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"600"}],"display-desktop":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"heading-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}]}}}};</script></head><body class="bg-canvas font-body text-body text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4"><div class="flex items-center gap-8"><a class="flex items-center gap-2 text-primary font-heading-md text-heading-md tracking-tight" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">travel_explore</span><span>VACATINA</span></a><nav class="hidden min-[1440px]:flex items-center gap-6" data-active-classes="text-primary font-semibold border-b-2 border-primary"><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="home" href="#">Home</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="flights" href="#">Flights</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="hotels" href="#">Hotels</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="visa-assistance" href="#">Visa Assistance</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="holiday-packages" href="#">Holiday Packages</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="cars-and-transfers" href="#">Cars &amp; Transfers</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="more-products" href="#">More</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="resources" href="#">Resources</a></nav></div><div class="flex items-center gap-3"><button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">language</span><span>EN · USD</span></button><button aria-label="Saved Favorites" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-subtle rounded-lg transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">favorite</span></button><button aria-label="Trip Bucket" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px] text-on-surface">workspaces</span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Bucket</span><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-container text-on-primary">3</span></button><div class="flex items-center gap-2 pl-2"><button class="hidden md:inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span>B2C</span><span class="mx-1 text-outline">|</span><span class="text-text-muted">B2B</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-canvas min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive Architectural Navigation Banner -->
+<section class="w-full bg-surface-container-low py-6 px-6 sm:px-10">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm tracking-wide uppercase">
+<span class="material-symbols-outlined text-[14px]">alt_route</span>
+            Architect Engine 2.4
+          </span>
+<span class="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-success">verified</span>
+            IATA Interline Verified
+          </span>
+</div>
+<h1 class="font-heading-lg text-heading-lg text-primary tracking-tight">Multi-City &amp; Open-Jaw Route Matrix</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Design bespoke sequential segments, balance transit permits, and unify disparate carrier baggage allowances in real time.</p>
+</div>
+<!-- Route Flow Stepper Indicator -->
+<div class="flex items-center gap-3 bg-surface p-2.5 rounded-xl shadow-sm self-start md:self-auto">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label text-label">
+<span class="w-5 h-5 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-[11px] font-bold">1</span>
+<span>Routing &amp; Legs</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-muted font-label text-label">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-[11px] font-bold">2</span>
+<span>Seat Architecture</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-muted font-label text-label">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-[11px] font-bold">3</span>
+<span>Review &amp; Lock</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Routing Composition Canvas -->
+<section class="max-w-7xl mx-auto w-full px-6 sm:px-10 py-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left & Center: Segment Builder & Interline Optimizers (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Mode & Trip Archetype Switcher -->
+<div class="bg-surface rounded-2xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-xl">
+<button class="px-4 py-2 rounded-lg text-text-muted font-label text-label hover:text-primary transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">flight_takeoff</span>
+              Round-Trip
+            </button>
+<button class="px-4 py-2 rounded-lg text-text-muted font-label text-label hover:text-primary transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              One-Way
+            </button>
+<button class="px-4 py-2 rounded-lg bg-surface text-primary shadow-sm font-label text-label flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary-container">alt_route</span>
+              Multi-City Hub
+            </button>
+<button class="px-4 py-2 rounded-lg text-text-muted font-label text-label hover:text-primary transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">shuffle</span>
+              Open-Jaw Loop
+            </button>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-focus">tune</span>
+<span>GDS Tariffs:</span>
+<span class="text-primary font-semibold font-mono">Amadeus / Sabre Hybrid</span>
+</div>
+<button class="p-2 rounded-lg bg-surface-subtle text-on-surface-variant hover:text-primary transition-colors" title="Reload live cache">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+</button>
+</div>
+</div>
+<!-- Segments Overview Strip -->
+<div class="grid grid-cols-3 gap-3">
+<button class="p-3 rounded-xl bg-surface shadow-sm text-left flex flex-col gap-1 transition-all">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-bold uppercase tracking-wider text-primary-container">Segment 01</span>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+</div>
+<div class="font-heading-md text-heading-md text-primary flex items-center gap-1.5">
+<span>CMB</span>
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+<span>DXB</span>
+</div>
+<span class="font-body-sm text-body-sm text-text-muted">12 Nov 2026 · Emirates EK651</span>
+</button>
+<button class="p-3 rounded-xl bg-surface shadow-sm text-left flex flex-col gap-1 transition-all">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-bold uppercase tracking-wider text-text-muted">Segment 02</span>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+</div>
+<div class="font-heading-md text-heading-md text-primary flex items-center gap-1.5">
+<span>DXB</span>
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+<span>LHR</span>
+</div>
+<span class="font-body-sm text-body-sm text-text-muted">18 Nov 2026 · Emirates A380</span>
+</button>
+<button class="p-3 rounded-xl bg-surface shadow-sm text-left flex flex-col gap-1 transition-all">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-bold uppercase tracking-wider text-text-muted">Segment 03</span>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+</div>
+<div class="font-heading-md text-heading-md text-primary flex items-center gap-1.5">
+<span>LHR</span>
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+<span>CMB</span>
+</div>
+<span class="font-body-sm text-body-sm text-text-muted">27 Nov 2026 · Qatar QR004/664</span>
+</button>
+</div>
+<!-- Deep Segment Builder Cards -->
+<div class="space-y-4">
+<!-- LEG 1 DETAILED CARD -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm flex flex-col gap-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-heading-md text-[14px]">1</span>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title text-title text-primary">Colombo (CMB) to Dubai (DXB)</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Confirmed Flight</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">Departing Thursday, 12 Nov 2026 · Non-stop trans-oceanic segment</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">04h 35m Flight Duration</span>
+<button class="p-1.5 rounded-lg text-text-muted hover:text-error transition-colors" title="Remove leg">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Alternative Flight Carrier Matrix for Leg 1 -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<!-- Selected: Emirates EK 651 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col justify-between gap-3 shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">flight</span>
+</div>
+<div>
+<div class="font-label text-label text-primary">Emirates · EK 651</div>
+<div class="font-body-sm text-body-sm text-text-muted">Boeing 777-300ER · Widebody</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-primary text-on-primary font-label-sm text-[11px]">Selected</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="text-left">
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">09:55</div>
+<div class="font-body-sm text-body-sm text-text-muted">CMB Terminal 1</div>
+</div>
+<div class="flex flex-col items-center px-2">
+<span class="text-[11px] text-text-muted font-medium">Non-stop</span>
+<div class="w-20 h-0.5 bg-outline-variant relative my-1">
+<div class="w-2 h-2 rounded-full bg-primary absolute -top-0.75 left-1/2 -translate-x-1/2"></div>
+</div>
+<span class="text-[11px] text-success font-semibold">On-Time 94%</span>
+</div>
+<div class="text-right">
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">13:30</div>
+<div class="font-body-sm text-body-sm text-text-muted">DXB Terminal 3</div>
+</div>
+</div>
+<div class="flex items-center justify-between text-body-sm pt-2 bg-surface p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-text-muted">Fare Basis: EK-FLEX-PLUS</span>
+<span class="font-label text-label text-primary font-mono tabular-nums">LKR 92,500</span>
+</div>
+</div>
+<!-- Alternative Option: SriLankan UL 225 -->
+<div class="p-4 rounded-xl bg-surface flex flex-col justify-between gap-3 opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">airlines</span>
+</div>
+<div>
+<div class="font-label text-label text-primary">SriLankan Airlines · UL 225</div>
+<div class="font-body-sm text-body-sm text-text-muted">Airbus A330-300</div>
+</div>
+</div>
+<button class="px-2.5 py-1 rounded-lg bg-surface-container text-primary font-label-sm text-label-sm hover:bg-surface-variant">Switch</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="text-left">
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">18:25</div>
+<div class="font-body-sm text-body-sm text-text-muted">CMB Terminal 1</div>
+</div>
+<div class="flex flex-col items-center px-2">
+<span class="text-[11px] text-text-muted font-medium">Non-stop</span>
+<div class="w-20 h-0.5 bg-outline-variant relative my-1"></div>
+<span class="text-[11px] text-text-muted">Evening Flight</span>
+</div>
+<div class="text-right">
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">22:00</div>
+<div class="font-body-sm text-body-sm text-text-muted">DXB Terminal 1</div>
+</div>
+</div>
+<div class="flex items-center justify-between text-body-sm pt-2 bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-text-muted">Fare Basis: UL-PROMO-ECO</span>
+<span class="font-label text-label text-on-surface font-mono tabular-nums">LKR 88,100</span>
+</div>
+</div>
+</div>
+<!-- Dubai Layover & Stopover Perks Optimizer Banner -->
+<div class="rounded-xl bg-surface-container-low p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-warning text-[20px]">hotel_class</span>
+<span class="font-label text-label text-primary">Dubai Stopover Duration: 6 Days (12 Nov – 18 Nov)</span>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-success/10 text-success font-label-sm text-label-sm font-semibold">Extended Stopover Plan</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+<div class="flex items-start gap-2 bg-surface p-2.5 rounded-lg">
+<span class="material-symbols-outlined text-focus text-[18px]">badge</span>
+<div class="text-left">
+<div class="font-label-sm text-label-sm text-primary">UAE 96hr/30d Transit Visa</div>
+<div class="text-body-sm text-text-muted">Consular pre-clearance ready</div>
+</div>
+</div>
+<div class="flex items-start gap-2 bg-surface p-2.5 rounded-lg">
+<span class="material-symbols-outlined text-primary-container text-[18px]">luggage</span>
+<div class="text-left">
+<div class="font-label-sm text-label-sm text-primary">Baggage Delivery</div>
+<div class="text-body-sm text-text-muted">Claim at DXB (Terminated Stop)</div>
+</div>
+</div>
+<div class="flex items-start gap-2 bg-surface p-2.5 rounded-lg">
+<span class="material-symbols-outlined text-success text-[18px]">verified_user</span>
+<div class="text-left">
+<div class="font-label-sm text-label-sm text-primary">Dubai Connect Hotel</div>
+<div class="text-body-sm text-text-muted">Eligible for return hop</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- LEG 2 DETAILED CARD -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm flex flex-col gap-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-heading-md text-[14px]">2</span>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title text-title text-primary">Dubai (DXB) to London Heathrow (LHR)</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Transcontinental Flagship</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">Departing Wednesday, 18 Nov 2026 · High-density morning flagship service</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">07h 45m Flight Duration</span>
+<button class="p-1.5 rounded-lg text-text-muted hover:text-error transition-colors" title="Remove leg">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Flight Details & Cabin Selector for Leg 2 -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">flight</span>
+</div>
+<div>
+<div class="font-label text-label text-primary">Emirates · EK 001 · Airbus A380-800 Superjumbo</div>
+<div class="font-body-sm text-body-sm text-text-muted">Terminal 3 DXB → Terminal 3 LHR · In-flight Wi-Fi + On-demand ICE</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-right">
+<div>
+<span class="font-label-sm text-label-sm text-text-muted">Sector Airfare</span>
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">LKR 145,000</div>
+</div>
+</div>
+</div>
+<!-- Segment Schedule Horizontal Line -->
+<div class="flex items-center justify-between bg-surface p-3.5 rounded-xl">
+<div>
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">07:45</div>
+<div class="font-body-sm text-body-sm text-text-muted">DXB Dubai Intl</div>
+</div>
+<div class="flex flex-col items-center flex-1 px-6">
+<div class="flex items-center gap-2 text-label-sm text-text-muted">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span>7h 45m · Non-stop Direct</span>
+</div>
+<div class="w-full max-w-xs h-0.5 bg-outline-variant relative my-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-primary-container absolute -top-1 left-1/2 -translate-x-1/2"></div>
+</div>
+<span class="text-[11px] text-text-muted">Cruising at 39,000 ft</span>
+</div>
+<div class="text-right">
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">11:30</div>
+<div class="font-body-sm text-body-sm text-text-muted">LHR London Heathrow</div>
+</div>
+</div>
+<!-- Mixed-Cabin Tier Optimiser for Leg 2 -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+<label class="flex items-center justify-between p-3 rounded-xl bg-surface cursor-pointer shadow-xs">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 text-primary-container focus:ring-focus" name="leg2_cabin" type="radio"/>
+<div>
+<div class="font-label text-label text-primary">Economy Flex</div>
+<div class="text-[11px] text-text-muted">2x 23kg check-in</div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-mono tabular-nums">Included</span>
+</label>
+<label class="flex items-center justify-between p-3 rounded-xl bg-surface-container cursor-pointer opacity-90 hover:opacity-100">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 text-primary-container focus:ring-focus" name="leg2_cabin" type="radio"/>
+<div>
+<div class="font-label text-label text-primary">Premium Economy</div>
+<div class="text-[11px] text-text-muted">Dedicated cabin + 38" pitch</div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-mono tabular-nums">+LKR 62,000</span>
+</label>
+<label class="flex items-center justify-between p-3 rounded-xl bg-surface-container cursor-pointer opacity-90 hover:opacity-100">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 text-primary-container focus:ring-focus" name="leg2_cabin" type="radio"/>
+<div>
+<div class="font-label text-label text-primary">Business Class</div>
+<div class="text-[11px] text-text-muted">Lie-flat bed + A380 lounge</div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-mono tabular-nums">+LKR 198,000</span>
+</label>
+</div>
+</div>
+</div>
+<!-- LEG 3 DETAILED CARD -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm flex flex-col gap-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-heading-md text-[14px]">3</span>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title text-title text-primary">London Heathrow (LHR) to Colombo (CMB)</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Return Corridor</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">Departing Friday, 27 Nov 2026 · Interline partner routing via Hamad Intl (DOH)</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">13h 10m Total (1 Stop)</span>
+<button class="p-1.5 rounded-lg text-text-muted hover:text-error transition-colors" title="Remove leg">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Interline Carrier Segment Breakdown -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">airlines</span>
+</div>
+<div>
+<div class="font-label text-label text-primary">Qatar Airways · QR 004 &amp; QR 664</div>
+<div class="font-body-sm text-body-sm text-text-muted">Airbus A350-1000 &amp; Boeing 787-9 Dreamliner</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-text-muted">Return Sector</span>
+<div class="font-heading-md text-heading-md text-primary font-mono tabular-nums">LKR 185,000</div>
+</div>
+</div>
+<!-- Multi-Segment Intermediate Transit Node -->
+<div class="bg-surface p-4 rounded-xl flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label text-label text-primary font-mono">14:05 LHR</span>
+<span class="text-body-sm text-text-muted block">London Terminal 4</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-[11px] text-text-muted">6h 45m Flight</span>
+<span class="material-symbols-outlined text-[16px] text-outline">flight</span>
+</div>
+<div class="text-right">
+<span class="font-label text-label text-primary font-mono">23:50 DOH</span>
+<span class="text-body-sm text-text-muted block">Hamad International</span>
+</div>
+</div>
+<!-- Stopover node chip -->
+<div class="px-3 py-1.5 rounded-lg bg-surface-container flex items-center justify-between text-body-sm">
+<span class="flex items-center gap-1.5 font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px] text-focus">timelapse</span>
+                    Transit in Doha (DOH): 02h 10m Layover
+                  </span>
+<span class="text-[11px] text-success font-medium">Baggage Checked Through to CMB</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label text-label text-primary font-mono">02:00 DOH</span>
+<span class="text-body-sm text-text-muted block">+1 Day (28 Nov)</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-[11px] text-text-muted">4h 45m Flight</span>
+<span class="material-symbols-outlined text-[16px] text-outline">flight</span>
+</div>
+<div class="text-right">
+<span class="font-label text-label text-primary font-mono">09:15 CMB</span>
+<span class="text-body-sm text-text-muted block">Bandaranaike Intl</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Dynamic '+ Add Another Flight Leg' Action Bar -->
+<div class="p-6 rounded-2xl bg-surface-subtle flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3 text-left">
+<div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-primary-container shadow-xs">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</div>
+<div>
+<h4 class="font-label text-label text-primary">Add Another Flight Leg (Up to 6 Legs)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Includes automatic date dependency locking and airport terminal proximity auditing.</p>
+</div>
+</div>
+<button class="px-5 py-2.5 rounded-xl bg-surface text-primary font-label text-label shadow-sm hover:bg-surface-variant transition-colors flex items-center gap-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+              Add Leg 4
+            </button>
+</div>
+</div>
+<!-- Section 4: Composite Baggage & Interline Harmonization Engine -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary-container text-[24px]">balance</span>
+<div>
+<h3 class="font-title text-title text-primary">Unified Interline Baggage &amp; Compliance Guarantee</h3>
+<p class="font-body-sm text-body-sm text-text-muted">Calculated using IATA Resolution 302 Most Significant Carrier (MSC) standard rules.</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-success/10 text-success font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+              Harmonized
+            </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-text-muted uppercase tracking-wider">Cabin Carry-On</span>
+<div class="font-heading-md text-heading-md text-primary">7 kg <span class="font-body-sm text-body-sm text-text-muted">/ person</span></div>
+<span class="text-[12px] text-on-surface-variant">1 piece standard trolley + 1 personal bag across EK and QR</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-text-muted uppercase tracking-wider">Checked Allowance</span>
+<div class="font-heading-md text-heading-md text-primary">30 kg <span class="font-body-sm text-body-sm text-text-muted">Guaranteed</span></div>
+<span class="text-[12px] text-on-surface-variant">Protected across entire ticket under Emirates MSC determination</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-text-muted uppercase tracking-wider">Transit Protocol</span>
+<div class="font-heading-md text-heading-md text-primary">Dual Terminal</div>
+<span class="text-[12px] text-on-surface-variant">Through-tag checked on return leg LHR-DOH-CMB</span>
+</div>
+</div>
+</div>
+<!-- Section 3: Stopover Perks & Consular Visa Help Card -->
+<div class="bg-primary-container text-on-primary rounded-2xl p-6 shadow-md flex flex-col sm:flex-row items-center justify-between gap-6">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary-fixed text-[24px]">support_agent</span>
+</div>
+<div>
+<h4 class="font-title text-title text-on-primary">Vacatina Consular Protocol &amp; Visa Desk</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container mt-1">Multi-city routes touch UAE and UK borders. Our in-house immigration specialists verify your passport validity, Transit Visa waivers, and UK ETA clearance prior to issuance.</p>
+</div>
+</div>
+<button class="px-5 py-2.5 rounded-xl bg-surface text-primary font-label text-label hover:bg-surface-subtle transition-colors shrink-0 whitespace-nowrap">
+            Verify Travel Visas
+          </button>
+</div>
+</div>
+<!-- Right Column: Sticky Fare Ledger & Instant Action Console (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-6 sticky top-20">
+<!-- Fare Itemization Card -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm flex flex-col gap-5">
+<div class="flex items-center justify-between pb-3">
+<h3 class="font-title text-title text-primary">Route Ledger</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">3 Legs Combined</span>
+</div>
+<!-- Segments breakdown list -->
+<div class="flex flex-col gap-3 font-body-sm">
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold text-primary">L1</span>
+<span class="text-on-surface font-medium">CMB → DXB (EK 651)</span>
+</div>
+<span class="font-mono tabular-nums text-primary font-semibold">LKR 92,500</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold text-primary">L2</span>
+<span class="text-on-surface font-medium">DXB → LHR (EK 001)</span>
+</div>
+<span class="font-mono tabular-nums text-primary font-semibold">LKR 145,000</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center text-[10px] font-bold text-primary">L3</span>
+<span class="text-on-surface font-medium">LHR → CMB (QR 004/664)</span>
+</div>
+<span class="font-mono tabular-nums text-primary font-semibold">LKR 185,000</span>
+</div>
+<!-- Interline Combo Rebate -->
+<div class="flex items-center justify-between py-2 px-3 rounded-xl bg-success/5 text-success">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">local_offer</span>
+<span>GDS Multi-City Tariff Adjustment</span>
+</div>
+<span class="font-mono tabular-nums font-bold">-LKR 28,000</span>
+</div>
+<!-- Statutory Taxes and Surcharges -->
+<div class="flex items-center justify-between py-1 text-text-muted text-[13px]">
+<span>International Carrier Security Fees</span>
+<span class="font-mono tabular-nums">Included</span>
+</div>
+<div class="flex items-center justify-between py-1 text-text-muted text-[13px]">
+<span>UK Air Passenger Duty (APD) &amp; Embarkation</span>
+<span class="font-mono tabular-nums">Included</span>
+</div>
+</div>
+<!-- Total Calculation -->
+<div class="pt-4 flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-text-muted uppercase tracking-wider">Consolidated Multi-City Airfare</span>
+<div class="flex items-baseline justify-between">
+<div class="font-heading-xl text-heading-xl text-primary font-mono tabular-nums">
+                LKR 394,500
+              </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">All taxes incl.</span>
+</div>
+<p class="font-body-sm text-[12px] text-text-muted mt-1">Guaranteed against carrier fare jumps for 30 minutes under Vacatina GDS Lock.</p>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-2.5 pt-2">
+<button class="w-full h-12 rounded-xl bg-primary-container text-on-primary font-label text-label flex items-center justify-center gap-2 hover:bg-primary transition-colors shadow-sm">
+<span>Lock Multi-City Route &amp; Select Seats</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-full h-11 rounded-xl bg-surface text-primary font-label text-label shadow-xs hover:bg-surface-subtle transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">workspaces</span>
+<span>Stage Multi-City Journey in Trip Bucket</span>
+</button>
+</div>
+<div class="flex items-center justify-center gap-4 pt-2 text-text-muted font-body-sm text-[12px]">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-success">lock</span>
+              PCI-DSS Secured
+            </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary-container">speed</span>
+              Instant e-Ticket (ETKT)
+            </span>
+</div>
+</div>
+<!-- Stopover Perk Summary Widget -->
+<div class="bg-surface rounded-2xl p-5 shadow-sm flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">explore</span>
+<h4 class="font-label text-label text-primary">Layover Experiences Included</h4>
+</div>
+<ul class="space-y-2 text-body-sm text-on-surface-variant">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-success text-[16px] shrink-0 mt-0.5">check</span>
+<span><strong>Dubai, UAE:</strong> 6-day open visa stopover with car hire transfer readiness.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-success text-[16px] shrink-0 mt-0.5">check</span>
+<span><strong>Doha, Qatar:</strong> 2h 10m express transit lounge pass discount applicable.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Client-side Micro-Interactions Script -->
+<script>
+    // Lightweight client script for responsive cabin selectors
+    document.querySelectorAll('input[name="leg2_cabin"]').forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        // Micro-state highlight feedback
+        const parentCard = e.target.closest('label');
+        if (parentCard) {
+          parentCard.classList.add('scale-[1.01]');
+          setTimeout(() => parentCard.classList.remove('scale-[1.01]'), 150);
+        }
+      });
+    });
+  </script>
+</div></main><footer class="w-full bg-primary-container text-on-primary pt-16 pb-8"><div class="max-w-7xl mx-auto px-6"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12"><div class="space-y-4"><div class="flex items-center gap-2 font-heading-md text-heading-md text-on-primary"><span class="material-symbols-outlined text-[24px]">travel_explore</span><span>VACATINA</span></div><p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">The authoritative travel operating system engineered for end-to-end flight, itinerary composition, and enterprise mobility management.</p><div class="pt-2 space-y-1.5"><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">call</span><span>+94113606200</span></div><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">mail</span><span>info@vacatina.com</span></div></div></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Products &amp; Mobility</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="flights" href="#">Flight Search Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="hotels" href="#">Accommodations &amp; Resorts</a></li><li><a class="hover:text-on-primary transition-colors" data-path="holiday-packages" href="#">Bespoke Holiday Packages</a></li><li><a class="hover:text-on-primary transition-colors" data-path="cars-and-transfers" href="#">Ground Transportation</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Rail &amp; Coastal Cruising</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Travel Operations</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="visa-assistance" href="#">Global Visa Protocol</a></li><li><a class="hover:text-on-primary transition-colors" data-path="flight-booking-flow" href="#">Trip Bucket Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Baggage &amp; Fare Rules</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Comprehensive Travel Insurance</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Real-Time Airline Timetables</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Enterprise &amp; Compliance</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Corporate Portal Access</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">IATA Accredited Agency</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Global Distribution Network</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">PCI-DSS Level 1 Security</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">API Solutions &amp; Partners</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Statutory &amp; Quality</h4><div class="space-y-3 font-body-sm text-body-sm text-on-primary-container"><p>Operating with certified Global Distribution System standards and verified ticketing agency integrity.</p><div class="p-3 rounded-lg bg-primary/40 space-y-1 text-on-primary"><div class="font-label-sm text-label-sm font-semibold">Customer Operations Support</div><div class="text-xs text-on-primary-container">Available Daily for Global Travelers</div><div class="text-xs text-on-primary-container font-mono">Tel: +94113606200</div></div></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-primary-container"><p>© 2025 Vacatina Travel Operating System. All rights reserved.</p><div class="flex flex-wrap items-center gap-6 font-label-sm text-label-sm"><a class="hover:text-on-primary transition-colors" data-path="privacy-policy" href="#">Privacy Statement</a><a class="hover:text-on-primary transition-colors" data-path="terms-of-service" href="#">Booking Terms &amp; Conditions</a><a class="hover:text-on-primary transition-colors" data-path="statutory-compliance" href="#">Statutory Regulatory Notice</a><a class="hover:text-on-primary transition-colors" data-path="security-standards" href="#">Data Security Protocol</a></div></div></div></footer></body></html>

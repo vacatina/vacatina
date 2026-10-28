@@ -117,7 +117,7 @@ function blockersFor(item: TripBucketCandidate): string[] {
       item.inventoryMode === 'sandbox_test'
         ? 'Duffel TEST MODE sandbox quote — explicit sandbox test order only; not live checkout'
         : item.inventoryMode === 'demo_fixture'
-          ? 'Demo fixture — no live supplier inventory or reservation hold'
+          ? 'Planning reference - no live supplier inventory or reservation hold'
           : item.inventoryMode === 'manual_request'
             ? 'Manual request-to-book — desk confirmation required'
             : 'Not confirmed as live supplier inventory'
@@ -581,7 +581,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
               <h1 class="text-3xl sm:text-4xl font-extrabold font-display text-brand-black">Review your trip</h1>
               <p class="text-sm text-brand-muted mt-2 max-w-2xl leading-relaxed">
                 Check each staged option, its inventory source and every outstanding requirement before deciding what to request.
-                Planning is non-commercial. Saved request status is available only through the explicitly connected demo service.
+                Planning is non-commercial. Saved request status is available only through the connected service.
               </p>
             </div>
             <button type="button" id="btn-review-open-bucket" class="min-h-[44px] px-4 rounded-xl border border-gray-300 text-xs font-bold text-brand-black hover:bg-gray-50 self-start lg:self-auto">
@@ -594,7 +594,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
             ${sandboxCount > 0
               ? `${sandboxCount} staged item${sandboxCount === 1 ? '' : 's'} came from Duffel TEST MODE. You may create an explicit sandbox test order, but it is non-production: no live ticket, live seat hold or payment is captured.`
               : nonLiveCount > 0
-                ? `${nonLiveCount} of ${items.length} staged item${items.length === 1 ? '' : 's'} came from demo fixtures or manual request-to-book inventory. Their estimates are not live quotes and no reservation hold exists.`
+                ? `${nonLiveCount} of ${items.length} staged item${items.length === 1 ? '' : 's'} came from planning references or manual request-to-book inventory. Their estimates are not live quotes and no reservation hold exists.`
                 : 'All staged items are shown for review only. Server checkout is not connected to browser-local items in this phase.'}
           </div>
 
@@ -617,7 +617,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
                       <div class="flex justify-between gap-3 border-t border-gray-200 pt-2"><dt class="text-brand-muted">Ready estimate</dt><dd class="font-black text-brand-primary tabular-nums">${formatCurrencyAmount(summary.readySubtotalLkr, currency)}</dd></div>
                       <div class="flex justify-between gap-3"><dt class="text-brand-muted">Excluded from ready</dt><dd class="font-semibold tabular-nums">${formatCurrencyAmount(summary.excludedSubtotalLkr, currency)}</dd></div>
                     </dl>
-                    <p class="text-[11px] text-brand-muted">Unpriced requests are not included in estimates. Demo estimates are not live quotes.${sandboxCount > 0 ? ' Duffel TEST MODE quotes are shown in their native currency and are excluded from LKR estimates.' : ''}</p>
+                    <p class="text-[11px] text-brand-muted">Unpriced requests are not included in estimates. Reference estimates are not live quotes.${sandboxCount > 0 ? ' Duffel TEST MODE quotes are shown in their native currency and are excluded from LKR estimates.' : ''}</p>
 
                     ${
                       blockedItems.length > 0
@@ -639,7 +639,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
                       ${
                         canCheckout
                           ? 'Server checkout availability is checked again before payment.'
-                          : 'Checkout is gated because at least one item is not live-confirmed, or this build is using browser-local demo inventory.'
+                          : 'Checkout is gated because at least one item is not live-confirmed, or this build is using browser-local reference inventory.'
                       }
                     </p>
 
@@ -715,7 +715,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
           showToast('Item requirements updated. Review the latest state below.', 'brand');
         } else {
           showToast(
-            'Requirement recorded locally for this demo. No supplier message or seat hold was sent.',
+            'Requirement recorded locally. No supplier message or seat hold was sent.',
             'brand'
           );
         }

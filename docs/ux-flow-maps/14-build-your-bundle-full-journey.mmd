@@ -1,0 +1,24 @@
+graph TD
+    B_HUB[/"Build Your Bundle<br/>/trip-builder"\] --> B_SELECT[Select Products]
+    B_SELECT --> B_FLIGHTS[Add Flights]
+    B_SELECT --> B_HOTELS[Add Hotels]
+    B_SELECT --> B_VISA[Add Visa]
+    B_SELECT --> B_CARS[Add Cars]
+    B_SELECT --> B_INSURANCE[Add Insurance]
+
+    B_FLIGHTS --> B_CONFIG_FLIGHT[Configure Flight]
+    B_HOTELS --> B_CONFIG_HOTEL[Configure Hotel]
+    B_VISA --> B_CONFIG_VISA[Configure Visa]
+    B_CARS --> B_CONFIG_CAR[Configure Car]
+    B_INSURANCE --> B_CONFIG_INS[Configure Insurance]
+
+    B_CONFIG_FLIGHT --> B_READY{Bundle Ready?}
+    B_CONFIG_HOTEL --> B_READY
+    B_CONFIG_VISA --> B_READY
+    B_CONFIG_CAR --> B_READY
+    B_CONFIG_INS --> B_READY
+
+    B_READY -->|Yes| B_STAGE[Stage All Items]
+    B_READY -->|No| B_MISSING[Missing Configuration]
+    B_STAGE --> B_TB[Trip Bucket Drawer]
+    B_TB --> B_REVIEW[Trip Review<br/>/trip/review]

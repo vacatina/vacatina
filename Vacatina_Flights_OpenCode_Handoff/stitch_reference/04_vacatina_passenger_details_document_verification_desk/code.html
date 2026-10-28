@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Vacatina Travel Operating System</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed-variant":"#474747","success":"#15803D","info":"#1D4ED8","surface":"#FFFFFF","tertiary-container":"#441200","surface-container":"#eeeeee","secondary":"#5e5e5e","warning":"#B45309","surface-container-low":"#f3f3f3","inverse-surface":"#2f3131","primary-fixed":"#e3dfff","on-tertiary-fixed-variant":"#73351c","surface-dim":"#dadada","text-muted":"#525252","inverse-primary":"#c4c0ff","tertiary-fixed":"#ffdbcf","on-secondary":"#ffffff","on-primary":"#ffffff","background":"#f9f9f9","surface-variant":"#e2e2e2","surface-container-lowest":"#ffffff","error":"#B91C1C","primary":"#06003e","surface-tint":"#5855a3","on-surface":"#1a1c1c","on-secondary-container":"#646464","on-background":"#1a1c1c","on-tertiary":"#ffffff","secondary-container":"#e4e2e2","outline":"#787682","surface-container-high":"#e8e8e8","border":"#E5E5E5","on-surface-variant":"#474551","on-secondary-fixed":"#1b1c1c","secondary-fixed-dim":"#c8c6c6","surface-subtle":"#F5F5F5","surface-bright":"#f9f9f9","text-primary":"#000000","primary-container":"#1b1464","outline-variant":"#c8c5d2","on-error":"#ffffff","on-error-container":"#93000a","on-primary-fixed":"#13095d","on-tertiary-container":"#c57658","on-primary-fixed-variant":"#403d8a","inverse-on-surface":"#f0f1f1","primary-fixed-dim":"#c4c0ff","on-tertiary-fixed":"#380d00","focus":"#1D4ED8","secondary-fixed":"#e4e2e2","canvas":"#FAFAFA","tertiary-fixed-dim":"#ffb59a","surface-container-highest":"#e2e2e2","on-primary-container":"#8481d3","error-container":"#ffdad6","tertiary":"#1f0500"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"2":"8px","gutter":"1.5rem","16":"64px","margin":"1.5rem","10":"40px","3":"12px","space-xs":"0.25rem","6":"24px","8":"32px","1":"4px","space-xl":"2.5rem","12":"48px","4":"16px","5":"20px","space-sm":"0.5rem","20":"80px","space-lg":"1.5rem","space-md":"1rem"},fontFamily:{"heading-xl":["Plus Jakarta Sans"],"heading-md":["Plus Jakarta Sans"],"body-lg":["Inter"],"label":["Inter"],"display-mobile":["Plus Jakarta Sans"],"body":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"title":["Plus Jakarta Sans"],"display-desktop":["Plus Jakarta Sans"],"heading-lg":["Plus Jakarta Sans"]},fontSize:{"heading-xl":["40px",{lineHeight:"48px",letterSpacing:"-0.02em",fontWeight:"700"}],"heading-md":["22px",{lineHeight:"28px",letterSpacing:"0",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"400"}],"label":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"600"}],"display-mobile":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"body":["15px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0",fontWeight:"400"}],"title":["18px",{lineHeight:"24px",letterSpacing:"0",fontWeight:"600"}],"display-desktop":["56px",{lineHeight:"64px",letterSpacing:"-0.03em",fontWeight:"800"}],"heading-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}]}}}};</script></head><body class="bg-canvas font-body text-body text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4"><div class="flex items-center gap-8"><a class="flex items-center gap-2 text-primary font-heading-md text-heading-md tracking-tight" data-path="flights" href="#"><span class="material-symbols-outlined text-primary text-[26px]">travel_explore</span><span>VACATINA</span></a><nav class="hidden min-[1440px]:flex items-center gap-6" data-active-classes="text-primary font-semibold border-b-2 border-primary"><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="home" href="#">Home</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="flights" href="#">Flights</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="hotels" href="#">Hotels</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="visa-assistance" href="#">Visa Assistance</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="holiday-packages" href="#">Holiday Packages</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="cars-and-transfers" href="#">Cars &amp; Transfers</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="more-products" href="#">More</a><a class="text-on-surface-variant hover:text-on-surface font-label text-label transition-colors py-1" data-path="resources" href="#">Resources</a></nav></div><div class="flex items-center gap-3"><button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">language</span><span>EN · USD</span></button><button aria-label="Saved Favorites" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-subtle rounded-lg transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">favorite</span></button><button aria-label="Trip Bucket" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px] text-on-surface">workspaces</span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Bucket</span><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary-container text-on-primary">3</span></button><div class="flex items-center gap-2 pl-2"><button class="hidden md:inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm hover:bg-surface-variant hover:text-on-surface transition-colors" type="button"><span>B2C</span><span class="mx-1 text-outline">|</span><span class="text-text-muted">B2B</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-canvas min-h-screen"><div class="flex flex-col w-full">
+<!-- Top GDS Session Tracker & Booking Breadcrumb Bar -->
+<section class="w-full bg-surface-container-low shadow-sm">
+<div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- 5-Step Linear Stepper -->
+<nav aria-label="Booking Journey Progress" class="flex items-center gap-1 sm:gap-3 overflow-x-auto w-full md:w-auto py-1 text-on-surface">
+<div class="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">01</span>
+<span class="font-label-sm text-label-sm whitespace-nowrap">Flight Hub</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<div class="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">02</span>
+<span class="font-label-sm text-label-sm whitespace-nowrap">Search &amp; Results</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<div class="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center font-bold">03</span>
+<span class="font-label-sm text-label-sm whitespace-nowrap">Seat &amp; Ancillaries</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<!-- Active Step -->
+<div class="flex items-center gap-1.5 bg-primary-container text-on-primary px-3 py-1 rounded-full shadow-sm">
+<span class="w-5 h-5 rounded-full bg-surface text-primary-container font-label-sm text-label-sm flex items-center justify-center font-bold">04</span>
+<span class="font-label-sm text-label-sm font-semibold whitespace-nowrap">Passenger &amp; Documents</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+<div class="flex items-center gap-1.5 opacity-50">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm flex items-center justify-center">05</span>
+<span class="font-label-sm text-label-sm whitespace-nowrap">Review &amp; Checkout</span>
+</div>
+</nav>
+<!-- Session State & B2C/B2B Fare Mode Toggle -->
+<div class="flex items-center gap-4 shrink-0">
+<!-- Hold Timer Badge -->
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface shadow-sm text-on-surface font-mono text-label-sm">
+<span class="material-symbols-outlined text-warning text-[18px]">timer</span>
+<span class="text-text-muted">GDS Hold:</span>
+<span class="font-semibold text-error" id="sessionTimer">11:42</span>
+</div>
+<!-- Corporate vs Retail Segment Toggle -->
+<div class="inline-flex p-1 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm">
+<button class="px-3 py-1 rounded-md bg-surface shadow-sm font-semibold text-primary" type="button">B2C Retail</button>
+<button class="px-3 py-1 rounded-md text-text-muted hover:text-on-surface transition-colors" type="button">B2B Net Rate</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Flight Summary Recap Banner -->
+<section class="max-w-7xl mx-auto w-full px-6 pt-6 pb-2">
+<div class="bg-surface rounded-xl p-5 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<div class="flex items-start sm:items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px]">flight_takeoff</span>
+</div>
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="font-heading-md text-heading-md text-primary">SriLankan Airlines · UL 503</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Return: UL 504</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-subtle font-mono text-[11px] text-text-muted">IATA: CMB-LHR</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex flex-wrap items-center gap-2">
+<span class="font-semibold text-on-surface">Colombo (CMB) ⇄ London Heathrow (LHR)</span>
+<span>•</span>
+<span>Thu, 12 Nov – Fri, 27 Nov 2026</span>
+</p>
+</div>
+</div>
+<!-- Dossier Configuration Tags & Current Subtotal -->
+<div class="flex flex-wrap items-center gap-4 lg:gap-8 pt-3 lg:pt-0 lg:pl-6">
+<div class="flex flex-wrap gap-2 text-label-sm font-label-sm">
+<div class="px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">airline_seat_recline_extra</span>
+<span>Seat 14A (Exit Row)</span>
+</div>
+<div class="px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">luggage</span>
+<span>30kg + 23kg Extra</span>
+</div>
+<div class="px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-success">restaurant</span>
+<span>AVML Confirmed</span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="block text-label-sm font-label-sm text-text-muted">Current Flight Dossier</span>
+<span class="font-heading-lg text-heading-lg text-primary tabular-nums tracking-tight">LKR 275,500</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Layout (2 Columns: 8 Cols Form / 4 Cols Scorecard) -->
+<section class="max-w-7xl mx-auto w-full px-6 py-6 pb-28">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Form & Verification Desk (~8 cols) -->
+<div class="lg:col-span-8 space-y-6">
+<!-- SECTION 1: Primary Adult Passenger -->
+<article class="bg-surface rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-success"></span>
+<h2 class="font-heading-lg text-heading-lg text-primary">Adult 1 (Lead Traveler)</h2>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">Must correspond strictly with machine-readable passport zone.</p>
+</div>
+<!-- Profile Quick-Fill Component -->
+<button class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors text-primary font-label text-label-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">account_circle</span>
+<span>Quick-fill: Alex Morgan (FlySMILES Gold)</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+<!-- Name & Title Field Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
+<div class="sm:col-span-3 space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="titleField">Title</label>
+<select class="w-full h-12 px-3 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="titleField">
+<option selected="" value="Mr">Mr.</option>
+<option value="Mrs">Mrs.</option>
+<option value="Ms">Ms.</option>
+<option value="Dr">Dr.</option>
+</select>
+</div>
+<div class="sm:col-span-5 space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="firstNameField">First &amp; Middle Names</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="firstNameField" placeholder="As stated on bio-page" type="text" value="Alexander Scott"/>
+</div>
+<div class="sm:col-span-4 space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="lastNameField">Last Name / Surname</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="lastNameField" placeholder="Official surname" type="text" value="Morgan"/>
+</div>
+</div>
+<!-- Demographic Attributes -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="dobField">Date of Birth</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="dobField" type="date" value="1988-04-16"/>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="genderField">Gender</label>
+<select class="w-full h-12 px-3 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="genderField">
+<option selected="" value="M">Male</option>
+<option value="F">Female</option>
+<option value="X">Undisclosed / Non-binary</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="nationalityField">Nationality</label>
+<select class="w-full h-12 px-3 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="nationalityField">
+<option selected="" value="LKA">Sri Lanka (LKA)</option>
+<option value="GBR">United Kingdom (GBR)</option>
+<option value="USA">United States (USA)</option>
+<option value="AUS">Australia (AUS)</option>
+<option value="SGP">Singapore (SGP)</option>
+</select>
+</div>
+</div>
+<!-- Contact Channels for E-Ticket Delivery -->
+<div class="space-y-4 pt-2">
+<h3 class="font-title text-title text-primary">Contact &amp; Real-Time E-Ticket Routing</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="emailField">Primary E-Ticket Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-3.5 text-text-muted text-[20px]">mail</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="emailField" type="email" value="alex.morgan@executiveglobal.lk"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="phoneField">Mobile Contact Number</label>
+<div class="flex gap-2">
+<span class="h-12 px-3 rounded-xl bg-surface-container-low text-on-surface font-mono text-body flex items-center justify-center shrink-0">+94</span>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="phoneField" type="tel" value="77 240 9811"/>
+</div>
+</div>
+</div>
+<!-- WhatsApp Delivery Checkbox -->
+<label class="flex items-center gap-3 cursor-pointer pt-1">
+<input checked="" class="w-5 h-5 rounded text-primary focus:ring-focus" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Deliver flight delay pings, boarding pass passbook links, and gate changes via WhatsApp (+94 77 240 9811)</span>
+</label>
+</div>
+</article>
+<!-- SECTION 2: Passport & Travel Credentials Verification -->
+<article class="bg-surface rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+<div class="flex items-center justify-between">
+<div class="space-y-1">
+<h2 class="font-heading-lg text-heading-lg text-primary">Passport &amp; Official Bio-Data</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Strict validation against UK Border Force API requirements.</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Mandatory for IATA GDS</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="passportNum">Passport Document Number</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface font-mono shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus uppercase" id="passportNum" type="text" value="N78410294"/>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="issuingCountry">Issuing Country</label>
+<select class="w-full h-12 px-3 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="issuingCountry">
+<option selected="" value="LKA">Sri Lanka (Democratic Socialist Republic)</option>
+<option value="GBR">United Kingdom</option>
+<option value="USA">United States</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="passportExp">Expiration Date</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="passportExp" type="date" value="2030-08-20"/>
+</div>
+</div>
+<!-- 6-Month Validity Confirmation Badge -->
+<div class="p-3.5 rounded-xl bg-surface-container-low flex items-start gap-3">
+<span class="material-symbols-outlined text-success text-[20px] mt-0.5">verified_user</span>
+<div class="space-y-0.5">
+<div class="font-label text-label-sm text-success font-semibold">Valid for 3 years &amp; 9 months from return flight date</div>
+<p class="font-body-sm text-body-sm text-text-muted">Exceeds the United Kingdom Border &amp; Immigration standard 6-month validity threshold.</p>
+</div>
+</div>
+<!-- Cloudflare R2 / OCR Verification Dropzone -->
+<div class="space-y-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant">Bio-Page Document Scan (OCR Auto-Match)</label>
+<div class="rounded-xl p-5 bg-surface-subtle shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-surface flex items-center justify-center shadow-sm text-primary">
+<span class="material-symbols-outlined text-[24px]">description</span>
+</div>
+<div>
+<div class="font-label text-label text-on-surface">Passport_Alex_Morgan_2026.pdf</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-text-muted">
+<span>1.8 MB · Uploaded via R2 Storage</span>
+<span class="text-success font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                      Verified
+                    </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface shadow-sm hover:bg-surface-container transition-colors text-on-surface font-label-sm text-label-sm" type="button">Replace Document</button>
+<button aria-label="Remove Document" class="p-1.5 rounded-lg hover:bg-surface-container-high transition-colors text-error" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- SECTION 3: Consular Protocol & UK ETA / Visitor Visa Verification -->
+<article class="bg-surface rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">policy</span>
+<h2 class="font-heading-lg text-heading-lg text-primary">Consular Compliance Desk</h2>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">Port of Arrival: United Kingdom (London Heathrow T3).</p>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-primary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px]">link</span>
+              Trip Bucket Ref: VAC-UK-8821
+            </span>
+</div>
+<!-- Consular Application Status Card -->
+<div class="p-5 rounded-xl bg-surface-container-low shadow-sm space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div>
+<span class="text-label-sm font-label-sm text-text-muted uppercase tracking-wider block">Visa Protocol Status</span>
+<span class="font-title text-title text-primary">UK Standard Visitor Visa (Multiple Entry, 6-Month)</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface text-success shadow-sm font-label-sm text-label-sm font-semibold self-start sm:self-auto">
+<span class="material-symbols-outlined text-[16px] text-success">task_alt</span>
+                Dossier Verified &amp; Linked
+              </span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 font-body-sm text-body-sm">
+<div>
+<span class="block text-text-muted font-label-sm text-label-sm">Application UAN</span>
+<span class="font-mono text-on-surface font-semibold">GWF-091823901</span>
+</div>
+<div>
+<span class="block text-text-muted font-label-sm text-label-sm">VFS Reference</span>
+<span class="font-mono text-on-surface font-semibold">CMB-2026-881</span>
+</div>
+<div>
+<span class="block text-text-muted font-label-sm text-label-sm">Valid From</span>
+<span class="text-on-surface font-semibold">01 Nov 2026</span>
+</div>
+<div>
+<span class="block text-text-muted font-label-sm text-label-sm">Expiration</span>
+<span class="text-on-surface font-semibold">01 May 2027</span>
+</div>
+</div>
+</div>
+<!-- Emergency Contact Information Required by Carrier API -->
+<div class="space-y-4 pt-2">
+<h3 class="font-title text-title text-primary">In-Flight Emergency Contact</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="emContactName">Full Legal Name</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="emContactName" type="text" value="Elena Morgan"/>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="emContactRel">Relationship</label>
+<select class="w-full h-12 px-3 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="emContactRel">
+<option selected="" value="Spouse">Spouse</option>
+<option value="Parent">Parent</option>
+<option value="Sibling">Sibling</option>
+<option value="Corporate">Corporate Mobility Lead</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="emContactPhone">Emergency Phone</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="emContactPhone" type="tel" value="+94 77 194 0021"/>
+</div>
+</div>
+</div>
+</article>
+<!-- SECTION 4: Loyalty Program & Airline Status -->
+<article class="bg-surface rounded-2xl p-6 sm:p-8 shadow-sm space-y-5">
+<div class="flex items-center justify-between">
+<div class="space-y-1">
+<h2 class="font-heading-lg text-heading-lg text-primary">Frequent Flyer &amp; Loyalty Privileges</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Earn FlySMILES miles and Tier credits across the Oneworld network.</p>
+</div>
+<span class="material-symbols-outlined text-primary text-[28px]">loyalty</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="loyaltyProgram">Frequent Flyer Program</label>
+<select class="w-full h-12 px-3 rounded-xl bg-surface text-on-surface shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus" id="loyaltyProgram">
+<option selected="" value="UL">SriLankan Airlines (FlySMILES · Oneworld)</option>
+<option value="BA">British Airways (Executive Club)</option>
+<option value="QR">Qatar Airways (Privilege Club)</option>
+<option value="MH">Malaysia Airlines (Enrich)</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="loyaltyNumber">Membership Number</label>
+<input class="w-full h-12 px-4 rounded-xl bg-surface text-on-surface font-mono shadow-sm font-body text-body focus:outline-none focus:ring-2 focus:ring-focus uppercase" id="loyaltyNumber" type="text" value="UL-78291044"/>
+</div>
+</div>
+<!-- Active Benefits Callout -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-warning/20 text-warning flex items-center justify-center font-bold text-label-sm">★</div>
+<div>
+<span class="font-label text-label text-on-surface font-semibold">Tier Status: FlySMILES Gold</span>
+<span class="text-text-muted font-body-sm text-body-sm block">Serendib Lounge CMB &amp; BA Galleries Club LHR T3 included</span>
+</div>
+</div>
+<span class="text-success font-label-sm text-label-sm font-semibold">+15kg Complimentary Baggage Active</span>
+</div>
+</article>
+</div>
+<!-- Right Column: Verification Readiness Scorecard & Financial Summary (~4 cols) -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- Document Readiness Scorecard -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm space-y-5">
+<div class="flex items-center justify-between">
+<h3 class="font-heading-md text-heading-md text-primary">Dossier Readiness</h3>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-success font-label-sm text-label-sm font-bold">100% COMPLETE</span>
+</div>
+<!-- Readiness Checklist Items -->
+<ul class="space-y-3 font-body-sm text-body-sm">
+<li class="flex items-start gap-3 p-2 rounded-lg bg-surface-subtle">
+<span class="material-symbols-outlined text-success text-[20px]">check_circle</span>
+<div class="flex-1">
+<span class="font-semibold text-on-surface block">Passport Bio-Page Verified</span>
+<span class="text-text-muted text-[12px]">N78410294 · Auto OCR verified match</span>
+</div>
+</li>
+<li class="flex items-start gap-3 p-2 rounded-lg bg-surface-subtle">
+<span class="material-symbols-outlined text-success text-[20px]">check_circle</span>
+<div class="flex-1">
+<span class="font-semibold text-on-surface block">Primary Passenger Identity</span>
+<span class="text-text-muted text-[12px]">Matches FlySMILES profile exact token</span>
+</div>
+</li>
+<li class="flex items-start gap-3 p-2 rounded-lg bg-surface-subtle">
+<span class="material-symbols-outlined text-success text-[20px]">check_circle</span>
+<div class="flex-1">
+<span class="font-semibold text-on-surface block">UK Consular Protocol Synchronized</span>
+<span class="text-text-muted text-[12px]">Visa Ref VAC-UK-8821 active and cleared</span>
+</div>
+</li>
+</ul>
+<!-- Ancillary Upsell: Vacatina Worldwide Medical Insurance -->
+<div class="p-4 rounded-xl bg-surface-container-low space-y-3">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">health_and_safety</span>
+<span class="font-label text-label text-primary">Worldwide Medical Shield</span>
+</div>
+<span class="text-primary font-mono font-semibold text-label-sm">+LKR 12,500</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted">£10,000,000 emergency medical cover in the UK and European Schengen transit zones.</p>
+<label class="flex items-center gap-2 text-label-sm font-label-sm text-on-surface cursor-pointer">
+<input class="w-4 h-4 rounded text-primary focus:ring-focus" type="checkbox"/>
+<span>Attach Protection to Current PNR</span>
+</label>
+</div>
+</div>
+<!-- Itemized Financial Dossier Recap -->
+<div class="bg-surface rounded-2xl p-6 shadow-sm space-y-5">
+<div class="flex items-center justify-between">
+<h3 class="font-heading-md text-heading-md text-primary">Fare Summary</h3>
+<span class="font-mono text-label-sm text-text-muted">1 Adult Passenger</span>
+</div>
+<div class="space-y-2.5 font-body-sm text-body-sm text-on-surface">
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Base Return Fare (CMB ⇄ LHR)</span>
+<span class="font-mono tabular-nums text-on-surface font-semibold">LKR 248,500</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Outbound Seat 14A (Exit Row)</span>
+<span class="font-mono tabular-nums text-on-surface">LKR 8,500</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Additional 23kg Checked Bag</span>
+<span class="font-mono tabular-nums text-on-surface">LKR 18,500</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Special Meal: Asian Veg (AVML)</span>
+<span class="font-mono text-success">Included</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Taxes, Passenger Charges &amp; Security</span>
+<span class="font-mono text-text-muted">Included in Base</span>
+</div>
+</div>
+<!-- Total Calculation Divider -->
+<div class="pt-4 bg-surface-subtle p-4 rounded-xl space-y-1">
+<div class="flex justify-between items-baseline">
+<span class="font-label text-label text-on-surface font-semibold">Flight Dossier Total</span>
+<span class="font-heading-lg text-heading-lg text-primary tabular-nums tracking-tight">LKR 275,500</span>
+</div>
+<span class="text-text-muted text-[11px] block">Guaranteed session hold price · No hidden surcharges</span>
+</div>
+<!-- Action CTA Controls -->
+<div class="space-y-3 pt-2">
+<!-- Primary Action CTA -->
+<button class="w-full h-12 rounded-xl bg-primary-container hover:bg-primary text-on-primary font-label text-label transition-colors flex items-center justify-center gap-2 shadow-sm" type="button">
+<span>Proceed to Review &amp; Staging (05)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<!-- Secondary Bucket Staging Action -->
+<button class="w-full h-11 rounded-xl bg-surface-container-low hover:bg-surface-container text-primary font-label-sm text-label-sm transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">workspaces</span>
+<span>Stage Traveler Dossier to Trip Bucket</span>
+</button>
+</div>
+<!-- Verification Concierge Prompt -->
+<div class="pt-2 text-center">
+<p class="font-body-sm text-body-sm text-text-muted">
+              Need immediate document validation?
+            </p>
+<a class="inline-flex items-center gap-1.5 font-label-sm text-label-sm text-primary hover:underline font-semibold mt-1" href="https://wa.me/94113606200">
+<span class="material-symbols-outlined text-[16px] text-success">chat</span>
+              WhatsApp Desk: +94113606200
+            </a>
+</div>
+</div>
+</aside>
+</div>
+</section>
+<!-- Persistent Floating Trip Workspace Dock -->
+<aside aria-label="Trip Workspace Floating Dock" class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-4xl z-40 bg-surface text-on-surface shadow-xl rounded-2xl p-3 sm:px-6 sm:py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">workspaces</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label text-label text-primary font-bold">Your Trip Workspace</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">3 Staged Items</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted hidden sm:block">Flight (Ready) · Hotel Claridge's (Draft) · UK Visa Protocol (Ready)</p>
+</div>
+</div>
+<div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+<div class="text-right">
+<span class="text-text-muted font-label-sm text-label-sm block">Composite Subtotal</span>
+<span class="font-title text-title text-primary tabular-nums font-bold">LKR 550,500</span>
+</div>
+<button class="h-10 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm font-semibold transition-colors flex items-center gap-1.5 shrink-0 shadow-sm" type="button">
+<span>Review Trip Bucket</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</aside>
+<!-- Interactive Inline Script for GDS Countdown Timer -->
+<script>
+    (function initSessionTimer() {
+      let totalSeconds = 11 * 60 + 42;
+      const timerElement = document.getElementById('sessionTimer');
+      if (!timerElement) return;
+
+      const interval = setInterval(function() {
+        if (totalSeconds <= 0) {
+          clearInterval(interval);
+          timerElement.textContent = "00:00 (Expired)";
+          return;
+        }
+        totalSeconds--;
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        timerElement.textContent = 
+          String(minutes).padStart(2, '0') + ':' + 
+          String(seconds).padStart(2, '0');
+      }, 1000);
+    })();
+  </script>
+</div></main><footer class="w-full bg-primary-container text-on-primary pt-16 pb-8"><div class="max-w-7xl mx-auto px-6"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12"><div class="space-y-4"><div class="flex items-center gap-2 font-heading-md text-heading-md text-on-primary"><span class="material-symbols-outlined text-[24px]">travel_explore</span><span>VACATINA</span></div><p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">The authoritative travel operating system engineered for end-to-end flight, itinerary composition, and enterprise mobility management.</p><div class="pt-2 space-y-1.5"><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">call</span><span>+94113606200</span></div><div class="flex items-center gap-2 font-body-sm text-body-sm text-on-primary"><span class="material-symbols-outlined text-[16px] text-on-primary-container">mail</span><span>info@vacatina.com</span></div></div></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Products &amp; Mobility</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="flights" href="#">Flight Search Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="hotels" href="#">Accommodations &amp; Resorts</a></li><li><a class="hover:text-on-primary transition-colors" data-path="holiday-packages" href="#">Bespoke Holiday Packages</a></li><li><a class="hover:text-on-primary transition-colors" data-path="cars-and-transfers" href="#">Ground Transportation</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Rail &amp; Coastal Cruising</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Travel Operations</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="visa-assistance" href="#">Global Visa Protocol</a></li><li><a class="hover:text-on-primary transition-colors" data-path="flight-booking-flow" href="#">Trip Bucket Engine</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Baggage &amp; Fare Rules</a></li><li><a class="hover:text-on-primary transition-colors" data-path="more-products" href="#">Comprehensive Travel Insurance</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Real-Time Airline Timetables</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Enterprise &amp; Compliance</h4><ul class="space-y-2.5 font-body-sm text-body-sm text-on-primary-container"><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Corporate Portal Access</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">IATA Accredited Agency</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">Global Distribution Network</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">PCI-DSS Level 1 Security</a></li><li><a class="hover:text-on-primary transition-colors" data-path="resources" href="#">API Solutions &amp; Partners</a></li></ul></div><div><h4 class="font-label text-label uppercase tracking-wider text-on-primary mb-4">Statutory &amp; Quality</h4><div class="space-y-3 font-body-sm text-body-sm text-on-primary-container"><p>Operating with certified Global Distribution System standards and verified ticketing agency integrity.</p><div class="p-3 rounded-lg bg-primary/40 space-y-1 text-on-primary"><div class="font-label-sm text-label-sm font-semibold">Customer Operations Support</div><div class="text-xs text-on-primary-container">Available Daily for Global Travelers</div><div class="text-xs text-on-primary-container font-mono">Tel: +94113606200</div></div></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-primary-container"><p>© 2025 Vacatina Travel Operating System. All rights reserved.</p><div class="flex flex-wrap items-center gap-6 font-label-sm text-label-sm"><a class="hover:text-on-primary transition-colors" data-path="privacy-policy" href="#">Privacy Statement</a><a class="hover:text-on-primary transition-colors" data-path="terms-of-service" href="#">Booking Terms &amp; Conditions</a><a class="hover:text-on-primary transition-colors" data-path="statutory-compliance" href="#">Statutory Regulatory Notice</a><a class="hover:text-on-primary transition-colors" data-path="security-standards" href="#">Data Security Protocol</a></div></div></div></footer></body></html>

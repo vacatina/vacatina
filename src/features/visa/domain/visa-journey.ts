@@ -1,6 +1,6 @@
 import { journeyConfigurationFromQuery, validateJourneyConfiguration, type JourneyConfiguration } from '../../journeys/domain/journey-models.ts';
 
-export const VISA_DEMO_DISCLOSURE = 'Canonical demo assistance catalog — eligibility is not verified. Fees, checklist and processing examples are not current government advice. Manual review required; visa decisions belong to the relevant authority. No approval is guaranteed.';
+export const VISA_DEMO_DISCLOSURE = 'Visa assistance catalog - eligibility is not verified. Fees, checklist and processing examples are not current government advice. Manual review required; visa decisions belong to the relevant authority. No approval is guaranteed.';
 let remembered: JourneyConfiguration | null = null;
 
 export function visaContextFromQuery(query: URLSearchParams): JourneyConfiguration {

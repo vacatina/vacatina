@@ -1,0 +1,44 @@
+graph TD
+    F_HUB[/"Flights Hub<br/>/flights"\] --> F_ORIGIN[Origin Input]
+    F_HUB --> F_DEST[Destination Input]
+    F_HUB --> F_DATES[Date Picker]
+    F_HUB --> F_TRAV[Traveller Popover]
+    F_HUB --> F_CABIN[Cabin Class Select]
+    F_HUB --> F_SEARCH_BTN[Search Submit]
+
+    F_TRAV --> F_ADULTS[Adults +/-]
+    F_TRAV --> F_CHILDREN[Children +/-]
+    F_TRAV --> F_INFANTS[Infants +/-]
+    F_TRAV --> F_APPLY[Apply Button]
+    F_APPLY --> F_HUB
+
+    F_SEARCH_BTN --> F_VALIDATION{Validation}
+    F_VALIDATION -->|Valid| F_SEARCH[Flight Search<br/>/flights/search]
+    F_VALIDATION -->|Invalid| F_ERROR[Validation Error]
+
+    F_SEARCH --> F_RESULTS[Flight Results]
+    F_RESULTS --> F_OFFER_CARD[Offer Card Click]
+    F_OFFER_CARD --> F_DETAIL[Flight Offer Detail<br/>/flights/offer/:id]
+
+    F_DETAIL --> F_FARE[Select Fare Family]
+    F_DETAIL --> F_SERVICES[Select Optional Services]
+    F_DETAIL --> F_ADD[Add to Trip Bucket]
+    F_ADD --> F_STAGE[Stage as needs_action]
+    F_STAGE --> F_TB[Trip Bucket Drawer]
+
+    F_DETAIL --> F_INVALID[Invalid Offer Dialog]
+    F_INVALID --> F_CLOSE_INVALID[Close → /flights]
+
+    F_RESULTS --> F_NO_RESULTS[No Results State]
+    F_NO_RESULTS --> F_MODIFY[Modify Search]
+
+    F_TB --> F_REVIEW_CTA[Review Trip CTA]
+    F_REVIEW_CTA --> F_REVIEW[Trip Review<br/>/trip/review]
+
+    F_REVIEW --> F_ENQUIRY[Submit Enquiry]
+    F_ENQUIRY --> F_CONSENT[Consent Checkbox]
+    F_CONSENT --> F_SUBMIT_BTN[Submit Button]
+    F_SUBMIT_BTN --> F_ENQ_RESULT[Enquiry Created<br/>ENQ-DEMO-XXXX]
+
+    F_REVIEW --> F_WITHDRAW[Withdraw Enquiry]
+    F_WITHDRAW --> F_WITHDRAWN[Status: Withdrawn]

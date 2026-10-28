@@ -305,7 +305,7 @@ export class VisaSearchView {
             <!-- Results List -->
             <main class="lg:col-span-9 space-y-4">
               <div class="flex items-center justify-between text-xs text-brand-muted">
-                <div id="visa-results-count" data-results-count="${filteredOffers.length}">Showing <strong class="text-brand-black">${filteredOffers.length}</strong> demo assistance option${filteredOffers.length === 1 ? '' : 's'}</div>
+                <div id="visa-results-count" data-results-count="${filteredOffers.length}">Showing <strong class="text-brand-black">${filteredOffers.length}</strong> visa assistance option${filteredOffers.length === 1 ? '' : 's'}</div>
                 <div>All prices in <strong>LKR</strong></div>
               </div>
 
@@ -344,7 +344,7 @@ export class VisaSearchView {
                     </div>
                     <div class="absolute bottom-2 left-2 right-2">
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-primary text-white shadow-sm block text-center truncate">
-                        Demo estimate ${offer.processingSlaBusinessDays} days · Not verified
+                        Estimated ${offer.processingSlaBusinessDays} days · Not verified
                       </span>
                     </div>
                   </div>
@@ -398,7 +398,7 @@ export class VisaSearchView {
                   <!-- Right Side: Pricing & CTA -->
                   <div class="w-full md:w-56 shrink-0 pt-4 md:pt-0 md:pl-5 border-t md:border-t-0 md:border-l border-brand-border/60 flex flex-col justify-between self-stretch">
                     <div class="space-y-1">
-                      <div class="text-[10px] text-brand-muted">Illustrative fee per applicant</div>
+                      <div class="text-[10px] text-brand-muted">Fee per applicant (estimate)</div>
                       <div class="text-xl font-extrabold text-brand-primary">
                         LKR ${(offer.pricing.totalPriceMinor / 100).toLocaleString()}
                       </div>

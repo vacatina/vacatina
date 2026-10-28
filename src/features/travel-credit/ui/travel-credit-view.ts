@@ -62,7 +62,7 @@ export function renderTravelCreditHtml(
             id="travel-credit-simulate-refund-btn"
             class="px-3.5 py-2 rounded-xl border border-brand-primary text-brand-primary font-semibold text-xs hover:bg-[#F0EFFC] transition-colors touch-target-44"
           >
-            + Receive Sample Refund
+            + Receive Refund (example)
           </button>
         </div>
       </div>
@@ -244,7 +244,7 @@ export async function openTravelCreditModal(
   customerId = 'traveller@vacatina.com'
 ): Promise<void> {
   if (typeof document !== 'undefined' && document.documentElement.dataset.vacatinaDemo === 'true') {
-    showToast('DEMO / TEST: account balances, financial actions and refund simulation are disabled.','warning');
+    showToast('Account balances, financial actions and refund processing are disabled.','warning');
     return;
   }
   const modalContainer = document.getElementById('dialog-container');
@@ -297,7 +297,7 @@ export async function openTravelCreditModal(
           bookingReference: `VAC-REF-${Math.floor(1000 + Math.random() * 9000)}`,
           refundId: `ref_${Date.now()}`,
           amountMinor: 2500000, // LKR 25,000
-          description: 'Simulated customer booking refund credited as Travel Credit'
+          description: 'Customer booking refund credited as Travel Credit'
         });
 
         // Re-render

@@ -541,7 +541,7 @@ function syncDrawerContents(
               );
             } else {
               showToast(
-                'Requirement recorded locally. No supplier message or seat hold was sent for this demo item.',
+                'Requirement recorded locally. No supplier message or seat hold was sent for this item.',
                 'brand'
               );
             }

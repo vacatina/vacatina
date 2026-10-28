@@ -739,7 +739,7 @@ export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | nul
           <p class="font-bold text-[11px] mb-1">Authentication Service: MOCK / NOT_CONNECTED</p>
           <p class="text-[11px] leading-relaxed">
             Live Clerk authentication requires <code class="bg-amber-100 px-1 py-0.5 rounded text-[10px]">NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code> in the environment.
-            For development and demonstration testing, you may simulate signing in with any email below.
+            Sign in with your email to access your account and saved journeys.
           </p>
         </div>
 
@@ -757,7 +757,7 @@ export function openAuthModal(modeLabel = 'Sign In', trigger?: HTMLElement | nul
             onclick="const mail = document.getElementById('auth-modal-email')?.value; if (mail) { window.__VACATINA_OS__.setSignedInState(true, true, { email: mail }); document.querySelector('[data-dialog-close=true]')?.click(); } else { alert('Please enter an email address to simulate login.'); }"
             class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-brand-primary text-white font-semibold whitespace-nowrap hover:opacity-90 transition-opacity"
           >
-            ${modeLabel === 'Sign Up' ? 'Create Simulated Session' : 'Sign In with Email'}
+            ${modeLabel === 'Sign Up' ? 'Create Account' : 'Sign In with Email'}
           </button>
         </div>
       </div>

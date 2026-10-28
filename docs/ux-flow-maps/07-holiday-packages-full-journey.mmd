@@ -1,0 +1,20 @@
+graph TD
+    P_HUB[/"Holiday Packages Hub<br/>/holiday-packages"\] --> P_DEST[Destination]
+    P_HUB --> P_DEPART[Departure City]
+    P_HUB --> P_WINDOW[Travel Window]
+    P_HUB --> P_TYPE[Package Type]
+    P_HUB --> P_SEARCH_BTN[Search Submit]
+
+    P_SEARCH_BTN --> P_VALIDATION{Validation}
+    P_VALIDATION -->|Valid| P_SEARCH[Package Search<br/>/holiday-packages/search]
+    P_VALIDATION -->|Invalid| P_ERROR[Validation Error]
+
+    P_SEARCH --> P_RESULTS[Package Results]
+    P_RESULTS --> P_OFFER[Package Offer<br/>/holiday-packages/offer/:id]
+    P_OFFER --> P_CONFIG[Package Configurator]
+    P_CONFIG --> P_STAGE[Stage as needs_action]
+    P_STAGE --> P_TB[Trip Bucket Drawer]
+
+    P_RESULTS --> P_NO_RESULTS[No Results State]
+    P_TB --> P_REVIEW_CTA[Review Trip CTA]
+    P_REVIEW_CTA --> P_REVIEW[Trip Review<br/>/trip/review]

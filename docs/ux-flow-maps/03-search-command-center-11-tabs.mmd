@@ -1,0 +1,71 @@
+graph TD
+    SCC[Search Command Center] --> TABS[11 Tabs: bundle, flights, hotels, visa, packages, cars, rails, cruises, activities, sightseeing, insurance]
+
+    TABS --> BUNDLE_TAB[Bundle Tab]
+    BUNDLE_TAB --> BUNDLE_FIELDS[Fields: origin, destination, dates, travellers, rooms]
+    BUNDLE_FIELDS --> BUNDLE_VALIDATION{Validation}
+    BUNDLE_VALIDATION -->|Valid| BUNDLE_SUBMIT[Submit → /trip-builder]
+    BUNDLE_VALIDATION -->|Invalid| BUNDLE_ERROR[Inline error]
+
+    TABS --> FLIGHTS_TAB[Flights Tab]
+    FLIGHTS_TAB --> FLIGHTS_FIELDS[Fields: origin, destination, dates, travellers, cabin class]
+    FLIGHTS_FIELDS --> FLIGHTS_VALIDATION{Validation}
+    FLIGHTS_VALIDATION -->|Valid| FLIGHTS_SUBMIT[Submit → /flights/search]
+    FLIGHTS_VALIDATION -->|Invalid| FLIGHTS_ERROR[Inline error]
+
+    TABS --> HOTELS_TAB[Hotels Tab]
+    HOTELS_TAB --> HOTELS_FIELDS[Fields: destination, check-in, check-out, rooms, guests]
+    HOTELS_FIELDS --> HOTELS_VALIDATION{Validation}
+    HOTELS_VALIDATION -->|Valid| HOTELS_SUBMIT[Submit → /hotels/search]
+    HOTELS_VALIDATION -->|Invalid| HOTELS_ERROR[Inline error]
+
+    TABS --> VISA_TAB[Visa Tab]
+    VISA_TAB --> VISA_FIELDS[Fields: country, citizenship, residence, travel date, purpose]
+    VISA_FIELDS --> VISA_VALIDATION{Validation}
+    VISA_VALIDATION -->|Valid| VISA_SUBMIT[Submit → /visa-assistance/search]
+    VISA_VALIDATION -->|Invalid| VISA_ERROR[Inline error]
+
+    TABS --> PACKAGES_TAB[Packages Tab]
+    PACKAGES_TAB --> PKG_FIELDS[Fields: destination, departure city, travel window, package type]
+    PKG_FIELDS --> PKG_VALIDATION{Validation}
+    PKG_VALIDATION -->|Valid| PKG_SUBMIT[Submit → /holiday-packages/search]
+    PKG_VALIDATION -->|Invalid| PKG_ERROR[Inline error]
+
+    TABS --> CARS_TAB[Cars Tab]
+    CARS_TAB --> CARS_FIELDS[Fields: service type, pickup, dropoff, date/time, driver age]
+    CARS_FIELDS --> CARS_VALIDATION{Validation}
+    CARS_VALIDATION -->|Valid| CARS_SUBMIT[Submit → /cars-transfers/search]
+    CARS_VALIDATION -->|Invalid| CARS_ERROR[Inline error]
+
+    TABS --> RAILS_TAB[Rails Tab]
+    RAILS_TAB --> RAILS_FIELDS[Fields: from station, to station, date, class]
+    RAILS_FIELDS --> RAILS_VALIDATION{Validation}
+    RAILS_VALIDATION -->|Valid| RAILS_SUBMIT[Submit → /rails/search]
+    RAILS_VALIDATION -->|Invalid| RAILS_ERROR[Inline error]
+
+    TABS --> CRUISES_TAB[Cruises Tab]
+    CRUISES_TAB --> CRUISES_FIELDS[Fields: region, departure port, travel window, cabin, duration]
+    CRUISES_FIELDS --> CRUISES_VALIDATION{Validation}
+    CRUISES_VALIDATION -->|Valid| CRUISES_SUBMIT[Submit → /cruises/search]
+    CRUISES_VALIDATION -->|Invalid| CRUISES_ERROR[Inline error]
+
+    TABS --> ACTIVITIES_TAB[Activities Tab]
+    ACTIVITIES_TAB --> ACT_FIELDS[Fields: destination, date, category]
+    ACT_FIELDS --> ACT_VALIDATION{Validation}
+    ACT_VALIDATION -->|Valid| ACT_SUBMIT[Submit → /activities/search]
+    ACT_VALIDATION -->|Invalid| ACT_ERROR[Inline error]
+
+    TABS --> SIGHTSEEING_TAB[Sightseeing Tab]
+    SIGHTSEEING_TAB --> SIGHT_FIELDS[Fields: destination, date, tour type]
+    SIGHT_FIELDS --> SIGHT_VALIDATION{Validation}
+    SIGHT_VALIDATION -->|Valid| SIGHT_SUBMIT[Submit → /sightseeing-tours/search]
+    SIGHT_VALIDATION -->|Invalid| SIGHT_ERROR[Inline error]
+
+    TABS --> INSURANCE_TAB[Insurance Tab]
+    INSURANCE_TAB --> INS_FIELDS[Fields: region, residence, trip start, trip end, coverage]
+    INS_FIELDS --> INS_VALIDATION{Validation}
+    INS_VALIDATION -->|Valid| INS_SUBMIT[Submit → /travel-insurance/compare]
+    INS_VALIDATION -->|Invalid| INS_ERROR[Inline error]
+
+    ALL_SUBMIT[All Submit Buttons] --> NAVIGATE[Single Handler → navigateTo]
+    NAVIGATE --> DESTINATION[Destination Route]
