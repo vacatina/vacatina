@@ -1,0 +1,1673 @@
+{
+  "date": "2026-10-28",
+  "baselineCommit": "e313e0d",
+  "authority": "DESIGN.md and current production repository",
+  "reviewMethod": "Direct image review; contact sheets supplement full-resolution representative review.",
+  "protectedHistorical": [
+    {
+      "file": "screenshots/vacatina_360px_mobile.png",
+      "sha256": "9eae7117379c6a58b7ebcb5c2416b7fde1e94ed5a911853411e1001dbea71b83",
+      "note": "Required historical baseline, restored after E2E; not a new Phase 17 capture."
+    },
+    {
+      "file": "screenshots/vacatina_footer_1440px.png",
+      "sha256": "204f32df10ef52e9d46bfaddee7fabfc17a53d7f7ba682a7380a0f71ea08fa6d",
+      "note": "Required historical baseline, restored after E2E; not a new Phase 17 capture."
+    },
+    {
+      "file": "screenshots/vacatina_holiday_package_modal.png",
+      "sha256": "583e08e8d37ae6c850dc554535af2c8e38c2d2d8ec927865a787e8fb2d561b26",
+      "note": "Required historical baseline, restored after E2E; not a new Phase 17 capture."
+    },
+    {
+      "file": "screenshots/vacatina_screen04_8states_inspector.png",
+      "sha256": "724111435606760a5dc35537400425e2fb350aa729724bff67e3408e73bba2b2",
+      "note": "Required historical baseline, restored after E2E; not a new Phase 17 capture."
+    }
+  ],
+  "groups": [
+    {
+      "name": "scc-before",
+      "count": 33,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/scc-before-01.png",
+        "phase17-evidence/contact-sheets/scc-before-02.png",
+        "phase17-evidence/contact-sheets/scc-before-03.png",
+        "phase17-evidence/contact-sheets/scc-before-04.png",
+        "phase17-evidence/contact-sheets/scc-before-05.png",
+        "phase17-evidence/contact-sheets/scc-before-06.png",
+        "phase17-evidence/contact-sheets/scc-before-07.png",
+        "phase17-evidence/contact-sheets/scc-before-08.png",
+        "phase17-evidence/contact-sheets/scc-before-09.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-activities.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "76c171375677df434b92959b8d6061841508f3e5524d06bda0b145abc80cd983",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-bundle.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "832f69877274656f2e12a1088ba6214768a10fc186c57afb45185ebbb3159790",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-cars.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "3763285d7631652f938220fc492b150eb7b0d6df01706cdf6acb55ae5e46ded2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-cruises.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "8c6f0132a050c8426ec743d554f5fcc80e43d7917b3d34c6981199cbf1fe967c",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-flights.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "80632bd9a977f783f931285e3ba07be6676eba6a086e075d7d4154531aefcad2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-hotels.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "ca4d2a0ee7450892241e6d3f27f2edbb39b2f7e4d1f73f217170959b9f562f98",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-insurance.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "7239e80d28c58dbf3d66378a276a9324954dd6dd2e796d9994656b632b9bf689",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-packages.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "ef71376863a203787abd21f54d3e19499a7996ac6275c65ba6ca2b33c4f8b965",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-rails.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "2121817fa53c6087e7003237c5952c702467efd3ddc664e43cc2b8e0dd361186",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-sightseeing.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "d4c34a399e5a2a191ee052df2f9bb64c2cb4f7b8c58cc2e3ecd0e1d9f65a8dc7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-1440-visa.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "19b3fb05fad2fbd218cb2dcc8e74f1fb4779bee5b66da61be3c98e810c783bce",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-activities.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "8a777959058fd9d09ab584f20d4b653a17a22bc92a570c26f0f94fa4cc0bbe0b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-bundle.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "8dd28ba504ec2d4e425c6e4ac3b1315baf33eb8525ca6807af2333ad19389c72",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-cars.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "221094b20c548cb67c70b0e5b02c8d8d0f175582531db311eff6d572713ce8ff",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-cruises.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "325c070dac4ff0ba4f013f66af1214f4575ea0564eff64f22d36754c7c65f055",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-flights.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "d4214404043a34a91c359884575d5703fbdf20ab55ad0ca34fd4ade6d1837be7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-hotels.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "e0c0d8d0a3d31b3fee9e0e2841bed7884e4ec995c2b23e524d279b38d93752a1",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-insurance.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "d9d8c170cdac10b4dcdbd5c379ce27e1dae1f641808bd5c6c61e9f455dc75cef",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-packages.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "549864b6c699dc1ae7cc25347422cb775e1edbc5c795502fd104c2c1ffc22052",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-rails.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "c5634fdfdbea56ba9ba0961faf6b94039bb131d41c2f369629ddc7e9136df931",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-sightseeing.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "ede5711011f937107d9dc74855f14abcac2c726ac78aff926cb71d06e804163c",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-360-visa.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "c7f43fce6eff6ae3aacdca4d3fc8b01c84b29a3a7e3fca698fe42669b4bc953b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-activities.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "de211b2d5581e3434b6d1bbde7c79ac25b05897cf5637db07c41488c2d52cf78",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-bundle.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "f64bd312eea0f4bb64856b9a6f70293aae7bbc38a7d70515508b5868e59e2335",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-cars.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "0438f61ad6c6651d4303585ddea9fc615c203819405489578cb53e1a08c0d330",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-cruises.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "29cb9994f8209d2abf656a30e2cfd2ef5f4216f34f25805fc0fe188b5c8f79e2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-flights.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "75de9279d31b270ee3218c6c16d84aa898f2979f951ad10a3ee2d2706b53d920",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-hotels.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "693f2156abfbadd09a31240583fe2df8b0e3fdc9d31f28e555bc058b9f38df65",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-insurance.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "14a73722e7820d31eeee663248cb474adedbde219d204a1d78ca2150db5b0608",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-packages.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "88b05ceeda16c817c1399f3e80abdd359ae76b2cbf8a4dcc59d412ca27ff43c6",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-rails.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "9b273e703034ccf6884ffc017e2a8b69931e33122a7718cd0204d067009c2469",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-sightseeing.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "30275356e9ab022c7e935cbcd672697bd152e078cbd5de5168400af05b52fff6",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-before/scc-768-visa.png",
+          "width": 768,
+          "height": 1000,
+          "sha256": "68bcb895608f4815659b477a32a08a74b84228d30930de636d882c880eaf528d",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "scc-after",
+      "count": 11,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/scc-after-01.png",
+        "phase17-evidence/contact-sheets/scc-after-02.png",
+        "phase17-evidence/contact-sheets/scc-after-03.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/scc-after/scc-768-activities.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "ba718e1757ec6890ae8affcedc6acebd0f7754c1fa4b1fdcb017855e7de38764",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-bundle.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "47e0420fdc2b0b717460aa522be4c0528b4e173ba4dcfa3c37621d74b2a48db5",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-cars.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "86f1a0dc008f73c21f1e4a5754cb0c985bf8ceaf7b991fc11838227669fd9877",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-cruises.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "9806ce601370e70dff6d386805972feaff78a41c22a6634bf4f2dfc288bdd08b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-flights.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "44412437f445f3fd71c5ec6489a8f512cd85d359d7ac4a43d8176147aa28f874",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-hotels.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "79f853222fba9f6316e849ed4bf7a2617c6970a773c62d3f9a169fed8f5dcf67",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-insurance.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "2717b99cbd5243f7841cb80fa087b969851ab366ede100ea836b1588475f2f6f",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-packages.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "c3cfab4ebef7d7c0a968eb677a4a54936fa8f38f6947e16fbd6231a5886d55ed",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-rails.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "a924ac84af4a487200e1e8ac0b344b2ff1630f650033cd9d03eb4b8f81def01f",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-sightseeing.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "2fbc51fd4a7381115cced8eb16c471f9608a5df55097decb0191f801fc9de70c",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/scc-after/scc-768-visa.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "6e8bbfcfe896482f8970b0d733450d00d459addba7c678a66484493d594a2e6d",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "journeys",
+      "count": 46,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/journeys-01.png",
+        "phase17-evidence/contact-sheets/journeys-02.png",
+        "phase17-evidence/contact-sheets/journeys-03.png",
+        "phase17-evidence/contact-sheets/journeys-04.png",
+        "phase17-evidence/contact-sheets/journeys-05.png",
+        "phase17-evidence/contact-sheets/journeys-06.png",
+        "phase17-evidence/contact-sheets/journeys-07.png",
+        "phase17-evidence/contact-sheets/journeys-08.png",
+        "phase17-evidence/contact-sheets/journeys-09.png",
+        "phase17-evidence/contact-sheets/journeys-10.png",
+        "phase17-evidence/contact-sheets/journeys-11.png",
+        "phase17-evidence/contact-sheets/journeys-12.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/journeys/phase17-activities-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "b8babc2edcbef741fed3aef455967bb8da455cfd361663018526a272add08e74",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-activities-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "894f0d58dd7994cfde311a2242c181489fcfc0d70fdd8c9a409f303e00b2a637",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-activities-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "6767a5dfb4e863b3ebfc562c42cbf703e21f6a38cc4327d3f2ec44083f55a058",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-activities-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "2a9950804ba8661d15725b093bec7a7440618f05f1ce3a8c31761dec82da7f02",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-activities-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "de2c869f8bbd3425cce8fae824b0106a3272f793aa60f7c7e0eb2f1ed28ad4c9",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-activities-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "4418cabbc8c7221346a1114c5fa35d444389c9abb89c20bb73a696e60dfc988d",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-bundle-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "063ebfd0f618cc83137dce83e6d100544bc37a5a2cef3b0e330d5367da72fcb3",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-bundle-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "016690f415ce6978add7d763e8ae50b5fa160d08b2bb0bd5d078eb84b496b1db",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cars-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "070b1f58e08d7a3bd69be0bbcd037c6da872da5bf4e405ba64844a6be4e8ae86",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cars-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "32f5f785da7722f3b878342fd7018a08742e916ef07913e3ec0fa6ee3cdba1bf",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cars-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "c15adafcfc5f4e7a6ad958a5b42fea5e7aa0073d97ee57be99b6e6468fd21bab",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cars-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "6f3223766a0aafa48328b2090c17aaf218206bb8eeb997ab7696c8e582739cdc",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cars-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "b02685f2750179c974e9d48724452fe40c196b6a6f95d25b351c6ee0ef6f46d2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cars-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "d67c3229eaf7b0f84b3d5a8881deb28a5dcb1291d431dfa603149dbd72187006",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cruises-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "68c2ddc24073c97902a769da23fa7fb6e0c86657d231b849b3799545ee2e8b9d",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cruises-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "30b23266494cef1adec16bf9869ffb190c2425bbc70b93aa8f229fc1fd9a4456",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cruises-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "6253a67a7141aa10a0200c604caa175c1022876944bb77927ec4af94615499ec",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cruises-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "056950a7c5eed953012865b8633ac75431ce6de864d8cf69aefffaa4fde98c9e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cruises-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "7eb433e3258c92110a1f88cf2de4d422cb3f6efd3958502ab3fd6d3fe5b24bbe",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-cruises-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "116a8df1c1e88d4c871d859258ec7d2bae55472b809a579e06c6efd1cfac17c2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-insurance-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "28f5c55e48e2d43ca8bc124c64ff2e6206732722a6ad6fa7e3c5a52165aea294",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-insurance-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "6a9f727a52b2a7326a9088bced966ef97feb1d5a796fa59fa28c5aee9d8e0aa9",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-insurance-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "629250dc1953868b7f6a4edba31787d9f5d9b89748b6fd0410523cf333ba5437",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-insurance-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "0f56ee0d7f9bdc20bfe39bff34f8d381633afa7bf0e824bf9ec7c748b01dc7eb",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-insurance-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "2eb791dc2ee0fb83238a5c4027fc4557d4f0867486797f69d7091ba7ed5dc229",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-insurance-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "fae3d75060fd52352bcb67ecaf5af6d3a19db431a6e1425ca4e2fa8cd8c84656",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-packages-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "842374aa47e1317249970ead409a24169c06f39e8e48748cef933cf51c719f80",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-packages-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "478636235399583833ea8ced41c28b3f5f7bc87d7252bccaff41476aa0739863",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-packages-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "b8be8a4bf5a1e53f9b084ec4e1834d28001f86397a576150c07e45aca289fe9e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-packages-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "1ec58093eea6ec04f4603eb71fd274ed3f34d8a18bb59aa98dfdf7fb1562e452",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-packages-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "b013d2fe87df41cf6fb17ca4b9366e651885ecbda10a5d1b22429a782488c3e6",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-packages-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "eccdd428856e7048a61a6ec607eb3083789c1c0af1cfcbcd9d725f91bc44fc30",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-rails-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "7632c29611396e92b931391cb42efb63c8ead5937973f14232b234d79971185a",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-rails-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "57213dd86270dcd24b6d7bf5d485482b862bc697ed0fc749b6dece9dab54e7a0",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-rails-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "9088bcb9bdeb7a06ddb54bbebc3469cd5db364435c39ccb9840df6f6fe96c937",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-rails-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "b02d6c795bfa1b4ba995581a8a3987b5f4fe482c836f5203b625414eed2f54f9",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-rails-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "c5bf46e90dcc70dde35513c2318c5e42f14558d9298f47ce8157108cfc47dcfd",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-rails-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "0a7d5f5e9e87ef56204ded06f20b4e992ed3d5717ee8fefa6e38bb641125bc5e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-review-empty-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "fd2d67e207ccfd0302793c1853e216ba66eb2bbe5e0e9e3327b71fd77bf9f8ca",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-review-empty-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "5d847614f089afd33192e8fc69bf242bc5af762175cbb0acb64d58037459d9b6",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-sightseeing-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "5059d1b3f4e8b502189c923fa76fbe7bf9e1decc070a53e551802f486a15073d",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-sightseeing-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "3934110432c8a3d9e64480313b5b498e3ae622a114ee4e65fbc88dbe0b52411d",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-sightseeing-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "48d5748066216bdfb3511698bbf53426d04d3976669a6d9be73ad83aef2774de",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-sightseeing-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "c97a967e15a77c44f93d62d617d3521c4978ff067a2057c652532c9b4c200644",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-sightseeing-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "7f897c018f4fff887d8f3bec0fdb8951400fe736236e2bb9bb676d934a1746d9",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/journeys/phase17-sightseeing-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "1103680a9db5e51322cd04f0a01b7b42c7f9e126bdd82d1463f5b75f97417daf",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "tablet-products",
+      "count": 14,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/tablet-products-01.png",
+        "phase17-evidence/contact-sheets/tablet-products-02.png",
+        "phase17-evidence/contact-sheets/tablet-products-03.png",
+        "phase17-evidence/contact-sheets/tablet-products-04.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/tablet-products/768-activities-detail.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "393474c9a0bc0f0bbcde04d520ea22b420c5628a3ba7f2ad7a9640c3ed413c07",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-activities-results.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "6b209bcda2c1b3bbff55c78fa0bdb07f5d9e3f38f8c24428411659c746a66df2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-cars-detail.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "301a086a7c151bb207cfb084a83d3f48594a1a82cf0772c70a410d1b3b6026f7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-cars-results.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "65cf29c34b5aa4a9f2d53d6db799bc883a392dffb193dc3a4c967c6accb97ca7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-cruises-detail.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "32ec33f2739ffe8f46babd9ad5e3dacbcbfecf19920345fe17e79543ee4cade8",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-cruises-results.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "83b07eecd33ca87c2841a5dd2278b41c10b020c5a51e753f06258d9ac095798a",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-insurance-detail.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "c4f4dafbee26509380249f392d5ebb0453b4a67fb226a1e9a7f9fbeec51c8ef7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-insurance-results.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "0ea66686112818e36aa2a0c3b9239bf8289e5d9049b7d99dcf26bbec42a7ae01",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-packages-detail.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "d5627ee85dfc7bb94e28b24ff3962933514a69bb17b3e2b638ce71e1cd80737b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-packages-results.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "735722196ea6261f03a12a21821cae31f543517811b1819aa30cc21e03c80635",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-rails-detail.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "a01f51bff090b707d32698623887fb169b97e84a23b2d3c3a26c48eb9805efdd",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-rails-results.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "8d3e6ef2f071268f12a76ed33e16a65665eddd7e4114aef9e1acc54651cd254c",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-sightseeing-detail.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "4770b63ce7f9a6704fc7f9e8d510915d364bb267a31511ea8c807ee0ef7e138d",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/tablet-products/768-sightseeing-results.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "bbe43d318d2e28b75c4cf2c72ef782e59dc29a36f5f4036933a06ce0550e7e8c",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "flights-hotels",
+      "count": 11,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/flights-hotels-01.png",
+        "phase17-evidence/contact-sheets/flights-hotels-02.png",
+        "phase17-evidence/contact-sheets/flights-hotels-03.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/flights-hotels/flights-demo-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "ca77e01d3d91ce08d20e982ec67872bb4c74f5fce341d127f2801afb299ebc4b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/flights-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "a3d7e0cb3ad47e987d7462cf36fd70002b2352cf1fff7b31bf4b8478c5d8d4fa",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/flights-invalid-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "e4da74d657944e6561f6fbde452ee224452e7ec4b32a254d41ef665af6c0dd99",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/flights-sandbox-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "7f8fafc766c1b55a230ebc08ddd855ecd58d0d480ac16deb16d8307b6b93d6a6",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/flights-sandbox-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "d20ba21705d2bc4f0e191eac985ba92797f00a825a297db5bb195311e3681919",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/flights-sandbox-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "4c1dc296f36e171cec148e7a3351e7cf614fc72394ed1c673a82b1f44b41d8e1",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/flights-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "cdaab7a34f7e5140133721bf37e55c793a2cab970e9d9e40e6187dae01a6002e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/flights-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "ce963dd3610ad2a4b687abff19b9d5e4d613fcf501c36e1035c34db190612d3a",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/hotels-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "09b89c25c5352f8af9fb9ae437d5c2a835e05c3604e1ac1c7139d5a58f6b64dd",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/hotels-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "8f9d6137c6d67fb1f87f879b2356661d4c8bd19100e4446dd85cd8844a6a2b3f",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/flights-hotels/hotels-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "8ec2caf472a173d042a47b58373d49337c8965b8a9c97b5e913b6a567875bea7",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "visa",
+      "count": 8,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/visa-01.png",
+        "phase17-evidence/contact-sheets/visa-02.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/visa/flights-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "1b345b7b89bfbee5bb017d12abebe252a10a240c31b40c3efb42d27a04e0775d",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/visa/hotels-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "1ff1fa66df99bec47a2b1c8d3932a533af8747dad6cad243da00e483cc6cc788",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/visa/packages-failure-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "fd88246b8b0552de06386e45802b493de66277d2ebce43758228cb5980ec5de8",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/visa/visa-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "e242627a1a395d1f7bdeca6c68f2b49cae5c250456e3d3af15a5c01e26397afc",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/visa/visa-uk-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "afa4699aa5d0aa1be1de426102ffb43d91980e0e84a40c4df7e8efe2724ee627",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/visa/visa-uk-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "1cb78ec0958dfb4aa182f611bc0b677208fece93d6d70235d021cd8423440690",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/visa/visa-uk-staged-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "5d8441e39962b056ef6ab696d17270456de297570962f4f2faca0c56dc7d1df4",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/visa/visa-zero-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "70d75c4366ad6989983fc557d8669e429cf11e4b407c24d5b2fbda36fd16ceed",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "loading-failure",
+      "count": 3,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/loading-failure-01.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/loading-failure/packages-failure-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "a027e894a40e6e0c5324c1ac1a10f68779074473aa10285fe8dc123e67194763",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/loading-failure/packages-failure-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "7c562d782fbc851120ab06ab3b3db942e84027649117dbf4c7a6566d7036bb86",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/loading-failure/packages-loading-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "d044d89dfe6f31206a771db9dfb72eea65391e8c2f2d0ecc4c30ee10ad5857ac",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "fixes-before",
+      "count": 3,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/fixes-before-01.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/fixes-before/rail-360-end.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "7b78b8843df059bd09fd46957ca88a3d987198a144dd8ea54fa028f9fd0f4734",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/fixes-before/visa-hub-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "f64da6d545c6dcc2bfddb16a77a66e0a5acd19d4180095617d680c7e2d89116e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/fixes-before/visa-search-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "623cfad158ae660f96ab1679b1881ec29b8063c5df3423c1756c940b6a026e4c",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "fixes-after",
+      "count": 6,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/fixes-after-01.png",
+        "phase17-evidence/contact-sheets/fixes-after-02.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/fixes-after/flights-search-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "ca77e01d3d91ce08d20e982ec67872bb4c74f5fce341d127f2801afb299ebc4b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/fixes-after/review-package-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "daeb33ecae8144494168f076582122ce51168f3f9cd9121129121876aa13b55e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/fixes-after/review-package-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "23a9daffd44b8450ec8a8578757a218a4367a155455985717470a6ec4d53d69e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/fixes-after/visa-hub-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "ae303bf15302086d367453439b801c5459335346919bd0a2850d1258b8665c34",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/fixes-after/visa-search-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "8ea0ae876477a6657bee8aab5872cb7d647f947ac522bfdc76fffaa0c28689af",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/fixes-after/visa-search-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "1922859d82c303e08e48577ded0a3a4891244e42e03551d8075cbf43a90ac403",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "bundle-after",
+      "count": 4,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/bundle-after-01.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/bundle-after/bundle-components-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "4086e17daaa074150fb7a3b8d9dc1418916ee905e8a32d8053ac5371c9bbfca4",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/bundle-after/bundle-components-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "a15fb2b1db9f1fa41a3be0722cabec3aca7df7b0bfa95a2024954046b95c7049",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/bundle-after/bundle-components-768.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "66e3daf950922f890b917807c34e94ef7365bf066242950105e92eb9dec074c5",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/bundle-after/review-blockers-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "57ca24b43132382d51261e6157ac84e75bbfcc8c17e05407877ca0628a56ca95",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "drawer-empty-after",
+      "count": 2,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/drawer-empty-after-01.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/drawer-empty-after/drawer-empty-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "08e2ae5c3fd5723b430b35c3002b0a8065b22ba6da82753a0788ab06e18bce16",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/drawer-empty-after/drawer-empty-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "c7862d2bb468c9bad4750cffcc24c0bb64264bfaf4131604b90b8b499dfd4bd4",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "focused-scenarios",
+      "count": 5,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/focused-scenarios-01.png",
+        "phase17-evidence/contact-sheets/focused-scenarios-02.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/focused-scenarios/flights-price-change-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "14b945f0897fb4f04ab0a05453582a04f56cb083012eaf9c647a67a87b8eab70",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/focused-scenarios/hotels-count-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "3be666dc7c7d1841bafdf69b2ef97cf13f9d9bc2f743dc080d81c80a1cb12cd3",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/focused-scenarios/offer-unavailable-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "97ca07b052281e8ba844b82cd021171a94d595f48b31fbfb49692f1d01c9403a",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/focused-scenarios/visa-count-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "f9bcfce7e1be6fd97595fc513e5b53e5e2c165a4fb6c583dcbf7e31b838de53d",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/focused-scenarios/visa-zero-copy-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "e5c051b3a39f9b0b6067d4d2726ac31ebe60665beb652fc027a9173b15eaa20e",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "sandbox-after",
+      "count": 15,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/sandbox-after-01.png",
+        "phase17-evidence/contact-sheets/sandbox-after-02.png",
+        "phase17-evidence/contact-sheets/sandbox-after-03.png",
+        "phase17-evidence/contact-sheets/sandbox-after-04.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-expired-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "f551a70604b012d1f373cad78a05fc48f8a099c4c7f827739a9aed6d7f7b19f7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-expired-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "1b83625460bde6ccb15efe836db563b4f40fadbb729b7dfa66c6b9d6f03b3968",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-expired-768.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "684863474668c2e2f40bc6b0e4ff78555e3f4361ccb94bfd6451a83d4f4f207e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-price_changed-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "73f325c4bde22642fd92a6391561737518d5ec4291656f53ff49449af7d8b301",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-price_changed-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "6f0788d5760ef3b7af70b7b32ca1cc566222abca958482594618d3d7ef8b49f5",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-price_changed-768.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "0663cd2ad34b48bc0ac6cfab1f4bc1be3ef64d70bda1e37010c0664e2f820449",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-unavailable-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "6c3f5ac716900e2fee12ffd3bb6ae487deeac58a6012a471941ac79a4cbeb199",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-unavailable-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "343755ec55fb37091676d04c30d03a6f2474a89652369d5752da27764508d534",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-scenario-unavailable-768.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "72ddfc07e88c3e5d57fdca1994551f1de0727e053c1a10d2c5dbb46dbbe5a497",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-schedule-detail-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "cecee67eb1ca1dd8b3bee925e945e7c4c6448df4eee5f8dd95e79759e799f90c",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-schedule-detail-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "605c95a6baced49e34249d301d1c631c08a10c3ddc30c1413974b610253281cc",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-schedule-detail-768.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "a6bfd245663f62c79ae1a673326ba2b2ad594d6d5aae50ff1c2358f1485387e1",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-schedule-results-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "3ed28ead8a3ccefb140395ef9e3949fa9006ca24da2d9d125d4361e44cf8e603",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-schedule-results-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "8b8f31084c51b69ef37f51a620f5218cba3b72001becf73c4b86d09b23b1e323",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/sandbox-after/sandbox-schedule-results-768.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "4abc20b29641571aeb7fd8bc20a274073becb687870109661c9aeb0856566b2d",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "comparison-before",
+      "count": 4,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/comparison-before-01.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/comparison-before/bundle-quote-before-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "5c1c26abcbf633790b1757aa3e0a6af2b2b3efafca6401f5ea7361fe9c63417f",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/comparison-before/bundle-quote-before-360.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "8288963ac9e882ad82e7983d4e10860df7245bb0fd02852b6f2c9aeaf0f97c65",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/comparison-before/bundle-quote-before-768.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "d27cb54db683fe86c15f45919cd14bb2600c818d5c1c263821d7400e1679a162",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/comparison-before/sandbox-native-price-before-1440.png",
+          "width": 1440,
+          "height": 1000,
+          "sha256": "521a6f41a043ed9a65623064f0fb120f7300bc30f63a33b358fe2ec0f1fd1a8c",
+          "visualReview": "reviewed"
+        }
+      ]
+    },
+    {
+      "name": "e2e-final",
+      "count": 44,
+      "contactSheets": [
+        "phase17-evidence/contact-sheets/e2e-final-01.png",
+        "phase17-evidence/contact-sheets/e2e-final-02.png",
+        "phase17-evidence/contact-sheets/e2e-final-03.png",
+        "phase17-evidence/contact-sheets/e2e-final-04.png",
+        "phase17-evidence/contact-sheets/e2e-final-05.png",
+        "phase17-evidence/contact-sheets/e2e-final-06.png",
+        "phase17-evidence/contact-sheets/e2e-final-07.png",
+        "phase17-evidence/contact-sheets/e2e-final-08.png",
+        "phase17-evidence/contact-sheets/e2e-final-09.png",
+        "phase17-evidence/contact-sheets/e2e-final-10.png",
+        "phase17-evidence/contact-sheets/e2e-final-11.png"
+      ],
+      "images": [
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_768px_tablet.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "99d71140b803e42f1b42e6e36497d1a1deeb92949512360e53667c196c77bec7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_1280px_laptop.png",
+          "width": 1280,
+          "height": 800,
+          "sha256": "57a593e41bf48ab3d887e8963172ba3ca560a445245762043f8a793f2ad90c57",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_1440px_desktop.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "f3de57eeb08a83a78c30dcc10628ba8cc9abf9d8757dd2e2a1a86c9755ea6ad1",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_trip_bucket_drawer.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "3039b0392adbf9b312a862dd9111dfe78c71094edd5829bd2f036d9bbc98f5f6",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_hub_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "489145bc31861390e4877b353bb4c343c33953285b7bcc0a9f11c93572983afe",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_search_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "332b829b8d280160b68c377268d8db96fe06f998f158a256a80eb33b443148c8",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_search_360px.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "0613ecbd37b13c07a86a64ef43b603f00bebbd0d6c97372fd265e715cf761b6b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_detail_modal_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "362983f625dd675ec111e6958d06179d3a3389e445c0e9dc465c4c62db9ce21e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_manual_offer_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "e75595fde87ade6a160c8a81552974a4a1215af9fbdbaad575551d6807e6b6f2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_review_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "dea69be15b17b982bff856ca1584efe4fc942c377a2a3991a06ccf36baf7ae7e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_search_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "ac600749451830f135311be186bd5705dfe1fb09b99555a8f54bf6a0e0c0659f",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_flights_review_360px.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "375ff41c347975b1ba18c86de5474703a544391909bc81ac60ef1ebdb5357e55",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_hotels_hub_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "ca4be0345b342183c572b962f8ef9b8760383eec3166e2160c30436157ad5df2",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_hotels_search_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "7b4fe35d1434a3c8fedc8b71d547c4b1b1f72d088a61d1e1e8bcda586a4a6af5",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_hotels_search_360px.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "4d3013437d95dc4b5f8932c182d2985045f7d98e633e588d2f0678c900b9f667",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_hotels_detail_modal_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "a1fc1a24c5a8c02f85bad42223bef4a3ddf49793a5414b03795100bf4d277895",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_visa_hub_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "f45371b2db61f1195e74663b5da8f98f14243c065e07543520775bf8b81fe3b3",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_visa_search_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "25d6dff4081f05ce958ed2e58a5db7e2b17b5d5ac198eb7a2aa0d96cf5f820fc",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_visa_search_360px.png",
+          "width": 360,
+          "height": 800,
+          "sha256": "e2f62450639554594ec0563189031aafc1d8ef729fcf957b71b003341cdf4881",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_visa_modal_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "c7cccd5bc2a71ad71b42aa4255cf1259380da7cf706f40263b63caefdca72c41",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_packages_detail_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "b760253f196229c98e3a697de206ddb686dbaac21c122fe10472a4b352764d9f",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_packages_detail_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "ff293d24a4c162d09735e6d1864a54f871037f20b785e0edb0913a5a8608d801",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_packages_detail_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "3b5076e2510f5d5be37aa3df4fe484a8f3d5709a77d1bbc8d07d4ecb578439ee",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_cars_detail_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "b0d797aece1ea887c8dd80f63e7ce983b49212b3f2789f0595c622d6a75f1db4",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_cars_detail_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "0ceaa06623a1598b667090db154d113e8386c27b559c6ef81a31ce779e1a7b0b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_cars_detail_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "5306fa3f9f58f0d92bb7e66ce6fec639cdbc1ffa4339e0b31683faeb50f53747",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_activities_detail_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "b967c4c8814a1ba4cd5ab9c998211f49710fa55fbb417f35d71833f9dc191d42",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_activities_detail_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "6229079fea608ebc94ff698f5a3ac0591277d2f24097a603ca2967b3242e6b67",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_activities_detail_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "bb9897e9df82db461353c9eb0f92de8f10139bf11a632b0b38c3554bccdb2b4a",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_sightseeing_detail_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "ac571804d43447ded861a8ea5748765685425f6da1f112c97262f944a6fd6c16",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_sightseeing_detail_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "569ead00bcc4a33e9c8e1d429ddb6ed0cb5f27d1671705e3e3b8d190f5f4ca8e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_sightseeing_detail_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "6958c23dc365a9b5321dfda8086c4c252cb5edfffb2f6a157ec4ad4abdeb4ba7",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_rails_detail_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "5171a26e94279d4186b804382e5e4986000edfa7d018530b13242efe152db3d4",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_rails_detail_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "2a4c11ee98a203c6bbc681996ee55c7bd086d0865df931e729c0495cce2cdd03",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_rails_detail_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "be5e6fa97f1c9670c3fa20a26e91811dd42247b48ed37dfa15da52972d18dc01",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_cruises_detail_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "c6bc2a91df73029fa454a0e977931efd7023ff0496c252da5ac323ddcacd141f",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_cruises_detail_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "c3af15d3100f1f13c209bd5bb529987ba9ea41bdb65fc31e75013f57443d5f5e",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_cruises_detail_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "8ec4f77f53808f1170da6122265aaa7fa5b50ad740e5d1aadf35602733b2269b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_insurance_detail_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "8005b8ae4fffb164b7d3efe228b23a543964a7141037ad8cb3c2e36e5da65bd5",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_insurance_detail_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "88be58da0b2218a830ec9e61a82c7b8935e969a995b106c2a6dcccdcbe39ad8b",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_insurance_detail_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "ac84600443fb988ff062b9012bb2f284d5a53ddd1a6dbf56ba77cef5abea37e0",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_mixed_review_1440px.png",
+          "width": 1440,
+          "height": 900,
+          "sha256": "1416f577041c1f41d950685494d6e91a5f67cc574c2731287a96d0bd86393816",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_mixed_review_768px.png",
+          "width": 768,
+          "height": 1024,
+          "sha256": "853b54a1deb8a32885ca5829cfc4a848f71a0b2de76f8bad9dd423820ab72713",
+          "visualReview": "reviewed"
+        },
+        {
+          "file": "phase17-evidence/e2e-final/vacatina_b2c_mixed_review_360px.png",
+          "width": 360,
+          "height": 900,
+          "sha256": "0ff298f91b510445d57dab51a65f76c724454d3f5e55b83b4e880799c2429e61",
+          "visualReview": "reviewed"
+        }
+      ]
+    }
+  ],
+  "reviewCompleted": "2026-10-28",
+  "indexedScreenshotCount": 209,
+  "note": "Reviewed means visually inspected, not defect-free. Before and intermediate cohorts document known defects and limited capture regions. See the audit report for final acceptance."
+}

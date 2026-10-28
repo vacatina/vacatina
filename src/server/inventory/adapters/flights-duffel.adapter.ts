@@ -415,8 +415,8 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
     const cabin = firstSegment?.passengers?.[0]?.cabin_class || 'economy';
     const fareBrandName = firstSlice?.fare_brand_name;
     const flightNumber = `${carrier?.iata_code || 'UL'}-${firstSegment?.marketing_carrier_flight_number || '225'}`;
-    const departureAt = firstSlice?.departure_datetime || firstSlice?.departing_at || new Date().toISOString();
-    const arrivalAt = firstSlice?.arrival_datetime || firstSlice?.arriving_at || departureAt;
+    const departureAt = firstSlice?.departure_datetime || firstSlice?.departing_at || firstSegment?.departing_at || new Date().toISOString();
+    const arrivalAt = firstSlice?.arrival_datetime || firstSlice?.arriving_at || firstSlice?.segments.at(-1)?.arriving_at || departureAt;
 
     const rawCostMinor = minorFromAmount(raw.total_amount);
     const rawCurrency = raw.total_currency || 'USD';
@@ -486,8 +486,8 @@ export class FlightsDuffelAdapter extends FlightSupplierAdapter<RawDuffelFlightO
         originCity: slice.origin.city_name || originCity,
         destinationIata: slice.destination.iata_code || destIata,
         destinationCity: slice.destination.city_name || destCity,
-        departureTimeIso: slice.departing_at || slice.departure_datetime || departureAt,
-        arrivalTimeIso: slice.arriving_at || slice.arrival_datetime || arrivalAt,
+        departureTimeIso: slice.departing_at || slice.departure_datetime || mappedSegments[0]?.departureTimeIso || departureAt,
+        arrivalTimeIso: slice.arriving_at || slice.arrival_datetime || mappedSegments.at(-1)?.arrivalTimeIso || arrivalAt,
         durationMinutes: parseIsoDurationMinutes(slice.duration) || mappedSegments.reduce((sum, segment) => sum + segment.durationMinutes, 0),
         fareBrandName: slice.fare_brand_name,
         segments: mappedSegments

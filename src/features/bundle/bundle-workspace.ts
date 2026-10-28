@@ -4,10 +4,11 @@ import {
 } from '../journeys/domain/journey-models.ts';
 import type { JourneyConfiguration } from '../journeys/domain/journey-models.ts';
 import { journeyService, syncServerTripBucketSnapshot } from '../journeys/services/journey-service.ts';
-import type { JourneyBucket } from '../journeys/services/journey-service.ts';
+import type { JourneyBucket, JourneyBucketItem } from '../journeys/services/journey-service.ts';
 import { readJourneyForm, renderJourneyFields } from '../journeys/ui/product-workspace.ts';
 import type { JourneyNavigate } from '../journeys/ui/product-workspace.ts';
 import { tripBucketService } from '../../lib/services/trip-bucket.service.ts';
+import type { TripBucketCandidate } from '../../lib/domain/types.ts';
 
 const BUNDLE_COMPONENTS = [
   { productType: 'flights', label: 'Flights', route: '/flights' },
@@ -16,6 +17,28 @@ const BUNDLE_COMPONENTS = [
   { productType: 'visa', label: 'Visa Assistance', route: '/visa-assistance' },
   ...JOURNEY_PRODUCTS.filter(p => !['packages', 'cars', 'flights', 'hotels', 'visa'].includes(p.productType))
 ];
+
+/** Server snapshots win by identity; local planning requests must remain visible. */
+export function bundleItemsFromSnapshots(serverItems: JourneyBucketItem[], localItems: TripBucketCandidate[]): JourneyBucketItem[] {
+  const serverIds = new Set(serverItems.map(item => item.id));
+  const localSnapshot = localItems.filter(item => !serverIds.has(item.id)).map(item => ({
+    id: item.id,
+    canonicalOfferId: item.offerId || item.id,
+    title: item.title,
+    productType: item.productType,
+    state: item.inventoryMode === 'live_supplier' ? item.state : 'NEEDS_ACTION',
+    configuration: { ...(item.configuration || {}), ...(item.travellerCounts || {}) },
+    travellerManifest: item.travellerCounts,
+    unitSellingPriceMinor: item.amountMinor ?? item.priceLkr * 100,
+    currency: item.currency || 'LKR',
+    priceStatus: item.priceStatus
+  }));
+  return [...serverItems, ...localSnapshot];
+}
+
+export function bundleItemPrice(item: JourneyBucketItem): string {
+  return item.priceStatus === 'quote_required' ? 'Quote required' : journeyMoney(item.unitSellingPriceMinor / 100, item.currency);
+}
 
 export class BundleWorkspace {
   private config!: JourneyConfiguration;
@@ -56,7 +79,9 @@ export class BundleWorkspace {
   }
 
   private render(): void {
-    const items = this.bucket?.items || (this.localPlanning ? tripBucketService.getItems().map(item => ({ id: item.id, canonicalOfferId: item.offerId || item.id, title: item.title, productType: item.productType, state: item.inventoryMode === 'live_supplier' ? item.state : 'NEEDS_ACTION', configuration: item.configuration || {}, travellerManifest: item.travellerCounts, unitSellingPriceMinor: item.priceLkr * 100, currency: item.currency || 'LKR' })) : []);
+    // Server items are authoritative, but demo/manual selections only exist in the local
+    // Trip Bucket snapshot. Merge both so Build Your Bundle never contradicts the drawer.
+    const items = bundleItemsFromSnapshots(this.bucket?.items || [], tripBucketService.getItems());
     const readiness = evaluateBundleReadiness(this.products, items.map(item => ({ ...item, configuration: { ...item.configuration, ...item.travellerManifest } })), this.config);
     this.host.innerHTML = `<section id="bundle-workspace" class="min-h-screen bg-brand-canvas pb-20 text-brand-black"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <nav aria-label="Breadcrumb" class="text-xs text-brand-muted flex items-center gap-2 mb-6"><a href="/" class="min-h-[44px] inline-flex items-center hover:underline">Home</a><span aria-hidden="true">/</span><span>Build Your Bundle</span></nav>
@@ -68,11 +93,11 @@ export class BundleWorkspace {
         const component = BUNDLE_COMPONENTS.find(p => p.productType === type);
         if (!component) return '';
         const selected = items.filter(item => item.productType === type);
-        const issue = readiness.missing.includes(type) ? 'Choose an option' : readiness.conflicts.includes(type) ? 'Review dates and travellers' : 'Ready for review';
-        return `<article class="bg-white border border-brand-border rounded-2xl p-5 sm:p-6"><div class="flex flex-wrap justify-between items-start gap-4"><div><h3 class="font-heading text-lg font-semibold">${journeyEscape(component.label)}</h3><p class="text-xs mt-2 ${issue === 'Ready for review' ? 'text-brand-success' : 'text-brand-warning'}">${issue}</p></div><button type="button" data-bundle-search="${type}" class="min-h-[44px] border border-brand-border text-brand-primary rounded-xl px-4 py-2 text-sm font-semibold">${selected.length ? 'Find another option' : 'Find options'}</button></div>${selected.map(item => `<div class="border-t border-brand-border mt-4 pt-4"><p class="text-sm font-semibold">${journeyEscape(item.title)}</p><div class="flex flex-wrap gap-2 justify-between mt-2 text-xs text-brand-muted"><span>${journeyEscape(item.state.toLowerCase().replace(/_/g, ' '))}</span><span class="tabular-nums">${journeyEscape(journeyMoney(item.unitSellingPriceMinor / 100, item.currency))}</span></div></div>`).join('')}</article>`;
+        const issue = readiness.missing.includes(type) ? (selected.length ? 'Review selected option — confirmation required' : 'Choose an option') : readiness.conflicts.includes(type) ? 'Review dates and travellers' : 'Ready for review';
+        return `<article class="bg-white border border-brand-border rounded-2xl p-5 sm:p-6"><div class="flex flex-wrap justify-between items-start gap-4"><div><h3 class="font-heading text-lg font-semibold">${journeyEscape(component.label)}</h3><p class="text-xs mt-2 ${issue === 'Ready for review' ? 'text-brand-success' : 'text-brand-warning'}">${issue}</p></div><button type="button" data-bundle-search="${type}" class="min-h-[44px] border border-brand-border text-brand-primary rounded-xl px-4 py-2 text-sm font-semibold">${selected.length ? 'Find another option' : 'Find options'}</button></div>${selected.map(item => `<div class="border-t border-brand-border mt-4 pt-4"><p class="text-sm font-semibold">${journeyEscape(item.title)}</p><div class="flex flex-wrap gap-2 justify-between mt-2 text-xs text-brand-muted"><span>${journeyEscape(item.state.toLowerCase().replace(/_/g, ' '))}</span><span class="tabular-nums">${journeyEscape(bundleItemPrice(item))}</span></div></div>`).join('')}</article>`;
       }).join('')}</div></section></div>
       <aside class="min-w-0"><div class="border border-brand-border rounded-2xl bg-white p-6 lg:sticky lg:top-24"><p class="text-xs uppercase tracking-widest text-brand-muted font-semibold">Journey readiness</p><h2 class="font-heading text-xl font-semibold mt-3">${readiness.ready ? 'Your components are ready for review' : 'Keep shaping your trip'}</h2><p class="text-sm text-brand-muted leading-relaxed mt-3">${readiness.ready ? 'Your selected product types have matching dates and travellers. Each option is checked again before payment.' : 'Choose and configure every selected component. Incomplete or mismatched selections stay outside a ready bundle.'}</p>
-      <dl class="mt-6 space-y-3 text-sm"><div class="flex justify-between gap-4"><dt class="text-brand-muted">Products selected</dt><dd class="font-semibold tabular-nums">${this.products.length}</dd></div><div class="flex justify-between gap-4"><dt class="text-brand-muted">Still to choose</dt><dd class="font-semibold tabular-nums">${readiness.missing.length}</dd></div><div class="flex justify-between gap-4"><dt class="text-brand-muted">Configuration to review</dt><dd class="font-semibold tabular-nums">${readiness.conflicts.length}</dd></div></dl>
+      <dl class="mt-6 space-y-3 text-sm"><div class="flex justify-between gap-4"><dt class="text-brand-muted">Products selected</dt><dd class="font-semibold tabular-nums">${this.products.length}</dd></div><div class="flex justify-between gap-4"><dt class="text-brand-muted">Components needing action</dt><dd class="font-semibold tabular-nums">${readiness.missing.length}</dd></div><div class="flex justify-between gap-4"><dt class="text-brand-muted">Configuration to review</dt><dd class="font-semibold tabular-nums">${readiness.conflicts.length}</dd></div></dl>
       <a href="/trip/review" class="min-h-[44px] mt-6 flex items-center justify-center bg-brand-primary text-white rounded-xl px-5 py-3 font-semibold text-sm">Review your Trip Bucket</a><p class="text-xs text-brand-muted mt-4 leading-relaxed">No combined discount, hold, or confirmation is assumed. Separate supplier conditions apply to each component.</p>
       <div id="bundle-message" aria-live="polite">${this.loading ? '<p class="text-sm mt-4 text-brand-muted">Loading your saved trip…</p>' : ''}${this.error ? `<p class="text-sm mt-4 text-brand-error" role="alert">${journeyEscape(this.error)}</p><button type="button" id="bundle-retry" class="min-h-[44px] mt-3 underline text-sm text-brand-primary">Reload trip</button>` : ''}${this.notice ? `<p class="text-sm mt-4 text-brand-success">${journeyEscape(this.notice)}</p>` : ''}</div></div></aside></div></div></section>`;
     this.bind();

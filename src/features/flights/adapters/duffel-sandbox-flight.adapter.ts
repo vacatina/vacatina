@@ -310,8 +310,9 @@ export function mapSandboxOffer(raw: any): CanonicalFlightOffer {
     departureAt,
     arrivalAt,
     durationMinutes,
-    stopCount: Math.max(0, segments.length - 1),
-    stopAirports: segments.slice(1).map(segment => segment.origin.airportCode),
+    // Search cards summarize the outbound slice, not every segment in a return trip.
+    stopCount: firstSlice?.stopCount || 0,
+    stopAirports: (firstSlice?.segments || []).slice(1).map(segment => segment.origin.airportCode),
 
     airlines: Array.from(
       new Map<string, CanonicalFlightOffer['airlines'][number]>(

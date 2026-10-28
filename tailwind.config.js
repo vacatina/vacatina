@@ -24,6 +24,7 @@ export default {
       },
       fontFamily: {
         heading: ['"Plus Jakarta Sans"', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', 'sans-serif'],
         sans: ['"Inter"', 'sans-serif']
       }
     }

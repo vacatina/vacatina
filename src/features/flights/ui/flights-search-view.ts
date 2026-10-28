@@ -169,6 +169,7 @@ export class FlightsSearchView {
 
     container.innerHTML = `
       <div id="flights-search-results-page" class="w-full bg-brand-surface min-h-screen text-brand-black pb-20">
+        <h1 class="sr-only">Flight search results</h1>
         <!-- Sticky Top Summary & Modify Bar -->
         <header class="bg-white border-b border-gray-200 sticky top-16 z-30 shadow-xs">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">

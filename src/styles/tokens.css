@@ -284,6 +284,18 @@ summary:focus-visible,
   }
 }
 
+/* Search Command Center tablet readability: the 12-column desktop field grid
+   compresses five cards into unreadable truncated values between 640 and 1023px.
+   Use two balanced columns until the desktop layout has room. */
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .search-panel > .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .search-panel > .grid > div {
+    grid-column: span 1 / span 1;
+  }
+}
+
 /* Reduced Motion Guardrail */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

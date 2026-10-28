@@ -50,8 +50,8 @@ export class VisaHubView {
             </nav>
 
             <div class="max-w-3xl mb-8">
-              <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold/20 text-brand-gold border border-brand-gold/30 mb-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-gold"></span>
+              <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-white border border-white/30 mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
                 Demo assistance catalog · Manual review required
               </span>
               <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3 leading-tight">
@@ -188,7 +188,7 @@ export class VisaHubView {
               </div>
               <a
                 href="/visa-assistance/options"
-                class="inline-flex items-center gap-1 text-xs font-bold text-brand-primary hover:text-brand-gold transition-colors self-start sm:self-auto"
+                class="inline-flex items-center gap-1 text-xs font-bold text-brand-primary hover:underline transition-colors self-start sm:self-auto"
               >
                 <span>View Full Consular Catalog</span>
                 <span aria-hidden="true">→</span>
@@ -219,7 +219,7 @@ export class VisaHubView {
                     </div>
 
                     <div class="absolute top-3 right-3">
-                      <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-gold text-brand-black shadow-sm">
+                      <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white text-brand-primary shadow-sm">
                         ${service.category.replace('_', ' ')}
                       </span>
                     </div>
@@ -289,7 +289,7 @@ export class VisaHubView {
           <!-- 4-Step Consular Workflow -->
           <section class="bg-white rounded-2xl p-6 sm:p-10 border border-brand-border/80 shadow-sm">
             <div class="text-center max-w-2xl mx-auto mb-10">
-              <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-1">Seamless 4-Stage Protocol</span>
+              <span class="text-xs font-bold text-brand-primary uppercase tracking-wider block mb-1">Seamless 4-Stage Protocol</span>
               <h2 class="text-2xl sm:text-3xl font-bold text-brand-black">How Vacatina Consular Desk Works</h2>
               <p class="text-xs sm:text-sm text-brand-muted mt-2">
                 Assistance cannot remove rejection risk. Only the relevant authority can decide your application.

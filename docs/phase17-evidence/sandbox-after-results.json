@@ -1,0 +1,184 @@
+{
+  "checks": [
+    {
+      "name": "real Duffel TEST MODE card schedules and stops match outbound segments",
+      "passed": true,
+      "details": [
+        {
+          "id": "vct-fl-duffel-cmb-dxb-off_034nYkiW5JMqaP4seGgPE8",
+          "dep": "10:50 AM",
+          "arr": "02:18 PM",
+          "stopLabel": "Direct",
+          "scheduleMatches": true,
+          "stopsMatch": true,
+          "sliceMatches": true,
+          "totalMinor": 25113
+        },
+        {
+          "id": "vct-fl-duffel-cmb-dxb-off_034nYkiuA7bu7l5aX3N2PK",
+          "dep": "05:10 AM",
+          "arr": "12:45 PM",
+          "stopLabel": "1 Stop (DEL)",
+          "scheduleMatches": true,
+          "stopsMatch": true,
+          "sliceMatches": true,
+          "totalMinor": 57800
+        },
+        {
+          "id": "vct-fl-duffel-cmb-dxb-off_034nYkiuA7bu7l5aX3N2PI",
+          "dep": "05:05 PM",
+          "arr": "10:15 AM",
+          "stopLabel": "1 Stop (DEL)",
+          "scheduleMatches": true,
+          "stopsMatch": true,
+          "sliceMatches": true,
+          "totalMinor": 57800
+        }
+      ]
+    },
+    {
+      "name": "sandbox detail remains non-production and fits @ 1440",
+      "passed": true,
+      "details": {
+        "truth": "Duffel TEST MODE (sandbox)\nChecked 9:52:28 AM\n\nDuffel TEST MODE inventory. This is a real sandbox quote from Duffel, but it is not live airline inventory, no live ticket is issued, and no payment is captured. A production order cannot be created from this lane.\n\nExplicit sandbox test order required · Duffel sandbox schedule",
+        "overflow": 0,
+        "cta": "Stage Sandbox Quote"
+      }
+    },
+    {
+      "name": "deterministic PRICE_CHANGED remains non-ready @ 1440",
+      "passed": true,
+      "details": [
+        {
+          "state": "price_changed",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "previous native-currency quote keeps exact cents @ 1440",
+      "passed": true,
+      "details": {
+        "previous": "USD 251.13",
+        "expectedMinor": 25113
+      }
+    },
+    {
+      "name": "deterministic EXPIRED remains non-ready @ 1440",
+      "passed": true,
+      "details": [
+        {
+          "state": "offer_expired",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "deterministic UNAVAILABLE remains non-ready @ 1440",
+      "passed": true,
+      "details": [
+        {
+          "state": "unavailable",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "sandbox detail remains non-production and fits @ 768",
+      "passed": true,
+      "details": {
+        "truth": "Duffel TEST MODE (sandbox)\nChecked 9:52:28 AM\n\nDuffel TEST MODE inventory. This is a real sandbox quote from Duffel, but it is not live airline inventory, no live ticket is issued, and no payment is captured. A production order cannot be created from this lane.\n\nExplicit sandbox test order required · Duffel sandbox schedule",
+        "overflow": 0,
+        "cta": "Stage Sandbox Quote"
+      }
+    },
+    {
+      "name": "deterministic PRICE_CHANGED remains non-ready @ 768",
+      "passed": true,
+      "details": [
+        {
+          "state": "price_changed",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "previous native-currency quote keeps exact cents @ 768",
+      "passed": true,
+      "details": {
+        "previous": "USD 251.13",
+        "expectedMinor": 25113
+      }
+    },
+    {
+      "name": "deterministic EXPIRED remains non-ready @ 768",
+      "passed": true,
+      "details": [
+        {
+          "state": "offer_expired",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "deterministic UNAVAILABLE remains non-ready @ 768",
+      "passed": true,
+      "details": [
+        {
+          "state": "unavailable",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "sandbox detail remains non-production and fits @ 360",
+      "passed": true,
+      "details": {
+        "truth": "Duffel TEST MODE (sandbox)\nChecked 9:52:28 AM\n\nDuffel TEST MODE inventory. This is a real sandbox quote from Duffel, but it is not live airline inventory, no live ticket is issued, and no payment is captured. A production order cannot be created from this lane.\n\nExplicit sandbox test order required · Duffel sandbox schedule",
+        "overflow": 0,
+        "cta": "Stage Sandbox Quote"
+      }
+    },
+    {
+      "name": "deterministic PRICE_CHANGED remains non-ready @ 360",
+      "passed": true,
+      "details": [
+        {
+          "state": "price_changed",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "previous native-currency quote keeps exact cents @ 360",
+      "passed": true,
+      "details": {
+        "previous": "USD 251.13",
+        "expectedMinor": 25113
+      }
+    },
+    {
+      "name": "deterministic EXPIRED remains non-ready @ 360",
+      "passed": true,
+      "details": [
+        {
+          "state": "offer_expired",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    },
+    {
+      "name": "deterministic UNAVAILABLE remains non-ready @ 360",
+      "passed": true,
+      "details": [
+        {
+          "state": "unavailable",
+          "inventoryMode": "sandbox_test"
+        }
+      ]
+    }
+  ],
+  "exceptions": [],
+  "liveMode": false,
+  "nonProduction": true
+}

@@ -50,8 +50,13 @@ export async function verifyGlobalIntegration(cdp, assertCheck) {
           const fits=document.documentElement.scrollWidth<=document.documentElement.clientWidth+1;
           let bundleOrchestration=true;
           if(tab==='bundle') {
-            document.querySelector('[data-bundle-search=flights]')?.click(); await wait(150);
+            // Wait for the saved-preferences load and the asynchronous component handoff,
+            // rather than assuming that both settle inside a fixed 150ms window.
+            for(let attempt=0;attempt<40&&document.querySelector('#bundle-journey-form button[type=submit]')?.disabled;attempt++) await wait(50);
+            document.querySelector('[data-bundle-search=flights]')?.click();
+            for(let attempt=0;attempt<40&&location.pathname.startsWith('/trip-builder');attempt++) await wait(50);
             bundleOrchestration=location.pathname==='/flights'&&!document.querySelector('#btn-review-checkout:not([disabled])');
+            if(!bundleOrchestration) throw new Error('Bundle handoff failed: '+JSON.stringify({path:location.pathname,message:document.getElementById('bundle-message')?.innerText,components:[...document.querySelectorAll('[data-bundle-search]')].map(button=>button.dataset.bundleSearch)}));
           }
           results.push({tab,selected,active,fieldsBound,rejected,singleHandler,correctRoute,context,usable,fits,bundleOrchestration});
         }
@@ -252,5 +257,79 @@ export async function verifyHotels(cdp, assertCheck) {
       return {hubGood,context,resultsGood,accessible,escape,staged:!!staged,reviewed:!!reviewed,invalidGood,empty};
     })()`);
     assertCheck(`Hotels Phase 6 — search, room/rate, provenance, review, dialogs and responsive @ ${width}`, Object.values(result).every(Boolean), JSON.stringify(result));
+  }
+}
+
+/** Regression coverage for verified Phase 17 defects, without promoting fixture inventory. */
+export async function verifyPhase17Acceptance(cdp, assertCheck) {
+  for (const width of [1440, 768, 360]) {
+    await cdp.setViewport(width, width === 768 ? 1024 : 900, width < 768);
+    const responsive = await cdp.evaluate(`(async () => {
+      const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+      const bucket=window.__VACATINA_OS__.tripBucketService;
+      const saved=bucket.getItems();
+      const tabs=['bundle','flights','hotels','visa','packages','cars','rails','cruises','activities','sightseeing','insurance'];
+      document.getElementById('trip-bucket-close')?.click();
+      window.__VACATINA_ROUTER__.navigateTo('/'); await wait(80);
+      const columns=[];
+      for(const tab of tabs) {
+        document.getElementById('tab-'+tab)?.click(); await wait(20);
+        const grid=document.querySelector('#panel-'+tab+' > .grid');
+        columns.push(grid?getComputedStyle(grid).gridTemplateColumns.split(' ').length:0);
+      }
+      const expected=innerWidth<640?1:innerWidth<1024?2:12;
+      const grids=columns.every(count=>count===expected);
+      bucket.replaceCandidates([]);
+      document.getElementById('header-trip-bucket-btn')?.click(); await wait(100);
+      const cta=document.getElementById('drawer-review-trip-cta');
+      const empty=!!cta?.disabled&&cta.getAttribute('aria-disabled')==='true'&&document.getElementById('trip-bucket-drawer')?.innerText.includes('Your Trip Bucket is empty.');
+      cta?.click();
+      const noEmptyNavigation=location.pathname==='/';
+      document.getElementById('trip-bucket-close')?.click();
+      bucket.replaceCandidates(saved);
+      return {grids,empty,noEmptyNavigation,fits:document.documentElement.scrollWidth<=document.documentElement.clientWidth+1};
+    })()`);
+    assertCheck(`Phase 17 — all SCC field grids and honest empty Trip Bucket @ ${width}`, Object.values(responsive).every(Boolean), JSON.stringify(responsive));
+
+    const bundle = await cdp.evaluate(`(async () => {
+      const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+      const bucket=window.__VACATINA_OS__.tripBucketService;
+      const saved=bucket.getItems();
+      const activity=saved.find(item=>item.productType==='activities'&&item.offerId?.startsWith('DEMO-'));
+      if(!activity) return {fixture:false};
+      try {
+        bucket.replaceCandidates([activity]);
+        window.__VACATINA_ROUTER__.navigateTo('/trip-builder?product=hotels&product=activities&destination=Dubai&departureDate=2027-02-01&returnDate=2027-02-05&adults=2'); await wait(220);
+        const card=[...document.querySelectorAll('#bundle-components-title ~ div article')].find(card=>card.querySelector('h3')?.textContent==='Activities');
+        const selected=!!card&&card.innerText.includes(activity.title)&&card.innerText.includes('Review selected option');
+        const quote=!!card&&card.innerText.includes('Quote required')&&!/LKR\\s*0\\.00/.test(card.innerText);
+        const honest=document.getElementById('bundle-workspace')?.innerText.includes('Keep shaping your trip');
+        window.__VACATINA_ROUTER__.navigateTo('/trip/review'); await wait(100);
+        const review=document.getElementById('trip-review-workspace');
+        const labels=!!review&&review.innerText.includes('Departure date')&&!review.innerText.includes('OPERATOR_CONFIRM');
+        const noFlightLink=!!review&&!review.innerText.includes('Back to flight search');
+        const blocked=!!document.getElementById('btn-review-checkout')?.disabled;
+        return {selected,quote,honest,labels,noFlightLink,blocked,fits:document.documentElement.scrollWidth<=document.documentElement.clientWidth+1};
+      } finally { bucket.replaceCandidates(saved); }
+    })()`);
+    assertCheck(`Phase 17 — local bundle selection, unpriced request and contextual review @ ${width}`, Object.values(bundle).every(Boolean), JSON.stringify(bundle));
+
+    const semantics = await cdp.evaluate(`(async () => {
+      const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+      const navigate=route=>window.__VACATINA_ROUTER__.navigateTo(route);
+      navigate('/flights/search?from=CMB&to=DXB&departureDate=2027-02-01&returnDate=2027-02-05&adults=1'); await wait(350);
+      const flightHeading=document.querySelector('#flights-search-results-page h1')?.textContent==='Flight search results';
+      const price=document.querySelector('#flights-search-results-page .font-display');
+      const displayFont=!!price&&getComputedStyle(price).fontFamily.includes('Plus Jakarta Sans');
+      navigate('/hotels/search?destination=Bentota&checkIn=2027-02-01&checkOut=2027-02-05&adults=2&rooms=1'); await wait(300);
+      const hotelHeading=document.querySelector('.hotels-search-view-root h1')?.textContent==='Hotel search results';
+      const hotelCount=document.getElementById('hotel-results-count')?.textContent==='1 Stay Example';
+      navigate('/visa-assistance/search?destination=United+Kingdom&citizenship=LK&residenceCountry=LK&departureDate=2027-02-01&purpose=tourism&applicants=1'); await wait(300);
+      const visaCount=document.getElementById('visa-results-count')?.textContent.trim()==='Showing 1 demo assistance option';
+      const noUndefinedGold=!document.querySelector('#visa-view-mount [class*=brand-gold]');
+      navigate('/');
+      return {flightHeading,displayFont,hotelHeading,hotelCount,visaCount,noUndefinedGold};
+    })()`);
+    assertCheck(`Phase 17 — result semantics, display font, Visa tokens and singular counts @ ${width}`, Object.values(semantics).every(Boolean), JSON.stringify(semantics));
   }
 }

@@ -178,6 +178,8 @@ export interface TripBucketCandidate {
   ratePlanId?: string;
   priceStatus?: 'quote_required' | 'illustrative' | 'quoted';
   amountMinor?: number;
+  /** Previous quoted total in the item's native currency, not an LKR shadow. */
+  previousAmountMinor?: number;
 }
 
 export interface TripBucketSummary {

@@ -99,7 +99,7 @@ export class VisaSearchView {
                 <span>Visa Hub</span>
               </a>
               <span class="text-white/40">|</span>
-              <span class="text-xs font-bold text-brand-gold uppercase tracking-wider">Consular Results</span>
+              <span class="text-xs font-bold text-white/90 uppercase tracking-wider">Consular Results</span>
             </div>
 
             <!-- Inline Search Form -->
@@ -127,7 +127,7 @@ export class VisaSearchView {
 
               <button
                 type="submit"
-                class="px-4 py-1.5 bg-brand-gold hover:bg-brand-gold/90 text-brand-black rounded-lg text-xs font-bold shadow-sm transition-all cursor-pointer"
+                class="px-4 py-1.5 bg-white hover:bg-white/90 text-brand-primary rounded-lg text-xs font-bold shadow-sm transition-all cursor-pointer"
               >
                 Search
               </button>
@@ -302,7 +302,7 @@ export class VisaSearchView {
             <!-- Results List -->
             <main class="lg:col-span-9 space-y-4">
               <div class="flex items-center justify-between text-xs text-brand-muted">
-                <div id="visa-results-count" data-results-count="${filteredOffers.length}">Showing <strong class="text-brand-black">${filteredOffers.length}</strong> demo assistance options</div>
+                <div id="visa-results-count" data-results-count="${filteredOffers.length}">Showing <strong class="text-brand-black">${filteredOffers.length}</strong> demo assistance option${filteredOffers.length === 1 ? '' : 's'}</div>
                 <div>All prices in <strong>LKR</strong></div>
               </div>
 
@@ -312,7 +312,7 @@ export class VisaSearchView {
                 <div class="bg-white rounded-2xl p-10 border border-brand-border/80 text-center space-y-3">
                   <div class="text-4xl">🔍</div>
                   <h3 class="font-bold text-base text-brand-black">No services match current filters</h3>
-                  <p class="text-xs text-brand-muted max-w-sm mx-auto">Try clearing category filters or extending the turnaround speed.</p>
+                  <p class="text-xs text-brand-muted max-w-sm mx-auto">Try clearing category filters, extending the turnaround speed, or searching a different destination.</p>
                   <button
                     type="button"
                     id="visa-empty-reset-btn"
@@ -349,7 +349,7 @@ export class VisaSearchView {
                   <!-- Center Body -->
                   <div class="flex-1 min-w-0 space-y-2">
                     <div class="flex flex-wrap items-center gap-2">
-                      <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-gold/20 text-brand-gold border border-brand-gold/30">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
                         ${offer.category.replace('_', ' ')}
                       </span>
                       <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-brand-subtle text-brand-black">

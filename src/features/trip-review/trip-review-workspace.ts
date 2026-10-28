@@ -128,6 +128,33 @@ function blockersFor(item: TripBucketCandidate): string[] {
   return [...new Set(blockers)];
 }
 
+const REVIEW_CONFIG_LABELS: Record<string, string> = {
+  destination: 'Destination', origin: 'Origin', departureDate: 'Departure date', returnDate: 'Return date',
+  adults: 'Adults', children: 'Children', infants: 'Infants', travelWindow: 'Travel window',
+  rooms: 'Rooms', durationDays: 'Duration (days)', packageStyle: 'Package style',
+  packageStylePreference: 'Package style preference', accommodationTier: 'Accommodation tier',
+  serviceType: 'Service type', pickup: 'Pickup', dropoff: 'Drop-off', pickupTime: 'Pickup time',
+  returnTime: 'Return time', tripType: 'Journey type', luggage: 'Luggage', driverAge: 'Lead driver age',
+  vehicleCategory: 'Vehicle category', timeSlot: 'Session', ticketType: 'Ticket option',
+  requestedCategory: 'Requested category', language: 'Guide language', cabinClass: 'Travel class',
+  departurePort: 'Departure port', cabinType: 'Cabin category', cabinPreference: 'Cabin preference',
+  durationPreference: 'Duration preference', travellerAges: 'Traveller ages', residenceCountry: 'Country of residence',
+  coverageOption: 'Coverage option', coveragePreference: 'Coverage preference',
+  citizenshipCountry: 'Passport nationality', purpose: 'Travel purpose'
+};
+
+function reviewConfigLabel(key: string): string {
+  return REVIEW_CONFIG_LABELS[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, value => value.toUpperCase());
+}
+
+function reviewConfigValue(value: string | number): string {
+  const text = String(value);
+  if (/^[A-Z][A-Z0-9_]*$/.test(text) && text.includes('_')) {
+    return text.toLowerCase().replace(/_/g, ' ').replace(/^./, character => character.toUpperCase());
+  }
+  return text;
+}
+
 function metadataRows(item: TripBucketCandidate): Array<[string, string]> {
   const rows: Array<[string, string]> = [];
   if (item.inventoryLabel) rows.push(['Inventory source', item.inventoryLabel]);
@@ -151,7 +178,10 @@ function metadataRows(item: TripBucketCandidate): Array<[string, string]> {
       insurance: ['travellerAges', 'residenceCountry', 'coverageOption', 'coveragePreference']
     };
     for (const [key, value] of Object.entries(item.configuration)) {
-      if ((common.includes(key) || fields[item.productType]?.includes(key)) && value !== '' && (typeof value === 'string' || typeof value === 'number')) rows.push([key.replace(/([A-Z])/g, ' $1'), String(value)]);
+      if ((common.includes(key) || fields[item.productType]?.includes(key)) && value !== '' && (typeof value === 'string' || typeof value === 'number')) {
+        if (key === 'durationDays' && Number(value) === 0) continue;
+        rows.push([reviewConfigLabel(key), reviewConfigValue(value)]);
+      }
     }
   }
   if (item.scheduleStatus) rows.push(['Schedule status', item.scheduleStatus.replace(/_/g, ' ')]);
@@ -611,7 +641,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
                       }
                     </p>
 
-                    <a href="${escapeReviewText(getLastFlightSearchQuery())}" class="block text-center text-[11px] font-bold text-brand-primary hover:underline">Back to flight search</a>
+                    ${items.some(item => item.productType === 'flights') ? `<a href="${escapeReviewText(getLastFlightSearchQuery())}" class="block text-center text-[11px] font-bold text-brand-primary hover:underline">Back to flight search</a>` : ''}
                     <button type="button" id="btn-review-continue-shopping" class="w-full min-h-[40px] rounded-xl border border-gray-300 text-[11px] font-bold text-brand-black hover:bg-white">Continue exploring</button>
                   </aside>
                 </div>`

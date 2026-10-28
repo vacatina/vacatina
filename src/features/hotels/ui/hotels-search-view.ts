@@ -123,6 +123,7 @@ export class HotelsSearchView {
 
     container.innerHTML = `
       <div class="hotels-search-view-root min-h-screen bg-brand-canvas text-brand-black pb-24">
+        <h1 class="sr-only">Hotel search results</h1>
         <!-- Sticky Top Query Modification Bar -->
         <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-brand-border/60 shadow-sm py-3 px-4 sm:px-8">
           <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
@@ -269,7 +270,7 @@ export class HotelsSearchView {
               <!-- Result Count & Sort Selector -->
               <div class="flex flex-wrap gap-3 items-center justify-between bg-white px-5 py-3.5 rounded-2xl border border-brand-border shadow-sm">
                 <div>
-                  <span id="hotel-results-count" data-results-count="${visibleOffers.length}" class="font-bold text-sm text-brand-black">${visibleOffers.length} Stay Examples</span>
+                  <span id="hotel-results-count" data-results-count="${visibleOffers.length}" class="font-bold text-sm text-brand-black">${visibleOffers.length} Stay Example${visibleOffers.length === 1 ? '' : 's'}</span>
                   <span class="text-xs text-brand-muted hidden sm:inline">in ${hotelEscape(this.currentRequest.destination)}</span>
                 </div>
 

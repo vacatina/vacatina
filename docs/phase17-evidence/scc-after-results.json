@@ -1,0 +1,270 @@
+{
+  "out": {
+    "768": [
+      {
+        "tab": "bundle",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 585,
+        "pageOverflow": -15,
+        "listOverflow": 567,
+        "listW": 639,
+        "listSW": 1206,
+        "small": [
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          }
+        ],
+        "text": "Guided Journey Orchestration: Combine multiple travel verticals into a single cohesive itinerary with synchronized timelines and consolidated pricing.\nSTARTING CITY / ORIGIN\nColombo (CMB)\nPRIMARY DEST",
+        "shot": "scc-768-bundle.png"
+      },
+      {
+        "tab": "flights",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 415.5,
+        "pageOverflow": -15,
+        "listOverflow": 566,
+        "listW": 639,
+        "listSW": 1205,
+        "small": [
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Swap origin and destination",
+            "w": 24,
+            "h": 24
+          }
+        ],
+        "text": "Round Trip\nOne Way\nMulti-City\nDirect flights only\nInclude nearby airports\nFROM\nColombo (CMB) — Bandaranaike\nTO\nLondon (LHR) — Heathrow Airport\nDEPARTURE\n12 Nov 2026\nRETURN\n27 Nov 2026\nTRAVELERS & CABI",
+        "shot": "scc-768-flights.png"
+      },
+      {
+        "tab": "hotels",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 292,
+        "pageOverflow": -15,
+        "listOverflow": 566,
+        "listW": 639,
+        "listSW": 1205,
+        "small": [
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "w": 13,
+            "h": 13
+          }
+        ],
+        "text": "DESTINATION / PROPERTY\nLondon, Greater London, United Kingdom\nCHECK-IN DATE\n13 Nov 2026\nCHECK-OUT DATE\n20 Nov 2026\nROOMS & GUESTS\n1 Room · 1 Adult\nPROPERTY FILTERS:\n4+ Star Tier\nFree Cancellation\nBrea",
+        "shot": "scc-768-hotels.png"
+      },
+      {
+        "tab": "visa",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 442.5,
+        "pageOverflow": -15,
+        "listOverflow": 567,
+        "listW": 639,
+        "listSW": 1206,
+        "small": [],
+        "text": "DESTINATION COUNTRY\nUnited Kingdom\nPASSPORT / CITIZENSHIP\nSri Lanka (LKA)\nCOUNTRY OF RESIDENCE\nSri Lanka\nPLANNED TRAVEL DATE\n12 Nov 2026\nTRAVEL PURPOSE\nTourism / Leisure\nAdvisory Compliance Notice: Re",
+        "shot": "scc-768-visa.png"
+      },
+      {
+        "tab": "packages",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 342,
+        "pageOverflow": -15,
+        "listOverflow": 567,
+        "listW": 639,
+        "listSW": 1206,
+        "small": [],
+        "text": "DESTINATION\nMaldives / Male Atoll\nDEPARTURE CITY\nColombo (CMB)\nTRAVEL WINDOW\nDec 2026\nTRAVELLERS\n1 Adult\nPACKAGE TYPE\nLuxury Getaway\nPre-curated and custom multi-day packages with transparent itinerar",
+        "shot": "scc-768-packages.png"
+      },
+      {
+        "tab": "cars",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 416,
+        "pageOverflow": -15,
+        "listOverflow": 567,
+        "listW": 639,
+        "listSW": 1206,
+        "small": [
+          {
+            "tag": "BUTTON",
+            "text": "Airport & Point-to-Point Transfers",
+            "w": 223,
+            "h": 28
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Self-Drive & Chauffeur Car Hire",
+            "w": 203,
+            "h": 28
+          }
+        ],
+        "text": "Airport & Point-to-Point Transfers\nSelf-Drive & Chauffeur Car Hire\nVehicle and pickup conditions require confirmation\nSERVICE TYPE\nAirport Transfer\nPICKUP LOCATION\nHeathrow Airport (LHR)\nDROP-OFF LOCA",
+        "shot": "scc-768-cars.png"
+      },
+      {
+        "tab": "rails",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 322,
+        "pageOverflow": -15,
+        "listOverflow": 566,
+        "listW": 639,
+        "listSW": 1205,
+        "small": [
+          {
+            "tag": "BUTTON",
+            "text": "Swap departure and arrival rail stations",
+            "w": 32,
+            "h": 32
+          }
+        ],
+        "text": "FROM STATION\nLondon St Pancras\nTO STATION\nParis Gare du Nord\nDEPARTURE DATE\n18 Nov 2026\nTRAVELLERS\n1 Adult\nCLASS\nStandard Class\nHigh-speed regional rail, scenic alpine routes, and Eurail transit passe",
+        "shot": "scc-768-rails.png"
+      },
+      {
+        "tab": "cruises",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 322,
+        "pageOverflow": -15,
+        "listOverflow": 566,
+        "listW": 639,
+        "listSW": 1205,
+        "small": [],
+        "text": "CRUISE DESTINATION / REGION\nMediterranean Eastern\nDEPARTURE PORT\nAthens (Piraeus)\nTRAVEL WINDOW\nMay – Oct 2027\nCABIN PREFERENCE\nBalcony Stateroom\nDURATION\n7 Nights\nOcean liners, coastal itineraries, a",
+        "shot": "scc-768-cruises.png"
+      },
+      {
+        "tab": "activities",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 247,
+        "pageOverflow": -15,
+        "listOverflow": 567,
+        "listW": 639,
+        "listSW": 1206,
+        "small": [],
+        "text": "DESTINATION\nDubai, United Arab Emirates\nDATE\n15 Nov 2026\nTRAVELLERS\n1 Adult\nCATEGORY\nDesert Safari & Adventure\nParticipatory experiences, watersports, outdoor safaris, and wellness passes.\nExplore Act",
+        "shot": "scc-768-activities.png"
+      },
+      {
+        "tab": "sightseeing",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 267,
+        "pageOverflow": -15,
+        "listOverflow": 567,
+        "listW": 639,
+        "listSW": 1206,
+        "small": [],
+        "text": "DESTINATION\nLondon, United Kingdom\nTOUR DATE\n16 Nov 2026\nTRAVELLERS\n1 Adult\nTOUR TYPE\nGuided Group & Landmark Pass\nAvailable tour inclusions, guide details and admission options are shown before booki",
+        "shot": "scc-768-sightseeing.png"
+      },
+      {
+        "tab": "insurance",
+        "selected": "true",
+        "hidden": false,
+        "panelH": 416,
+        "pageOverflow": -15,
+        "listOverflow": 567,
+        "listW": 639,
+        "listSW": 1206,
+        "small": [],
+        "text": "DESTINATION / REGION\nWorldwide (incl. USA & UK)\nCOUNTRY OF RESIDENCE\nSri Lanka\nTRIP START\n12 Nov 2026\nTRIP END\n27 Nov 2026\nCOVERAGE TYPE\nSingle Trip Comprehensive\nDisclaimer: Coverage and eligibility ",
+        "shot": "scc-768-insurance.png"
+      }
+    ]
+  },
+  "exceptions": [],
+  "consoleErrors": []
+}

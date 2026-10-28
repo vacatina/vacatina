@@ -46,6 +46,9 @@ function itemAmountLabel(item: TripBucketCandidate, fallbackCurrency: SupportedC
 }
 
 function itemPreviousAmountLabel(item: TripBucketCandidate, fallbackCurrency: SupportedCurrency): string {
+  if (item.previousAmountMinor !== undefined && item.currency && item.currency !== 'LKR') {
+    return `${item.currency} ${(item.previousAmountMinor / 100).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+  }
   if (!item.previousPriceLkr) return '';
   if (item.currency && item.currency !== 'LKR') {
     return `${item.currency} ${item.previousPriceLkr.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
@@ -406,7 +409,7 @@ function syncDrawerContents(
             <div class="mt-3 pt-2.5 border-t border-brand-border/80 flex flex-wrap items-center justify-between gap-2">
               <div>
                 ${
-                  item.previousPriceLkr
+                  item.previousAmountMinor !== undefined || item.previousPriceLkr
                     ? `<span class="text-[11px] line-through text-brand-muted mr-1.5 tabular-nums">${itemPreviousAmountLabel(item, currency)}</span>`
                     : ''
                 }
@@ -605,12 +608,14 @@ function syncDrawerContents(
       </div>
       <div class="text-[11px] text-brand-muted mb-4">
         ${
-          nonReadyTotal > 0
-            ? `${nonReadyTotal} item(s) require action or confirmation before unified checkout (excluded: ${formatCurrencyAmount(summary.excludedSubtotalLkr, currency)}).`
-            : `All ${summary.readyCount} staged item(s) are Ready for unified dossier confirmation.`
+          summary.totalItems === 0
+            ? 'Your Trip Bucket is empty. Add a product to begin.'
+            : nonReadyTotal > 0
+              ? `${nonReadyTotal} item(s) require action or confirmation before unified checkout (excluded: ${formatCurrencyAmount(summary.excludedSubtotalLkr, currency)}).`
+              : `All ${summary.readyCount} staged item(s) are Ready for unified dossier confirmation.`
         }
       </div>
-      <button type="button" id="drawer-review-trip-cta" class="w-full bg-brand-primary text-white text-sm font-semibold py-3 rounded-xl shadow-sm hover:opacity-90 touch-target-44">
+      <button type="button" id="drawer-review-trip-cta" ${summary.totalItems === 0 ? 'disabled aria-disabled="true"' : ''} class="w-full text-sm font-semibold py-3 rounded-xl shadow-sm touch-target-44 ${summary.totalItems === 0 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-brand-primary text-white hover:opacity-90'}">
         Review Trip
       </button>
     `;

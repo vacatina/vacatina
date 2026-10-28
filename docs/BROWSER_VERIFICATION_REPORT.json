@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-27T04:14:23.852Z",
+  "timestamp": "2026-10-28T04:23:32.981Z",
   "version": "4.2.0-ultra-reconstructed-locked",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewportsTested": [
@@ -1274,7 +1274,7 @@
     {
       "name": "Journey M — Full B2C Flights Product Experience (Hub, Search Results, Modal, Fare Select & Trip Bucket Staging)",
       "passed": true,
-      "details": "hubVisible=true, hubTitle=\"true\", origin=\"Colombo (CMB) — Bandaranaike International Airport\", dep=\"2026-11-03\", travellers=\"1 Adult · Economy\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
+      "details": "hubVisible=true, hubTitle=\"true\", origin=\"Colombo (CMB) — Bandaranaike International Airport\", dep=\"2026-11-04\", travellers=\"1 Adult · Economy\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
     },
     {
       "name": "Flights Phase 5 — Hub traveller/date controls and canonical search submission",
@@ -1530,6 +1530,51 @@
       "name": "Global keyboard — real Tab, visible focus and named controls /travel-insurance",
       "passed": true,
       "details": "{\"moved\":true,\"visible\":true,\"named\":true}"
+    },
+    {
+      "name": "Phase 17 — all SCC field grids and honest empty Trip Bucket @ 1440",
+      "passed": true,
+      "details": "{\"grids\":true,\"empty\":true,\"noEmptyNavigation\":true,\"fits\":true}"
+    },
+    {
+      "name": "Phase 17 — local bundle selection, unpriced request and contextual review @ 1440",
+      "passed": true,
+      "details": "{\"selected\":true,\"quote\":true,\"honest\":true,\"labels\":true,\"noFlightLink\":true,\"blocked\":true,\"fits\":true}"
+    },
+    {
+      "name": "Phase 17 — result semantics, display font, Visa tokens and singular counts @ 1440",
+      "passed": true,
+      "details": "{\"flightHeading\":true,\"displayFont\":true,\"hotelHeading\":true,\"hotelCount\":true,\"visaCount\":true,\"noUndefinedGold\":true}"
+    },
+    {
+      "name": "Phase 17 — all SCC field grids and honest empty Trip Bucket @ 768",
+      "passed": true,
+      "details": "{\"grids\":true,\"empty\":true,\"noEmptyNavigation\":true,\"fits\":true}"
+    },
+    {
+      "name": "Phase 17 — local bundle selection, unpriced request and contextual review @ 768",
+      "passed": true,
+      "details": "{\"selected\":true,\"quote\":true,\"honest\":true,\"labels\":true,\"noFlightLink\":true,\"blocked\":true,\"fits\":true}"
+    },
+    {
+      "name": "Phase 17 — result semantics, display font, Visa tokens and singular counts @ 768",
+      "passed": true,
+      "details": "{\"flightHeading\":true,\"displayFont\":true,\"hotelHeading\":true,\"hotelCount\":true,\"visaCount\":true,\"noUndefinedGold\":true}"
+    },
+    {
+      "name": "Phase 17 — all SCC field grids and honest empty Trip Bucket @ 360",
+      "passed": true,
+      "details": "{\"grids\":true,\"empty\":true,\"noEmptyNavigation\":true,\"fits\":true}"
+    },
+    {
+      "name": "Phase 17 — local bundle selection, unpriced request and contextual review @ 360",
+      "passed": true,
+      "details": "{\"selected\":true,\"quote\":true,\"honest\":true,\"labels\":true,\"noFlightLink\":true,\"blocked\":true,\"fits\":true}"
+    },
+    {
+      "name": "Phase 17 — result semantics, display font, Visa tokens and singular counts @ 360",
+      "passed": true,
+      "details": "{\"flightHeading\":true,\"displayFont\":true,\"hotelHeading\":true,\"hotelCount\":true,\"visaCount\":true,\"noUndefinedGold\":true}"
     },
     {
       "name": "Delta Audit — Legal Disclosures & Granular Cookie Preferences Modal (Actionable, Inert Trap, Draft Status & Storage)",

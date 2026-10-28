@@ -13,6 +13,7 @@ export interface JourneyBucketItem {
   id: string; canonicalOfferId: string; title: string; productType: string; state: string;
   configuration: Record<string, unknown>; travellerManifest?: Record<string, unknown>;
   unitSellingPriceMinor: number; currency: string;
+  priceStatus?: TripBucketCandidate['priceStatus'];
   sourceType?: TripBucketCandidate['sourceType'];
   inventoryMode?: TripBucketCandidate['inventoryMode'];
   environmentClass?: string;

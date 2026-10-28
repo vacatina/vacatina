@@ -1,0 +1,108 @@
+{
+  "results": [
+    {
+      "name": "activity demo item is staged locally",
+      "passed": true,
+      "details": "[{\"id\":\"tb-DEMO-activities-planning-v1\",\"productType\":\"activities\",\"state\":\"needs_action\",\"title\":\"Dubai activity planning example\"}]"
+    },
+    {
+      "name": "bundle lists the locally staged activity",
+      "passed": true,
+      "details": "[{\"title\":\"Hotels\",\"issue\":\"Choose an option\",\"text\":\"Hotels\\n\\nChoose an option\\n\\nFind options\"},{\"title\":\"Activities\",\"issue\":\"Review selected option — confirmation required\",\"text\":\"Activities\\n\\nReview selected option — confirmation required\\n\\nFind another option\\n\\nDubai activity planning example\\n\\nneeds action\\nQuote required\"}]"
+    },
+    {
+      "name": "bundle readiness still shows gaps honestly",
+      "passed": true,
+      "details": "2,2,0"
+    },
+    {
+      "name": "review keeps checkout gated with explicit blockers",
+      "passed": true,
+      "details": "{\"disabled\":true,\"hasSupplierConfirmation\":true,\"hasState\":true}"
+    },
+    {
+      "name": "SCC tablet grid uses two readable columns",
+      "passed": true,
+      "details": "313.5px 313.5px"
+    },
+    {
+      "name": "SCC mobile grid remains single column",
+      "passed": true,
+      "details": "{\"cols\":\"294px\",\"overflow\":0}"
+    },
+    {
+      "name": "SCC desktop grid remains 12-column",
+      "passed": true,
+      "details": "91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px"
+    }
+  ],
+  "bundle": {
+    "articles": [
+      {
+        "title": "Hotels",
+        "issue": "Choose an option",
+        "text": "Hotels\n\nChoose an option\n\nFind options"
+      },
+      {
+        "title": "Activities",
+        "issue": "Review selected option — confirmation required",
+        "text": "Activities\n\nReview selected option — confirmation required\n\nFind another option\n\nDubai activity planning example\n\nneeds action\nQuote required"
+      }
+    ],
+    "text": "Skip to main content\nHome\nFlights\nHotels\nVisa Assistance\nHoliday Packages\nCars & Transfers\nMore\nResources\nEN · LKR\nTrip Bucket\n1\nSign In\nSign Up\nHome\n/\nBuild Your Bundle\n\nONE JOURNEY, YOUR CHOICES\n\nBuild Your Bundle\n\nBring your flights, stays, transfers, and experiences into one trip. Every component keeps its own availability, conditions, and confirmation status.\n\nYour journey\nDeparture city or airport\nDestination\nTravel date\nEnd date\nAdults\nChildren\nInfants\nRooms\nRequested duration (days)\nWhat would you like to include?\nFlights\nHotels\nCars & Transfers\nVisa Assistance\nActivities\nSightseeing Tours\nRail Journeys\nCruises & Sea Voyages\nTravel Insurance\nSave journey preferences\n\nPreferences are saved to your trip. They do not reserve inventory or create a booking.\n\nChoose each component\nHotels\n\nChoose an option\n\nFind options\nActivities\n\nReview selected option — confirmation required\n\nFind another option\n\nDubai activity planning example\n\nneeds action\nQuote required\n\nJOURNEY READINESS\n\nKeep shaping your trip\n\nChoose and configure every selected component. Incomplete or mismatched selections stay outside a ready bundle.\n\nProducts selected\n2\nComponents needing action\n2\nConfiguration to review\n0\nReview your Trip Bucket\n\nNo combined discount, hold, or confirmation is assumed. Separate supplier conditions apply to each component.\n\nYour journey preferences have been saved.\n\nWe treasure your holidays. Centralized multi-vertical travel orchestration platform.\n\nCustomer Care\n+94113606200\nLive Desk\ninfo@vacatina.com\nFOLLOW VACATINA\nProducts\nFlights\nHotels\nVisa Assistance\nHoliday Packages\nC",
+    "summary": [
+      "2",
+      "2",
+      "0"
+    ]
+  },
+  "review": {
+    "text": "Skip to main content\nHome\nFlights\nHotels\nVisa Assistance\nHoliday Packages\nCars & Transfers\nMore\nResources\nEN · LKR\nTrip Bucket\n1\nSign In\nSign Up\n← Back to travel planning\n\nYOUR VACATINA JOURNEY\n\nReview your trip\n\nCheck each staged option, its inventory source and every outstanding requirement before deciding what to request. This review is local to your browser in this build.\n\nOpen Trip Bucket\nNo live supplier, payment, or ticketing is activated in this build.\n1 of 1 staged item came from demo fixtures or manual request-to-book inventory. Their estimates are not live quotes and no reservation hold exists.\nACTIVITIES\nNeeds Action\nDubai activity planning example\n\nLocal planning request · Quote and operator confirmation required · 2026-12-05\n\n2 adults · 0 children · 0 infants\n\nESTIMATE\nQuote required\nInventory source\nCanonical demo fixture · Not live inventory\nProvider\nVacatina local demonstration catalog\nCanonical offer\nDEMO-activities-planning-v1\nAvailability\nON_REQUEST\nFixture valid until\n2028-12-31T23:59:59.000Z\nDestination\nDubai\nDeparture date\n2026-12-05\nAdults\n2\nChildren\n0\nInfants\n0\nSession\nOperator confirm\nTicket option\nParticipant request\nLast revalidation\nLOCAL FIXTURE CHECK · 10/28/2026, 9:21:52 AM\n\nCanonical demo fixture — no live supplier, availability, reservation or confirmation. This selection is a local planning request only; current price and conditions require operator confirmation.\n\nBefore this item can be booked\n\nState: Needs Action\nDemo fixture — no live supplier inventory or reservation hold\nSupplier confirmation required before this item can be booked\n\nNo live quote, allocation or confirmation exists. Request current details before booking.\n\nView selection\nReview operator request\nRemove\nTRIP SUMMARY\nItems\n1\nReady items\n0\nNeeds action\n1\nReady estimate\nLKR 0\nExcluded from ready\nLKR 0\n\nUnpriced requests are not included in estimates. Demo estimates are not live quotes.\n\n1 item need attention\nCheckout stays unavailable until every item is live-confirmed and ready.\nContinue to checkout\n\nCheckout is gated because at least one item is not live-confirmed, or this build is using browser-local demo inventory.\n\nContinue exploring\n\nWe treasure your holidays. Centralized multi-vertical travel orchestration platform.\n\nCustomer Care\n+94113606200\nLive Desk\ninfo@vacatina.com\nFOLLOW VACATINA\nProducts\nFlights\nHotels\nVisa Assistance\nHoliday Packages\nCars & Transfers\nRails\nCruises\nActivities\nSightseeing Tours\nTravel Insurance\nResources\nTravel Notes & Blog\nDestination Guides\nSeasonal Travel Guide\nVisa Requirement Checker\nTravel Insurance Guide\nTravel Disru",
+    "cardText": "ACTIVITIES\nNeeds Action\nDubai activity planning example\n\nLocal planning request · Quote and operator confirmation required · 2026-12-05\n\n2 adults · 0 children · 0 infants\n\nESTIMATE\nQuote required\nInventory source\nCanonical demo fixture · Not live inventory\nProvider\nVacatina local demonstration catalog\nCanonical offer\nDEMO-activities-planning-v1\nAvailability\nON_REQUEST\nFixture valid until\n2028-12-31T23:59:59.000Z\nDestination\nDubai\nDeparture date\n2026-12-05\nAdults\n2\nChildren\n0\nInfants\n0\nSession\nOperator confirm\nTicket option\nParticipant request\nLast revalidation\nLOCAL FIXTURE CHECK · 10/28/2026, 9:21:52 AM\n\nCanonical demo fixture — no live supplier, availability, reservation or confirmation. This selection is a local planning request only; current price and conditions require operator confirmation.\n\nBefore this item can be booked\n\nState: Needs Action\nDemo fixture — no live supplier inventory or reservation hold\nSupplier confirmation required before this item can be booked\n\nNo live quote, allocation or confirmation exists. Request current details before booking.\n\nView selection\nReview operator request\nRemove",
+    "disabled": true,
+    "overflow": -15
+  },
+  "scc": {
+    "cols": "313.5px 313.5px",
+    "cards": [
+      {
+        "w": 314,
+        "h": 63,
+        "text": "FROM | Colombo (CMB) — Bandaranaike"
+      },
+      {
+        "w": 314,
+        "h": 63,
+        "text": "TO | London (LHR) — Heathrow Airport"
+      },
+      {
+        "w": 314,
+        "h": 63,
+        "text": "DEPARTURE | 12 Nov 2026"
+      },
+      {
+        "w": 314,
+        "h": 63,
+        "text": "RETURN | 27 Nov 2026"
+      },
+      {
+        "w": 314,
+        "h": 63,
+        "text": "TRAVELERS & CABIN | 1 Adult · Economy"
+      }
+    ],
+    "valW": 288,
+    "valScroll": 288,
+    "overflow": -15
+  },
+  "scc360": {
+    "cols": "294px",
+    "overflow": 0
+  },
+  "scc1440": {
+    "cols": "91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px 91.5px",
+    "overflow": -15
+  },
+  "exceptions": [],
+  "consoleErrors": []
+}

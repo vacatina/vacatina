@@ -333,6 +333,7 @@ export class FlightTripBucketService {
     } else if (result.status === 'PRICE_CHANGED') {
       existing.state = 'price_changed';
       existing.previousPriceLkr = existing.priceLkr;
+      existing.previousAmountMinor = result.originalPriceMinor;
       existing.priceLkr = Math.round(result.newPriceMinor / 100);
       if (existing.inventoryMode === 'sandbox_test') {
         // Sandbox quotes stay in their supplier currency. Keep the displayed

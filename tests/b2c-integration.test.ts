@@ -15,6 +15,32 @@ import { visaTripBucketService } from '../src/features/visa/services/visa-trip-b
 import { visaContextFromQuery } from '../src/features/visa/domain/visa-journey.ts';
 import { revalidateStagedTrip } from '../src/features/trip-review/trip-revalidation.service.ts';
 import { evaluateTripReviewHandoff, reviewDetailHref } from '../src/features/trip-review/trip-review-workspace.ts';
+import { bundleItemsFromSnapshots, bundleItemPrice } from '../src/features/bundle/bundle-workspace.ts';
+import type { JourneyBucketItem } from '../src/features/journeys/services/journey-service.ts';
+import type { TripBucketCandidate } from '../src/lib/domain/types.ts';
+
+test('Phase 17 bundle merges local requests without replacing server authority or inventing free prices', () => {
+  const server: JourneyBucketItem = { id: 'shared-item', canonicalOfferId: 'server-offer', title: 'Server selection', productType: 'hotels', state: 'NEEDS_ACTION', configuration: {}, unitSellingPriceMinor: 12345, currency: 'LKR' };
+  const local: TripBucketCandidate = { id: 'local-request', offerId: 'DEMO-activities-planning-v1', title: 'Local activity request', productType: 'activities', productLabel: 'Activities', subtitle: 'Local planning request', dateSummary: '2027-02-01', travellerSummary: '2 adults', supplierName: 'Canonical demo catalog', integrationMode: 'MOCK', state: 'ready', inventoryMode: 'demo_fixture', priceStatus: 'quote_required', priceLkr: 0, currency: 'LKR', configuration: { departureDate: '2027-02-01' }, travellerCounts: { adults: 2, children: 0, infants: 0 } };
+  const duplicate = { ...local, id: server.id, title: 'Stale local copy' };
+  const items = bundleItemsFromSnapshots([server], [duplicate, local]);
+  assert.equal(items.length, 2);
+  assert.equal(items[0], server, 'The authoritative server item must win by identity.');
+  assert.equal(items[1].state, 'NEEDS_ACTION', 'Local demo inventory can never make a bundle Ready.');
+  assert.equal(items[1].configuration.adults, 2);
+  assert.equal(items[1].configuration.departureDate, '2027-02-01');
+  assert.equal(bundleItemPrice(items[1]), 'Quote required');
+  assert.deepEqual(bundleItemsFromSnapshots([], [local]), [items[1]], 'The local request survives an empty server bucket.');
+});
+
+test('Phase 17 bundle displays native-currency minor units rather than an LKR shadow', () => {
+  const sandbox = { id: 'sandbox-quote', title: 'Duffel TEST MODE quote', productType: 'flights', state: 'needs_action', inventoryMode: 'sandbox_test', priceLkr: 0, amountMinor: 24929, currency: 'USD', priceStatus: 'quoted' } as TripBucketCandidate;
+  const [item] = bundleItemsFromSnapshots([], [sandbox]);
+  assert.equal(item.unitSellingPriceMinor, 24929);
+  assert.equal(item.state, 'NEEDS_ACTION');
+  assert.match(bundleItemPrice(item), /249[.,]29/);
+  assert.equal(sandbox.priceLkr, 0, 'Rendering must not alter the local candidate.');
+});
 
 test('All 11 SCC tabs validate, preserve product intent and use canonical destinations', () => {
   const service = new SearchCommandService();

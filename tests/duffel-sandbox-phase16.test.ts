@@ -44,7 +44,7 @@ import { flightSearchService } from '../src/features/flights/services/flight-sea
 import { flightTripBucketService } from '../src/features/flights/services/flight-trip-bucket.service.ts';
 import { mapSandboxOffer } from '../src/features/flights/adapters/duffel-sandbox-flight.adapter.ts';
 import { evaluateTripReviewHandoff } from '../src/features/trip-review/trip-review-workspace.ts';
-import { computeTripBucketSummary } from '../src/lib/services/trip-bucket.service.ts';
+import { computeTripBucketSummary, tripBucketService } from '../src/lib/services/trip-bucket.service.ts';
 
 const NOW = Date.now();
 const DEPARTURE = new Date(NOW + 7 * 86400000).toISOString().slice(0, 10);
@@ -164,6 +164,71 @@ function offerRequestResponse(offer: RawDuffelFlightOffer = rawOffer()): Respons
     offers: [offer]
   });
 }
+
+test('Phase 17 sandbox round-trip cards use segment schedules and do not count the return as a stop', () => {
+  const raw = rawOffer();
+  delete raw.slices[0].departing_at;
+  delete raw.slices[0].arriving_at;
+  const inbound = structuredClone(raw.slices[0]);
+  inbound.id = 'sli_phase17_return';
+  [inbound.origin, inbound.destination] = [inbound.destination, inbound.origin];
+  const inboundSegment = inbound.segments[0];
+  [inboundSegment.origin, inboundSegment.destination] = [inboundSegment.destination, inboundSegment.origin];
+  inboundSegment.departing_at = `${DEPARTURE}T16:15:00`;
+  inboundSegment.arriving_at = `${DEPARTURE}T22:43:00`;
+  raw.slices.push(inbound);
+  const adapter = new FlightsDuffelAdapter({ enableTestMode: true, apiToken: FAKE_TOKEN, environment: 'sandbox' });
+  const normalized = adapter.normalize(raw);
+  const mapped = mapSandboxOffer(customerSandboxOffer(normalized));
+  assert.equal(mapped.departureAt, raw.slices[0].segments[0].departing_at);
+  assert.equal(mapped.arrivalAt, raw.slices[0].segments[0].arriving_at);
+  assert.equal(mapped.slices[1].departureAt, inboundSegment.departing_at);
+  assert.equal(mapped.slices[1].arrivalAt, inboundSegment.arriving_at);
+  assert.equal(mapped.stopCount, 0);
+  assert.deepEqual(mapped.stopAirports, []);
+  assert.equal(mapped.segments.length, 2, 'Both itinerary legs remain available in the detail view.');
+  assert.equal(mapped.inventoryMode, 'sandbox_test');
+});
+
+test('Phase 17 sandbox connection summaries include only outbound connection airports', () => {
+  const raw = rawOffer();
+  const first = raw.slices[0].segments[0];
+  const second = structuredClone(first);
+  first.destination = { iata_code: 'DOH', city_name: 'Doha' };
+  second.origin = { iata_code: 'DOH', city_name: 'Doha' };
+  raw.slices[0].segments.push(second);
+  const inbound = structuredClone(rawOffer().slices[0]);
+  [inbound.origin, inbound.destination] = [inbound.destination, inbound.origin];
+  [inbound.segments[0].origin, inbound.segments[0].destination] = [inbound.segments[0].destination, inbound.segments[0].origin];
+  raw.slices.push(inbound);
+  const adapter = new FlightsDuffelAdapter({ enableTestMode: true, apiToken: FAKE_TOKEN, environment: 'sandbox' });
+  const mapped = mapSandboxOffer(customerSandboxOffer(adapter.normalize(raw)));
+  assert.equal(mapped.stopCount, 1);
+  assert.deepEqual(mapped.stopAirports, ['DOH']);
+  assert.equal(mapped.slices[1].stopCount, 0);
+});
+
+test('Phase 17 sandbox price changes preserve previous and current native-currency cents', async () => {
+  const adapter = new FlightsDuffelAdapter({ enableTestMode: true, apiToken: FAKE_TOKEN, environment: 'sandbox' });
+  const offer = mapSandboxOffer(customerSandboxOffer(adapter.normalize(rawOffer())));
+  const saved = tripBucketService.getItems();
+  const original = flightSearchService.revalidateOffer;
+  try {
+    tripBucketService.replaceCandidates([]);
+    const candidate = flightTripBucketService.addFlightToTripBucket(offer);
+    flightSearchService.revalidateOffer = async () => ({ offerId: offer.offerId, status: 'PRICE_CHANGED', originalPriceMinor: 42050, newPriceMinor: 44075, priceDeltaMinor: 2025, currency: 'USD', message: 'Deterministic sandbox test quote change.', revalidatedAt: new Date().toISOString(), requiresUserAction: true });
+    await flightTripBucketService.revalidateFlightInTripBucket(candidate.id, offer.offerId);
+    const changed = tripBucketService.getItems().find(item => item.id === candidate.id)!;
+    assert.equal(changed.previousAmountMinor, 42050);
+    assert.equal(changed.amountMinor, 44075);
+    assert.equal(changed.currency, 'USD');
+    assert.equal(changed.state, 'price_changed');
+    assert.equal(evaluateTripReviewHandoff([changed]).canCheckout, false);
+  } finally {
+    flightSearchService.revalidateOffer = original;
+    tripBucketService.replaceCandidates(saved);
+  }
+});
 
 function orderResponse(overrides: Partial<DuffelOrder> = {}): DuffelOrder {
   return {

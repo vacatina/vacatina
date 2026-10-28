@@ -1,0 +1,27 @@
+{
+  "results": [
+    {
+      "name": "loading state shows an accessible search status",
+      "passed": true,
+      "details": "{\"status\":\"Searching travel options\",\"text\":\"Checking available options…\",\"overflow\":-15}"
+    },
+    {
+      "name": "search failure shows a visible retryable error",
+      "passed": true,
+      "details": "We could not load these options\n\nWe could not reach the travel service. Check your connection and retry.\n\nTry again"
+    },
+    {
+      "name": "failure state at 360 remains readable with no overflow",
+      "passed": true,
+      "details": "{\"overflow\":0}"
+    }
+  ],
+  "paused": [
+    {
+      "url": "http://127.0.0.1:4173/api/v1/search",
+      "requestId": "interception-job-6.0"
+    }
+  ],
+  "exceptions": [],
+  "consoleErrors": []
+}

@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-28",
+  "baseline": "e313e0d",
+  "branch": "release/b2c-product-journeys-v1",
+  "runtime": "v24.22.1",
+  "typecheck": {
+    "passed": true,
+    "errors": 0
+  },
+  "unitTests": {
+    "passed": 331,
+    "failed": 0
+  },
+  "build": {
+    "passed": true,
+    "modules": 103
+  },
+  "browserBoundary": {
+    "browserModules": 103,
+    "serverModules": 0,
+    "negativeProbeBlocked": true
+  },
+  "e2e": {
+    "passed": 94,
+    "failed": 0,
+    "consoleErrors": 0,
+    "pageExceptions": 0
+  },
+  "sandboxUi": {
+    "passed": 16,
+    "failed": 0,
+    "liveMode": false
+  },
+  "visual": {
+    "indexedImages": 209,
+    "contactSheets": 57,
+    "reviewCompleted": true
+  },
+  "protectedHistoricalSha256": {
+    "vacatina_360px_mobile.png": "9eae7117379c6a58b7ebcb5c2416b7fde1e94ed5a911853411e1001dbea71b83",
+    "vacatina_footer_1440px.png": "204f32df10ef52e9d46bfaddee7fabfc17a53d7f7ba682a7380a0f71ea08fa6d",
+    "vacatina_holiday_package_modal.png": "583e08e8d37ae6c850dc554535af2c8e38c2d2d8ec927865a787e8fb2d561b26",
+    "vacatina_screen04_8states_inspector.png": "724111435606760a5dc35537400425e2fb350aa729724bff67e3408e73bba2b2"
+  },
+  "productionReleaseApproved": false,
+  "pushed": false,
+  "deployed": false
+}
