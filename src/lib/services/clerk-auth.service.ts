@@ -33,9 +33,9 @@ declare const __VACATINA_PUBLIC_DEMO_BUILD__: boolean;
 const publicDemoBuild = typeof __VACATINA_PUBLIC_DEMO_BUILD__ !== 'undefined' && __VACATINA_PUBLIC_DEMO_BUILD__;
 const publicDemo = () => publicDemoBuild || (typeof document !== 'undefined' && document.documentElement.dataset.vacatinaDemo === 'true');
 export const CLERK_DEFAULT_CONFIG: ClerkConfig = publicDemoBuild ? { publishableKey:'',frontendApi:'',scriptUrl:'' } : {
-  publishableKey: 'pk_test_ZWxlY3RyaWMtc25haWwtNDguY2xlcmsuYWNjb3VudHMuZGV2JA',
-  frontendApi: 'https://electric-snail-48.clerk.accounts.dev',
-  scriptUrl: 'https://electric-snail-48.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js'
+  publishableKey: '',
+  frontendApi: '',
+  scriptUrl: ''
 };
 
 declare global {
@@ -103,7 +103,18 @@ export class ClerkAuthService {
     if (this.isLoaded) return true;
     if (this.isLoading) return false;
 
+    // Read from DOM if not provided
+    if (!publishableKey) {
+      const script = document.querySelector('script[data-clerk-publishable-key]');
+      if (script) publishableKey = script.getAttribute('data-clerk-publishable-key') || undefined;
+    }
     if (publishableKey) this.config.publishableKey = publishableKey;
+    if (!frontendApi && this.config.publishableKey) {
+      try {
+        const domain = Buffer.from(this.config.publishableKey.split('_').slice(2).join('_'), 'base64').toString('utf8').replace(/\$$/, '');
+        if (/^[a-z0-9.-]+$/i.test(domain)) frontendApi = 'https://' + domain;
+      } catch {}
+    }
     if (frontendApi) {
       this.config.frontendApi = frontendApi;
       this.config.scriptUrl = `${frontendApi.replace(/\/$/, '')}/npm/@clerk/clerk-js@latest/dist/clerk.browser.js`;

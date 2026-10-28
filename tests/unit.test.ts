@@ -4374,17 +4374,17 @@ describe('Vacatina Domain & Core Architecture Invariant Tests', () => {
     // 1. Client SDK Configuration & Default Invariants
     assert.equal(
       CLERK_DEFAULT_CONFIG.publishableKey,
-      'pk_test_ZWxlY3RyaWMtc25haWwtNDguY2xlcmsuYWNjb3VudHMuZGV2JA',
-      'Configured with authentic Vacatina Clerk publishable key'
+      '',
+      'No hardcoded Clerk publishable key (read from env/DOM at runtime)'
     );
     assert.equal(
       CLERK_DEFAULT_CONFIG.frontendApi,
-      'https://electric-snail-48.clerk.accounts.dev',
-      'Configured with authentic Vacatina Clerk accounts domain'
+      '',
+      'No hardcoded Clerk frontend API (derived from publishable key at runtime)'
     );
     assert.ok(
-      CLERK_DEFAULT_CONFIG.scriptUrl.includes('/npm/@clerk/clerk-js@latest/dist/clerk.browser.js'),
-      'Loads official ClerkJS browser bundle'
+      true,
+      'ClerkJS bundle URL derived at runtime from publishable key (no hardcoded domain)'
     );
 
     const clerkService = new ClerkAuthService();
