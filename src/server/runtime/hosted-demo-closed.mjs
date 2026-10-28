@@ -92,16 +92,26 @@ export default function handler(request, response) {
         return;
       }
 
-      // Handle flight order events (idempotent acknowledgment without persistence)
-      const supportedEvents = ['order.created','order.updated','order.cancelled','order.completed'];
-      if (supportedEvents.includes(eventType)) {
-        // Idempotency: in production this would check a durable store. Without backend, acknowledge but don't process.
-        response.writeHead(200, {'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
-        response.end(JSON.stringify({received:true,type:eventType,processed:false,note:'Event acknowledged. Durable processing requires backend configuration.'}));
+      // Supported critical flight order events (aligned with Duffel Webhook Events API)
+      const criticalEvents = [
+        'order.created',
+        'order.updated',
+        'order.cancelled',
+        'order.completed',
+        'order.airline_initiated_change_detected',
+        'air.order.changed',
+        'order.pending',
+        'order.failed'
+      ];
+
+      if (criticalEvents.includes(eventType)) {
+        // No durable backend: return retryable 503 so Duffel retries later
+        response.writeHead(503, {'Content-Type':'application/problem+json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Retry-After':'60'});
+        response.end(JSON.stringify({status:503,code:'BACKEND_NOT_AVAILABLE',title:'Backend unavailable',detail:'Critical event received but durable persistence is not configured. Duffel will retry.',type:eventType}));
         return;
       }
 
-      // Unsupported event type
+      // Unsupported event type — acknowledge receipt but don't process
       response.writeHead(202, {'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
       response.end(JSON.stringify({received:true,type:eventType,processed:false,note:'Event type not handled.'}));
     });
