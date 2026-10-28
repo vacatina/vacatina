@@ -48,7 +48,7 @@ export class FlightsTripReviewView {
     const backendAvailable = false; // Gated: no durable backend configured
 
     this.mount.innerHTML = `
-      <section class="flights-trip-review max-w-5xl mx-auto px-4 py-8" aria-labelledby="flight-review-heading">
+      <section class="flights-trip-review max-w-5xl mx-auto px-4 py-8 animate-fade-in" aria-labelledby="flight-review-heading">
         <header class="mb-6">
           <h1 id="flight-review-heading" class="font-heading text-2xl sm:text-3xl font-bold text-brand-black">Flight Trip Review</h1>
           <p class="text-sm text-brand-muted mt-2">Review your staged flight items, verify readiness, and proceed to the next step.</p>

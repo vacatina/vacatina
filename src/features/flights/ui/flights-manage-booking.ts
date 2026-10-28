@@ -21,7 +21,7 @@ export class FlightsManageBookingView {
   private renderManage(): void {
     if (!this.mount) return;
     this.mount.innerHTML = `
-      <section class="flights-manage-booking max-w-4xl mx-auto px-4 py-8" aria-labelledby="manage-heading">
+      <section class="flights-manage-booking max-w-4xl mx-auto px-4 py-8 animate-fade-in" aria-labelledby="manage-heading">
         <header class="mb-6">
           <h1 id="manage-heading" class="font-heading text-2xl sm:text-3xl font-bold text-brand-black">Manage Booking</h1>
           <p class="text-sm text-brand-muted mt-2">View and manage your existing flight bookings, modify dates, or request changes.</p>

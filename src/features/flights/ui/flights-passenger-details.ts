@@ -115,7 +115,7 @@ export class FlightsPassengerDetailsView {
     if (!this.mount) return;
     const totalErrors = Object.keys(this.errors).length;
     this.mount.innerHTML = `
-      <section class="flights-passenger-details max-w-4xl mx-auto px-4 py-8" aria-labelledby="passenger-details-heading">
+      <section class="flights-passenger-details max-w-4xl mx-auto px-4 py-8 animate-fade-in" aria-labelledby="passenger-details-heading">
         <header class="mb-6">
           <h1 id="passenger-details-heading" class="font-heading text-2xl sm:text-3xl font-bold text-brand-black">Passenger Details</h1>
           <p class="text-sm text-brand-muted mt-2">Enter traveller information exactly as it appears on travel documents. All fields are validated before proceeding.</p>

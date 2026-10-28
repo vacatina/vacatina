@@ -29,7 +29,7 @@ export class FlightsCheckoutView {
     const backendAvailable = false;
 
     this.mount.innerHTML = `
-      <section class="flights-checkout max-w-5xl mx-auto px-4 py-8" aria-labelledby="checkout-heading">
+      <section class="flights-checkout max-w-5xl mx-auto px-4 py-8 animate-fade-in" aria-labelledby="checkout-heading">
         <header class="mb-6">
           <h1 id="checkout-heading" class="font-heading text-2xl sm:text-3xl font-bold text-brand-black">Secure Checkout</h1>
           <p class="text-sm text-brand-muted mt-2">Review your flight booking and complete payment when available.</p>

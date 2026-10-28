@@ -21,7 +21,7 @@ export class FlightsConfirmationView {
   private renderConfirmation(): void {
     if (!this.mount) return;
     this.mount.innerHTML = `
-      <section class="flights-confirmation max-w-3xl mx-auto px-4 py-12 text-center" aria-labelledby="confirmation-heading">
+      <section class="flights-confirmation max-w-3xl mx-auto px-4 py-12 text-center animate-scale-in" aria-labelledby="confirmation-heading">
         <div class="rounded-2xl border border-brand-border bg-white p-8 sm:p-12">
           <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-6">
             <span class="text-amber-700 text-2xl font-bold">!</span>
