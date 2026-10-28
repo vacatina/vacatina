@@ -29,6 +29,7 @@ export interface VacatinaServerEnv {
   
   DUFFEL_ENV?: 'test' | 'live';
   DUFFEL_ACCESS_TOKEN?: string;
+  DUFFEL_WEBHOOK_SIGNING_SECRET?: string;
   /** Sandbox-only activation switch. Never effective in production or live mode. */
   DUFFEL_TEST_MODE_ENABLED: boolean;
   /** @deprecated Canonical runtime variable is DUFFEL_ACCESS_TOKEN */
