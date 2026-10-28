@@ -1,10 +1,19 @@
 import { apiRequest, getApiSession } from '../../lib/services/api-client.service.ts';
+import { demoCapabilities, renderEnquiryOperations } from '../enquiries/enquiry-workspace.ts';
 
 const adminEscape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const adminInput = (name: string,label: string,type = 'text',value: unknown = '',required = true) => `<label class="block text-sm font-semibold">${label}<input name="${name}" type="${type}" value="${adminEscape(value)}" ${required?'required':''} class="mt-2 w-full min-h-[44px] border border-brand-border rounded-xl px-3 bg-white"></label>`;
 
 export function adminWorkspaceHtml(): string {
-  queueMicrotask(() => void loadAdminInventory());
+  queueMicrotask(async () => {
+    const capabilities = await demoCapabilities();
+    const root = document.getElementById('admin-inventory-workspace');
+    if (!root) return;
+    if (capabilities.operations) await renderEnquiryOperations(root);
+    else if ((window as any).__VACATINA_PUBLIC_DEMO__) root.textContent = 'Demo only: hosted authentication and operations are disabled. No administrative mutation is available.';
+    else if (capabilities.mode === 'LOCAL_DURABLE_DEMO') root.textContent = 'This local demo has no authorized operations identity. No administrative actions are enabled.';
+    else await loadAdminInventory();
+  });
   return `<div id="admin-inventory-workspace" class="p-5 md:p-8 max-w-6xl mx-auto" aria-live="polite"><p role="status">Loading your operations workspace…</p></div>`;
 }
 

@@ -5,6 +5,7 @@ import pg from 'pg';
 import { globalStorageEngine, type VacatinaStorageEngine, type IPersistenceAdapter } from '../db/storage.ts';
 import type { StorageLifecycle } from '../inventory/types.ts';
 import { readBackendReadinessConfig } from '../config/backend-readiness.ts';
+import { retryLocalFileOperation } from '../persistence/local-file-operation.ts';
 
 type OperationalSnapshot = ReturnType<VacatinaStorageEngine['exportSnapshot']>;
 export interface RuntimeStateParticipant {
@@ -95,21 +96,23 @@ export class RuntimePersistence {
     }
     if (!lock) throw new Error('Local operational storage is locked by another process');
     let before: RuntimeSnapshot | undefined;
+    let temporary: string | undefined;
     try {
       try { before = JSON.parse(await fs.readFile(file, 'utf8')); }
       catch (error: any) { if (error.code !== 'ENOENT') throw new Error('Local operational state could not be read safely'); }
       await this.restore(before);
       const result = await operation();
-      const temporary = file + '.' + crypto.randomUUID() + '.tmp';
+      temporary = file + '.' + crypto.randomUUID() + '.tmp';
       await fs.writeFile(temporary, JSON.stringify(await this.snapshot()), { encoding: 'utf8', mode: 0o600 });
-      await fs.rename(temporary, file);
+      await retryLocalFileOperation(() => fs.rename(temporary!, file));
       return result;
     } catch (error) {
       await this.restore(before);
       throw error;
     } finally {
+      if (temporary) await fs.unlink(temporary).catch(() => undefined);
       await lock.close();
-      await fs.unlink(lockFile).catch(() => undefined);
+      await retryLocalFileOperation(() => fs.unlink(lockFile)).catch(() => undefined);
     }
   }
 

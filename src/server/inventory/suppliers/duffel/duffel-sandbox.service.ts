@@ -24,6 +24,7 @@ import {
   type DuffelTestModeState
 } from './duffel-runtime.ts';
 import { MemoryReadinessUnitOfWork } from '../../../persistence/readiness-repositories.ts';
+import { LocalReadinessUnitOfWork } from '../../../persistence/local-readiness-unit-of-work.ts';
 import type { ReadinessUnitOfWork } from '../../../persistence/readiness-contracts.ts';
 
 export type SandboxFailureCode =
@@ -81,6 +82,8 @@ export interface SandboxPassengerInput {
 
 export interface SandboxOrderInput {
   offerId: string;
+  /** Stable selected-offer intent, independent of browser storage and retry key. */
+  intentId?: string;
   supplierOfferId?: string;
   passengers: SandboxPassengerInput[];
   services?: Array<{ id: string; quantity: number }>;
@@ -495,6 +498,22 @@ export class DuffelSandboxService {
     if (new Set(services.map(service => service.id)).size !== services.length) {
       fail('SANDBOX_VALIDATION_FAILED', 400, 'Each optional service may be selected only once.');
     }
+    const intentId = input.intentId ? 'idem:duffel-sandbox-intent:' + createHash('sha256').update(ownerId+':'+safeText(input.intentId,300)).digest('hex') : undefined;
+    const intentFingerprint = createHash('sha256').update(JSON.stringify({offerId,passengers,services,acceptedPriceMinor:input.acceptedPriceMinor})).digest('hex');
+    if (intentId) {
+      const prior = await this.unitOfWork.transaction(async r => {
+        const intent = await r.idempotency.get(intentId);
+        if (!intent) return undefined;
+        if (intent.requestHash !== intentFingerprint) throw new DuffelSandboxError('IDEMPOTENCY_KEY_REUSED',409,'This saved sandbox intent already has different details. Reconcile it before another order.');
+        return { result: await r.idempotency.get((intent.result as {resultId:string}).resultId) };
+      });
+      if (prior) {
+        const stored = prior.result?.result as SandboxOrderStored | undefined;
+        if (!stored) throw new DuffelSandboxError('ORDER_IN_PROGRESS',409,'Saved sandbox order intent requires reconciliation. No replacement order was sent.');
+        if ('state' in stored) throw new DuffelSandboxError(stored.code,stored.state==='UNKNOWN'?502:409,stored.message);
+        return {...stored,replayed:true};
+      }
+    }
 
     const adapter = this.adapter();
     const existing = adapter.getOffer(offerId);
@@ -557,6 +576,15 @@ export class DuffelSandboxService {
     const timestamp = new Date(now).toISOString();
 
     const claim = await this.unitOfWork.transaction(async repositories => {
+      if (intentId) {
+        const intent = await repositories.idempotency.get(intentId);
+        if (intent) {
+          if (intent.requestHash !== intentFingerprint) throw new DuffelSandboxError('IDEMPOTENCY_KEY_REUSED',409,'The saved sandbox intent has different details.');
+          const saved = await repositories.idempotency.get((intent.result as {resultId:string}).resultId);
+          return saved ? {state:'REPLAY' as const,result:saved.result as SandboxOrderStored} : {state:'IN_FLIGHT' as const};
+        }
+        await repositories.idempotency.put({id:intentId,ownerId,createdAt:timestamp,updatedAt:timestamp,scope:'flights.sandbox.order.intent',requestHash:intentFingerprint,result:{resultId,claimId}});
+      }
       const previous = await repositories.idempotency.get(resultId);
       if (previous) {
         if (previous.requestHash !== requestHash) throw new DuffelSandboxError('IDEMPOTENCY_KEY_REUSED', 409, 'This order reference was already used for different details.');
@@ -667,6 +695,19 @@ export class DuffelSandboxService {
       Boolean((offer.productExtension as any)?.flight?.testMode?.enabled);
   }
 
+  public async recoverOrder(ownerId: string, intent: string): Promise<{state:'NONE'|'PENDING'|'FAILED'|'UNKNOWN'|'COMPLETED';order?:SandboxOrderResult}> {
+    this.assertEnabled();
+    if (!ownerId || !intent || intent.length>300) fail('SANDBOX_VALIDATION_FAILED',400,'A saved sandbox intent and session are required.');
+    const id='idem:duffel-sandbox-intent:'+createHash('sha256').update(ownerId+':'+intent).digest('hex');
+    return this.unitOfWork.transaction(async r=>{
+      const saved=await r.idempotency.get(id);if(!saved||saved.ownerId!==ownerId)return {state:'NONE'};
+      const result=await r.idempotency.get((saved.result as {resultId:string}).resultId);
+      if(!result)return {state:'PENDING'};
+      const value=result.result as SandboxOrderStored;
+      return 'state' in value?{state:value.state}:{state:'COMPLETED',order:{...value,replayed:true}};
+    });
+  }
+
   private resolveSupplierRef(offerId: string, supplied?: string): string {
     const adapter = this.adapter();
     const resolved = adapter.resolveSupplierOfferId(offerId);
@@ -684,7 +725,7 @@ export class DuffelSandboxService {
 let globalSandboxService: DuffelSandboxService | undefined;
 
 export function getDuffelSandboxService(): DuffelSandboxService {
-  if (!globalSandboxService) globalSandboxService = new DuffelSandboxService();
+  if (!globalSandboxService) globalSandboxService = new DuffelSandboxService({unitOfWork:process.env.NODE_ENV==='production'||process.env.VERCEL?undefined:new LocalReadinessUnitOfWork('.data/duffel-test-order-recovery.json')});
   return globalSandboxService;
 }
 

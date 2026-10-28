@@ -88,6 +88,7 @@ export interface TripReviewHandoff {
   blockers: Array<{ id: string; title: string; blockers: string[] }>;
 }
 
+import { mountEnquiryPanel } from '../enquiries/enquiry-workspace.ts';
 /**
  * Pure gate used by the review workspace and its automated tests. Checkout is
  * only possible when every staged item is live-confirmed and ready.
@@ -432,6 +433,7 @@ function renderSandboxOrderForm(body: Element, item: TripBucketCandidate, offer:
     try {
       const confirmation = await duffelSandboxFlightAdapter.createOrder({
         offerId: offer.offerId,
+        intentId: offer.offerId,
         supplierOfferId: offer.sourceOfferId,
         passengers: passengerInput,
         services,
@@ -579,7 +581,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
               <h1 class="text-3xl sm:text-4xl font-extrabold font-display text-brand-black">Review your trip</h1>
               <p class="text-sm text-brand-muted mt-2 max-w-2xl leading-relaxed">
                 Check each staged option, its inventory source and every outstanding requirement before deciding what to request.
-                This review is local to your browser in this build.
+                Planning is non-commercial. Saved request status is available only through the explicitly connected demo service.
               </p>
             </div>
             <button type="button" id="btn-review-open-bucket" class="min-h-[44px] px-4 rounded-xl border border-gray-300 text-xs font-bold text-brand-black hover:bg-gray-50 self-start lg:self-auto">
@@ -646,10 +648,13 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
                   </aside>
                 </div>`
           }
+          <div id="customer-enquiry-panel"></div>
         </section>
       </div>
     `;
 
+    const enquiryPanel = container.querySelector<HTMLElement>('#customer-enquiry-panel');
+    if (enquiryPanel) void mountEnquiryPanel(enquiryPanel);
     container.querySelector('#btn-review-open-bucket')?.addEventListener('click', () => {
       openTripBucketDrawer(document.getElementById('header-trip-bucket-btn'));
     });
@@ -683,6 +688,12 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
         button.disabled = true;
         button.textContent = 'Loading Duffel sandbox offer…';
         try {
+          const recovery = await duffelSandboxFlightAdapter.recoverOrder(item.offerId);
+          if (recovery.state === 'COMPLETED' && recovery.order) {
+            if (panel) panel.outerHTML = renderSandboxOrderSuccess(item, recovery.order);
+            return;
+          }
+          if (recovery.state !== 'NONE') throw new Error('A saved sandbox order intent requires reconciliation. No replacement order will be created.');
           const offer = await flightSearchService.getOfferById(item.offerId);
           if (!offer || !offer.sandbox) {
             throw new Error('The Duffel TEST MODE offer could not be loaded. Run a fresh sandbox search.');

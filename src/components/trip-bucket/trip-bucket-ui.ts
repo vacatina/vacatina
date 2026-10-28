@@ -71,7 +71,18 @@ export function updateTripControlsVisibility(forceVisible?: boolean, forceHidden
     window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const shouldHide = forceHidden ?? (anyOverlayOpen || (!forceVisible && currentScrollHidden));
+  let compactCollision = false;
+  if (dock && window.innerWidth >= 640 && window.innerWidth <= 1280) {
+    const rect = dock.getBoundingClientRect();
+    const bottom = window.innerHeight - (parseFloat(getComputedStyle(dock).bottom) || 0);
+    const top = bottom - rect.height;
+    compactCollision = [...document.querySelectorAll<HTMLElement>('.search-panel button, .search-panel input, main button, main select')].some(control => {
+      if (dock.contains(control)) return false;
+      const box = control.getBoundingClientRect();
+      return box.width > 0 && box.height > 0 && getComputedStyle(control).visibility !== 'hidden' && box.right > rect.left && box.left < rect.right && box.bottom > top && box.top < bottom;
+    });
+  }
+  const shouldHide = forceHidden ?? (anyOverlayOpen || compactCollision || (!forceVisible && currentScrollHidden));
 
   targets.forEach(el => {
     if (shouldHide) {

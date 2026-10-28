@@ -296,6 +296,15 @@ summary:focus-visible,
   }
 }
 
+/* Scoped Phase 18 accessibility corrections; no global card or Home redesign. */
+.hotels-search-view-root aside button,
+#visa-reset-filters-btn,
+#reset-hotel-filters-btn { min-height: 44px; min-width: 44px; }
+.hotels-search-view-root aside label,
+#visa-mobile-filters label { min-height: 44px; }
+#customer-enquiry-panel p,
+#trip-review-workspace aside > p { font-size: 13px; line-height: 1.5; }
+
 /* Reduced Motion Guardrail */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

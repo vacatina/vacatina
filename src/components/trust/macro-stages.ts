@@ -219,6 +219,15 @@ function initNewsletterSubscription(): void {
   emailInput.setAttribute('aria-label', 'Email address for Vacatina Travel Notes');
   subBtn.id = 'newsletter-subscribe-btn';
 
+  if (document.documentElement.dataset.vacatinaDemo === 'true') {
+    emailInput.value = '';
+    emailInput.disabled = true;
+    emailInput.placeholder = 'Newsletter unavailable in demo';
+    subBtn.disabled = true;
+    subBtn.textContent = 'Unavailable in demo';
+    return; // This legacy click/Enter path is not a form; never store or track an email.
+  }
+
   const submitNewsletter = () => {
     const rawEmail = (emailInput.value || '').trim();
     const res = validateEmailAddress(rawEmail);

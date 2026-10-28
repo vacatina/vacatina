@@ -6,6 +6,7 @@ import { getDemoJourneyOffer, searchDemoJourneyOffers, JOURNEY_DEMO_DISCLOSURE }
 import { journeyMoney } from '../domain/journey-models.ts';
 import { tripBucketService } from '../../../lib/services/trip-bucket.service.ts';
 import type { TripBucketCandidate, TripBucketItemState } from '../../../lib/domain/types.ts';
+import { demoCapabilities, savePlanning } from '../../enquiries/enquiry-workspace.ts';
 
 export interface JourneySearchResponse { offers: JourneyOffer[]; totalResults: number; warnings?: string[] }
 export interface JourneyRevalidation { status: string; priceChanged?: boolean; currentPrice?: number; previousPrice?: number; message?: string; checkedAt?: string }
@@ -94,9 +95,17 @@ export class JourneyService {
     });
   }
 
-  public loadBucket(): Promise<JourneyBucket> { return this.request('/api/v1/trip-buckets'); }
+  public async loadBucket(): Promise<JourneyBucket> {
+    // Custom requesters retain their existing deterministic test contract.
+    if (this.request === apiRequest && (await demoCapabilities()).planning) {
+      const {trip} = await this.request<any>('/api/v1/planning/trip');
+      return {bucketId:trip?.id||'local-demo-planning',currency:'LKR',items:(trip?.items||[]).map((s:any)=>s.item),journey:trip?.planning?.preferences,bundleProductTypes:trip?.planning?.products||[]};
+    }
+    return this.request('/api/v1/trip-buckets');
+  }
 
-  public saveBundle(journey: JourneyConfiguration, bundleProductTypes: string[]): Promise<JourneyBucket> {
+  public async saveBundle(journey: JourneyConfiguration, bundleProductTypes: string[]): Promise<JourneyBucket> {
+    if (this.request === apiRequest && (await demoCapabilities()).planning) { await savePlanning(journey,bundleProductTypes); return this.loadBucket(); }
     return this.request('/api/v1/trip-buckets', { method: 'PATCH', body: JSON.stringify({ journey, bundleProductTypes }) });
   }
 }

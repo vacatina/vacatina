@@ -581,6 +581,7 @@ export class HotelsLiteApiAdapter extends HotelSupplierAdapter<RawLiteApiHotelOf
           const rawRates: any[] = json.data || [];
           if (rawRates.length > 0) {
             return rawRates.map((r: any) => {
+              if (!r.hotelId || !r.name || !r.roomType || typeof r.price !== 'number' || !Number.isFinite(r.price) || r.price < 0) throw new Error('Unsupported LiteAPI rate schema');
               const rawOffer: RawLiteApiHotelOffer = {
                 hotelId: r.hotelId || `lp_${destSlug}_001`,
                 name: r.name || `Grand Palace Hotel ${criteria.destination}`,
@@ -597,11 +598,13 @@ export class HotelsLiteApiAdapter extends HotelSupplierAdapter<RawLiteApiHotelOf
               return this.normalize(rawOffer);
             });
           }
+          return [];
         } else {
-          console.warn(`[HotelsLiteApiAdapter] LiteAPI rates responded with HTTP ${response.status}: ${await response.text()}`);
+          throw new Error('LiteAPI rates unavailable');
         }
       } catch (err: any) {
-        console.warn(`[HotelsLiteApiAdapter] Live fetch failed: ${err.message}. Engaging controlled fallback.`);
+        // A configured supplier failure must not turn into apparently authentic inventory.
+        throw new Error('LiteAPI search unavailable. No supplier inventory was substituted.');
       }
     }
 
@@ -649,8 +652,8 @@ export class HotelsLiteApiAdapter extends HotelSupplierAdapter<RawLiteApiHotelOf
         if (response.ok) {
           return {
             offerId: supplierOfferId,
-            status: 'UNCHANGED',
-            message: 'Room availability and rate revalidated via live LiteAPI Bedbank'
+            status: 'RECHECK_REQUIRED',
+            message: 'LiteAPI prebook response requires qualified price and terms mapping before readiness.'
           };
         } else if (response.status === 410 || response.status === 404) {
           return {
@@ -663,9 +666,10 @@ export class HotelsLiteApiAdapter extends HotelSupplierAdapter<RawLiteApiHotelOf
         return {
           offerId: supplierOfferId,
           status: 'UNAVAILABLE',
-          message: `Live LiteAPI revalidation failed: ${err.message}`
+          message: 'LiteAPI revalidation unavailable. Retry after checking the service.'
         };
       }
+      return { offerId: supplierOfferId, status: 'RECHECK_REQUIRED', message: 'LiteAPI prebook could not verify this rate.' };
     }
 
     return {

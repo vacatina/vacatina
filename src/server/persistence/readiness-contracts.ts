@@ -3,6 +3,7 @@ import type {
   OutboxEventEntity, PaymentOrderEntity, SupportTicketEntity, TripBucketEntity, TripBucketItemEntity
 } from '../db/schema.ts';
 import type { CanonicalOfferEntity, RevalidationResult, SearchQueryCriteria } from '../inventory/types.ts';
+import type { TripBucketCandidate } from '../../lib/domain/types.ts';
 
 /** Persistence projections reuse canonical models; they are not a second domain/status family. */
 export interface OwnedRecord { id: string; ownerId: string; organizationId?: string; createdAt: string; updatedAt: string; }
@@ -15,7 +16,22 @@ export interface OfferReferenceRecord extends OwnedRecord {
   componentReferences?: CanonicalOfferEntity['components'];
 }
 export interface SelectedTripItem { item: TripBucketItemEntity; offerSnapshotId: string; revalidationRecordId?: string; }
-export interface TripBucketRecord extends OwnedRecord { bucket: TripBucketEntity; items: SelectedTripItem[]; revision: number; }
+export interface TripBucketRecord extends OwnedRecord {
+  bucket: TripBucketEntity; items: SelectedTripItem[]; revision: number;
+  /** Non-commercial display projection; never booking authority. */
+  planning?: { display: TripBucketCandidate[]; removed: TripBucketCandidate[]; removedSelections?: SelectedTripItem[]; preferences: Record<string, unknown>; products: string[] };
+}
+export interface EnquiryQuotation {
+  version: number; state: 'DRAFT' | 'PUBLISHED'; authorId: string; publisherId?: string;
+  text: string; expiresAt: string; createdAt: string;
+}
+export interface EnquiryRecord extends OwnedRecord {
+  tripId: string; tripRevision: number; revision: number; reference: string;
+  ticket: SupportTicketEntity; selections: SelectedTripItem[]; display: TripBucketCandidate[];
+  consent: { version: 'demo-enquiry-v1'; acceptedAt: string };
+  quotations: EnquiryQuotation[]; acknowledgedVersion?: number; withdrawn?: boolean;
+  history: Array<{ actorId: string; action: string; at: string; correlationId: string }>;
+}
 export interface ConfirmationReference {
   kind: 'SUPPLIER' | 'MANUAL'; reference: string; evidenceId: string; actorId: string; confirmedAt: string;
 }
@@ -55,10 +71,12 @@ export interface ReadinessRecords {
   searches: SearchContextRecord; offers: OfferReferenceRecord; trips: TripBucketRecord;
   bookings: BookingRecord; revalidations: RevalidationRecord; operations: OperationalRequestRecord;
   payments: PaymentReferenceRecord; events: ReadinessAuditEvent; commands: ReadinessCommand; idempotency: IdempotencyRecord;
+  enquiries: EnquiryRecord;
 }
 export interface RecordRepository<T extends { id: string; ownerId: string }> {
   get(id: string): Promise<T | undefined>;
   list(ownerId: string): Promise<T[]>;
+  listByTenant(organizationId: string): Promise<T[]>;
   put(record: T): Promise<void>;
 }
 export type TripBucketRepository = RecordRepository<TripBucketRecord>;
@@ -70,7 +88,7 @@ export type PaymentReferenceRepository = RecordRepository<PaymentReferenceRecord
 export type AuditEventRepository = RecordRepository<ReadinessAuditEvent>;
 export type ReadinessRepositories = { [K in keyof ReadinessRecords]: RecordRepository<ReadinessRecords[K]> };
 export interface ReadinessUnitOfWork {
-  readonly engine: 'MEMORY_TEST' | 'POSTGRES';
+  readonly engine: 'MEMORY_TEST' | 'POSTGRES' | 'LOCAL_FILE';
   transaction<T>(operation: (repositories: ReadinessRepositories) => Promise<T>): Promise<T>;
 }
 export class ReadinessError extends Error {

@@ -7,7 +7,7 @@ export const READINESS_TABLES = {
   payments: 'vacatina_payment_references', events: 'vacatina_backend_events', commands: 'vacatina_backend_outbox', idempotency: 'vacatina_mutation_keys'
 } as const;
 type Collection = keyof ReadinessRecords;
-const collections = Object.keys(READINESS_TABLES) as Collection[];
+const collections = [...Object.keys(READINESS_TABLES), 'enquiries'] as Collection[];
 const clone = <T>(value: T): T => structuredClone(value);
 const immutable = new Set<Collection>(['searches', 'offers', 'revalidations', 'events', 'idempotency']);
 
@@ -59,7 +59,11 @@ function validateMemoryRelations(name: Collection, record: any, state: Record<Co
     if (record.bookingItemId && !booking.items.some(item => item.id === record.bookingItemId)) throw new ReadinessError('REFERENCE_INTEGRITY_VIOLATION');
     if (record.paymentId && related('payments', record.paymentId).bookingId !== record.bookingId) throw new ReadinessError('REFERENCE_INTEGRITY_VIOLATION');
   }
-  if (name === 'commands') { related('bookings', record.aggregateId); related('operations', record.id); }
+  if (name === 'enquiries') related('trips', record.tripId);
+  if (name === 'commands') {
+    if (record.aggregateType === 'enquiry') related('enquiries', record.aggregateId);
+    else { related('bookings', record.aggregateId); related('operations', record.id); }
+  }
 }
 
 /** The same repository contract as PostgreSQL, including rollback and serialized concurrent mutations. */
@@ -67,12 +71,23 @@ export class MemoryReadinessUnitOfWork implements ReadinessUnitOfWork {
   readonly engine = 'MEMORY_TEST' as const;
   private state = Object.fromEntries(collections.map(name => [name, new Map()])) as Record<Collection, Map<string, any>>;
   private queue: Promise<unknown> = Promise.resolve();
+  exportSnapshot(): Record<string, unknown[]> { return clone(Object.fromEntries(collections.map(name => [name, [...this.state[name].values()]]))); }
+  restoreSnapshot(snapshot: Record<string, unknown[]>): void {
+    if (!snapshot || typeof snapshot !== 'object' || collections.some(name => !Array.isArray(snapshot[name]))) throw new ReadinessError('INVALID_PERSISTENCE_SNAPSHOT');
+    this.state = Object.fromEntries(collections.map(name => [name, new Map(snapshot[name].map((record: any) => {
+      validateIdentity(record); return [record.id, clone(record)];
+    }))])) as typeof this.state;
+  }
   transaction<T>(operation: (repositories: ReadinessRepositories) => Promise<T>): Promise<T> {
     const run = this.queue.then(async () => {
       const draft = clone(this.state);
       const repositories = Object.fromEntries(collections.map(name => [name, {
         get: async (id: string) => clone(draft[name].get(id)),
-        list: async (ownerId: string) => clone([...draft[name].values()].filter(record => record.ownerId === ownerId)),
+         list: async (ownerId: string) => clone([...draft[name].values()].filter(record => record.ownerId === ownerId)),
+         listByTenant: async (organizationId: string) => {
+           if (!organizationId) throw new ReadinessError('TENANT_REQUIRED',403);
+           return clone([...draft[name].values()].filter(record => record.organizationId === organizationId));
+         },
         put: async (record: ReadinessRecords[Collection]) => {
           validateIdentity(record);
           const before = draft[name].get(record.id);
@@ -114,9 +129,21 @@ export class PostgresReadinessUnitOfWork implements ReadinessUnitOfWork {
       // Scale-out/per-aggregate lock partitioning is a separate load-tested launch gate.
       await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', ['vacatina-readiness-v3']);
       const repositories = Object.fromEntries(collections.map(name => [name, {
-        get: async (id: string) => (await client!.query(`SELECT payload FROM ${READINESS_TABLES[name]} WHERE id = $1 FOR UPDATE`, [id])).rows[0]?.payload,
-        list: async (ownerId: string) => (await client!.query(`SELECT payload FROM ${READINESS_TABLES[name]} WHERE owner_id = $1 ORDER BY id FOR UPDATE`, [ownerId])).rows.map(row => row.payload),
-        put: async (record: any) => {
+        get: async (id: string) => {
+          if (name === 'enquiries') throw new ReadinessError('ENQUIRY_SCHEMA_NOT_QUALIFIED',503);
+          return (await client!.query(`SELECT payload FROM ${READINESS_TABLES[name]} WHERE id = $1 FOR UPDATE`, [id])).rows[0]?.payload;
+        },
+        list: async (ownerId: string) => {
+          if (name === 'enquiries') throw new ReadinessError('ENQUIRY_SCHEMA_NOT_QUALIFIED',503);
+          return (await client!.query(`SELECT payload FROM ${READINESS_TABLES[name]} WHERE owner_id = $1 ORDER BY id FOR UPDATE`, [ownerId])).rows.map(row => row.payload);
+        },
+        listByTenant: async (organizationId: string) => {
+          if (name === 'enquiries') throw new ReadinessError('ENQUIRY_SCHEMA_NOT_QUALIFIED',503);
+          if (!organizationId) throw new ReadinessError('TENANT_REQUIRED',403);
+          return (await client!.query(`SELECT payload FROM ${READINESS_TABLES[name]} WHERE payload->>'organizationId' = $1 ORDER BY id FOR UPDATE`,[organizationId])).rows.map(row=>row.payload);
+        },
+         put: async (record: any) => {
+          if (name === 'enquiries') throw new ReadinessError('ENQUIRY_SCHEMA_NOT_QUALIFIED', 503);
           validateIdentity(record);
           const fields: Record<string, unknown> = { id: record.id, owner_id: record.ownerId, payload: JSON.stringify(record) };
           if (name === 'offers') Object.assign(fields, { search_context_id: record.searchContextId || null, canonical_offer_id: record.snapshot.canonicalOfferId, supplier_id: record.snapshot.supplierId, environment_class: record.authority.environmentClass, sellability: record.authority.sellability });

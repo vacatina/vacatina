@@ -8,6 +8,10 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { LocalReadinessUnitOfWork } from '../src/server/persistence/local-readiness-unit-of-work.ts';
 
 import {
   FlightsDuffelAdapter,
@@ -603,6 +607,46 @@ test('Vacatina Phase 16 — Duffel TEST MODE sandbox suite', async t => {
       service.quote({ offerId: offer.canonicalOfferId, services: [{ id: 'bad', quantity: 1 }] }),
       sandboxFailure('SANDBOX_VALIDATION_FAILED')
     );
+  });
+
+  await t.test('Phase 18 durable stable intent recovers after restart and browser key loss without provider calls', async () => {
+    let orderCalls=0;
+    const {adapter}=harness(call=>{
+      if(call.url.includes('/air/offer_requests'))return offerRequestResponse();
+      if(call.url.includes('/actions/price'))return jsonResponse(rawOffer({total:'450.50'}));
+      if(call.url.endsWith('/air/orders')){orderCalls++;return jsonResponse(orderResponse());}
+      throw new Error('Unexpected injected HTTP call');
+    });
+    const file=path.resolve('tmp/phase18-tests',randomUUID()+'.json');
+    const first=new DuffelSandboxService({adapterFactory:()=>adapter,unitOfWork:new LocalReadinessUnitOfWork(file),now:()=>NOW});
+    const offer=(await first.search(SEARCH_INPUT)).offers[0];
+    const input={offerId:offer.canonicalOfferId,intentId:offer.canonicalOfferId,passengers:[PASSENGER],services:[],acceptedPriceMinor:45050};
+    const saved=await first.createOrder(input,'owner:phase18','first-browser-reference');
+    const restarted=new DuffelSandboxService({adapterFactory:()=>{throw new Error('Replay must not contact provider or retrieve an expired quote');},unitOfWork:new LocalReadinessUnitOfWork(file),now:()=>NOW});
+    assert.equal((await restarted.recoverOrder('owner:phase18',offer.canonicalOfferId)).order?.orderId,saved.orderId);
+    assert.equal((await restarted.recoverOrder('other-owner',offer.canonicalOfferId)).state,'NONE');
+    assert.equal((await restarted.createOrder(input,'owner:phase18','browser-lost-old-key')).orderId,saved.orderId);
+    assert.equal(orderCalls,1);
+    await assert.rejects(restarted.createOrder({...input,acceptedPriceMinor:1},'owner:phase18','changed-details-reference'),sandboxFailure('IDEMPOTENCY_KEY_REUSED'));
+    await fs.unlink(file);
+  });
+
+  await t.test('Phase 18 unknown order survives restart and forbids replacement under a new browser key', async () => {
+    let orderCalls=0;
+    const {adapter}=harness(call=>{
+      if(call.url.includes('/air/offer_requests'))return offerRequestResponse();
+      if(call.url.includes('/actions/price'))return jsonResponse(rawOffer({total:'450.50'}));
+      if(call.url.endsWith('/air/orders')){orderCalls++;throw new TypeError('Injected unknown network outcome');}
+      throw new Error('Unexpected injected HTTP call');
+    });
+    const file=path.resolve('tmp/phase18-tests',randomUUID()+'.json');
+    const first=new DuffelSandboxService({adapterFactory:()=>adapter,unitOfWork:new LocalReadinessUnitOfWork(file),now:()=>NOW});
+    const offer=(await first.search(SEARCH_INPUT)).offers[0];const input={offerId:offer.canonicalOfferId,intentId:offer.canonicalOfferId,passengers:[PASSENGER],services:[],acceptedPriceMinor:45050};
+    await assert.rejects(first.createOrder(input,'owner:unknown','first-unknown-reference'),sandboxFailure('SANDBOX_OUTCOME_UNKNOWN'));
+    const restarted=new DuffelSandboxService({adapterFactory:()=>{throw new Error('Must never retry an unknown order');},unitOfWork:new LocalReadinessUnitOfWork(file),now:()=>NOW});
+    assert.equal((await restarted.recoverOrder('owner:unknown',offer.canonicalOfferId)).state,'UNKNOWN');
+    await assert.rejects(restarted.createOrder(input,'owner:unknown','lost-browser-reference'),sandboxFailure('SANDBOX_OUTCOME_UNKNOWN'));
+    assert.equal(orderCalls,1);await fs.unlink(file);
   });
 
   await t.test('explicit order creation is idempotent and never duplicates on retries', async () => {

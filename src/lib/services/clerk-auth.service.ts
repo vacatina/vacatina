@@ -29,7 +29,10 @@ export interface ClerkConfig {
   scriptUrl: string;
 }
 
-export const CLERK_DEFAULT_CONFIG: ClerkConfig = {
+declare const __VACATINA_PUBLIC_DEMO_BUILD__: boolean;
+const publicDemoBuild = typeof __VACATINA_PUBLIC_DEMO_BUILD__ !== 'undefined' && __VACATINA_PUBLIC_DEMO_BUILD__;
+const publicDemo = () => publicDemoBuild || (typeof document !== 'undefined' && document.documentElement.dataset.vacatinaDemo === 'true');
+export const CLERK_DEFAULT_CONFIG: ClerkConfig = publicDemoBuild ? { publishableKey:'',frontendApi:'',scriptUrl:'' } : {
   publishableKey: 'pk_test_ZWxlY3RyaWMtc25haWwtNDguY2xlcmsuYWNjb3VudHMuZGV2JA',
   frontendApi: 'https://electric-snail-48.clerk.accounts.dev',
   scriptUrl: 'https://electric-snail-48.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js'
@@ -61,7 +64,7 @@ export class ClerkAuthService {
   }
 
   public isReady(): boolean {
-    return this.isLoaded && typeof window !== 'undefined' && Boolean(window.Clerk);
+    return !publicDemo() && this.isLoaded && typeof window !== 'undefined' && Boolean(window.Clerk);
   }
 
   public isConfigured(): boolean {
@@ -95,6 +98,7 @@ export class ClerkAuthService {
    * Loads the ClerkJS script if not already present on the page.
    */
   public async init(publishableKey?: string, frontendApi?: string): Promise<boolean> {
+    if (publicDemo()) return false;
     if (typeof window === 'undefined') return false;
     if (this.isLoaded) return true;
     if (this.isLoading) return false;
@@ -246,6 +250,7 @@ export class ClerkAuthService {
    * If Clerk is unavailable, executes fallbackCallback or opens native modal.
    */
   public async openSignIn(options?: { redirectUrl?: string }, fallbackCallback?: () => void): Promise<void> {
+    if (publicDemo()) return;
     if (this.isReady()) {
       try {
         await window.Clerk.openSignIn({
@@ -279,6 +284,7 @@ export class ClerkAuthService {
    * Opens Clerk Sign Up modal.
    */
   public async openSignUp(options?: { redirectUrl?: string }, fallbackCallback?: () => void): Promise<void> {
+    if (publicDemo()) return;
     if (this.isReady()) {
       try {
         await window.Clerk.openSignUp({

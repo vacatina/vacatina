@@ -188,6 +188,8 @@ export class VisaSearchView {
             
             <!-- Filters Sidebar -->
             <aside class="lg:col-span-3 space-y-4">
+              <details id="visa-mobile-filters" ${(document.getElementById('visa-mobile-filters') as HTMLDetailsElement | null)?.open || window.innerWidth >= 1024 ? 'open' : ''}>
+                <summary class="lg:hidden min-h-[44px] flex items-center border rounded-xl px-4 mb-3 font-semibold text-sm cursor-pointer">Filter assistance examples</summary>
               <div class="bg-white rounded-2xl p-5 border border-brand-border/80 shadow-sm space-y-5">
                 <div class="flex items-center justify-between pb-3 border-b border-brand-border/60">
                   <h2 class="text-xs font-bold uppercase tracking-wider text-brand-black">Filter Services</h2>
@@ -297,6 +299,7 @@ export class VisaSearchView {
                   </label>
                 </div>
               </div>
+              </details>
             </aside>
 
             <!-- Results List -->

@@ -17,6 +17,7 @@ import type {
 import { assertProductionResponseSafety } from './types.ts';
 import { isProductionRuntime, isSeedOffer } from './commercial-truth.ts';
 import { BaseSupplierAdapter } from './adapters/base.adapter.ts';
+import { searchCacheFingerprint } from './search-fingerprint.ts';
 import { FlightsDuffelAdapter } from './adapters/flights-duffel.adapter.ts';
 import { HotelsLiteApiAdapter } from './adapters/hotels-liteapi.adapter.ts';
 import { CarsRentalAdapter } from './adapters/cars-rental.adapter.ts';
@@ -112,7 +113,7 @@ export class UnifiedInventoryService {
    * Unified Search across all relevant API, Manual, and Hybrid sources.
    */
   public async search(criteria: SearchQueryCriteria): Promise<CanonicalOfferEntity[]> {
-    const cacheKey = `search:${criteria.productType}:${criteria.origin || ''}:${criteria.destination}:${criteria.departureDate || ''}:${criteria.cabinClass || ''}`;
+    const cacheKey = searchCacheFingerprint(criteria);
 
     // 1. Check Cache
     const cached = this.cache.get(cacheKey);

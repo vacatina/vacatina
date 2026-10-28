@@ -70,6 +70,7 @@ export interface SandboxSeatMap {
 
 export interface SandboxOrderRequest {
   offerId: string;
+  intentId?: string;
   supplierOfferId?: string;
   passengers: Array<{
     offerPassengerId: string;
@@ -514,6 +515,9 @@ export class DuffelSandboxFlightAdapter implements IFlightAdapter {
       headers: { 'X-Idempotency-Key': idempotencyKey },
       body: JSON.stringify(input)
     });
+  }
+  public async recoverOrder(intentId:string):Promise<{state:string;order?:SandboxOrderConfirmation}>{
+    return apiRequest('/api/v1/flights/sandbox/order-recovery?intentId='+encodeURIComponent(intentId));
   }
 }
 

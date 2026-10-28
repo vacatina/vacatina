@@ -60,6 +60,10 @@ export async function handleCustomerRoutes(request: Request, context: SecurityCo
       if (path === '/api/v1/flights/sandbox/status' && method === 'GET') {
         return json({ ...sandbox.status(), timestamp: new Date().toISOString() });
       }
+      if (path === '/api/v1/flights/sandbox/order-recovery' && method === 'GET') {
+        if (!sessionId) return fail(401,'SESSION_REQUIRED','Start the same travel session to recover a sandbox order.');
+        return json(await sandbox.recoverOrder(context?.userId ? `user:${context.userId}` : String(sessionId),url.searchParams.get('intentId') || ''));
+      }
       if (path === '/api/v1/flights/sandbox/search' && method === 'POST') {
         const input = await body();
         const result = await sandbox.search({
@@ -127,6 +131,7 @@ export async function handleCustomerRoutes(request: Request, context: SecurityCo
         const ownerId = context?.userId ? `user:${context.userId}` : String(sessionId);
         const result = await sandbox.createOrder({
           offerId: input.offerId,
+          intentId: input.intentId,
           supplierOfferId: input.supplierOfferId,
           passengers: input.passengers,
           services: input.services,

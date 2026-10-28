@@ -180,6 +180,8 @@ export class HotelsSearchView {
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Left Filter Sidebar -->
             <aside class="lg:col-span-4 space-y-6">
+              <details id="hotel-mobile-filters" ${(document.getElementById('hotel-mobile-filters') as HTMLDetailsElement | null)?.open || window.innerWidth >= 1024 ? 'open' : ''}>
+                <summary class="lg:hidden min-h-[44px] flex items-center border rounded-xl px-4 mb-3 font-semibold text-sm cursor-pointer">Filter stay examples</summary>
               <div class="bg-white rounded-2xl border border-brand-border p-5 space-y-6 shadow-sm">
                 <div class="flex items-center justify-between pb-3 border-b border-brand-border/60">
                   <h3 class="font-heading font-bold text-sm text-brand-black">Filters</h3>
@@ -263,6 +265,7 @@ export class HotelsSearchView {
                   </div>
                 </div>
               </div>
+              </details>
             </aside>
 
             <!-- Right Results List Column -->

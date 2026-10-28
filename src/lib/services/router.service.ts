@@ -55,6 +55,7 @@ import {
 } from '../../features/flights/domain/flight-routes.ts';
 import { renderTripReviewWorkspace } from '../../features/trip-review/trip-review-workspace.ts';
 import { bundleWorkspace } from '../../features/bundle/bundle-workspace.ts';
+import { renderEnquiryWorkspace } from '../../features/enquiries/enquiry-workspace.ts';
 import { renderCheckoutWorkspace, renderManageBookingWorkspace } from '../../features/booking/booking-workspace.ts';
 
 function showJourneyWorkspace(): HTMLElement {
@@ -297,6 +298,10 @@ export class CanonicalRouterService {
 
     // Local, browser-side Trip Review for the Flights journey. This must not
     // fall through to server checkout, which only knows server-persisted items.
+    if (path === '/requests' || path.startsWith('/requests/')) {
+      void renderEnquiryWorkspace(showJourneyWorkspace(), path.split('/')[2]);
+      return;
+    }
     if (path === '/trip/review') {
       renderTripReviewWorkspace(showJourneyWorkspace());
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -305,6 +310,10 @@ export class CanonicalRouterService {
 
     // Server-backed journeys take precedence over legacy demonstration modals.
     if (path === '/checkout' || path.startsWith('/checkout/')) {
+      if ((window as any).__VACATINA_PUBLIC_DEMO__) {
+        showJourneyWorkspace().innerHTML = '<section class="max-w-5xl mx-auto px-4 py-12"><h1 class="font-heading text-3xl">Demo checkout unavailable</h1><p class="mt-4">DEMO / TEST only. Payments, bookings and collection of personal information are disabled.</p><a href="/trip/review" class="min-h-[44px] inline-flex items-center underline mt-4">Return to trip review</a></section>';
+        return;
+      }
       renderCheckoutWorkspace(showJourneyWorkspace());
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;

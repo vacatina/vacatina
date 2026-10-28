@@ -64,6 +64,11 @@ export class BundleWorkspace {
     this.bucket = null; this.error = ''; this.notice = ''; this.loading = true;
     const generation = ++this.generation;
     this.render();
+    if ((window as any).__VACATINA_PUBLIC_DEMO__) {
+      this.localPlanning = true; this.loading = false;
+      this.error = 'Browser-only demo: preferences are held on this page, not durably submitted. No booking or payment is available.';
+      this.render(); return;
+    }
     try {
       this.bucket = await journeyService.loadBucket();
       if (generation !== this.generation) return;

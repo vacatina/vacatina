@@ -51,9 +51,12 @@ import { routerService } from '../lib/services/router.service.ts';
 import { SUPPLIER_ADAPTER_REGISTRY } from '../lib/adapters/supplier-adapters.ts';
 import { telemetry } from '../lib/analytics/telemetry.ts';
 import { refreshServerTripBucket } from '../features/journeys/services/journey-service.ts';
+import { initializePlanning } from '../features/enquiries/enquiry-workspace.ts';
+import { initializePublicDemo } from '../lib/services/public-demo.service.ts';
 
 export function bootstrapVacatinaApp(): void {
   if (typeof document === 'undefined') return;
+  initializePublicDemo();
 
   initStaticPackageModalCloseWiring();
   initHeaderAndNavigation();
@@ -64,7 +67,15 @@ export function bootstrapVacatinaApp(): void {
   initLegalAndCookieInteractions();
   routerService.init();
   tripBucketService.replaceCandidates([]);
-  void refreshServerTripBucket().catch(() => { /* Keep an honest empty workspace when offline. */ });
+  void initializePlanning().then(connected => {
+    if (connected) {
+      // Only the already-rendered review depends on the restored display snapshot.
+      // Do not destroy a request/admin form that independently loaded its own server record.
+      if (location.pathname === '/trip/review') routerService.navigateTo(location.pathname + location.search, false);
+      return;
+    }
+    if (!(window as any).__VACATINA_PUBLIC_DEMO__) return refreshServerTripBucket();
+  }).catch(() => { /* No persistence success is inferred while offline. */ });
 
   // Global Escape key handler with exact priority & focus restoration
   document.addEventListener('keydown', event => {
