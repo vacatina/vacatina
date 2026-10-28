@@ -175,9 +175,9 @@ export class FlightsHubView {
               <!-- Trip Type Selector -->
               <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-5">
                 <div class="inline-flex p-1 bg-gray-100 rounded-xl" role="radiogroup" aria-label="Trip type selection">
-                  <button type="button" data-trip="round_trip" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${this.currentTripType === 'round_trip' ? 'bg-white text-brand-primary shadow-sm font-bold' : 'text-brand-muted hover:text-brand-primary'}">Round Trip</button>
-                  <button type="button" data-trip="one_way" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${this.currentTripType === 'one_way' ? 'bg-white text-brand-primary shadow-sm font-bold' : 'text-brand-muted hover:text-brand-primary'}">One Way</button>
-                  <button type="button" data-trip="multi_city" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${this.currentTripType === 'multi_city' ? 'bg-white text-brand-primary shadow-sm font-bold' : 'text-brand-muted hover:text-brand-primary'}">Multi-City</button>
+                  <button type="button" data-trip="round_trip" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 ${this.currentTripType === 'round_trip' ? 'bg-white text-brand-primary shadow-sm font-bold scale-[1.02]' : 'text-brand-muted hover:text-brand-primary hover:bg-white/50'}">Round Trip</button>
+                  <button type="button" data-trip="one_way" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 ${this.currentTripType === 'one_way' ? 'bg-white text-brand-primary shadow-sm font-bold scale-[1.02]' : 'text-brand-muted hover:text-brand-primary hover:bg-white/50'}">One Way</button>
+                  <button type="button" data-trip="multi_city" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 ${this.currentTripType === 'multi_city' ? 'bg-white text-brand-primary shadow-sm font-bold scale-[1.02]' : 'text-brand-muted hover:text-brand-primary hover:bg-white/50'}">Multi-City</button>
                 </div>
 
                 <!-- Traveller & Cabin Trigger -->
