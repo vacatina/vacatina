@@ -171,7 +171,7 @@ export class FlightsHubView {
             </div>
 
             <!-- Search Command Panel Container -->
-            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-xl text-brand-black border border-gray-100 animate-slide-up">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-xl text-brand-black border border-gray-100 animate-slide-up transition-shadow duration-300 hover:shadow-2xl">
               <!-- Trip Type Selector -->
               <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-5">
                 <div class="inline-flex p-1 bg-gray-100 rounded-xl" role="radiogroup" aria-label="Trip type selection">
