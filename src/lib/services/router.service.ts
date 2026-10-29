@@ -327,16 +327,17 @@ export class CanonicalRouterService {
       return;
     }
     // Dedicated post-booking frontend views (change/cancel/refund/disruption/support)
-    const postBookingMatch = path.match(/^\/bookings\/([^/]+)\/(change|cancel|refund|disruption|support)(?:\/.*)?$/);
+    const postBookingMatch = path.match(/^\/bookings\/([^/]+)\/(change|cancel|refund|disruption|support)(?:\/(.*))?$/);
     if (postBookingMatch) {
       console.log('[ROUTER] postBookingMatch hit', postBookingMatch[1], postBookingMatch[2]);
       const bookingId = decodeURIComponent(postBookingMatch[1]);
       const kind = postBookingMatch[2] as 'change' | 'cancel' | 'refund' | 'disruption' | 'support';
+      const stage = (postBookingMatch[3] || '').replace(/\/+$/, '');
       const mount = showFlightsView();
       mount.innerHTML = '';
       import('../../features/flights/ui/flights-post-booking.ts').then(({ FlightsPostBookingView }) => {
         const view = new FlightsPostBookingView();
-        view.render(mount, kind, bookingId);
+        view.render(mount, kind, bookingId, stage);
       }).catch(err => {
         console.error('[ROUTER] post-booking import failed:', err);
       });

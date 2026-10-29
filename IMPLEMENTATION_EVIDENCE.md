@@ -43,18 +43,18 @@
 | `/bookings/:id` | 27 Booking Details + 28–31 panels | flights-manage-booking.ts |
 | `/bookings/:id/extras` | 32 Post-Booking Extras | flights-manage-booking.ts |
 | `/bookings/:id/passengers/edit` | 33 Passenger Correction | flights-manage-booking.ts |
-| `/bookings/:id/change` | 34 Change Start | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/change/alternatives` | 35 Change Alternatives | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/change/review` | 36 Change Quote & Review | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/change/complete` | 37 Change Payment & Completion | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/cancel/eligibility` | 38 Cancellation Eligibility | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/cancel/quote` | 39 Cancellation Quote & Approval | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/cancel/result` | 40 Cancellation Result | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/refund` | 41 Refund / Credit Tracker | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/disruption` | 42 Disruption Alert | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/disruption/decision` | 43 Disruption Alternative Decision | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/support/special` | 44 Special Assistance | flights-post-booking.ts (preview/gated) |
-| `/bookings/:id/support` | 45 Support Case Tracker | flights-post-booking.ts (preview/gated) |
+| `/bookings/:id/change` | 34 Change Start (select + quote) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/change/alternatives` | 35 Change Alternatives (selection) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/change/review` | 36 Change Quote & Review (accept gate) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/change/complete` | 37 Change Completion (preview state) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/cancel/eligibility` | 38 Cancellation Eligibility | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/cancel/quote` | 39 Cancellation Quote & Approval (reason + consent gate) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/cancel/result` | 40 Cancellation Result (preview) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/refund` | 41 Refund / Credit Tracker (lifecycle states) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/disruption` | 42 Disruption Alert (3 decisions) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/disruption/decision` | 43 Disruption Alternative Decision | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/support/special` | 44 Special Assistance (validation + consent) | flights-post-booking.ts (interactive, preview) |
+| `/bookings/:id/support` | 45 Support Case Tracker (validation + case history) | flights-post-booking.ts (interactive, preview) |
 | `/flights/requests/:id/review` | 46 Manual Request Review | flights-manual-request.ts |
 | `/flights/requests/:id/submitted` | 47 Request Submitted | flights-manual-request.ts |
 | `/flights/requests/:id` | 48 Request Status Tracker | flights-manual-request.ts |
