@@ -159,12 +159,14 @@ async function runGroup(cdp, screens, width, height, mobile) {
         if (linkClicked) {
           await sleep(400);
           const afterUrl = await cdp.evaluate('location.pathname');
+          // navOk is true ONLY if the link click actually changed the URL
+          navOk = (afterUrl !== s.route);
           // navigate back to the test route
           await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('${s.route}')`);
           await sleep(400);
           const restored = await cdp.evaluate('location.pathname');
-          // navOk is true if the link click changed the URL (interaction works)
-          navOk = (afterUrl !== s.route) || true; // link exists and was clickable
+          // must be back on the test route
+          if (restored !== s.route) navOk = false;
         }
       } catch (e) { navOk = false; }
       const ok = headingMatch && r.fits && !hasError && navOk && r.hasNamedControls && r.hasReducedMotion;
