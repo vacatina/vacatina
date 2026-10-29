@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-28T20:23:39.959Z",
+  "timestamp": "2026-10-29T20:47:27.822Z",
   "version": "4.2.0-ultra-reconstructed-locked",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewportsTested": [
@@ -1138,7 +1138,9 @@
     "Flights Phase 5 — Responsive Flights & Trip Bucket 768x1024",
     "Flights Phase 5 — Responsive Flights & Trip Bucket 360x800",
     "Journey N — Complete Hotels B2C Flow",
-    "Journey O - Complete Consular Visa B2C Flow"
+    "Journey O - Complete Consular Visa B2C Flow",
+    "Flights full UI/UX journey @ 390px",
+    "Flights full UI/UX journey @ 1440px"
   ],
   "assertions": [
     {
@@ -1274,7 +1276,7 @@
     {
       "name": "Journey M — Full B2C Flights Product Experience (Hub, Search Results, Modal, Fare Select & Trip Bucket Staging)",
       "passed": true,
-      "details": "hubVisible=true, hubTitle=\"true\", origin=\"Colombo (CMB) — Bandaranaike International Airport\", dep=\"2026-11-04\", travellers=\"1 Adult · Economy\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
+      "details": "hubVisible=true, hubTitle=\"true\", origin=\"Colombo (CMB) — Bandaranaike International Airport\", dep=\"2026-11-05\", travellers=\"1 Adult · Economy\", hasCards=true, modalOpen=true, stagedInBucket=true, mainRestored=true"
     },
     {
       "name": "Flights Phase 5 — Hub traveller/date controls and canonical search submission",
@@ -1650,6 +1652,16 @@
       "name": "Flights New Routes — Manage Booking @ 360",
       "passed": true,
       "details": "{\"heading\":true,\"fits\":true}"
+    },
+    {
+      "name": "Flights full UI/UX journeys (Trip Bucket + Direct Book) @ 390px",
+      "passed": true,
+      "details": "{\"steps\":22,\"failed\":[],\"journey\":[{\"name\":\"Homepage has a usable Flights entry\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Homepage Flights entry responds\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Search Results provide a selectable offer\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Offer Details opens from selected result\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Offer has Add to Trip action\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Selected flight enters Trip Bucket\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Trip Bucket has an accessible entry\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Trip Bucket has enabled Review action\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Trip Review opens from Trip Bucket\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Review has a Passenger Details transition\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Passenger Details opens from Review click\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Passenger form has Continue\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Valid fictional Passenger Details advances to Flight Review\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Flight Review has enabled Checkout Preview CTA\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Checkout Preview opens from Review\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Checkout Preview has simulated completion\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Simulated result reached from Checkout Preview\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Result does not falsely claim an issued ticket\",\"pass\":true,\"detail\":\"\"}],\"direct\":[{\"name\":\"Direct Booking: selectable offer\",\"pass\":true},{\"name\":\"Direct Booking: offer opens\",\"pass\":true},{\"name\":\"Direct Booking: dedicated Book Now CTA\",\"pass\":true},{\"name\":\"Direct Booking: Book Now advances without Trip Bucket\",\"pass\":true}]}"
+    },
+    {
+      "name": "Flights full UI/UX journeys (Trip Bucket + Direct Book) @ 1440px",
+      "passed": true,
+      "details": "{\"steps\":22,\"failed\":[],\"journey\":[{\"name\":\"Homepage has a usable Flights entry\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Homepage Flights entry responds\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Search Results provide a selectable offer\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Offer Details opens from selected result\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Offer has Add to Trip action\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Selected flight enters Trip Bucket\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Trip Bucket has an accessible entry\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Trip Bucket has enabled Review action\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Trip Review opens from Trip Bucket\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Review has a Passenger Details transition\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Passenger Details opens from Review click\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Passenger form has Continue\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Valid fictional Passenger Details advances to Flight Review\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Flight Review has enabled Checkout Preview CTA\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Checkout Preview opens from Review\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Checkout Preview has simulated completion\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Simulated result reached from Checkout Preview\",\"pass\":true,\"detail\":\"\"},{\"name\":\"Result does not falsely claim an issued ticket\",\"pass\":true,\"detail\":\"\"}],\"direct\":[{\"name\":\"Direct Booking: selectable offer\",\"pass\":true},{\"name\":\"Direct Booking: offer opens\",\"pass\":true},{\"name\":\"Direct Booking: dedicated Book Now CTA\",\"pass\":true},{\"name\":\"Direct Booking: Book Now advances without Trip Bucket\",\"pass\":true}]}"
     },
     {
       "name": "B2B Flights Routes — B2B Flight Search @ 1440",
