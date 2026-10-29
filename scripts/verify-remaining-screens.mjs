@@ -148,25 +148,30 @@ async function runGroup(cdp, screens, width, height, mobile) {
       })()`);
       const hasError = cdp.consoleErrors.length > 0 || cdp.pageExceptions.length > 0;
       const headingMatch = (r.heading || '').toLowerCase().includes((expectedHeading || '').toLowerCase().split(' ')[0]);
-      // Interaction check: try clicking a back/navigation link if present and verify it navigated
+      // Interaction check: verify required navigation links exist and work
       let navOk = true;
       try {
-        const linkClicked = await cdp.evaluate(`(() => {
-          const link = document.querySelector('a[href="/flights"], a[href="/"]');
-          if (link) { link.click(); return true; }
-          return false;
+        const linkExists = await cdp.evaluate(`(() => {
+          return !!document.querySelector('a[href="/flights"], a[href="/"]');
         })()`);
-        if (linkClicked) {
-          await sleep(400);
-          const afterUrl = await cdp.evaluate('location.pathname');
-          // navOk is true ONLY if the link click actually changed the URL
-          navOk = (afterUrl !== s.route);
-          // navigate back to the test route
-          await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('${s.route}')`);
-          await sleep(400);
-          const restored = await cdp.evaluate('location.pathname');
-          // must be back on the test route
-          if (restored !== s.route) navOk = false;
+        if (s.requiresBackLink && !linkExists) {
+          // Required back link is missing — genuine failure
+          navOk = false;
+        } else if (linkExists) {
+          const linkClicked = await cdp.evaluate(`(() => {
+            const link = document.querySelector('a[href="/flights"], a[href="/"]');
+            if (link) { link.click(); return true; }
+            return false;
+          })()`);
+          if (linkClicked) {
+            await sleep(400);
+            const afterUrl = await cdp.evaluate('location.pathname');
+            navOk = (afterUrl !== s.route);
+            await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('${s.route}')`);
+            await sleep(400);
+            const restored = await cdp.evaluate('location.pathname');
+            if (restored !== s.route) navOk = false;
+          }
         }
       } catch (e) { navOk = false; }
       const ok = headingMatch && r.fits && !hasError && navOk && r.hasNamedControls && r.hasReducedMotion;
@@ -209,37 +214,37 @@ async function main() {
   }
 
   const screens = [
-    // Post-booking dedicated views (34-45)
-    { id: '34', route: '/bookings/VCT-2026-0001/change', heading: 'Change Flight' },
-    { id: '35', route: '/bookings/VCT-2026-0001/change/alternatives', heading: 'Change Flight' },
-    { id: '36', route: '/bookings/VCT-2026-0001/change/review', heading: 'Change Flight' },
-    { id: '37', route: '/bookings/VCT-2026-0001/change/complete', heading: 'Change Flight' },
-    { id: '38', route: '/bookings/VCT-2026-0001/cancel/eligibility', heading: 'Cancel Flight' },
-    { id: '39', route: '/bookings/VCT-2026-0001/cancel/quote', heading: 'Cancel Flight' },
-    { id: '40', route: '/bookings/VCT-2026-0001/cancel/result', heading: 'Cancel Flight' },
-    { id: '41', route: '/bookings/VCT-2026-0001/refund', heading: 'Refund' },
-    { id: '42', route: '/bookings/VCT-2026-0001/disruption', heading: 'Disruption' },
-    { id: '43', route: '/bookings/VCT-2026-0001/disruption/decision', heading: 'Disruption' },
-    { id: '44', route: '/bookings/VCT-2026-0001/support/special', heading: 'Support' },
-    { id: '45', route: '/bookings/VCT-2026-0001/support', heading: 'Support' },
-    // Manual request tracker (46-50)
-    { id: '46', route: '/flights/requests/VCT-REQ-0001/review', heading: 'Manual Flight Request' },
-    { id: '47', route: '/flights/requests/VCT-REQ-0001/submitted', heading: 'Manual Flight Request' },
-    { id: '48', route: '/flights/requests/VCT-REQ-0001', heading: 'Manual Flight Request' },
-    { id: '49', route: '/flights/requests/VCT-REQ-0001/quote', heading: 'Manual Flight Request' },
-    { id: '50', route: '/flights/requests/VCT-REQ-0001/declined', heading: 'Manual Flight Request' },
-    // B2B after-sales (57)
-    { id: '57', route: '/b2b/flights/manage', heading: 'Agent Flight Booking Management' },
-    // Admin (62-64) — auth-gated, heading will be 'Operations access'
-    { id: '62', route: '/admin/after-sales', heading: 'Operations access' },
-    { id: '63', route: '/admin/disruptions', heading: 'Operations access' },
-    { id: '64', route: '/admin/reconciliation', heading: 'Operations access' },
-    // Core flows (already tested, re-verify)
-    { id: '02', route: '/flights', heading: 'Find & Configure Your Ideal Flight' },
-    { id: '03', route: '/flights/search', heading: 'Flight search results' },
-    { id: '27', route: '/bookings/VCT-2026-0001', heading: 'Operations access' },
-    { id: '51', route: '/b2b/flights', heading: 'B2B Flight Search' },
-    { id: '58', route: '/admin/suppliers', heading: 'Operations access' },
+    // Post-booking dedicated views (34-45) — have back links
+    { id: '34', route: '/bookings/VCT-2026-0001/change', heading: 'Change Flight', requiresBackLink: true },
+    { id: '35', route: '/bookings/VCT-2026-0001/change/alternatives', heading: 'Change Flight', requiresBackLink: true },
+    { id: '36', route: '/bookings/VCT-2026-0001/change/review', heading: 'Change Flight', requiresBackLink: true },
+    { id: '37', route: '/bookings/VCT-2026-0001/change/complete', heading: 'Change Flight', requiresBackLink: true },
+    { id: '38', route: '/bookings/VCT-2026-0001/cancel/eligibility', heading: 'Cancel Flight', requiresBackLink: true },
+    { id: '39', route: '/bookings/VCT-2026-0001/cancel/quote', heading: 'Cancel Flight', requiresBackLink: true },
+    { id: '40', route: '/bookings/VCT-2026-0001/cancel/result', heading: 'Cancel Flight', requiresBackLink: true },
+    { id: '41', route: '/bookings/VCT-2026-0001/refund', heading: 'Refund', requiresBackLink: true },
+    { id: '42', route: '/bookings/VCT-2026-0001/disruption', heading: 'Disruption', requiresBackLink: true },
+    { id: '43', route: '/bookings/VCT-2026-0001/disruption/decision', heading: 'Disruption', requiresBackLink: true },
+    { id: '44', route: '/bookings/VCT-2026-0001/support/special', heading: 'Support', requiresBackLink: true },
+    { id: '45', route: '/bookings/VCT-2026-0001/support', heading: 'Support', requiresBackLink: true },
+    // Manual request tracker (46-50) — have back links
+    { id: '46', route: '/flights/requests/VCT-REQ-0001/review', heading: 'Manual Flight Request', requiresBackLink: true },
+    { id: '47', route: '/flights/requests/VCT-REQ-0001/submitted', heading: 'Manual Flight Request', requiresBackLink: true },
+    { id: '48', route: '/flights/requests/VCT-REQ-0001', heading: 'Manual Flight Request', requiresBackLink: true },
+    { id: '49', route: '/flights/requests/VCT-REQ-0001/quote', heading: 'Manual Flight Request', requiresBackLink: true },
+    { id: '50', route: '/flights/requests/VCT-REQ-0001/declined', heading: 'Manual Flight Request', requiresBackLink: true },
+    // B2B after-sales (57) — has back link
+    { id: '57', route: '/b2b/flights/manage', heading: 'Agent Flight Booking Management', requiresBackLink: true },
+    // Admin (62-64) — auth-gated, no back link (gated)
+    { id: '62', route: '/admin/after-sales', heading: 'Operations access', requiresBackLink: false },
+    { id: '63', route: '/admin/disruptions', heading: 'Operations access', requiresBackLink: false },
+    { id: '64', route: '/admin/reconciliation', heading: 'Operations access', requiresBackLink: false },
+    // Core flows
+    { id: '02', route: '/flights', heading: 'Find & Configure Your Ideal Flight', requiresBackLink: false },
+    { id: '03', route: '/flights/search', heading: 'Flight search results', requiresBackLink: false },
+    { id: '27', route: '/bookings/VCT-2026-0001', heading: 'Operations access', requiresBackLink: false },
+    { id: '51', route: '/b2b/flights', heading: 'B2B Flight Search', requiresBackLink: false },
+    { id: '58', route: '/admin/suppliers', heading: 'Operations access', requiresBackLink: false },
   ];
 
   for (const width of [1440, 768, 360]) {
@@ -252,9 +257,30 @@ async function main() {
   chromeProc.kill();
   server.close();
 
+  // Negative-control test: verify the script detects a non-existent route
+  // by navigating to a bogus path and confirming it does NOT render a valid screen heading
+  const negScreens = [{ id: 'NEG', route: '/this-route-does-not-exist-xyz' }];
+  console.log('\\n=== NEGATIVE CONTROL TEST ===');
+  for (const w of [1440]) {
+    await cdp.setViewport(w, 900, false);
+    await sleep(200);
+    await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('/this-route-does-not-exist-xyz')`);
+    await sleep(500);
+    const nc = await cdp.evaluate(`(() => {
+      const mount = document.getElementById('flights-view-mount');
+      const heading = mount && !mount.classList.contains('hidden') ? (mount.querySelector('h1,h2')?.textContent || '') : '';
+      return { heading: heading.trim(), isHomepage: heading.includes('Book Everything') };
+    })()`);
+    // The negative control PASSES if the broken route does NOT render a valid screen
+    // (i.e., it shows homepage or 404, not a specific screen heading)
+    const negPass = nc.heading === '' || nc.isHomepage;
+    record('NEG', w, negPass ? 'PASS' : 'FAIL', JSON.stringify({ negativeControl: true, heading: nc.heading, expected: 'not-a-valid-screen' }));
+    console.log((negPass ? 'PASS' : 'FAIL') + ' — Negative control: broken route detected (heading: "' + nc.heading + '")');
+  }
+
   const pass = results.filter(r => r.status === 'PASS').length;
   const fail = results.filter(r => r.status === 'FAIL').length;
-  console.log(`\n=== RESULTS: ${pass} PASS / ${fail} FAIL (total ${results.length}) ===`);
+  console.log(`\\n=== RESULTS: ${pass} PASS / ${fail} FAIL (total ${results.length}) ===`);
   if (fail > 0) {
     console.log('FAILURES:');
     results.filter(r => r.status === 'FAIL').forEach(r => console.log(`  Screen ${r.screen} @ ${r.viewport}: ${r.detail}`));

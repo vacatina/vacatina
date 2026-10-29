@@ -5,31 +5,30 @@ import assert from 'node:assert/strict';
 // These verify that broken navigation and missing controls are detected as failures.
 
 test('negative control: navOk must be false when URL does not change after click', () => {
-  // Simulate: link exists but click does not navigate
-  const afterUrl = '/bookings/VCT-2026-0001/change';
-  const sRoute = '/bookings/VCT-2026-0001/change';
-  const navOk = (afterUrl !== sRoute);
+  const afterUrl: string = '/bookings/VCT-2026-0001/change';
+  const sRoute: string = '/bookings/VCT-2026-0001/change';
+  const navOk: boolean = afterUrl !== sRoute;
   assert.equal(navOk, false, 'navOk must be false when URL unchanged');
 });
 
 test('negative control: navOk must be true only when URL changes', () => {
-  const afterUrl = '/flights';
-  const sRoute = '/bookings/VCT-2026-0001/change';
-  const navOk = (afterUrl !== sRoute);
+  const afterUrl: string = '/flights';
+  const sRoute: string = '/bookings/VCT-2026-0001/change';
+  const navOk: boolean = afterUrl !== sRoute;
   assert.equal(navOk, true, 'navOk must be true when URL changed');
 });
 
 test('negative control: a11y must fail when unnamed controls exist', () => {
-  const controls = 5;
-  const named = 3;
-  const hasNamedControls = controls === 0 || named === controls;
+  const controls: number = 5;
+  const named: number = 3;
+  const hasNamedControls: boolean = controls === 0 || named === controls;
   assert.equal(hasNamedControls, false, 'a11y must fail when not all controls named');
 });
 
 test('negative control: a11y passes only when all controls named', () => {
-  const controls = 5;
-  const named = 5;
-  const hasNamedControls = controls === 0 || named === controls;
+  const controls: number = 5;
+  const named: number = 5;
+  const hasNamedControls: boolean = controls === 0 || named === controls;
   assert.equal(hasNamedControls, true, 'a11y passes when all controls named');
 });
 
