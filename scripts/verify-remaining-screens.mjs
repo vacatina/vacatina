@@ -155,7 +155,7 @@ async function runGroup(cdp, screens, width, height, mobile) {
           await sleep(300);
         }
       } catch (e) { navOk = false; }
-      const ok = headingMatch && r.fits && !hasError && navOk;
+      const ok = headingMatch && r.fits && !hasError && navOk && r.hasNamedControls && r.hasReducedMotion;
       record(s.id, width, ok ? 'PASS' : 'FAIL', JSON.stringify({ heading: r.heading, expected: expectedHeading, fits: r.fits, errors: cdp.consoleErrors.length, exceptions: cdp.pageExceptions.length, a11yNamedControls: r.hasNamedControls, animationTransitions: r.hasTransition, reducedMotion: r.hasReducedMotion, touchTargets: r.touchOk }));
     } catch (e) {
       record(s.id, width, 'FAIL', String(e).slice(0, 120) + ' | exceptions: ' + JSON.stringify(cdp.pageExceptions.slice(0,2)));

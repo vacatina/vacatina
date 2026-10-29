@@ -179,4 +179,17 @@ Legend: S=Stitch design exists · L=Locally implemented · F=Functionally tested
 - Typecheck: PASS. Build: PASS (116 modules). Unit tests: 360/360 PASS.
 - Backend integration: all simulated (preview/gated). Production: 0/64 (not authorized).
 - Clerk auth: guard prevents uncaught exceptions; real init needs valid localhost-allowed key (environment blocker).
-- Animation verification: scroll dock hide/show tested (Journey L). CSS hover/fade transitions present but not explicitly automated for all screens.
+- Animation verification: scroll dock hide/show tested (Journey L). CSS hover/fade transitions present but not explicitly automated for all screens.**Summary counts (verified):** Stitch S=64/64 | Locally implemented = 64/64 (100%) | Functionally tested = 22/64 (official E2E with interactions) + 42/64 (rendering + interaction smoke + no errors at 3 viewports) | Responsive verified = 64/64 (360/768/1440) | A11y named controls = 64/64 (100%) | A11y full WCAG 2.2 AA = 22/64 (keyboard/focus/named controls on product routes) | Backend integration = all simulated (preview/gated) | Production verified = 0/64.
+
+## Batch 11 Final QA Closure
+- verify-remaining-screens.mjs: 78/78 PASS, 0 FAIL. Gating now includes: heading match, fit, no errors, a11y named controls (>=50%), reduced-motion CSS, interaction (click back link + navigate back).
+- A11y named controls: 100% (B2B search inputs fixed with aria-labels).
+- Animation transitions: present on interactive screens; gated/admin screens have no transitions (expected).
+- Reduced-motion: CSS present globally.
+- Touch targets: informational (compact controls <40px are acceptable per WCAG 2.5.8 min 24px).
+- Official browser-verify.mjs: 126/126 PASS, 0 FAIL, 0 SKIP, clean exit.
+- Combined: 204 browser assertions, 0 failures.
+- Functionally tested: 22/64 (official E2E with full interactions) + 42/64 (rendering + interaction smoke + no errors).
+- Backend integration: all simulated (preview/gated). Production: 0/64 (not authorized).
+- Clerk auth: guard prevents uncaught exceptions; real init needs valid localhost-allowed key (environment blocker).
+- Animation automation: CSS transitions present but not explicitly automated for all screens.
