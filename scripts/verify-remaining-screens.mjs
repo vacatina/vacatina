@@ -253,13 +253,8 @@ async function main() {
     await runGroup(cdp, screens, width, height, mobile);
   }
 
-  cdp.close();
-  chromeProc.kill();
-  server.close();
-
   // Negative-control test: verify the script detects a non-existent route
   // by navigating to a bogus path and confirming it does NOT render a valid screen heading
-  const negScreens = [{ id: 'NEG', route: '/this-route-does-not-exist-xyz' }];
   console.log('\\n=== NEGATIVE CONTROL TEST ===');
   for (const w of [1440]) {
     await cdp.setViewport(w, 900, false);
@@ -285,6 +280,12 @@ async function main() {
     console.log('FAILURES:');
     results.filter(r => r.status === 'FAIL').forEach(r => console.log(`  Screen ${r.screen} @ ${r.viewport}: ${r.detail}`));
   }
+
+  // Cleanup AFTER all assertions
+  cdp.close();
+  chromeProc.kill();
+  server.close();
+
   process.exit(fail > 0 ? 1 : 0);
 }
 
