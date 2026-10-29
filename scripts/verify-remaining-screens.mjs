@@ -191,7 +191,26 @@ async function runGroup(cdp, screens, width, height, mobile) {
           }
         }
       } catch (e) { navOk = false; }
-      const ok = headingMatch && r.fits && !hasError && navOk && r.hasNamedControls && r.hasReducedMotion;
+      // Additional interaction: verify disabled buttons are actually disabled (not just styled)
+      let disabledOk = true;
+      try {
+        const disabledCheck = await cdp.evaluate(`(() => {
+          const mount = document.getElementById('flights-view-mount');
+          const modal = document.querySelector('[data-dialog-backdrop]')?.parentElement || document.querySelector('.fixed.inset-0');
+          const container = (mount && !mount.classList.contains('hidden')) ? mount : (modal || document.body);
+          const disabledBtns = container.querySelectorAll('button');
+          let allOk = true;
+          disabledBtns.forEach(btn => {
+            const text = (btn.textContent || '').toLowerCase();
+            if (text.includes('disabled') || text.includes('auth required') || text.includes('backend required') || text.includes('gated')) {
+              if (!btn.disabled && btn.getAttribute('aria-disabled') !== 'true') allOk = false;
+            }
+          });
+          return allOk;
+        })()`);
+        if (!disabledCheck) disabledOk = false;
+      } catch (e) { disabledOk = false; }
+      const ok = headingMatch && r.fits && !hasError && navOk && r.hasNamedControls && r.hasReducedMotion && disabledOk;
       record(s.id, width, ok ? 'PASS' : 'FAIL', JSON.stringify({ heading: r.heading, expected: expectedHeading, fits: r.fits, errors: cdp.consoleErrors.length, exceptions: cdp.pageExceptions.length, a11yNamedControls: r.hasNamedControls, animationTransitions: r.hasTransition, reducedMotion: r.hasReducedMotion, touchTargets: r.touchOk }));
     } catch (e) {
       record(s.id, width, 'FAIL', String(e).slice(0, 120) + ' | exceptions: ' + JSON.stringify(cdp.pageExceptions.slice(0,2)));
