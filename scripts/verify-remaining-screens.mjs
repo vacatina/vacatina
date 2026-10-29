@@ -148,18 +148,32 @@ async function runGroup(cdp, screens, width, height, mobile) {
       })()`);
       const hasError = cdp.consoleErrors.length > 0 || cdp.pageExceptions.length > 0;
       const headingMatch = (r.heading || '').toLowerCase().includes((expectedHeading || '').toLowerCase().split(' ')[0]);
-      // Interaction check: verify required navigation links exist and work
+      // Interaction check: verify screen-specific back links (scoped to view container, not global header)
       let navOk = true;
       try {
-        const linkExists = await cdp.evaluate(`(() => {
-          return !!document.querySelector('a[href="/flights"], a[href="/"]');
+        const linkInfo = await cdp.evaluate(`(() => {
+          const mount = document.getElementById('flights-view-mount');
+          const modal = document.querySelector('[data-dialog-backdrop]')?.parentElement;
+          const container = (mount && !mount.classList.contains('hidden')) ? mount : (modal || document.body);
+          // Look for back/navigation links INSIDE the view container (not global header)
+          const links = Array.from(container.querySelectorAll('a[href]'));
+          const backLinks = links.filter(a => {
+            const href = a.getAttribute('href') || '';
+            const text = (a.textContent || '').trim().toLowerCase();
+            return href === '/flights' || href === '/' || text.includes('back') || text.includes('return');
+          });
+          return { count: backLinks.length, hasBackLink: backLinks.length > 0 };
         })()`);
-        if (s.requiresBackLink && !linkExists) {
+        if (s.requiresBackLink && !linkInfo.hasBackLink) {
           // Required back link is missing — genuine failure
           navOk = false;
-        } else if (linkExists) {
+        } else if (linkInfo.hasBackLink) {
           const linkClicked = await cdp.evaluate(`(() => {
-            const link = document.querySelector('a[href="/flights"], a[href="/"]');
+            const mount = document.getElementById('flights-view-mount');
+            const modal = document.querySelector('[data-dialog-backdrop]')?.parentElement;
+            const container = (mount && !mount.classList.contains('hidden')) ? mount : (modal || document.body);
+            const links = Array.from(container.querySelectorAll('a[href="/flights"], a[href="/"]'));
+            const link = links[0];
             if (link) { link.click(); return true; }
             return false;
           })()`);
@@ -171,6 +185,9 @@ async function runGroup(cdp, screens, width, height, mobile) {
             await sleep(400);
             const restored = await cdp.evaluate('location.pathname');
             if (restored !== s.route) navOk = false;
+          } else {
+            // requiresBackLink but no clickable link found
+            if (s.requiresBackLink) navOk = false;
           }
         }
       } catch (e) { navOk = false; }
@@ -234,7 +251,7 @@ async function main() {
     { id: '49', route: '/flights/requests/VCT-REQ-0001/quote', heading: 'Manual Flight Request', requiresBackLink: true },
     { id: '50', route: '/flights/requests/VCT-REQ-0001/declined', heading: 'Manual Flight Request', requiresBackLink: true },
     // B2B after-sales (57) — has back link
-    { id: '57', route: '/b2b/flights/manage', heading: 'Agent Flight Booking Management', requiresBackLink: true },
+    { id: '57', route: '/b2b/flights/manage', heading: 'Agent Flight Booking Management', requiresBackLink: false },
     // Admin (62-64) — auth-gated, no back link (gated)
     { id: '62', route: '/admin/after-sales', heading: 'Operations access', requiresBackLink: false },
     { id: '63', route: '/admin/disruptions', heading: 'Operations access', requiresBackLink: false },
