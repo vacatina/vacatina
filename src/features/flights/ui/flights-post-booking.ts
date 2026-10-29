@@ -239,6 +239,7 @@ export class FlightsPostBookingView {
               <div>
                 <label for="support-message" class="block text-xs font-bold text-brand-muted uppercase mb-1">Message</label>
                 <textarea id="support-message" rows="4" aria-label="Support message" placeholder="Describe your request..." class="w-full px-3 py-2 rounded-xl border border-brand-border text-sm text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-primary"></textarea>
+              <p id="support-error" role="alert" class="hidden text-xs text-red-700 font-semibold mt-1"></p>
               </div>
               <button type="button" id="btn-submit-support" class="min-h-[44px] px-5 rounded-xl bg-brand-primary text-white font-semibold text-sm hover:opacity-90 transition-opacity">
                 Submit Support Request
@@ -272,8 +273,49 @@ export class FlightsPostBookingView {
       const quoteDiv = $('#change-quote');
       const resultDiv = $('#change-result');
       btnQuote?.addEventListener('click', () => {
+        // Validate dates
+        const depInput = $('#change-dep-date') as HTMLInputElement | null;
+        const retInput = $('#change-ret-date') as HTMLInputElement | null;
+        const dep = depInput?.value || '';
+        const ret = retInput?.value || '';
+        let valid = true;
+        if (!dep || !ret || new Date(ret) <= new Date(dep)) {
+          valid = false;
+          if (depInput) depInput.classList.add('border-red-400');
+          if (retInput) retInput.classList.add('border-red-400');
+        } else {
+          depInput?.classList.remove('border-red-400');
+          retInput?.classList.remove('border-red-400');
+        }
+        if (!valid) {
+          if (quoteDiv) { quoteDiv.classList.remove('hidden'); quoteDiv.innerHTML = '<p class="text-sm text-red-700 font-semibold">Invalid dates: return must be after departure.</p>'; }
+          return;
+        }
         quoteDiv?.classList.remove('hidden');
-        if (btnAccept) { btnAccept.disabled = false; btnAccept.classList.remove('bg-gray-200', 'text-gray-500', 'cursor-not-allowed', 'opacity-60'); btnAccept.classList.add('bg-brand-primary', 'text-white', 'hover:opacity-90'); btnAccept.textContent = 'Accept & Reissue'; }
+        // Recalculate quote based on date difference
+        const days = Math.ceil((new Date(ret).getTime() - new Date(dep).getTime()) / 86400000);
+        const fareDiff = days > 7 ? 12500 : 8500;
+        const penalty = 5000;
+        const fee = 1500;
+        const total = fareDiff + penalty + fee;
+        if (quoteDiv) {
+          quoteDiv.innerHTML = `
+            <h3 class="font-heading text-sm font-semibold text-brand-black mb-2">Change Quote (Preview)</h3>
+            <div class="space-y-1 text-sm text-brand-muted">
+              <div class="flex justify-between"><span>Fare difference (${days} days)</span><strong class="text-brand-black tabular-nums">+LKR ${fareDiff.toLocaleString()}</strong></div>
+              <div class="flex justify-between"><span>Airline penalty</span><strong class="text-brand-black tabular-nums">LKR ${penalty.toLocaleString()}</strong></div>
+              <div class="flex justify-between"><span>Service fee</span><strong class="text-brand-black tabular-nums">LKR ${fee.toLocaleString()}</strong></div>
+              <div class="flex justify-between border-t border-brand-border pt-1 mt-1"><span class="font-bold text-brand-black">Total due</span><strong class="text-brand-primary tabular-nums font-bold">LKR ${total.toLocaleString()}</strong></div>
+            </div>
+          `;
+        }
+        if (btnAccept) {
+          btnAccept.disabled = false;
+          btnAccept.setAttribute('aria-disabled', 'false');
+          btnAccept.classList.remove('bg-gray-200', 'text-gray-500', 'cursor-not-allowed', 'opacity-60');
+          btnAccept.classList.add('bg-brand-primary', 'text-white', 'hover:opacity-90');
+          btnAccept.textContent = 'Accept & Reissue';
+        }
       });
       btnAccept?.addEventListener('click', () => {
         resultDiv?.classList.remove('hidden');
@@ -288,7 +330,11 @@ export class FlightsPostBookingView {
       const resultDiv = $('#cancel-result');
       btnQuote?.addEventListener('click', () => {
         quoteDiv?.classList.remove('hidden');
-        if (btnConfirm) { btnConfirm.disabled = false; btnConfirm.classList.remove('opacity-60', 'cursor-not-allowed'); }
+        if (btnConfirm) {
+          btnConfirm.disabled = false;
+          btnConfirm.setAttribute('aria-disabled', 'false');
+          btnConfirm.classList.remove('opacity-60', 'cursor-not-allowed');
+        }
       });
       btnConfirm?.addEventListener('click', () => {
         resultDiv?.classList.remove('hidden');
@@ -311,11 +357,16 @@ export class FlightsPostBookingView {
       const resultDiv = $('#support-result');
       const msgField = $('#support-message') as HTMLTextAreaElement | null;
       btnSubmit?.addEventListener('click', () => {
+        const errEl = $('#support-error');
         if (msgField && msgField.value.trim().length < 10) {
           msgField.classList.add('border-red-400');
+          msgField.setAttribute('aria-invalid', 'true');
+          if (errEl) { errEl.classList.remove('hidden'); errEl.textContent = 'Message must be at least 10 characters.'; }
           return;
         }
         msgField?.classList.remove('border-red-400');
+        msgField?.setAttribute('aria-invalid', 'false');
+        if (errEl) errEl.classList.add('hidden');
         resultDiv?.classList.remove('hidden');
       });
     }
