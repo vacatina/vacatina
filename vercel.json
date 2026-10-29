@@ -4,7 +4,7 @@
   "trailingSlash": false,
   "buildCommand": "node scripts/build.mjs",
   "outputDirectory": "dist-site",
-  "git": { "deploymentEnabled": { "release/b2c-product-journeys-v1": false } },
+  "git": { "deploymentEnabled": { "release/b2c-product-journeys-v1": true } },
   "rewrites": [
     { "source": "/api/:path*", "destination": "/demo-api" },
     {

@@ -40,6 +40,10 @@ import { tripBucketService } from './trip-bucket.service.ts';
 import type { CommandCenterTabId } from '../domain/types.ts';
 import { flightsHubView } from '../../features/flights/ui/flights-hub-view.ts';
 import { flightsSearchView } from '../../features/flights/ui/flights-search-view.ts';
+import { FlightsTripReviewView } from '../../features/flights/ui/flights-trip-review.ts';
+import { FlightsCheckoutView } from '../../features/flights/ui/flights-checkout.ts';
+import { FlightsConfirmationView } from '../../features/flights/ui/flights-confirmation.ts';
+import { FlightsManualRequestView } from '../../features/flights/ui/flights-manual-request.ts';
 import { openCanonicalFlightDetailModal, closeCanonicalFlightDetailModal } from '../../features/flights/ui/flights-offer-detail-modal.ts';
 import { hotelsHubView } from '../../features/hotels/ui/hotels-hub-view.ts';
 import { hotelsSearchView } from '../../features/hotels/ui/hotels-search-view.ts';
@@ -310,7 +314,7 @@ export class CanonicalRouterService {
 
     // Server-backed journeys take precedence over legacy demonstration modals.
     if ((window as any).__VACATINA_PUBLIC_DEMO__ && /^\/(?:admin|partner|account|auth|manage-booking|bookings|manage)(?:\/|$)/.test(path)) {
-      showJourneyWorkspace().innerHTML = '<section data-public-action-gate class="max-w-5xl mx-auto px-4 py-12"><h1 class="font-heading text-3xl">Demo account and operations unavailable</h1><p class="mt-4">DEMO / TEST only. Authentication, administrative and financial actions, account records and booking management are disabled. Do not enter personal information.</p><a href="/" class="min-h-[44px] inline-flex items-center underline mt-4">Return to travel planning</a></section>';
+      showJourneyWorkspace().innerHTML = '<section data-public-action-gate class="max-w-5xl mx-auto px-4 py-12"><h1 class="font-heading text-3xl">Account and operations unavailable</h1><p class="mt-4">Authentication, administrative and financial actions, account records and booking management are not available in this build. Please return to travel planning.</p><a href="/" class="min-h-[44px] inline-flex items-center underline mt-4">Return to travel planning</a></section>';
       return;
     }
     if (path === '/checkout' || path.startsWith('/checkout/')) {
@@ -322,6 +326,24 @@ export class CanonicalRouterService {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    // Dedicated post-booking frontend views (change/cancel/refund/disruption/support)
+    const postBookingMatch = path.match(/^\/bookings\/([^/]+)\/(change|cancel|refund|disruption|support)(?:\/.*)?$/);
+    if (postBookingMatch) {
+      console.log('[ROUTER] postBookingMatch hit', postBookingMatch[1], postBookingMatch[2]);
+      const bookingId = decodeURIComponent(postBookingMatch[1]);
+      const kind = postBookingMatch[2] as 'change' | 'cancel' | 'refund' | 'disruption' | 'support';
+      const mount = showFlightsView();
+      mount.innerHTML = '';
+      import('../../features/flights/ui/flights-post-booking.ts').then(({ FlightsPostBookingView }) => {
+        const view = new FlightsPostBookingView();
+        view.render(mount, kind, bookingId);
+      }).catch(err => {
+        console.error('[ROUTER] post-booking import failed:', err);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (path === '/manage-booking' || path.startsWith('/bookings/') || path.startsWith('/manage/')) {
       renderManageBookingWorkspace(showJourneyWorkspace());
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -378,6 +400,15 @@ export class CanonicalRouterService {
       return;
     }
 
+    if (path.startsWith('/flights/requests/')) {
+      const requestId = path.replace('/flights/requests/', '').split('/')[0] || 'VCT-REQ-0000';
+      const mount = showFlightsView();
+      mount.innerHTML = '';
+      const view = new FlightsManualRequestView();
+      view.render(mount, 'submitted', requestId);
+      return;
+    }
+
     if (path === '/flights/offer' || path.startsWith('/flights/offer/')) {
       const offerId = flightOfferIdFromPath(path);
       if (!offerId) {
@@ -405,7 +436,7 @@ export class CanonicalRouterService {
       for (let i = 0; i < infants; i++) passengers.push({ id: `infant-${i}`, type: 'infant', title: '', firstName: '', lastName: '', dateOfBirth: '', nationality: '', passportNumber: '', passportExpiry: '', passportIssuingCountry: '', frequentFlyerProgram: '', frequentFlyerNumber: '' });
       import('../../features/flights/ui/flights-passenger-details.ts').then(({ FlightsPassengerDetailsView }) => {
         const view = new FlightsPassengerDetailsView({
-          onContinue: () => { showToast('Passenger details captured. Backend persistence required to proceed to booking.', 'brand'); },
+          onContinue: () => { routerService.navigateTo('/flights/review'); },
           onBack: () => this.navigateTo('/flights/search'),
         });
         view.setPassengers(passengers.length ? passengers : [{ id: 'adult-0', type: 'adult', title: '', firstName: '', lastName: '', dateOfBirth: '', nationality: '', passportNumber: '', passportExpiry: '', passportIssuingCountry: '', frequentFlyerProgram: '', frequentFlyerNumber: '' }]);
@@ -418,34 +449,28 @@ export class CanonicalRouterService {
 
     if (path === '/flights/review') {
       const mount = showFlightsView();
-      import('../../features/flights/ui/flights-trip-review.ts').then(({ FlightsTripReviewView }) => {
-        const view = new FlightsTripReviewView();
-        mount.innerHTML = '';
-        view.render(mount);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+      const view = new FlightsTripReviewView();
+      mount.innerHTML = '';
+      view.render(mount);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     if (path === '/flights/checkout') {
       const mount = showFlightsView();
-      import('../../features/flights/ui/flights-checkout.ts').then(({ FlightsCheckoutView }) => {
-        const view = new FlightsCheckoutView();
-        mount.innerHTML = '';
-        view.render(mount);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+      const view = new FlightsCheckoutView();
+      mount.innerHTML = '';
+      view.render(mount);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     if (path === '/flights/confirmation') {
       const mount = showFlightsView();
-      import('../../features/flights/ui/flights-confirmation.ts').then(({ FlightsConfirmationView }) => {
-        const view = new FlightsConfirmationView();
-        mount.innerHTML = '';
-        view.render(mount);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+      const view = new FlightsConfirmationView();
+      mount.innerHTML = '';
+      view.render(mount);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -813,8 +838,9 @@ export class CanonicalRouterService {
 
     // 15b. Booking Lookup & Manage Booking Dossier (CAP-13)
     if (path.startsWith('/bookings/')) {
-      const ref = path.replace('/bookings/', '').trim();
-      openBookingDossierModal(ref);
+      const remainder = path.replace('/bookings/', '').trim().replace(/\/+$/, '');
+      const bookingId = remainder.split('/')[0] || remainder;
+      openBookingDossierModal(bookingId);
       return;
     }
 

@@ -44,28 +44,28 @@ export class B2BFlightsSearchView {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <label class="block">
               <span class="text-xs font-semibold text-brand-muted">Origin (IATA)</span>
-              <input type="text" placeholder="CMB" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black uppercase focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+              <input type="text" placeholder="CMB" aria-label="Origin airport" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black uppercase focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </label>
             <label class="block">
               <span class="text-xs font-semibold text-brand-muted">Destination (IATA)</span>
-              <input type="text" placeholder="DXB" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black uppercase focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+              <input type="text" placeholder="DXB" aria-label="Destination airport" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black uppercase focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </label>
             <label class="block">
               <span class="text-xs font-semibold text-brand-muted">Departure Date</span>
-              <input type="date" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+              <input type="date" aria-label="Departure date" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </label>
             <label class="block">
               <span class="text-xs font-semibold text-brand-muted">Passengers</span>
-              <input type="number" min="1" max="9" value="1" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-primary" />
+              <input type="number" min="1" max="9" value="1" aria-label="Passengers" class="mt-1 w-full min-h-[44px] px-3 rounded-xl border border-brand-border text-sm font-semibold text-brand-black focus:outline-none focus:ring-2 focus:ring-brand-primary" />
             </label>
           </div>
           <div class="mt-4 flex flex-col sm:flex-row gap-3 justify-between">
             <div class="flex gap-2">
               <label class="inline-flex items-center gap-2 text-xs text-brand-muted">
-                <input type="checkbox" class="w-4 h-4 rounded" /> Show net rates
+                <input type="checkbox" aria-label="Show net rates" class="w-4 h-4 rounded" /> Show net rates
               </label>
               <label class="inline-flex items-center gap-2 text-xs text-brand-muted">
-                <input type="checkbox" class="w-4 h-4 rounded" /> Show markups
+                <input type="checkbox" aria-label="Show markups" class="w-4 h-4 rounded" /> Show markups
               </label>
             </div>
             <button type="button" disabled aria-disabled="true" class="min-h-[44px] px-6 rounded-xl bg-gray-200 text-gray-500 font-semibold text-sm cursor-not-allowed">

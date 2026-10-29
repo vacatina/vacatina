@@ -1,0 +1,251 @@
+import { spawn } from 'node:child_process';
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { WebSocket } from 'ws';
+
+const ROOT_DIR = path.resolve(process.cwd());
+const SERVER_PORT = 4173;
+const CDP_PORT = 9222;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function startStaticServer() {
+  return new Promise(resolve => {
+    const server = http.createServer((req, res) => {
+      const urlObj = new URL(req.url || '/', `http://127.0.0.1:${SERVER_PORT}`);
+      let reqPath = decodeURIComponent(urlObj.pathname);
+      if (reqPath === '/') reqPath = '/index.html';
+      let resolvedPath = path.resolve(ROOT_DIR, '.' + reqPath);
+      if (!resolvedPath.startsWith(ROOT_DIR) || !fs.existsSync(resolvedPath) || fs.statSync(resolvedPath).isDirectory()) {
+        if (!path.extname(reqPath)) resolvedPath = path.resolve(ROOT_DIR, 'index.html');
+        else { res.writeHead(404); res.end('Not found'); return; }
+      }
+      const ext = path.extname(resolvedPath).toLowerCase();
+      const mime = { '.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8' }[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': mime });
+      fs.createReadStream(resolvedPath).pipe(res);
+    });
+    server.listen(SERVER_PORT, '127.0.0.1', () => resolve(server));
+  });
+}
+
+async function connectCdp() {
+  for (let attempt = 0; attempt < 50; attempt++) {
+    try {
+      const res = await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`);
+      const targets = await res.json();
+      const pageTarget = targets.find(t => t.type === 'page');
+      if (pageTarget && pageTarget.webSocketDebuggerUrl) return pageTarget.webSocketDebuggerUrl;
+    } catch {}
+    await sleep(200);
+  }
+  throw new Error('Failed to connect to CDP.');
+}
+
+class CdpSession {
+  constructor(wsUrl) {
+    this.ws = new WebSocket(wsUrl);
+    this.seq = 1;
+    this.pending = new Map();
+    this.consoleErrors = [];
+    this.pageExceptions = [];
+  }
+  async open() {
+    await new Promise((resolve, reject) => {
+      this.ws.addEventListener('open', resolve);
+      this.ws.addEventListener('error', reject);
+    });
+    this.ws.addEventListener('message', event => {
+      const msg = JSON.parse(String(event.data));
+      if (msg.id && this.pending.has(msg.id)) {
+        const { resolve, reject } = this.pending.get(msg.id);
+        this.pending.delete(msg.id);
+        if (msg.error) reject(new Error(msg.error.message));
+        else resolve(msg.result);
+      } else if (msg.method === 'Runtime.consoleAPICalled' && msg.params.type === 'error') {
+        const text = (msg.params.args || []).map(a => a.value || a.description || '').join(' ');
+        this.consoleErrors.push(text);
+      } else if (msg.method === 'Runtime.exceptionThrown') {
+        const d = msg.params.exceptionDetails;
+        this.pageExceptions.push(d.text + ' ' + (d.exception?.description || ''));
+      }
+    });
+    await this.send('Page.enable');
+    await this.send('Runtime.enable');
+    await this.send('DOM.enable');
+    await this.send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  }
+  send(method, params = {}) {
+    const id = this.seq++;
+    return new Promise((resolve, reject) => {
+      this.pending.set(id, { resolve, reject });
+      this.ws.send(JSON.stringify({ id, method, params }));
+    });
+  }
+  async evaluate(expression, timeoutMs = 10000) {
+    let timer;
+    const tp = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`CDP evaluate timed out after ${timeoutMs}ms`)), timeoutMs); });
+    try {
+      const res = await Promise.race([this.send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true }), tp]);
+      if (res.exceptionDetails) throw new Error(`Eval error: ${res.exceptionDetails.text}`);
+      return res.result.value;
+    } finally { clearTimeout(timer); }
+  }
+  async setViewport(w, h, mobile = false) {
+    await this.send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile });
+  }
+  close() { this.ws.close(); }
+}
+
+const results = [];
+function record(screen, viewport, status, detail) {
+  results.push({ screen, viewport, status, detail });
+  console.log(`${status} — Screen ${screen} @ ${viewport}px ${detail}`);
+}
+
+async function runGroup(cdp, screens, width, height, mobile) {
+  await cdp.setViewport(width, height, mobile);
+  await sleep(200);
+  for (const s of screens) {
+    cdp.consoleErrors = [];
+    cdp.pageExceptions = [];
+    try {
+      await cdp.evaluate(`try { window.__VACATINA_ROUTER__.navigateTo('${s.route}'); } catch(e) { console.error('NAV_ERROR', e && e.message); }`);
+      await sleep(500);
+      const expectedHeading = s.heading;
+      const r = await cdp.evaluate(`(() => {
+        const mount = document.getElementById('flights-view-mount');
+        const modal = document.querySelector('[data-dialog-backdrop]')?.parentElement || document.querySelector('.fixed.inset-0');
+        const container = (mount && !mount.classList.contains('hidden')) ? mount : (modal || document.body);
+        const text = (container.innerText || '').slice(0, 2000);
+        const fits = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
+        const heading = (container.querySelector('h1,h2')?.textContent || '').trim().slice(0, 80);
+        const mainHidden = document.getElementById('main-content')?.classList.contains('hidden');
+        // A11y: named interactive controls
+        const controls = container.querySelectorAll('button, a, input, select, textarea');
+        const namedControls = Array.from(controls).filter(c => (c.getAttribute('aria-label') || c.textContent || '').trim().length > 0).length;
+        const hasNamedControls = controls.length === 0 || namedControls / controls.length >= 0.5;
+        // Animation: check for CSS transitions on interactive elements
+        const btns = container.querySelectorAll('button, a');
+        const hasTransition = Array.from(btns).some(b => {
+          const s = getComputedStyle(b);
+          return s.transitionDuration && s.transitionDuration !== '0s';
+        });
+        const hasReducedMotion = Array.from(document.styleSheets).some(ss => { try { return Array.from(ss.cssRules || []).some(r => (r.cssText || '').includes('prefers-reduced-motion')); } catch { return false; } });
+        const touchOk = Array.from(container.querySelectorAll('button, a, input')).every(el => {
+          const h = el.getBoundingClientRect().height;
+          return h === 0 || h >= 40;
+        });
+        return { heading, fits, mainHidden, hasNamedControls, hasTransition, hasReducedMotion, touchOk, controlCount: controls.length };
+      })()`);
+      const hasError = cdp.consoleErrors.length > 0 || cdp.pageExceptions.length > 0;
+      const headingMatch = (r.heading || '').toLowerCase().includes((expectedHeading || '').toLowerCase().split(' ')[0]);
+      // Interaction check: try clicking a back/navigation link if present
+      let navOk = true;
+      try {
+        const linkClicked = await cdp.evaluate(`(() => {
+          const link = document.querySelector('a[href="/flights"], a[href="/"]');
+          if (link) { link.click(); return true; }
+          return false;
+        })()`);
+        if (linkClicked) {
+          await sleep(300);
+          // navigate back to the test route
+          await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('${s.route}')`);
+          await sleep(300);
+        }
+      } catch (e) { navOk = false; }
+      const ok = headingMatch && r.fits && !hasError && navOk;
+      record(s.id, width, ok ? 'PASS' : 'FAIL', JSON.stringify({ heading: r.heading, expected: expectedHeading, fits: r.fits, errors: cdp.consoleErrors.length, exceptions: cdp.pageExceptions.length, a11yNamedControls: r.hasNamedControls, animationTransitions: r.hasTransition, reducedMotion: r.hasReducedMotion, touchTargets: r.touchOk }));
+    } catch (e) {
+      record(s.id, width, 'FAIL', String(e).slice(0, 120) + ' | exceptions: ' + JSON.stringify(cdp.pageExceptions.slice(0,2)));
+    }
+  }
+}
+
+async function main() {
+  const server = await startStaticServer();
+  const chromePath = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+  const userDataDir = path.join(ROOT_DIR, '.chrome-test-profile');
+  fs.mkdirSync(userDataDir, { recursive: true });
+  const chromeProc = spawn(chromePath, [
+    '--headless=new', '--disable-gpu', '--no-sandbox', '--no-first-run',
+    '--no-default-browser-check', `--user-data-dir=${userDataDir}`,
+    `--remote-debugging-port=${CDP_PORT}`, 'about:blank'
+  ], { stdio: 'ignore' });
+  await sleep(2000);
+  const wsUrl = await connectCdp();
+  const cdp = new CdpSession(wsUrl);
+  await cdp.open();
+  await cdp.send('Page.navigate', { url: `http://127.0.0.1:${SERVER_PORT}/index.html` });
+  await sleep(1800);
+  // Seed demo baseline (same as browser-verify)
+  await cdp.evaluate(`(async () => {
+    for (let i = 0; i < 100 && !window.__VACATINA_OS__; i++) await new Promise(r => setTimeout(r, 100));
+    if (!window.__VACATINA_OS__) throw new Error('app did not bootstrap');
+    window.__VACATINA_OS__.tripBucketService.resetToCanonicalBaseline();
+    window.__VACATINA_OS__.updateTripControlsVisibility();
+    return true;
+  })()`);
+  // Wait for the SPA router to be available
+  for (let i = 0; i < 50; i++) {
+    const ready = await cdp.evaluate('typeof window.__VACATINA_ROUTER__ !== "undefined" && typeof window.__VACATINA_ROUTER__.navigateTo === "function"');
+    if (ready) break;
+    await sleep(200);
+  }
+
+  const screens = [
+    // Post-booking dedicated views (34-45)
+    { id: '34', route: '/bookings/VCT-2026-0001/change', heading: 'Change Flight' },
+    { id: '35', route: '/bookings/VCT-2026-0001/change/alternatives', heading: 'Change Flight' },
+    { id: '36', route: '/bookings/VCT-2026-0001/change/review', heading: 'Change Flight' },
+    { id: '37', route: '/bookings/VCT-2026-0001/change/complete', heading: 'Change Flight' },
+    { id: '38', route: '/bookings/VCT-2026-0001/cancel/eligibility', heading: 'Cancel Flight' },
+    { id: '39', route: '/bookings/VCT-2026-0001/cancel/quote', heading: 'Cancel Flight' },
+    { id: '40', route: '/bookings/VCT-2026-0001/cancel/result', heading: 'Cancel Flight' },
+    { id: '41', route: '/bookings/VCT-2026-0001/refund', heading: 'Refund' },
+    { id: '42', route: '/bookings/VCT-2026-0001/disruption', heading: 'Disruption' },
+    { id: '43', route: '/bookings/VCT-2026-0001/disruption/decision', heading: 'Disruption' },
+    { id: '44', route: '/bookings/VCT-2026-0001/support/special', heading: 'Support' },
+    { id: '45', route: '/bookings/VCT-2026-0001/support', heading: 'Support' },
+    // Manual request tracker (46-50)
+    { id: '46', route: '/flights/requests/VCT-REQ-0001/review', heading: 'Manual Flight Request' },
+    { id: '47', route: '/flights/requests/VCT-REQ-0001/submitted', heading: 'Manual Flight Request' },
+    { id: '48', route: '/flights/requests/VCT-REQ-0001', heading: 'Manual Flight Request' },
+    { id: '49', route: '/flights/requests/VCT-REQ-0001/quote', heading: 'Manual Flight Request' },
+    { id: '50', route: '/flights/requests/VCT-REQ-0001/declined', heading: 'Manual Flight Request' },
+    // B2B after-sales (57)
+    { id: '57', route: '/b2b/flights/manage', heading: 'Agent Flight Booking Management' },
+    // Admin (62-64) — auth-gated, heading will be 'Operations access'
+    { id: '62', route: '/admin/after-sales', heading: 'Operations access' },
+    { id: '63', route: '/admin/disruptions', heading: 'Operations access' },
+    { id: '64', route: '/admin/reconciliation', heading: 'Operations access' },
+    // Core flows (already tested, re-verify)
+    { id: '02', route: '/flights', heading: 'Find & Configure Your Ideal Flight' },
+    { id: '03', route: '/flights/search', heading: 'Flight search results' },
+    { id: '27', route: '/bookings/VCT-2026-0001', heading: 'Operations access' },
+    { id: '51', route: '/b2b/flights', heading: 'B2B Flight Search' },
+    { id: '58', route: '/admin/suppliers', heading: 'Operations access' },
+  ];
+
+  for (const width of [1440, 768, 360]) {
+    const mobile = width < 768;
+    const height = width === 768 ? 1024 : 900;
+    await runGroup(cdp, screens, width, height, mobile);
+  }
+
+  cdp.close();
+  chromeProc.kill();
+  server.close();
+
+  const pass = results.filter(r => r.status === 'PASS').length;
+  const fail = results.filter(r => r.status === 'FAIL').length;
+  console.log(`\n=== RESULTS: ${pass} PASS / ${fail} FAIL (total ${results.length}) ===`);
+  if (fail > 0) {
+    console.log('FAILURES:');
+    results.filter(r => r.status === 'FAIL').forEach(r => console.log(`  Screen ${r.screen} @ ${r.viewport}: ${r.detail}`));
+  }
+  process.exit(fail > 0 ? 1 : 0);
+}
+
+main().catch(e => { console.error('FATAL:', e); process.exit(1); });
