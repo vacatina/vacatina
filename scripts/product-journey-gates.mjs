@@ -301,7 +301,7 @@ export async function verifyB2BFlightsRoutes(cdp, assertCheck) {
       await cdp.evaluate(`window.__VACATINA_ROUTER__.navigateTo('${route.path}')`);
       await new Promise(r => setTimeout(r, 300));
       const result = await cdp.evaluate(`(() => {
-        const text = document.body.innerText;
+        const text = (document.body && document.body.innerText) ? document.body.innerText.slice(0, 4000) : '';
         const fits = document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1;
         return { heading: text.includes('${route.heading}'), fits };
       })()`);

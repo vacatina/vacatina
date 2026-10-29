@@ -26,6 +26,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { buildProject } from './build.mjs';
 import { verifyHotels, verifyVisa, verifyProductPhase, verifyGlobalIntegration, verifyPhase17Acceptance, verifyFlightsNewRoutes, verifyB2BFlightsRoutes, GENERIC_PHASES } from './product-journey-gates.mjs';
+import { verifyFullFlightsJourney } from './verify-full-flights-journey.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -139,18 +140,29 @@ class CdpSession {
     });
   }
 
-  async evaluate(expression) {
-    const res = await this.send('Runtime.evaluate', {
-      expression,
-      returnByValue: true,
-      awaitPromise: true
+  async evaluate(expression, timeoutMs = 10000) {
+    let timer;
+    const timeoutPromise = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`CDP evaluate timed out after ${timeoutMs}ms`)), timeoutMs);
     });
-    if (res.exceptionDetails) {
-      throw new Error(
-        `Evaluation error: ${res.exceptionDetails.text} ${res.exceptionDetails.exception?.description || ''}`
-      );
+    try {
+      const res = await Promise.race([
+        this.send('Runtime.evaluate', {
+          expression,
+          returnByValue: true,
+          awaitPromise: true
+        }),
+        timeoutPromise
+      ]);
+      if (res.exceptionDetails) {
+        throw new Error(
+          `Evaluation error: ${res.exceptionDetails.text} ${res.exceptionDetails.exception?.description || ''}`
+        );
+      }
+      return res.result.value;
+    } finally {
+      clearTimeout(timer);
     }
-    return res.result.value;
   }
 
   async setViewport(width, height, mobile = false) {
@@ -1630,6 +1642,7 @@ async function runVerification() {
     await verifyGlobalIntegration(cdp, assertCheck);
     await verifyPhase17Acceptance(cdp, assertCheck);
     await verifyFlightsNewRoutes(cdp, assertCheck);
+    await verifyFullFlightsJourney(cdp, assertCheck, report);
     await verifyB2BFlightsRoutes(cdp, assertCheck);
     const deltaChecks = await cdp.evaluate(`(async () => {
       // 1. Legal & Cookie Preferences Modal
