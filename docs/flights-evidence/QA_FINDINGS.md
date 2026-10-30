@@ -41,7 +41,12 @@ Application changes: `src/features/flights/ui/flights-search-view.ts` (controlla
 - `qaHoldLoading` is honored only when `__VACATINA_PUBLIC_DEMO_BUILD__` is false (local/non-public-demo builds). In normal hosted/production use the query parameter alone does not expose the loading control.
 - Simulated fixtures (seat-map-sim, fare-rules-changed-sim, authorization preview) are explicitly labelled preview states, consistent with the existing expired/price-changed/unavailable sim routes; they do not enable real payment methods or weaken hosted gates.
 - Ordinary search and revalidation behavior is unchanged (verified by Batch E 44/44 and Batch C 53/53).
-## Still NOT VERIFIED (precise blockers)
+
+## Hosted verification of new fixtures (Preview dpl_4AA7jtakxxt9fT2GFaGZFt8aovGs)
+
+- `/flights/checkout/authorization` renders `#auth-preview-heading`: PASS.
+- `/flights/offer/sup-flt-seat-map-sim` renders `#btn-load-sandbox-seat-maps`: PASS.
+- `/flights/search?...&qaHoldLoading=1` does not expose `#btn-advance-loading` in hosted (public-demo) build: PASS (gated).## Still NOT VERIFIED (precise blockers)
 
 - Real screen-reader listening: no assistive technology available in this environment (NVDA/JAWS/VoiceOver not installed). Axe + keyboard + AX-tree evidence is not a substitute; no WCAG compliance claim.
 - True browser zoom (not 320px approximation), manual contrast exclusions, all interaction states, full-size/all-state visual acceptance: NOT VERIFIED.- Workflows 19/20/22/36/56/57: existing E2E coverage confirmed (Batch E 44/44, Batch C 53/53 PASS). Deeper state-continuity evidence is in those suites; supplemental visual capture remains partial.
