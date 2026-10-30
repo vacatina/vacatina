@@ -116,14 +116,14 @@ export class FlightsTripReviewView {
         <div class="rounded-2xl border border-brand-border bg-white p-5 mt-6" aria-labelledby="payment-heading">
           <h2 id="payment-heading" class="font-heading text-lg font-semibold text-brand-black mb-4">Payment Methods</h2>
           <div class="space-y-3">
-            <div class="flex items-center gap-3 p-3 rounded-xl border border-brand-border bg-brand-subtle opacity-60">
+            <div class="flex items-center gap-3 p-3 rounded-xl border border-brand-border bg-brand-subtle">
               <span class="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold">💳</span>
               <div>
                 <p class="text-sm font-semibold text-brand-black">Credit / Debit Card</p>
                 <p class="text-xs text-brand-muted">Available when payment gateway is configured</p>
               </div>
             </div>
-            <div class="flex items-center gap-3 p-3 rounded-xl border border-brand-border bg-brand-subtle opacity-60">
+            <div class="flex items-center gap-3 p-3 rounded-xl border border-brand-border bg-brand-subtle">
               <span class="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold">🏦</span>
               <div>
                 <p class="text-sm font-semibold text-brand-black">Bank Transfer</p>

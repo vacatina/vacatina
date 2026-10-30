@@ -192,7 +192,7 @@ export class FlightsManualRequestView {
 
   private stageLabel(): string {
     return {
-      review: 'Step 1 of 4 · Review &amp; submit',
+      review: 'Step 1 of 4 · Review & submit',
       submitted: 'Step 2 of 4 · Submitted',
       tracker: 'Status tracker',
       quote: 'Step 3 of 4 · Quotation',

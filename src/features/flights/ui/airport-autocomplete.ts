@@ -26,6 +26,8 @@ export function initAirportAutocomplete(options: AirportAutocompleteOptions): ()
     'absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto hidden';
   dropdown.setAttribute('role', 'listbox');
   dropdown.id = `airport-listbox-${Math.random().toString(36).substring(2, 7)}`;
+  inputElement.setAttribute('role', 'combobox');
+  inputElement.setAttribute('aria-haspopup', 'listbox');
   inputElement.setAttribute('aria-autocomplete', 'list');
   inputElement.setAttribute('aria-controls', dropdown.id);
   inputElement.setAttribute('aria-expanded', 'false');
@@ -36,6 +38,7 @@ export function initAirportAutocomplete(options: AirportAutocompleteOptions): ()
   const renderResults = (results: FlightLocation[]) => {
     currentResults = results;
     activeIndex = -1;
+    inputElement.removeAttribute('aria-activedescendant');
 
     if (results.length === 0) {
       dropdown.innerHTML = `
@@ -91,6 +94,7 @@ export function initAirportAutocomplete(options: AirportAutocompleteOptions): ()
   const closeDropdown = () => {
     dropdown.classList.add('hidden');
     inputElement.setAttribute('aria-expanded', 'false');
+    inputElement.removeAttribute('aria-activedescendant');
     isDropdownOpen = false;
     activeIndex = -1;
   };

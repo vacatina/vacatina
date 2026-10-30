@@ -77,18 +77,18 @@ export class FlightsCheckoutBookingFailedView {
         <header class="mb-6">
           <p class="text-xs font-bold uppercase tracking-wide text-brand-primary mb-1">Screen 24 · Booking creation failed</p>
           <h1 id="booking-failed-heading" class="font-heading text-2xl sm:text-3xl font-bold text-brand-black">Booking Creation Failed</h1>
-          <p class="text-sm text-brand-muted mt-2">The payment was captured, but the booking record could not be created. No PNR or ticket has been issued.</p>
+          <p class="text-sm text-brand-muted mt-2">This preview shows a booking-creation failure. No payment was captured and no booking, PNR or ticket was created.</p>
         </header>
 
         <div class="rounded-2xl border border-red-200 bg-red-50 p-5 mb-5" role="alert">
           <p class="text-sm font-semibold text-red-800">Booking status: failed (preview)</p>
-          <p class="text-xs text-red-800 mt-1">Reason: the supplier confirmation step did not complete. Any captured payment is held and will be released or refunded automatically.</p>
+          <p class="text-xs text-red-800 mt-1">Simulated reason: the supplier confirmation step did not complete. No payment hold, release or refund is performed by this preview.</p>
         </div>
 
         <div class="rounded-2xl border border-brand-border bg-white p-5 mb-5">
           <h2 class="font-heading text-lg font-semibold text-brand-black mb-3">Recovery options</h2>
           <ul class="space-y-2 text-sm text-brand-muted">
-            <li>Retry booking creation without re-entering your payment.</li>
+            <li>Explore the booking retry preview without entering payment details.</li>
             <li>Return to the trip review to re-check passenger and contact details.</li>
             <li>Contact support with the reference shown below.</li>
           </ul>

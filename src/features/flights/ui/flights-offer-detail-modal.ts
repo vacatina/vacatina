@@ -606,7 +606,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
         </div>
 
         <!-- Scrollable Modal Body -->
-        <div class="p-6 overflow-y-auto space-y-8 text-brand-black">
+        <div tabindex="0" role="region" aria-label="Flight offer details" class="p-6 overflow-y-auto space-y-8 text-brand-black">
           <!-- Inventory truth / freshness status -->
           <div id="flight-offer-truth" role="note" class="p-4 rounded-xl text-xs leading-relaxed ${truth.panelClasses}">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
@@ -695,7 +695,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
             <button type="button" id="btn-modal-back-results" class="min-h-[44px] px-4 rounded-xl border border-gray-300 text-xs font-bold hover:bg-gray-50 text-brand-black transition-colors">
               Back to Results
             </button>
-            <button type="button" id="btn-modal-book-now" data-direct-book data-book-now data-book-direct class="min-h-[44px] px-6 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-opacity-95 shadow-md transition-all flex items-center justify-center gap-2">
+            <button type="button" id="btn-modal-book-now" data-direct-book data-book-now data-book-direct class="min-h-[44px] px-6 rounded-xl bg-emerald-700 text-white text-xs font-bold hover:bg-opacity-95 shadow-md transition-all flex items-center justify-center gap-2">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
               <span>Book Now</span>
             </button>

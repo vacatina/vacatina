@@ -522,7 +522,7 @@ export class FlightsPostBookingView {
           </div>
         </div>
         <div class="flex flex-wrap gap-3">
-          <button type="button" id="btn-accept-revised" data-decision="accepted" class="min-h-[44px] px-5 rounded-xl bg-green-600 text-white font-semibold text-sm hover:opacity-90 transition-opacity">
+          <button type="button" id="btn-accept-revised" data-decision="accepted" class="min-h-[44px] px-5 rounded-xl bg-brand-success text-white font-semibold text-sm hover:opacity-90 transition-opacity">
             Accept revised schedule
           </button>
           <button type="button" id="btn-request-alternative" data-decision="alternative" class="min-h-[44px] px-5 rounded-xl border border-brand-border text-brand-black font-semibold text-sm hover:bg-brand-subtle transition-colors">
