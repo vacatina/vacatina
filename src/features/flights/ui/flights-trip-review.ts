@@ -145,6 +145,11 @@ export class FlightsTripReviewView {
             <button type="button" disabled aria-disabled="true" class="min-h-[44px] px-6 rounded-xl bg-gray-200 text-gray-500 font-semibold text-sm cursor-not-allowed">
               Proceed to Checkout (unavailable)
             </button>
+            ${allItems.length > 0 ? `
+            <a href="/flights/passengers" data-continue-passengers data-action="passengers" class="min-h-[44px] px-5 rounded-xl bg-brand-primary text-white font-semibold text-sm hover:opacity-90 transition-colors inline-flex items-center justify-center">
+              Continue to Passenger Details
+            </a>
+            ` : ''}
             <a href="/flights" class="min-h-[44px] px-5 rounded-xl border border-brand-border text-brand-black font-semibold text-sm hover:bg-white transition-colors inline-flex items-center justify-center">
               Continue Shopping
             </a>

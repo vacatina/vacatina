@@ -644,6 +644,7 @@ export function renderTripReviewWorkspace(container: HTMLElement): void {
                     </p>
 
                     ${items.some(item => item.productType === 'flights') ? `<a href="${escapeReviewText(getLastFlightSearchQuery())}" class="block text-center text-[11px] font-bold text-brand-primary hover:underline">Back to flight search</a>` : ''}
+${items.some(item => item.productType === 'flights') ? `<a href="/flights/passengers" data-continue-passengers data-action="passengers" class="block text-center text-[11px] font-bold text-brand-primary hover:underline">Continue to Passenger Details →</a>` : ''}
                     <button type="button" id="btn-review-continue-shopping" class="w-full min-h-[40px] rounded-xl border border-gray-300 text-[11px] font-bold text-brand-black hover:bg-white">Continue exploring</button>
                   </aside>
                 </div>`

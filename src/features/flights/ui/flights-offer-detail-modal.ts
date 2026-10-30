@@ -695,6 +695,10 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
             <button type="button" id="btn-modal-back-results" class="min-h-[44px] px-4 rounded-xl border border-gray-300 text-xs font-bold hover:bg-gray-50 text-brand-black transition-colors">
               Back to Results
             </button>
+            <button type="button" id="btn-modal-book-now" data-direct-book data-book-now data-book-direct class="min-h-[44px] px-6 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-opacity-95 shadow-md transition-all flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+              <span>Book Now</span>
+            </button>
             <button type="button" id="btn-modal-add-trip" class="min-h-[44px] px-6 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-opacity-95 shadow-md transition-all flex items-center justify-center gap-2">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
               <span>${addButtonLabel}</span>
@@ -709,6 +713,21 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
     modalOverlay.querySelector('#btn-modal-back-results')?.addEventListener('click', () => {
       closeModal();
       routerService.navigateTo(getLastFlightSearchQuery());
+    });
+
+    modalOverlay.querySelector('#btn-modal-book-now')?.addEventListener('click', () => {
+      closeModal();
+      let passengerUrl = '/flights/passengers';
+      try {
+        const u = new URL(getLastFlightSearchQuery(), window.location.origin);
+        const adults = u.searchParams.get('adults') || u.searchParams.get('travellers') || '1';
+        const children = u.searchParams.get('children') || '0';
+        const infants = u.searchParams.get('infants') || '0';
+        passengerUrl = `/flights/passengers?adults=${encodeURIComponent(adults)}&children=${encodeURIComponent(children)}&infants=${encodeURIComponent(infants)}`;
+      } catch {
+        /* keep default */
+      }
+      routerService.navigateTo(passengerUrl);
     });
 
     // Wire Favorite toggle

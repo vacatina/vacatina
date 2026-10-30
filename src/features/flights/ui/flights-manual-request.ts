@@ -488,8 +488,11 @@ export class FlightsManualRequestView {
       const error = $('#mr-form-error');
       const result = $('#mr-submit-result');
 
-      form?.addEventListener('submit', event => {
-        event.preventDefault();
+      const submitBtn = $<HTMLButtonElement>('#mr-submit');
+      let submitting = false;
+      const submitRequest = () => {
+        if (submitting) return;
+        submitting = true;
         result?.classList.add('hidden');
         const dep = depart?.value || '';
         const back = ret?.value || '';
@@ -502,15 +505,18 @@ export class FlightsManualRequestView {
         if (!dep || !back || Number.isNaN(depMs) || Number.isNaN(backMs) || backMs <= depMs) {
           mark(depart, true); mark(ret, true);
           showError(error, 'Return date must be after the departure date. Enter valid dates to continue.');
+          submitting = false;
           return;
         }
         if (phoneDigits.length < 9) {
           mark(phone, true);
           showError(error, 'Enter a contact phone number with at least 9 digits so the flight desk can reach you.');
+          submitting = false;
           return;
         }
         if (!consent?.checked) {
           showError(error, 'Confirm that you understand this is a request, not a confirmed booking.');
+          submitting = false;
           return;
         }
 
@@ -535,6 +541,16 @@ export class FlightsManualRequestView {
           result.classList.remove('hidden');
         }
         nav(`/flights/requests/${encodeURIComponent(record.id)}/submitted`);
+      };
+
+      form?.addEventListener('submit', event => {
+        event.preventDefault();
+        submitRequest();
+      });
+
+      submitBtn?.addEventListener('click', event => {
+        event.preventDefault();
+        submitRequest();
       });
     }
 

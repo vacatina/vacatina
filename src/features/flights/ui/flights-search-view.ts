@@ -208,15 +208,15 @@ export class FlightsSearchView {
             <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
               <div class="md:col-span-4">
                 <label class="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-1">From</label>
-                <input type="text" id="mod-from-input" value="${formatAirportDisplay(req.origin)}" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold bg-white">
+                <input type="text" id="mod-from-input" aria-label="Modify origin" value="${formatAirportDisplay(req.origin)}" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold bg-white">
               </div>
               <div class="md:col-span-4">
                 <label class="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-1">To</label>
-                <input type="text" id="mod-to-input" value="${formatAirportDisplay(req.destination)}" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold bg-white">
+                <input type="text" id="mod-to-input" aria-label="Modify destination" value="${formatAirportDisplay(req.destination)}" class="w-full h-10 px-3 rounded-lg border border-gray-200 text-xs font-semibold bg-white">
               </div>
               <div class="md:col-span-2">
                 <label class="block text-xs font-bold uppercase tracking-wider text-brand-muted mb-1">Departure</label>
-                <input type="date" id="mod-dep-input" value="${req.departureDate}" class="w-full h-10 px-2 rounded-lg border border-gray-200 text-xs font-semibold bg-white">
+                <input type="date" id="mod-dep-input" aria-label="Modify departure date" value="${req.departureDate}" class="w-full h-10 px-2 rounded-lg border border-gray-200 text-xs font-semibold bg-white">
               </div>
               <div class="md:col-span-2">
                 <button type="button" id="btn-apply-modified-search" class="w-full h-10 rounded-lg bg-brand-primary text-white text-xs font-bold hover:bg-opacity-95 transition-colors">
