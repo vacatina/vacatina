@@ -127,6 +127,9 @@ export class FlightsCheckoutView {
           <a href="/trip/review" class="min-h-[44px] px-5 rounded-xl border border-brand-border text-brand-black font-semibold text-sm hover:bg-brand-subtle transition-colors inline-flex items-center justify-center">
             Back to trip review
           </a>
+          <a href="/flights/confirmation" data-complete-preview data-action="simulate-checkout" class="min-h-[44px] px-6 rounded-xl bg-brand-primary text-white font-semibold text-sm hover:bg-opacity-95 transition-colors inline-flex items-center justify-center">
+            Simulate checkout (preview)
+          </a>
           <button type="button" disabled aria-disabled="true" class="min-h-[44px] px-6 rounded-xl bg-gray-200 text-gray-500 font-semibold text-sm cursor-not-allowed">
             Complete Payment (unavailable)
           </button>

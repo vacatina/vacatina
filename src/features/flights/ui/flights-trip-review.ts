@@ -149,6 +149,9 @@ export class FlightsTripReviewView {
             <a href="/flights/passengers" data-continue-passengers data-action="passengers" class="min-h-[44px] px-5 rounded-xl bg-brand-primary text-white font-semibold text-sm hover:opacity-90 transition-colors inline-flex items-center justify-center">
               Continue to Passenger Details
             </a>
+            <a href="/flights/checkout" data-continue-checkout data-action="checkout-preview" class="min-h-[44px] px-5 rounded-xl border border-brand-border text-brand-black font-semibold text-sm hover:bg-white transition-colors inline-flex items-center justify-center">
+              Checkout Preview
+            </a>
             ` : ''}
             <a href="/flights" class="min-h-[44px] px-5 rounded-xl border border-brand-border text-brand-black font-semibold text-sm hover:bg-white transition-colors inline-flex items-center justify-center">
               Continue Shopping
