@@ -1,5 +1,7 @@
 # Vacatina — 64-Screen Status Matrix (evidence-based)
 
+> Historical implementation/suite summary. For current case-level attribution, local-versus-hosted scope and explicit NOT VERIFIED gaps, use [the maintained 64-screen QA matrix](docs/flights-evidence/FLIGHTS_QA_COVERAGE.md). The preserved accepted application is `6054dc5` (68/0/4 cases); later QA fixes are `3ce16d4`. Neither result proves all 64 screens passed deployed acceptance or a full accessibility audit.
+
 Last updated: Batch E acceptance (screens 15–33) + Batch D (58–64) + Batch C (51–57) + Batch B (46–50) — commit pending on `release/b2c-product-journeys-v1`.
 
 This matrix separates **rendering**, **functional interaction**, **responsive**, **accessibility** and **animation** evidence. A screen is only marked as functionally verified when a browser test drives its controls and asserts a user-visible outcome.

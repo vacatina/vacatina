@@ -1,0 +1,10 @@
+[
+  {
+    "file": "contact-01.png",
+    "screens": [
+      "46",
+      "56"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  }
+]

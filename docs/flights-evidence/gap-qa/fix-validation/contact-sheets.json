@@ -1,0 +1,38 @@
+[
+  {
+    "file": "contact-01.png",
+    "screens": [
+      "02",
+      "04",
+      "05"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-02.png",
+    "screens": [
+      "11",
+      "24",
+      "42"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-03.png",
+    "screens": [
+      "59",
+      "60",
+      "61"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-04.png",
+    "screens": [
+      "62",
+      "63",
+      "64"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  }
+]

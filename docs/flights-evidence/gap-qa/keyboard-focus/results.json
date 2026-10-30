@@ -1,0 +1,79 @@
+{
+  "applicationSha": null,
+  "gitHead": "e1724c0824e360ca1ef7d972e1710d5eb074f2f6",
+  "dirtySourceFiles": [
+    "src/features/flights/ui/airport-autocomplete.ts",
+    "src/features/flights/ui/flights-checkout-states.ts",
+    "src/features/flights/ui/flights-manual-request.ts",
+    "src/features/flights/ui/flights-offer-detail-modal.ts",
+    "src/features/flights/ui/flights-post-booking.ts",
+    "src/features/flights/ui/flights-trip-review.ts"
+  ],
+  "environment": "LOCAL_FIXTURE",
+  "auditLimits": "Automated component scan, screenshots, keyboard focus sample, 320px reflow approximation; not full WCAG, screen-reader, zoom or visual acceptance",
+  "results": [
+    {
+      "id": "K01",
+      "screen": "02",
+      "name": "Airport combobox keyboard semantics and Escape cleanup",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K02",
+      "screen": "04",
+      "name": "Modal traps Tab and Shift+Tab; scroll region keyboard reachable",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K03",
+      "screen": "04",
+      "name": "Offer modal respects reduced motion",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K04",
+      "screen": "04",
+      "name": "Escape closes offer modal and restores result trigger focus",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K05",
+      "screen": "10",
+      "name": "Drawer traps keyboard focus and restores header entry on Escape",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K06",
+      "screen": "46",
+      "name": "Screen 46 heading does not display a double-escaped entity",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K07",
+      "screen": "46",
+      "name": "Keyboard-only invalid phone gives visible focus and accessible custom error",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K08",
+      "screen": "46",
+      "name": "Keyboard-only consent + rapid Enter activation creates one preview record/navigation",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    },
+    {
+      "id": "K09",
+      "screen": "24",
+      "name": "Booking-failure preview copy and retry status do not claim transactions",
+      "status": "PASS",
+      "mode": "LOCAL_FIXTURE"
+    }
+  ]
+}

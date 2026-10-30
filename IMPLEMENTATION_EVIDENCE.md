@@ -1,5 +1,7 @@
 # Vacatina — 64-Screen Implementation Evidence
 
+> This historical implementation inventory is not current deployed acceptance. See [Flights evidence](docs/flights-evidence/README.md), the [64-screen QA coverage matrix](docs/flights-evidence/FLIGHTS_QA_COVERAGE.md) and [confirmed QA findings](docs/flights-evidence/QA_FINDINGS.md) for tested application SHAs and remaining gaps. Preserve the distinction between local fixtures, hosted public-demo UI and authenticated operations.
+
 **Date:** 29 Oct 2026 · **Branch:** release/b2c-product-journeys-v1
 **Verification basis:** source files, routes, and existing browser-verify.mjs assertions. Backend integration = simulated/preview (not live).
 

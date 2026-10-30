@@ -1,0 +1,266 @@
+{
+  "applicationSha": "3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74",
+  "gitHead": "3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74",
+  "dirtySourceFiles": [],
+  "environment": "LOCAL_FIXTURE",
+  "auditLimits": "Automated component scan, screenshots, keyboard focus sample, 320px reflow approximation; not full WCAG, screen-reader, zoom or visual acceptance",
+  "results": [
+    {
+      "screen": "05",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/offer/sup-flt-cmb-dxb-fz548",
+      "observedRoute": "/flights/offer/sup-flt-cmb-dxb-fz548",
+      "state": "fare",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 8,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "Lite",
+        "Value",
+        "Flex"
+      ],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-modal-favorite-toggle",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-05-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "05",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/offer/sup-flt-cmb-dxb-fz548",
+      "observedRoute": "/flights/offer/sup-flt-cmb-dxb-fz548",
+      "state": "fare",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 8,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "Lite",
+        "Value",
+        "Flex"
+      ],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-modal-close",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-05-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "05",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/offer/sup-flt-cmb-dxb-fz548",
+      "observedRoute": "/flights/offer/sup-flt-cmb-dxb-fz548",
+      "state": "fare",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 8,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "Lite",
+        "Value",
+        "Flex"
+      ],
+      "focus": {
+        "tag": "DIV",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "1px auto",
+        "shadow": "none"
+      },
+      "screenshot": "screen-05-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Colombo (CMB) → Dubai (DXB)",
+          "FLIGHT ITINERARY & TIMELINE",
+          "COMPARE FARE FAMILIES",
+          "BAGGAGE (PLANNING REFERENCE)",
+          "CHANGES & CANCELLATION (PENDING CONFIRMATION)",
+          "PLANNING REFERENCE PRICE BREAKDOWN"
+        ],
+        "alerts": 0
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 16
+          }
+        ],
+        "passes": 19
+      }
+    }
+  ]
+}

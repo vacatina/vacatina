@@ -1,0 +1,302 @@
+{
+  "applicationSha": "3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74",
+  "gitHead": "3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74",
+  "dirtySourceFiles": [],
+  "environment": "LOCAL_FIXTURE",
+  "auditLimits": "Automated component scan, screenshots, keyboard focus sample, 320px reflow approximation; not full WCAG, screen-reader, zoom or visual acceptance",
+  "results": [
+    {
+      "screen": "46",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/requests/VCT-REQ-0001/review",
+      "state": "default",
+      "selector": "#mr-heading",
+      "heading": "Manual Flight Request",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 0,
+      "normalMotion": [],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-46-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "46",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/requests/VCT-REQ-0001/review",
+      "state": "default",
+      "selector": "#mr-heading",
+      "heading": "Manual Flight Request",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 0,
+      "normalMotion": [],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-46-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "46",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/requests/VCT-REQ-0001/review",
+      "state": "default",
+      "selector": "#mr-heading",
+      "heading": "Manual Flight Request",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 0,
+      "normalMotion": [],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-46-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [],
+      "ax": {
+        "headings": [
+          "Products",
+          "Resources",
+          "Company",
+          "Help & Support",
+          "Manual Flight Request",
+          "Review your request"
+        ],
+        "alerts": 0
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 2
+      }
+    },
+    {
+      "screen": "56",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/b2b/flights/review/ticket",
+      "state": "ticket-guard",
+      "selector": "#flights-view-mount",
+      "heading": "Agent Booking & Ticket Management",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "header-trip-bucket-btn",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-56-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "56",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/b2b/flights/review/ticket",
+      "state": "ticket-guard",
+      "selector": "#flights-view-mount",
+      "heading": "Agent Booking & Ticket Management",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "header-sign-in-btn",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-56-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "56",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/b2b/flights/review/ticket",
+      "state": "ticket-guard",
+      "selector": "#flights-view-mount",
+      "heading": "Agent Booking & Ticket Management",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "header-sign-up-btn",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-56-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Products",
+          "Resources",
+          "Company",
+          "Help & Support",
+          "Agent Booking & Ticket Management"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 13
+      }
+    }
+  ]
+}

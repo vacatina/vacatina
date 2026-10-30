@@ -1,0 +1,2706 @@
+{
+  "applicationSha": null,
+  "gitHead": "e1724c0824e360ca1ef7d972e1710d5eb074f2f6",
+  "dirtySourceFiles": [
+    "src/features/flights/ui/airport-autocomplete.ts",
+    "src/features/flights/ui/flights-checkout-states.ts",
+    "src/features/flights/ui/flights-offer-detail-modal.ts",
+    "src/features/flights/ui/flights-post-booking.ts",
+    "src/features/flights/ui/flights-trip-review.ts"
+  ],
+  "environment": "LOCAL_FIXTURE",
+  "auditLimits": "Automated component scan, screenshots, keyboard focus sample, 320px reflow approximation; not full WCAG, screen-reader, zoom or visual acceptance",
+  "results": [
+    {
+      "screen": "02",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Find & Configure Your Ideal Flight",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 17,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [
+        "chk-direct-only",
+        "chk-nearby-airports"
+      ],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-02-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "02",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Find & Configure Your Ideal Flight",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 18,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "chk-direct-only",
+        "chk-nearby-airports"
+      ],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-02-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "02",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Find & Configure Your Ideal Flight",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 18,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.2s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "chk-direct-only",
+        "chk-nearby-airports",
+        "A"
+      ],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-02-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Products",
+          "Resources",
+          "Company",
+          "Help & Support",
+          "Find & Configure Your Ideal Flight",
+          "Popular routes from Colombo",
+          "How this build handles flight inventory"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "aria-valid-attr-value",
+            "nodes": 2
+          }
+        ],
+        "passes": 17
+      }
+    },
+    {
+      "screen": "04",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "state": "offer",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-modal-favorite-toggle",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-04-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "04",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "state": "offer",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-modal-close",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-04-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "04",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "state": "offer",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "DIV",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "1px auto",
+        "shadow": "none"
+      },
+      "screenshot": "screen-04-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Colombo (CMB) → Dubai (DXB)",
+          "FLIGHT ITINERARY & TIMELINE",
+          "BAGGAGE (TO BE CONFIRMED)",
+          "CHANGES & CANCELLATION (PENDING CONFIRMATION)",
+          "INDICATIVE MANUAL PRICE BREAKDOWN"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 1
+          }
+        ],
+        "passes": 15
+      }
+    },
+    {
+      "screen": "05",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "state": "fare",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 8,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "Lite",
+        "Value",
+        "Flex"
+      ],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-modal-favorite-toggle",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-05-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "05",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "state": "fare",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 8,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "Lite",
+        "Value",
+        "Flex"
+      ],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-modal-close",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-05-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "05",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "state": "fare",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 8,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [
+        "Lite",
+        "Value",
+        "Flex"
+      ],
+      "focus": {
+        "tag": "DIV",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "1px auto",
+        "shadow": "none"
+      },
+      "screenshot": "screen-05-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Colombo (CMB) → Dubai (DXB)",
+          "FLIGHT ITINERARY & TIMELINE",
+          "COMPARE FARE FAMILIES",
+          "BAGGAGE (PLANNING REFERENCE)",
+          "CHANGES & CANCELLATION (PENDING CONFIRMATION)",
+          "PLANNING REFERENCE PRICE BREAKDOWN"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 16
+          }
+        ],
+        "passes": 19
+      }
+    },
+    {
+      "screen": "11",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/review",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Flight Trip Review",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-11-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "11",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/review",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Flight Trip Review",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-11-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "11",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/review",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Flight Trip Review",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 5,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-11-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Products",
+          "Resources",
+          "Company",
+          "Help & Support",
+          "CMB → LHR (Return)",
+          "Flight Trip Review",
+          "Booking Readiness",
+          "Cost Summary",
+          "Checkout Eligibility",
+          "Payment Methods",
+          "Booking Status",
+          "Manage Booking"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "aria-prohibited-attr",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 2
+          }
+        ],
+        "passes": 17
+      }
+    },
+    {
+      "screen": "24",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/checkout/booking-failed",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Booking Creation Failed",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 3,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "booking-retry",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(27, 20, 100) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      },
+      "screenshot": "screen-24-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "24",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/checkout/booking-failed",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Booking Creation Failed",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 3,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(27, 20, 100) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      },
+      "screenshot": "screen-24-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "24",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/checkout/booking-failed",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Booking Creation Failed",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 3,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(27, 20, 100) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      },
+      "screenshot": "screen-24-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Products",
+          "Resources",
+          "Company",
+          "Help & Support",
+          "Recovery options",
+          "Booking Creation Failed"
+        ],
+        "alerts": 2
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 16
+      }
+    },
+    {
+      "screen": "42",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/bookings/VCT-2026-0001/disruption",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Airline Schedule Change / Disruption",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 6,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-accept-revised",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-42-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "42",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/bookings/VCT-2026-0001/disruption",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Airline Schedule Change / Disruption",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 6,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-request-alternative",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-42-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "42",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/bookings/VCT-2026-0001/disruption",
+      "state": "default",
+      "selector": "#flights-view-mount",
+      "heading": "Airline Schedule Change / Disruption",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 6,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "btn-contact-support",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-42-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Products",
+          "Resources",
+          "Company",
+          "Help & Support",
+          "Airline Schedule Change / Disruption",
+          "Booking Summary",
+          "Schedule Change & Disruption",
+          "Original Flight",
+          "Revised Flight"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "aria-prohibited-attr",
+            "nodes": 2
+          }
+        ],
+        "passes": 14
+      }
+    },
+    {
+      "screen": "59",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/inventory",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Manual Inventory CMS",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 23,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-59-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "59",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/inventory",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Manual Inventory CMS",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 23,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-59-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "59",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/inventory",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Manual Inventory CMS",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 23,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-59-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Manual Inventory CMS",
+          "Create manual lot"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 18
+      }
+    },
+    {
+      "screen": "60",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/pricing",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Pricing & Margin Rules",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 16,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-60-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "60",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/pricing",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Pricing & Margin Rules",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 16,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-60-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "60",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/pricing",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Pricing & Margin Rules",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 16,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-60-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Pricing & Margin Rules",
+          "Active rules",
+          "New margin rule"
+        ],
+        "alerts": 2
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 17
+      }
+    },
+    {
+      "screen": "61",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/fulfilment",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Fulfilment & Ticketing Queue",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 14,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-61-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "61",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/fulfilment",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Fulfilment & Ticketing Queue",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 14,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-61-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "61",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/fulfilment",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Fulfilment & Ticketing Queue",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 14,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-61-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Fulfilment & Ticketing Queue",
+          "Ticketing queue"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 16
+      }
+    },
+    {
+      "screen": "62",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/after-sales",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Exchanges, Cancellations & Refunds",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 15,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-62-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "62",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/after-sales",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Exchanges, Cancellations & Refunds",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 15,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-62-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "62",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/after-sales",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Exchanges, Cancellations & Refunds",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 15,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-62-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Exchanges, Cancellations & Refunds",
+          "After-sales cases"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 16
+      }
+    },
+    {
+      "screen": "63",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/disruptions",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Disruption Queue",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 17,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-63-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "63",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/disruptions",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Disruption Queue",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 17,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-63-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "63",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/disruptions",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Disruption Queue",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 17,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-63-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Disruption Queue",
+          "Disruption queue"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 1
+          }
+        ],
+        "passes": 17
+      }
+    },
+    {
+      "screen": "64",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/reconciliation",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Reconciliation & Audit",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 13,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-64-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "64",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/reconciliation",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Reconciliation & Audit",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 13,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-64-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "64",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/admin/reconciliation",
+      "state": "admin",
+      "selector": "#flight-admin-console",
+      "heading": "Reconciliation & Audit",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 13,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-64-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Reconciliation & Audit",
+          "Supplier settlement ledger",
+          "Audit trail"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 20
+      }
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "file": "contact-01.png",
+    "screens": [
+      "01",
+      "02",
+      "03"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-02.png",
+    "screens": [
+      "04",
+      "08",
+      "09"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-03.png",
+    "screens": [
+      "10",
+      "11",
+      "12"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-04.png",
+    "screens": [
+      "14",
+      "15",
+      "17"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-05.png",
+    "screens": [
+      "18",
+      "19",
+      "20"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-06.png",
+    "screens": [
+      "22",
+      "23",
+      "24"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-07.png",
+    "screens": [
+      "25",
+      "26",
+      "27"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-08.png",
+    "screens": [
+      "28",
+      "29",
+      "30"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-09.png",
+    "screens": [
+      "31",
+      "32",
+      "33"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-10.png",
+    "screens": [
+      "34",
+      "35",
+      "36"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-11.png",
+    "screens": [
+      "37",
+      "38",
+      "39"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-12.png",
+    "screens": [
+      "40",
+      "41",
+      "42"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-13.png",
+    "screens": [
+      "43",
+      "44",
+      "45"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-14.png",
+    "screens": [
+      "46",
+      "47",
+      "48"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-15.png",
+    "screens": [
+      "49",
+      "50",
+      "51"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-16.png",
+    "screens": [
+      "52",
+      "53",
+      "54"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-17.png",
+    "screens": [
+      "55",
+      "56",
+      "57"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  },
+  {
+    "file": "contact-18.png",
+    "screens": [
+      "58"
+    ],
+    "scope": "Macro layout review only; not full-size text, contrast, interaction or visual acceptance"
+  }
+]

@@ -1,0 +1,286 @@
+{
+  "applicationSha": "3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74",
+  "deployment": "dpl_42SvpZE3YPhFqwpMw776mg2tf7fe",
+  "base": "https://vacatina-c9hgdrkwi-vacatinas-projects.vercel.app",
+  "environment": "HOSTED_PUBLIC_DEMO",
+  "scope": "Affected component QA only; not a replay of all 72 accepted cases",
+  "rows": [
+    {
+      "id": "H02-390",
+      "screen": "02",
+      "width": 390,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "aria-valid-attr-value"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H04-390",
+      "screen": "04",
+      "width": 390,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H11-390",
+      "screen": "11",
+      "width": 390,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "aria-prohibited-attr",
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H24-390",
+      "screen": "24",
+      "width": 390,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H46-390",
+      "screen": "46",
+      "width": 390,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H02-768",
+      "screen": "02",
+      "width": 768,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "aria-valid-attr-value"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H04-768",
+      "screen": "04",
+      "width": 768,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H11-768",
+      "screen": "11",
+      "width": 768,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "aria-prohibited-attr",
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H24-768",
+      "screen": "24",
+      "width": 768,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H46-768",
+      "screen": "46",
+      "width": 768,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H02-1440",
+      "screen": "02",
+      "width": 1440,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "aria-valid-attr-value"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H04-1440",
+      "screen": "04",
+      "width": 1440,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H11-1440",
+      "screen": "11",
+      "width": 1440,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "aria-prohibited-attr",
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H24-1440",
+      "screen": "24",
+      "width": 1440,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H46-1440",
+      "screen": "46",
+      "width": 1440,
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "status": "PASS",
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          "color-contrast"
+        ]
+      },
+      "overflow": 0
+    },
+    {
+      "id": "H-K01",
+      "screen": "02",
+      "name": "Airport combobox keyboard semantics and Escape cleanup",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K02",
+      "screen": "04",
+      "name": "Modal traps Tab and Shift+Tab; scroll region keyboard reachable",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K03",
+      "screen": "04",
+      "name": "Offer modal respects reduced motion",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K04",
+      "screen": "04",
+      "name": "Escape closes offer modal and restores result trigger focus",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K05",
+      "screen": "10",
+      "name": "Drawer traps keyboard focus and restores header entry on Escape",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K06",
+      "screen": "46",
+      "name": "Screen 46 heading does not display a double-escaped entity",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K07",
+      "screen": "46",
+      "name": "Keyboard-only invalid phone gives visible focus and accessible custom error",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K08",
+      "screen": "46",
+      "name": "Keyboard-only consent + rapid Enter activation creates one preview record/navigation",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H-K09",
+      "screen": "24",
+      "name": "Booking-failure preview copy and retry status do not claim transactions",
+      "status": "PASS",
+      "mode": "HOSTED_PUBLIC_DEMO"
+    },
+    {
+      "id": "H42",
+      "screen": "42",
+      "status": "BLOCKED",
+      "mode": "HOSTED_PUBLIC_DEMO",
+      "reason": "Public-demo/auth gate; contrast change verified only with local fixture"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "originalAcceptedApplicationSha": "6054dc541a0b3a703bf39cdca714bc238b472dc3",
+  "originalAccepted": {
+    "PASS": 68,
+    "FAIL": 0,
+    "BLOCKED": 4,
+    "total": 72,
+    "source": "../accepted-6054dc5/acceptance-trusted-results.json"
+  },
+  "evidenceOnlyCommit": "e1724c0824e360ca1ef7d972e1710d5eb074f2f6",
+  "changedApplicationSha": "3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74",
+  "hostedChanged": {
+    "applicationSha": "3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74",
+    "deployment": "dpl_42SvpZE3YPhFqwpMw776mg2tf7fe",
+    "base": "https://vacatina-c9hgdrkwi-vacatinas-projects.vercel.app",
+    "counts": {
+      "PASS": 24,
+      "BLOCKED": 1
+    },
+    "total": 25
+  },
+  "localFixtureScreens": {
+    "measured": 59,
+    "total": 64,
+    "percent": 92.1875,
+    "missing": [
+      "06",
+      "07",
+      "13",
+      "16",
+      "21"
+    ]
+  },
+  "responsiveMeasurements": {
+    "fit": 177,
+    "total": 177,
+    "widths": [
+      390,
+      768,
+      1440
+    ],
+    "limit": "Combined multi-revision snapshot measurements, not full usability acceptance"
+  },
+  "reflowApproximation": {
+    "fit": 59,
+    "total": 59,
+    "cssWidth": 320,
+    "limit": "Not a true desktop zoom audit; horizontally scrollable data tables need manual usability review"
+  },
+  "latestComponentAxe": {
+    "zeroViolations": 59,
+    "total": 59,
+    "version": "4.10.3",
+    "limit": "Component-scoped automated checks at 1440px; not full WCAG compliance"
+  },
+  "reducedMotionControlSamples": {
+    "collapsed": 51,
+    "total": 51,
+    "limit": "Sampled controls only; complete animated-state audit NOT VERIFIED"
+  },
+  "focusedLocal": {
+    "pass": 9,
+    "total": 9
+  },
+  "fullWcagAudit": {
+    "completed": 0,
+    "total": 64
+  },
+  "fullVisualAcceptance": {
+    "completed": 0,
+    "total": 64,
+    "limit": "59 screens macro-reviewed; not full-size, full-page, all-state visual acceptance"
+  }
+}

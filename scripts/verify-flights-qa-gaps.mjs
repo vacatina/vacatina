@@ -12,6 +12,8 @@ fs.mkdirSync(output,{recursive:true});
 const chosen=process.env.QA_SCREENS?.split(',');
 const axePath=process.env.AXE_CORE_PATH;
 const results=[];
+const sourceHead=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+const dirtySourceFiles=execFileSync('git',['diff','--name-only','--','src','tailwind.config.js'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
 const wait=async(fn,label,ms=14000)=>{
   const end=Date.now()+ms;let last;
   do {try{last=await fn();if(last)return last;}catch(e){last=e.message;}
@@ -48,7 +50,8 @@ async function setup(s){
   if(['authorization','transient','rules-changed'].includes(s.state))throw new Error('NOT VERIFIED: no deterministic rendered frontend fixture for '+s.state);
   if(s.state==='ancillary'||s.state==='seat')throw new Error('NOT VERIFIED: planning offers do not expose real ancillary/seat availability; sandbox supplier fixture unavailable');
   if(['offer','fare','bucket'].includes(s.state)){
-    await go(s.route,'button[data-view-offer]');await click('button[data-view-offer]');await wait(()=>visible('#btn-modal-add-trip'),'offer dialog');
+    if(s.state==='fare')await go('/flights/offer/sup-flt-cmb-dxb-fz548','#btn-modal-add-trip');
+    else {await go(s.route,'button[data-view-offer]');await click('button[data-view-offer]');await wait(()=>visible('#btn-modal-add-trip'),'offer dialog');}
     if(s.state==='fare')await wait(()=>ev(`!!document.querySelector('[data-family-select]')`),'fare family controls');
     if(s.state==='bucket'){await click('#btn-modal-add-trip');await wait(()=>visible('#drawer-review-trip-cta'),'bucket after staging');}
   }else if(s.state==='revalidate'){
@@ -57,7 +60,8 @@ async function setup(s){
     await go('/b2b/flights','#b2b-search');await click('#b2b-search');await wait(()=>visible('input[name="b2b-offer"]'),'offers');
     if(s.state==='b2b-quote'){await click('input[name="b2b-offer"]');await wait(()=>visible('#b2b-build-quote'),'quote control');await click('#b2b-build-quote');await wait(()=>visible('#b2b-markup'),'quotation');}
   }else if(s.state==='admin'){
-    await go(s.route,'#admin-inventory-workspace');
+    await go(s.route);
+    await wait(async()=>await visible('#flight-admin-console')||await visible('#admin-demo-console'),'console or local fixture entry');
     if(await visible('#admin-demo-console'))await click('#admin-demo-console');
     await wait(()=>visible('#flight-admin-console'),'local operations fixture');
   }else{
@@ -110,7 +114,7 @@ async function snapshot(s,w){
       axe=await ev(`axe.run(document.querySelector(${JSON.stringify(selector)}),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}).then(r=>({version:r.testEngine.version,violations:r.violations.map(v=>({id:v.id,impact:v.impact,description:v.description,help:v.help,nodes:v.nodes.map(n=>({target:n.target,failureSummary:n.failureSummary}))})),incomplete:r.incomplete.map(v=>({id:v.id,nodes:v.nodes.length})),passes:r.passes.length}))`,45000);
     }
   }
-  return {screen:s.id,width:w,mode:'LOCAL_FIXTURE',route:s.route,state:s.state,selector,...before,focus,screenshot:shotName,reflow,motion,ax,axe};
+  return {screen:s.id,width:w,mode:'LOCAL_FIXTURE',route:s.route,observedRoute:await ev('location.pathname+location.search'),state:s.state,selector,...before,focus,screenshot:shotName,reflow,motion,ax,axe};
 }
 async function main(){
   delete process.env.PREVIEW_BASE;delete process.env.VERCEL_BYPASS;
@@ -133,6 +137,11 @@ async function main(){
     if(await ev('window.__VACATINA_PUBLIC_DEMO__===true'))throw new Error('Build is PUBLIC_DEMO; rebuild without VERCEL/VACATINA_PUBLIC_DEMO for local fixture QA');
     // Existing explicitly local fixture entry; no auth gate is modified.
     await ev('window.__VACATINA_OS__.tripBucketService.resetToCanonicalBaseline()');
+    if(process.env.QA_FOCUSED==='1'){
+      const {runFocusedQa}=await import('./lib/flights-local-focused-checks.mjs');
+      results.push(...await runFocusedQa({cdp,ev,go,click,key,fill,wait,visible,base}));
+      return;
+    }
     for(const s of screens.filter(s=>!chosen||chosen.includes(s.id))){
       try{
         await key('Escape','Escape',27);
@@ -145,8 +154,7 @@ async function main(){
     }
   }finally{
     cdp?.close();if(chrome.exitCode===null)chrome.kill();await new Promise(r=>server.close(r));
-    const sha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
-    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({applicationSha:sha,environment:'LOCAL_FIXTURE',auditLimits:'Automated component scan, screenshots, keyboard focus sample, 320px reflow approximation; not full WCAG, screen-reader, zoom or visual acceptance',results},null,2));
+    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({applicationSha:dirtySourceFiles.length?null:sourceHead,gitHead:sourceHead,dirtySourceFiles,environment:'LOCAL_FIXTURE',auditLimits:'Automated component scan, screenshots, keyboard focus sample, 320px reflow approximation; not full WCAG, screen-reader, zoom or visual acceptance',results},null,2));
     console.log('SAVED',output,'rows',results.length);
   }
 }
