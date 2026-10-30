@@ -552,6 +552,15 @@ export class FlightsManualRequestView {
         event.preventDefault();
         submitRequest();
       });
+
+      // Keyboard activation (Enter/Space) — ensures Enter submission works even
+      // when the browser does not synthesise a click from key activation.
+      submitBtn?.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          submitRequest();
+        }
+      });
     }
 
     /* 47 — submitted */
