@@ -345,6 +345,23 @@ export class CanonicalRouterService {
       return;
     }
 
+    // B2C booking dossier (screens 27-33): deterministic local demo fixture.
+    const dossierMatch = path.match(/^\/bookings\/([^/]+)(?:\/(.*))?$/);
+    if (dossierMatch && !/^\/bookings\/[^/]+\/(change|cancel|refund|disruption|support)(?:\/.*)?$/.test(path)) {
+      const reference = decodeURIComponent(dossierMatch[1]);
+      const stage = dossierMatch[2] || '';
+      const mount = showFlightsView();
+      mount.innerHTML = '';
+      import('../../features/flights/ui/flights-booking-dossier.ts').then(({ FlightsBookingDossierView }) => {
+        const view = new FlightsBookingDossierView();
+        view.render(mount, reference, stage);
+      }).catch(err => {
+        console.error('[ROUTER] dossier import failed:', err);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (path === '/manage-booking' || path.startsWith('/bookings/') || path.startsWith('/manage/')) {
       renderManageBookingWorkspace(showJourneyWorkspace());
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -402,11 +419,13 @@ export class CanonicalRouterService {
     }
 
     if (path.startsWith('/flights/requests/')) {
-      const requestId = path.replace('/flights/requests/', '').split('/')[0] || 'VCT-REQ-0000';
+      const segments = path.replace('/flights/requests/', '').split('/').filter(Boolean);
+      const requestId = segments[0] || 'VCT-REQ-0001';
+      const stage = segments.slice(1).join('/');
       const mount = showFlightsView();
       mount.innerHTML = '';
       const view = new FlightsManualRequestView();
-      view.render(mount, 'submitted', requestId);
+      view.render(mount, 'tracker', requestId, stage);
       return;
     }
 
@@ -457,6 +476,26 @@ export class CanonicalRouterService {
       return;
     }
 
+    if (path === '/flights/checkout/payment-failed') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-checkout-states.ts').then(({ FlightsCheckoutPaymentFailedView }) => {
+        const view = new FlightsCheckoutPaymentFailedView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
+    if (path === '/flights/checkout/booking-failed') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-checkout-states.ts').then(({ FlightsCheckoutBookingFailedView }) => {
+        const view = new FlightsCheckoutBookingFailedView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
     if (path === '/flights/checkout') {
       const mount = showFlightsView();
       const view = new FlightsCheckoutView();
@@ -477,8 +516,8 @@ export class CanonicalRouterService {
 
     if (path === '/flights/manage') {
       const mount = showFlightsView();
-      import('../../features/flights/ui/flights-manage-booking.ts').then(({ FlightsManageBookingView }) => {
-        const view = new FlightsManageBookingView();
+      import('../../features/flights/ui/flights-booking-dossier.ts').then(({ FlightsGuestLookupView }) => {
+        const view = new FlightsGuestLookupView();
         mount.innerHTML = '';
         view.render(mount);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -517,12 +556,15 @@ export class CanonicalRouterService {
       });
       return;
     }
-    if (path === '/b2b/flights/review') {
+    if (path === '/b2b/flights/review' || path.startsWith('/b2b/flights/review/')) {
+      const stage = path.startsWith('/b2b/flights/review/')
+        ? path.replace('/b2b/flights/review/', '').split('/')[0]
+        : '';
       const mount = showFlightsView();
       import('../../features/flights/ui/b2b-flights-review.ts').then(({ B2BFlightsReviewView }) => {
         const view = new B2BFlightsReviewView();
         mount.innerHTML = '';
-        view.render(mount);
+        view.render(mount, stage);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
       return;
@@ -1357,6 +1399,16 @@ export class CanonicalRouterService {
   }
 
   private handleAccountRoute(path: string): void {
+    if (path === '/account/trips') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-booking-dossier.ts').then(({ FlightsTripsView }) => {
+        const view = new FlightsTripsView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
     if (path === '/account/travel-credit') {
       openTravelCreditModal(null);
       return;

@@ -292,8 +292,8 @@ export async function verifyB2BFlightsRoutes(cdp, assertCheck) {
     await cdp.send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 768 });
     const routes = [
       { path: '/b2b/flights', heading: 'B2B Flight Search' },
-      { path: '/b2b/flights/quotation', heading: 'Agent Flight Quotation' },
-      { path: '/b2b/flights/travellers', heading: 'Corporate Traveller Management' },
+      { path: '/b2b/flights/quotation', heading: 'Quotation Builder' },
+      { path: '/b2b/flights/travellers', heading: 'Traveller Management' },
       { path: '/b2b/flights/review', heading: 'B2B Flight Booking Review' },
       { path: '/b2b/flights/manage', heading: 'Agent Flight Booking Management' },
     ];

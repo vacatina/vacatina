@@ -1,6 +1,6 @@
 # Vacatina — 64-Screen Status Matrix (evidence-based)
 
-Last updated: Batch A acceptance (screens 34–45) — commit `pending` on `release/b2c-product-journeys-v1`.
+Last updated: Batch E acceptance (screens 15–33) + Batch D (58–64) + Batch C (51–57) + Batch B (46–50) — commit pending on `release/b2c-product-journeys-v1`.
 
 This matrix separates **rendering**, **functional interaction**, **responsive**, **accessibility** and **animation** evidence. A screen is only marked as functionally verified when a browser test drives its controls and asserts a user-visible outcome.
 

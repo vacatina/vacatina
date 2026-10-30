@@ -1,5 +1,6 @@
 import { apiRequest, getApiSession } from '../../lib/services/api-client.service.ts';
 import { demoCapabilities, renderEnquiryOperations } from '../enquiries/enquiry-workspace.ts';
+import { demoOpsLocalAvailable, enableDemoOpsFixture } from './flight-admin-console.ts';
 
 const adminEscape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 const adminInput = (name: string,label: string,type = 'text',value: unknown = '',required = true) => `<label class="block text-sm font-semibold">${label}<input name="${name}" type="${type}" value="${adminEscape(value)}" ${required?'required':''} class="mt-2 w-full min-h-[44px] border border-brand-border rounded-xl px-3 bg-white"></label>`;
@@ -53,9 +54,16 @@ export async function loadAdminInventory(): Promise<void> {
       showAdminActionForm(root,listing,action);
     };
   } catch (error) {
-    root.innerHTML = `<div class="border border-brand-border rounded-2xl p-7"><h2 class="text-xl font-heading font-bold text-brand-primary">Operations access</h2><p class="text-sm mt-3">${adminEscape((error as Error).message)}</p><p class="text-sm text-brand-muted mt-2">Use your authorized Vacatina staff account to manage inventory.</p><button id="admin-signin" class="min-h-[44px] mt-4 px-5 rounded-xl bg-brand-primary text-white">Sign in</button><button id="admin-retry" class="min-h-[44px] mt-4 ml-2 px-5 rounded-xl border">Retry</button></div>`;
+    root.innerHTML = `<div class="border border-brand-border rounded-2xl p-7"><h2 class="text-xl font-heading font-bold text-brand-primary">Operations access</h2><p class="text-sm mt-3">${adminEscape((error as Error).message)}</p><p class="text-sm text-brand-muted mt-2">Use your authorized Vacatina staff account to manage inventory.</p><button id="admin-signin" class="min-h-[44px] mt-4 px-5 rounded-xl bg-brand-primary text-white">Sign in</button><button id="admin-retry" class="min-h-[44px] mt-4 ml-2 px-5 rounded-xl border">Retry</button>${demoOpsLocalAvailable() ? `<div class="mt-5 pt-5 border-t border-dashed border-amber-300"><p class="text-xs font-bold uppercase tracking-wide text-amber-800">Local UI acceptance only</p><p class="text-xs text-brand-muted mt-1">Real operations remain server-authorised. This local fixture never runs on a hosted origin.</p><button id="admin-demo-console" class="min-h-[44px] mt-3 px-5 rounded-xl border border-dashed border-amber-400 text-amber-900 font-semibold">Enter isolated demo operations console (test fixture)</button></div>` : ''}</div>`;
     root.querySelector('#admin-signin')!.addEventListener('click',()=>window.Clerk?.openSignIn?.());
     root.querySelector('#admin-retry')!.addEventListener('click',()=>void loadAdminInventory());
+    root.querySelector('#admin-demo-console')?.addEventListener('click',()=>{
+      enableDemoOpsFixture();
+      const path = window.location.pathname.startsWith('/admin') ? window.location.pathname : '/admin/suppliers';
+      const router=(window as any).__VACATINA_ROUTER__;
+      if (router?.navigateTo) router.navigateTo(path);
+      else window.location.reload();
+    });
   }
 }
 
