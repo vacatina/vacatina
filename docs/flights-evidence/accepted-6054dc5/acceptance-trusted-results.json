@@ -1,0 +1,510 @@
+{
+  "base": "https://vacatina-8cgmadjx1-vacatinas-projects.vercel.app",
+  "sha": "6054dc541a0b3a703bf39cdca714bc238b472dc3",
+  "rows": [
+    {
+      "id": "D1",
+      "name": "Preview boots",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D2",
+      "name": "Public demo flag",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B390-1",
+      "name": "Homepage Flights entry usable",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-2",
+      "name": "Flights entry responds",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-3",
+      "name": "Selectable search offer",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-4",
+      "name": "Offer details opens",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-5",
+      "name": "Add-to-Trip action enabled",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-6",
+      "name": "Selected flight enters Trip Bucket",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-7",
+      "name": "Trip Bucket entry accessible",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-8",
+      "name": "Review action enabled",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-9",
+      "name": "Trip Review opens",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-10",
+      "name": "Passenger continuation CTA",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-11",
+      "name": "Passenger Details opens",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-12",
+      "name": "Passenger Continue enabled",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-13",
+      "name": "Custom passenger validation advances",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-14",
+      "name": "Checkout Preview CTA enabled",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-15",
+      "name": "Checkout Preview opens",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-16",
+      "name": "Simulated completion enabled",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-17",
+      "name": "Simulated result reached",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-18",
+      "name": "No issued-ticket claim",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-19",
+      "name": "Direct: selectable offer",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-20",
+      "name": "Direct: offer opens",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B390-21",
+      "name": "Direct: Book Now enabled",
+      "status": "PASS",
+      "width": 390,
+      "detail": true
+    },
+    {
+      "id": "B390-22",
+      "name": "Direct: advances without adding to Trip Bucket",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "B1440-1",
+      "name": "Homepage Flights entry usable",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-2",
+      "name": "Flights entry responds",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-3",
+      "name": "Selectable search offer",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-4",
+      "name": "Offer details opens",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-5",
+      "name": "Add-to-Trip action enabled",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-6",
+      "name": "Selected flight enters Trip Bucket",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-7",
+      "name": "Trip Bucket entry accessible",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-8",
+      "name": "Review action enabled",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-9",
+      "name": "Trip Review opens",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-10",
+      "name": "Passenger continuation CTA",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-11",
+      "name": "Passenger Details opens",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-12",
+      "name": "Passenger Continue enabled",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-13",
+      "name": "Custom passenger validation advances",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-14",
+      "name": "Checkout Preview CTA enabled",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-15",
+      "name": "Checkout Preview opens",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-16",
+      "name": "Simulated completion enabled",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-17",
+      "name": "Simulated result reached",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-18",
+      "name": "No issued-ticket claim",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-19",
+      "name": "Direct: selectable offer",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-20",
+      "name": "Direct: offer opens",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "B1440-21",
+      "name": "Direct: Book Now enabled",
+      "status": "PASS",
+      "width": 1440,
+      "detail": true
+    },
+    {
+      "id": "B1440-22",
+      "name": "Direct: advances without adding to Trip Bucket",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D4",
+      "name": "/bookings/VCT-2026-0001",
+      "status": "BLOCKED",
+      "width": 1440,
+      "detail": "Public-demo/auth gate; underlying journey not exercised"
+    },
+    {
+      "id": "D6",
+      "name": "/account/trips",
+      "status": "BLOCKED",
+      "width": 1440,
+      "detail": "Public-demo/auth gate; underlying journey not exercised"
+    },
+    {
+      "id": "D7",
+      "name": "/bookings/VCT-2026-0001/change",
+      "status": "BLOCKED",
+      "width": 1440,
+      "detail": "Public-demo/auth gate; underlying journey not exercised"
+    },
+    {
+      "id": "D8",
+      "name": "/admin",
+      "status": "BLOCKED",
+      "width": 1440,
+      "detail": "Public-demo/auth gate; underlying journey not exercised"
+    },
+    {
+      "id": "D5",
+      "name": "Active guest-lookup heading and validation",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D5-focus",
+      "name": "Inactive homepage excluded from layout and AX tree",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D9",
+      "name": "Screen 46 cold review render",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D10",
+      "name": "Screen 46 invalid phone custom validation",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D11",
+      "name": "Screen 46 submission and persisted status",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D12",
+      "name": "Screen 48 tracker via click",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D13",
+      "name": "Screen 48 quote link after lifecycle advance",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D14",
+      "name": "Screen 49 preview quotation total",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D15",
+      "name": "Screen 51 B2B search",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D16",
+      "name": "Screen 52 three deterministic offers",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D17a",
+      "name": "Selected offer enables quotation",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D17",
+      "name": "Screen 53 quotation via click",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D18",
+      "name": "Deterministic quote totals",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D19",
+      "name": "Markup recomputes client total",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D20a",
+      "name": "Screen 03 boots",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D20",
+      "name": "All search-screen controls have accessible names",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D21-1440",
+      "name": "Screen 03 no horizontal overflow",
+      "status": "PASS",
+      "width": 1440,
+      "detail": ""
+    },
+    {
+      "id": "D21-768",
+      "name": "Screen 03 no horizontal overflow",
+      "status": "PASS",
+      "width": 768,
+      "detail": ""
+    },
+    {
+      "id": "D21-390",
+      "name": "Screen 03 no horizontal overflow",
+      "status": "PASS",
+      "width": 390,
+      "detail": ""
+    },
+    {
+      "id": "D21-360",
+      "name": "Screen 03 no horizontal overflow",
+      "status": "PASS",
+      "width": 360,
+      "detail": ""
+    },
+    {
+      "id": "D22",
+      "name": "No uncaught page exceptions",
+      "status": "PASS",
+      "width": 360,
+      "detail": ""
+    },
+    {
+      "id": "D23",
+      "name": "No console errors",
+      "status": "PASS",
+      "width": 360,
+      "detail": ""
+    }
+  ]
+}
