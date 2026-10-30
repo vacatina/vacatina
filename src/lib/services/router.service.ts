@@ -496,6 +496,16 @@ export class CanonicalRouterService {
       });
       return;
     }
+    if (path === '/flights/checkout/authorization') {
+      const mount = showFlightsView();
+      import('../../features/flights/ui/flights-checkout-states.ts').then(({ FlightsCheckoutAuthorizationPreviewView }) => {
+        const view = new FlightsCheckoutAuthorizationPreviewView();
+        mount.innerHTML = '';
+        view.render(mount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      return;
+    }
     if (path === '/flights/checkout') {
       const mount = showFlightsView();
       const view = new FlightsCheckoutView();

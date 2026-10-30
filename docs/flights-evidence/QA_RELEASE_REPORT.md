@@ -85,3 +85,14 @@ New tested application changes in this pass (pending commit at time of writing):
 Validation: typecheck PASS, build PASS (121 modules), npm test 366/366, Batch E 44/44, Batch C 53/53.
 
 Updated local coverage: 62/64 screens (96.875%) have supplemental measurements; only Screens 07 and 13 remain without a usable fixture. Full visual acceptance 0/64, full WCAG audit 0/64, hosted 24 PASS / 0 FAIL / 1 BLOCKED (unchanged — no new hosted run in this pass).
+## Update - local fixture gaps closed (this pass)
+
+New application changes:
+- src/features/flights/ui/flights-offer-detail-modal.ts - deterministic offline seat-map fixture.
+- src/features/flights/ui/flights-checkout-states.ts - FlightsCheckoutAuthorizationPreviewView.
+- src/features/flights/ui/flights-search-view.ts - qaHoldLoading gated on !__VACATINA_PUBLIC_DEMO_BUILD__.
+- src/features/flights/data/supplier-fixtures.ts - sup-flt-seat-map-sim.
+- src/lib/services/router.service.ts - /flights/checkout/authorization route.
+
+Validation: typecheck PASS, build PASS (121 modules), npm test 366/366, evidence tests 13/13, Batch E 44/44, Batch C 53/53.
+Local coverage now 64/64 screens (100%). Full visual acceptance 0/64, full WCAG audit 0/64 (NOT VERIFIED). Hosted 24 PASS / 0 FAIL / 1 BLOCKED unchanged.

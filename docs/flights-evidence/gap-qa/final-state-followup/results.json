@@ -1,0 +1,421 @@
+{
+  "applicationSha": null,
+  "gitHead": "c966201617416a74aa9db7224db4936da0f3a451",
+  "dirtySourceFiles": [
+    "src/features/flights/data/supplier-fixtures.ts",
+    "src/features/flights/ui/flights-checkout-states.ts",
+    "src/features/flights/ui/flights-offer-detail-modal.ts",
+    "src/lib/services/router.service.ts"
+  ],
+  "environment": "LOCAL_FIXTURE",
+  "auditLimits": "Automated component scan, screenshots, keyboard focus sample, 320px reflow approximation; not full WCAG, screen-reader, zoom or visual acceptance",
+  "results": [
+    {
+      "screen": "07",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/offer/sup-flt-seat-map-sim",
+      "observedRoute": "/flights/offer/sup-flt-seat-map-sim",
+      "state": "seat",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 9,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-07-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "07",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/offer/sup-flt-seat-map-sim",
+      "observedRoute": "/flights/offer/sup-flt-seat-map-sim",
+      "state": "seat",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 9,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-07-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "07",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/offer/sup-flt-seat-map-sim",
+      "observedRoute": "/flights/offer/sup-flt-seat-map-sim",
+      "state": "seat",
+      "selector": "#flight-offer-detail-modal",
+      "heading": "Colombo (CMB) → Dubai (DXB)",
+      "headingFont": "\"Plus Jakarta Sans\", sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0.6)",
+      "overflow": 0,
+      "controls": 9,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "inComponent": true,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-07-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Colombo (CMB) → Dubai (DXB)",
+          "FLIGHT ITINERARY & TIMELINE",
+          "BAGGAGE (PLANNING REFERENCE)",
+          "CHANGES & CANCELLATION (PENDING CONFIRMATION)",
+          "PLANNING REFERENCE PRICE BREAKDOWN",
+          "DUFFEL SANDBOX EXTRAS",
+          "OPTIONAL SERVICES",
+          "SEAT MAPS"
+        ],
+        "alerts": 0
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 3
+          }
+        ],
+        "passes": 15
+      }
+    },
+    {
+      "screen": "13",
+      "width": 390,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/checkout/authorization",
+      "observedRoute": "/flights/checkout/authorization",
+      "state": "authorization",
+      "selector": "#flights-view-mount",
+      "heading": "Payment Authorization (Preview)",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 3,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-13-390.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "13",
+      "width": 768,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/checkout/authorization",
+      "observedRoute": "/flights/checkout/authorization",
+      "state": "authorization",
+      "selector": "#flights-view-mount",
+      "heading": "Payment Authorization (Preview)",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 3,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-13-768.png",
+      "reflow": null,
+      "motion": null,
+      "ax": null,
+      "axe": null
+    },
+    {
+      "screen": "13",
+      "width": 1440,
+      "mode": "LOCAL_FIXTURE",
+      "route": "/flights/checkout/authorization",
+      "observedRoute": "/flights/checkout/authorization",
+      "state": "authorization",
+      "selector": "#flights-view-mount",
+      "heading": "Payment Authorization (Preview)",
+      "headingFont": "\"Plus Jakarta Sans\", -apple-system, BlinkMacSystemFont, sans-serif",
+      "bodyFont": "Inter, sans-serif",
+      "background": "rgba(0, 0, 0, 0)",
+      "overflow": 0,
+      "controls": 3,
+      "normalMotion": [
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        },
+        {
+          "animation": "0s",
+          "transition": "0.15s"
+        }
+      ],
+      "controlsUnder24": [],
+      "focus": {
+        "tag": "A",
+        "id": "",
+        "inComponent": false,
+        "visible": true,
+        "outline": "2px solid",
+        "shadow": "none"
+      },
+      "screenshot": "screen-13-1440.png",
+      "reflow": {
+        "width": 320,
+        "overflow": 0
+      },
+      "motion": [
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        },
+        {
+          "animation": "1e-05s",
+          "transition": "1e-05s"
+        }
+      ],
+      "ax": {
+        "headings": [
+          "Products",
+          "Resources",
+          "Company",
+          "Help & Support",
+          "Lifecycle controls (preview)",
+          "Payment Authorization (Preview)"
+        ],
+        "alerts": 1
+      },
+      "axe": {
+        "version": "4.10.3",
+        "violations": [],
+        "incomplete": [],
+        "passes": 12
+      }
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+declare const __VACATINA_PUBLIC_DEMO_BUILD__: boolean;
 /* ============================================================================
  * Vacatina Canonical Flight Search Results View (/flights/search)
  * Authority: VACATINA FLIGHTS — FULL FUNCTIONAL BUILD MASTER WORKLOAD (§14–§19, §31–§33, §38)
@@ -59,15 +60,14 @@ export class FlightsSearchView {
   private currentSort: FlightSortOption = 'recommended';
   private currentFilters: FlightFilterCriteria = {};
   private isLoading = false;
-  private holdLoading = false;
+private holdLoading = false;
   private showAdvanceLoading = false;  private errorMessage: string | null = null;
   private validationErrors: Record<string, string> = {};
   private isModifyOpen = false;
   private sandboxStatus: SandboxStatus | null = null;
 
   public async loadFromQuery(query: URLSearchParams, container: HTMLElement): Promise<void> {
-    this.holdLoading = query.get('qaHoldLoading') === '1';
-    const parsed = parseFlightSearchQuery(query);
+    this.holdLoading = !__VACATINA_PUBLIC_DEMO_BUILD__ && query.get('qaHoldLoading') === '1';    const parsed = parseFlightSearchQuery(query);
     this.currentRequest = parsed.request;
     this.currentResponse = null;
     this.currentSort = 'recommended';

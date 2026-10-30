@@ -722,6 +722,61 @@ export const SUPPLIER_FLIGHT_FIXTURES: CanonicalFlightOffer[] = [
     segments: []
   },
 
+  // 6b. Test Scenario Offer: Seat Map Simulation (deterministic offline seat map)
+  {
+    offerId: 'sup-flt-seat-map-sim',
+    sourceType: 'supplier_api',
+    sourceProvider: 'Supplier GDS / NDC Gateway',
+    supplierId: 'sup-duffel-sandbox',
+    inventoryMode: 'sandbox_test',
+    sourceOfferId: 'off_0000SeatMapSim',
+    status: 'active',
+    bookability: 'live_bookable',
+    origin: getAirport('CMB'),
+    destination: getAirport('DXB'),
+    tripType: 'round_trip',
+    departureAt: '2026-11-16T02:10:00.000Z',
+    arrivalAt: '2026-11-16T05:40:00.000Z',
+    durationMinutes: 270,
+    stopCount: 0,
+    stopAirports: [],
+    airlines: [{ code: 'FZ', name: 'Flydubai' }],
+    marketingCarrier: { code: 'FZ', name: 'Flydubai' },
+    operatingCarrier: { code: 'FZ', name: 'Flydubai' },
+    flightNumber: 'FZ549',
+    cabinClass: 'economy',
+    fareFamily: 'Value Fare',
+    baggage: {
+      cabin: { pieces: 1, maxWeightKg: 7, description: '1 carry-on item up to 7 kg' },
+      checked: { pieces: 1, maxWeightKg: 20, description: '1 standard checked bag up to 20 kg' },
+      isSupplied: true
+    },
+    changeRules: { allowed: true, description: 'Changes permitted' },
+    refundRules: { refundable: true, description: 'Refundable with voucher' },
+    price: {
+      totalMinor: 16500000,
+      baseFareMinor: 12000000,
+      taxesMinor: 3500000,
+      feesMinor: 1000000,
+      currency: 'LKR',
+      displayCurrency: 'LKR',
+      perAdultMinor: 16500000
+    },
+    baseFare: 120000,
+    taxes: 35000,
+    fees: 10000,
+    currency: 'LKR',
+    displayCurrency: 'LKR',
+    availabilityStatus: 'AVAILABLE',
+    lastCheckedAt: '2026-10-26T05:00:00.000Z',
+    travellerPricing: [{ type: 'adult', count: 1, perPersonMinor: 16500000, totalMinor: 16500000 }],
+    includedServices: ['1 x 20 kg Checked Bag'],
+    fareFamiliesAvailable: [],
+    optionalServices: [],
+    slices: [],
+    segments: []
+  },
+
   // 7. Test Scenario Offer: Fare Rules Changed Simulation (revalidates to RECHECK_REQUIRED)
   {
     offerId: 'sup-flt-fare-rules-changed-sim',

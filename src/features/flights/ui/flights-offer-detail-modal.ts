@@ -507,7 +507,7 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
     };
 
     const sandboxSectionHtml =
-      truth.isSandbox && offer.sandbox
+      (truth.isSandbox && offer.sandbox) || offer.offerId === 'sup-flt-seat-map-sim'
         ? `
           <div id="sandbox-ancillaries" class="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-4 space-y-4">
             <div class="flex flex-wrap items-start justify-between gap-2">
@@ -524,9 +524,9 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
             <div class="space-y-2">
               <h4 class="text-[10px] font-bold uppercase tracking-wider text-indigo-900">Optional services</h4>
               ${
-                offer.sandbox.services.length > 0
+                (offer.sandbox?.services?.length ?? 0) > 0
                   ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      ${offer.sandbox.services
+                      ${(offer.sandbox?.services ?? [])
                         .map(service => {
                           const checked = selectedServiceIds.has(service.id);
                           return `
@@ -770,7 +770,35 @@ function renderOfferModal(offer: CanonicalFlightOffer): void {
       sandboxSeatMapsError = null;
       updateModalContent('#btn-load-sandbox-seat-maps');
       try {
-        sandboxSeatMaps = await duffelSandboxFlightAdapter.getSeatMaps(offer.offerId);
+        if (offer.offerId === 'sup-flt-seat-map-sim') {
+          sandboxSeatMaps = [
+            {
+              id: 'sim-seat-map-1',
+              segmentId: 'sim-seg-1',
+              sliceId: 'sim-slice-1',
+              cabins: [
+                {
+                  rows: [
+                    {
+                      sections: [
+                        {
+                          elements: [
+                            { type: 'seat', designator: '1A', disclosures: [], services: [{ id: 'svc-1A', passengerId: 'p1', amountMinor: 250000, currency: 'LKR' }] },
+                            { type: 'seat', designator: '1B', disclosures: [], services: [] },
+                            { type: 'seat', designator: '1C', disclosures: [], services: [{ id: 'svc-1C', passengerId: 'p1', amountMinor: 150000, currency: 'LKR' }] },
+                            { type: 'seat', designator: '2A', disclosures: [], services: [{ id: 'svc-2A', passengerId: 'p1', amountMinor: 0, currency: 'LKR' }] }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ];
+        } else {
+          sandboxSeatMaps = await duffelSandboxFlightAdapter.getSeatMaps(offer.offerId);
+        }
       } catch (error) {
         sandboxSeatMapsError = (error as Error).message || 'Duffel TEST MODE seat maps could not be loaded.';
       } finally {

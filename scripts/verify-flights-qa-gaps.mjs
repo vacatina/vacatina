@@ -47,15 +47,19 @@ async function go(route,selector){
 }
 async function fill(s,value){await click(s);await key('a','KeyA',65,2);await cdp.send('Input.insertText',{text:value});await key('Tab','Tab',9);}
 async function setup(s){
-  if(s.state==='authorization')throw new Error('NOT VERIFIED: no payment-authorization preview state exists; checkout is a gated static preview with disabled payment methods');
-  if(s.state==='seat')throw new Error('NOT VERIFIED: seat maps require Duffel TEST MODE network (Load seat maps); no deterministic offline fixture');
+  // (no throws; both now have deterministic fixtures)
   if(['offer','fare','bucket','ancillary'].includes(s.state)){
     if(s.state==='fare')await go('/flights/offer/sup-flt-cmb-dxb-fz548','#btn-modal-add-trip');
     else {await go(s.route,'button[data-view-offer]');await click('button[data-view-offer]');await wait(()=>visible('#btn-modal-add-trip'),'offer dialog');}
     if(s.state==='fare')await wait(()=>ev(`!!document.querySelector('[data-family-select]')`),'fare family controls');
+    if(s.state==='seat'){await click('#btn-load-sandbox-seat-maps');await wait(()=>ev(`!!document.querySelector('#sandbox-seat-maps .inline-flex')`),'seat map render');}
     if(s.state==='bucket'){await click('#btn-modal-add-trip');await wait(()=>visible('#drawer-review-trip-cta'),'bucket after staging');}
   }else if(s.state==='transient'){
     await go(s.route);await wait(()=>visible('#btn-advance-loading'),'controllable loading state');
+  }else if(s.state==='authorization'){
+    await go(s.route,'#auth-preview-heading');
+  }else if(s.state==='seat'){
+    await go(s.route,'#btn-load-sandbox-seat-maps');await click('#btn-load-sandbox-seat-maps');await wait(()=>ev(`!!document.querySelector('#sandbox-seat-maps .inline-flex')`),'seat map render');
   }else if(s.state==='revalidate'){
     await go(s.route,'#btn-modal-add-trip');await click('#btn-modal-add-trip');await wait(()=>visible('#drawer-review-trip-cta'),'revalidation feedback');
   }else if(s.state==='b2b-results'||s.state==='b2b-quote'){

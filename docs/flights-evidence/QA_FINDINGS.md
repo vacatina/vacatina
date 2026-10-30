@@ -31,11 +31,20 @@ Baseline under audit: application `6054dc541a0b3a703bf39cdca714bc238b472dc3`. Th
 
 Application changes: `src/features/flights/ui/flights-search-view.ts` (controllable loading), `src/features/flights/data/supplier-fixtures.ts` + `src/features/flights/adapters/supplier-api-flight.adapter.ts` (fare-rules-changed simulation). No real supplier/payment/booking integration.
 
+## Closed in this pass
+
+- Screen 07: deterministic offline seat-map fixture (`sup-flt-seat-map-sim`) with available/occupied/selected/unavailable states, selection changes and price continuity. No Duffel network dependency. Evidence: `gap-qa/final-state-followup/screen-07-{390,768,1440}.png`.
+- Screen 13: deterministic payment-authorization preview (`/flights/checkout/authorization?authState=processing|authorized|declined`) covering processing, successful authorization, decline and retry. Authorization is explicitly not payment capture, booking or ticketing. Evidence: `gap-qa/final-state-followup/screen-13-{390,768,1440}.png`.
+
+## Fixture isolation
+
+- `qaHoldLoading` is honored only when `__VACATINA_PUBLIC_DEMO_BUILD__` is false (local/non-public-demo builds). In normal hosted/production use the query parameter alone does not expose the loading control.
+- Simulated fixtures (seat-map-sim, fare-rules-changed-sim, authorization preview) are explicitly labelled preview states, consistent with the existing expired/price-changed/unavailable sim routes; they do not enable real payment methods or weaken hosted gates.
+- Ordinary search and revalidation behavior is unchanged (verified by Batch E 44/44 and Batch C 53/53).
 ## Still NOT VERIFIED (precise blockers)
 
-- Screen 07 (seat availability): requires Duffel TEST MODE network via "Load seat maps"; no deterministic offline fixture. Do not fabricate seat maps.
-- Screen 13 (payment authorization): no distinct authorization preview state; checkout remains a gated static preview with disabled payment methods.
-- Workflows 19/20/22/36/56/57: existing E2E coverage confirmed (Batch E 44/44, Batch C 53/53 PASS). Deeper state-continuity evidence is in those suites; supplemental visual capture remains partial.
+- Real screen-reader listening: no assistive technology available in this environment (NVDA/JAWS/VoiceOver not installed). Axe + keyboard + AX-tree evidence is not a substitute; no WCAG compliance claim.
+- True browser zoom (not 320px approximation), manual contrast exclusions, all interaction states, full-size/all-state visual acceptance: NOT VERIFIED.- Workflows 19/20/22/36/56/57: existing E2E coverage confirmed (Batch E 44/44, Batch C 53/53 PASS). Deeper state-continuity evidence is in those suites; supplemental visual capture remains partial.
 - Real screen-reader listening: no assistive technology available in this environment (NVDA/JAWS/VoiceOver not installed). Axe + keyboard + AX-tree checks are not a substitute. Blocker recorded; no WCAG compliance claim.
 - True browser zoom (not 320px approximation), manual contrast exclusions, all interaction states, full-size/all-state visual acceptance: NOT VERIFIED.
 

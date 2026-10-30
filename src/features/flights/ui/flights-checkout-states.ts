@@ -117,3 +117,64 @@ export class FlightsCheckoutBookingFailedView {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
+
+export class FlightsCheckoutAuthorizationPreviewView {
+  private mount: HTMLElement | null = null;
+  public render(mount: HTMLElement): void {
+    this.mount = mount;
+    const params = new URLSearchParams(window.location.search);
+    const state = params.get('authState') || 'processing';
+    const isProcessing = state === 'processing';
+    const isAuthorized = state === 'authorized';
+    const isDeclined = state === 'declined';
+
+    mount.innerHTML = `
+      <section class="max-w-3xl mx-auto px-4 py-8 animate-fade-in" aria-labelledby="auth-preview-heading">
+        <header class="mb-6">
+          <p class="text-xs font-bold uppercase tracking-wide text-brand-primary mb-1">Screen 13 · Payment authorization preview</p>
+          <h1 id="auth-preview-heading" class="font-heading text-2xl sm:text-3xl font-bold text-brand-black">Payment Authorization (Preview)</h1>
+          <p class="text-sm text-brand-muted mt-2">Simulated authorization lifecycle only. No payment is captured, no booking or ticket is created.</p>
+        </header>
+
+        <div class="rounded-2xl border ${isDeclined ? 'border-red-200 bg-red-50' : isAuthorized ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'} p-5 mb-5" role="status" aria-live="polite">
+          <p class="text-sm font-semibold ${isDeclined ? 'text-red-800' : isAuthorized ? 'text-emerald-800' : 'text-amber-800'}">
+            Authorization status: ${isProcessing ? 'processing (preview)' : isAuthorized ? 'authorized (preview)' : 'declined (preview)'}
+          </p>
+          <p class="text-xs mt-1 ${isDeclined ? 'text-red-800' : isAuthorized ? 'text-emerald-800' : 'text-amber-800'}">
+            ${isProcessing ? 'Simulating the authorization request. No gateway, card network or bank is contacted.' :
+              isAuthorized ? 'Authorization simulated as successful. No funds were captured and no booking was created.' :
+              'Authorization simulated as declined. No charge was raised.'}
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-brand-border bg-white p-5 mb-5">
+          <h2 class="font-heading text-lg font-semibold text-brand-black mb-3">Lifecycle controls (preview)</h2>
+          <div class="flex flex-wrap gap-3">
+            <a href="/flights/checkout/authorization?authState=processing" class="${BTN_GHOST} inline-flex items-center">Processing</a>
+            <a href="/flights/checkout/authorization?authState=authorized" class="${BTN_GHOST} inline-flex items-center">Authorized</a>
+            <a href="/flights/checkout/authorization?authState=declined" class="${BTN_GHOST} inline-flex items-center">Declined</a>
+          </div>
+          ${isDeclined ? `
+            <div class="mt-5">
+              <button type="button" id="auth-retry" class="${BTN_PRIMARY}">Retry authorization (preview)</button>
+              <p id="auth-retry-result" class="hidden mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 font-semibold" role="status"></p>
+            </div>
+          ` : ''}
+        </div>
+
+        <p class="text-[11px] leading-relaxed text-brand-muted border-t border-brand-border pt-4" role="note">
+          This is a deterministic preview state. Authorization is simulated and is not payment capture, booking or ticketing.
+        </p>
+      </section>
+    `;
+    const retry = mount.querySelector<HTMLButtonElement>('#auth-retry');
+    const result = mount.querySelector<HTMLElement>('#auth-retry-result');
+    retry?.addEventListener('click', () => {
+      if (result) {
+        result.textContent = 'Retry recorded in this preview. No payment was captured and no booking was created.';
+        result.classList.remove('hidden');
+      }
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}

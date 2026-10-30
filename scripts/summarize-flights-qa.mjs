@@ -3,8 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 const dir=path.resolve('docs/flights-evidence/gap-qa');
 const load=f=>JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'));
-const files=['results.json','fix-validation/results.json','route-state-followup/results.json','fare-route-followup/results.json','new-state-followup/results.json'];const latest=new Map();
-for(const f of files){const run=load(f);for(const r of run.results)if(r.width)latest.set(`${r.screen}-${r.width}`,{...r,evidence:f});}
+const files=['results.json','fix-validation/results.json','route-state-followup/results.json','fare-route-followup/results.json','new-state-followup/results.json','final-state-followup/results.json'];const latest=new Map();for(const f of files){const run=load(f);for(const r of run.results)if(r.width)latest.set(`${r.screen}-${r.width}`,{...r,evidence:f});}
 const samples=[...latest.values()];
 const unique=[...new Set(samples.map(r=>r.screen))];
 const scans=samples.filter(r=>r.axe);

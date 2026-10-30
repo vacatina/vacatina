@@ -75,15 +75,15 @@
     },
     {
       "id": "07",
-      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "route": "/flights/offer/sup-flt-seat-map-sim",
       "state": "seat",
       "name": "Seat Selection",
-      "local": "Historical suite coverage reported; per-state raw evidence NOT VERIFIED",
+      "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
       "visual": "NOT VERIFIED: screenshots not visually reviewed",
-      "responsive": "NOT VERIFIED at required 390/768/1440",
-      "a11y": "NOT VERIFIED (beyond historical selected naming/error/focus checks)",
-      "gaps": "NOT VERIFIED: planning offers do not expose real ancillary/seat availability; sandbox supplier fixture unavailable; Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
+      "a11y": "axe 4.10.3: 0 rule violations; 1 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
+      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "08",
@@ -147,15 +147,15 @@
     },
     {
       "id": "13",
-      "route": "/flights/checkout",
+      "route": "/flights/checkout/authorization",
       "state": "authorization",
       "name": "Payment Authorization",
-      "local": "Historical suite coverage reported; per-state raw evidence NOT VERIFIED",
+      "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
       "visual": "NOT VERIFIED: screenshots not visually reviewed",
-      "responsive": "NOT VERIFIED at required 390/768/1440",
-      "a11y": "NOT VERIFIED (beyond historical selected naming/error/focus checks)",
-      "gaps": "NOT VERIFIED: no deterministic rendered frontend fixture for authorization; Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
+      "a11y": "axe 4.10.3: 0 rule violations; 0 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
+      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "14",

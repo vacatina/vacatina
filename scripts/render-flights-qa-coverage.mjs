@@ -4,7 +4,7 @@ import { screens, applicationSha, historicalHosted } from './flights-qa-inventor
 const root=process.cwd();
 const read=p=>fs.existsSync(p)?JSON.parse(fs.readFileSync(p,'utf8')):null;
 const qa=read(path.join(root,'docs/flights-evidence/gap-qa/results.json'));
-const followups=['fix-validation','route-state-followup','fare-route-followup','new-state-followup'].map(dir=>read(path.join(root,`docs/flights-evidence/gap-qa/${dir}/results.json`))).filter(Boolean);const latest=new Map();
+const followups=['fix-validation','route-state-followup','fare-route-followup','new-state-followup','final-state-followup'].map(dir=>read(path.join(root,`docs/flights-evidence/gap-qa/${dir}/results.json`))).filter(Boolean);const latest=new Map();
 for(const run of [qa,...followups].filter(Boolean))for(const r of run.results)latest.set(r.screen+':'+(r.width||'missing'),{...r,sourceHead:run.applicationSha||run.gitHead||'pre-commit working tree'});
 const combined=[...latest.values()];
 const hostedFollowup=read(path.join(root,'docs/flights-evidence/gap-qa/hosted-fix-validation/results.json'));
