@@ -66,12 +66,12 @@
       "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
       "state": "ancillary",
       "name": "Baggage & Ancillaries",
-      "local": "Historical suite coverage reported; per-state raw evidence NOT VERIFIED",
+      "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
       "visual": "NOT VERIFIED: screenshots not visually reviewed",
-      "responsive": "NOT VERIFIED at required 390/768/1440",
-      "a11y": "NOT VERIFIED (beyond historical selected naming/error/focus checks)",
-      "gaps": "NOT VERIFIED: planning offers do not expose real ancillary/seat availability; sandbox supplier fixture unavailable; Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
+      "a11y": "axe 4.10.3: 0 rule violations; 1 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
+      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "07",
@@ -183,15 +183,15 @@
     },
     {
       "id": "16",
-      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
+      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1&qaHoldLoading=1",
       "state": "transient",
       "name": "Search Loading / Partial",
-      "local": "Historical suite coverage reported; per-state raw evidence NOT VERIFIED",
+      "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
       "visual": "NOT VERIFIED: screenshots not visually reviewed",
-      "responsive": "NOT VERIFIED at required 390/768/1440",
-      "a11y": "NOT VERIFIED (beyond historical selected naming/error/focus checks)",
-      "gaps": "NOT VERIFIED: no deterministic rendered frontend fixture for transient; Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
+      "a11y": "axe 4.10.3: 0 rule violations; 0 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
+      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "17",
@@ -243,15 +243,15 @@
     },
     {
       "id": "21",
-      "route": "/flights/search?origin=CMB&destination=DXB&departureDate=2026-11-18&adults=1",
-      "state": "rules-changed",
+      "route": "/flights/offer/sup-flt-fare-rules-changed-sim",
+      "state": "revalidate",
       "name": "Fare Rules Changed",
-      "local": "Historical suite coverage reported; per-state raw evidence NOT VERIFIED",
+      "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
       "visual": "NOT VERIFIED: screenshots not visually reviewed",
-      "responsive": "NOT VERIFIED at required 390/768/1440",
-      "a11y": "NOT VERIFIED (beyond historical selected naming/error/focus checks)",
-      "gaps": "NOT VERIFIED: no deterministic rendered frontend fixture for rules-changed; Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
+      "a11y": "axe 4.10.3: 0 rule violations; 1 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
+      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "22",

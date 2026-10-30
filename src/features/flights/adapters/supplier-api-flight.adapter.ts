@@ -192,6 +192,28 @@ export class SupplierApiFlightAdapter implements IFlightAdapter {
       };
     }
 
+    // 3b. Simulation: Fare Rules Changed Test
+    if (offer.offerId === 'sup-flt-fare-rules-changed-sim') {
+      const updatedOffer: CanonicalFlightOffer = {
+        ...offer,
+        changeRules: { allowed: false, description: 'No changes permitted after fare-rules update (simulated)' },
+        refundRules: { refundable: false, description: 'Non-refundable after fare-rules update (simulated)' },
+        lastCheckedAt: now
+      };
+      return {
+        offerId,
+        status: 'RECHECK_REQUIRED',
+        originalPriceMinor: offer.price.totalMinor,
+        newPriceMinor: offer.price.totalMinor,
+        priceDeltaMinor: 0,
+        currency: offer.price.currency,
+        message: 'Fare rules changed: change and refund conditions were updated by the carrier. Review before proceeding.',
+        updatedOffer,
+        revalidatedAt: now,
+        requiresUserAction: true
+      };
+    }
+
     // 4. Standard Revalidation with Fare Family adjustments
     let totalMinor = offer.price.totalMinor;
     if (configuration?.selectedFareFamilyCode && offer.fareFamiliesAvailable) {

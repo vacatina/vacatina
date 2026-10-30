@@ -722,6 +722,60 @@ export const SUPPLIER_FLIGHT_FIXTURES: CanonicalFlightOffer[] = [
     segments: []
   },
 
+  // 7. Test Scenario Offer: Fare Rules Changed Simulation (revalidates to RECHECK_REQUIRED)
+  {
+    offerId: 'sup-flt-fare-rules-changed-sim',
+    sourceType: 'supplier_api',
+    sourceProvider: 'Supplier GDS / NDC Gateway',
+    supplierId: 'sup-duffel-sandbox',
+    sourceOfferId: 'off_0000FareRulesChangedTest',
+    status: 'active',
+    bookability: 'live_bookable',
+    origin: getAirport('CMB'),
+    destination: getAirport('DXB'),
+    tripType: 'round_trip',
+    departureAt: '2026-11-20T08:00:00.000Z',
+    arrivalAt: '2026-11-20T11:30:00.000Z',
+    durationMinutes: 210,
+    stopCount: 0,
+    stopAirports: [],
+    airlines: [{ code: 'FZ', name: 'Flydubai' }],
+    marketingCarrier: { code: 'FZ', name: 'Flydubai' },
+    operatingCarrier: { code: 'FZ', name: 'Flydubai' },
+    flightNumber: 'FZ551',
+    cabinClass: 'economy',
+    fareFamily: 'Value Fare',
+    baggage: {
+      cabin: { pieces: 1, maxWeightKg: 7, description: '1 piece (7 kg)' },
+      checked: { pieces: 1, maxWeightKg: 20, description: '1 piece (20 kg)' },
+      isSupplied: true
+    },
+    changeRules: { allowed: false, description: 'No changes permitted (simulated fare-rules change on revalidation)' },
+    refundRules: { refundable: false, description: 'Non-refundable (simulated fare-rules change on revalidation)' },
+    price: {
+      totalMinor: 18500000,
+      baseFareMinor: 13000000,
+      taxesMinor: 4000000,
+      feesMinor: 1500000,
+      currency: 'LKR',
+      displayCurrency: 'LKR',
+      perAdultMinor: 18500000
+    },
+    baseFare: 130000,
+    taxes: 40000,
+    fees: 15000,
+    currency: 'LKR',
+    displayCurrency: 'LKR',
+    availabilityStatus: 'AVAILABLE',
+    lastCheckedAt: '2026-10-26T05:00:00.000Z',
+    travellerPricing: [{ type: 'adult', count: 1, perPersonMinor: 18500000, totalMinor: 18500000 }],
+    includedServices: ['1 x 20 kg Checked Bag'],
+    fareFamiliesAvailable: [],
+    optionalServices: [],
+    slices: [],
+    segments: []
+  },
+
   // 7. Test Scenario Offer: Expired Simulation
   {
     offerId: 'sup-flt-expired-sim',

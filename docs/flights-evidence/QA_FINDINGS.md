@@ -21,8 +21,25 @@ Baseline under audit: application `6054dc541a0b3a703bf39cdca714bc238b472dc3`. Th
 - Screens 26–45 and 58–64 may be explored as **local fixtures only**. Their local QA cannot remove hosted authentication/public-demo blockers.
 - Accessibility-tree/axe output is semantic/automated evidence, not an actual screen-reader listening test or complete WCAG audit. 320 CSS px is a reflow approximation, not proof of browser zoom correctness.
 
-## Fixed in application commit `3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74`
+## New deterministic fixtures added in this QA pass
 
+| Screen | Fixture | Route / state | Evidence |
+|---|---|---|---|
+| 06 | Offer modal baggage/ancillary sub-state (existing fare-family baggage cards) | `/flights/offer/sup-flt-cmb-dxb-fz548` offer | `gap-qa/new-state-followup/screen-06-{390,768,1440}.png` |
+| 16 | Controllable loading state (`qaHoldLoading=1` keeps spinner visible until `#btn-advance-loading`) | `/flights/search?...&qaHoldLoading=1` | `gap-qa/new-state-followup/screen-16-{390,768,1440}.png` |
+| 21 | `sup-flt-fare-rules-changed-sim` simulated fare-rules change (adapter returns `RECHECK_REQUIRED`) | `/flights/offer/sup-flt-fare-rules-changed-sim` | `gap-qa/new-state-followup/screen-21-{390,768,1440}.png` |
+
+Application changes: `src/features/flights/ui/flights-search-view.ts` (controllable loading), `src/features/flights/data/supplier-fixtures.ts` + `src/features/flights/adapters/supplier-api-flight.adapter.ts` (fare-rules-changed simulation). No real supplier/payment/booking integration.
+
+## Still NOT VERIFIED (precise blockers)
+
+- Screen 07 (seat availability): requires Duffel TEST MODE network via "Load seat maps"; no deterministic offline fixture. Do not fabricate seat maps.
+- Screen 13 (payment authorization): no distinct authorization preview state; checkout remains a gated static preview with disabled payment methods.
+- Workflows 19/20/22/36/56/57: existing E2E coverage confirmed (Batch E 44/44, Batch C 53/53 PASS). Deeper state-continuity evidence is in those suites; supplemental visual capture remains partial.
+- Real screen-reader listening: no assistive technology available in this environment (NVDA/JAWS/VoiceOver not installed). Axe + keyboard + AX-tree checks are not a substitute. Blocker recorded; no WCAG compliance claim.
+- True browser zoom (not 320px approximation), manual contrast exclusions, all interaction states, full-size/all-state visual acceptance: NOT VERIFIED.
+
+## Fixed in application commit `3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74`
 | ID | Reproduced defect | Minimal fix | Validation |
 |---|---|---|---|
 | FL-QA-01 | Screen 24 captured-payment assertion / automatic-refund promise | Explicit simulated failure; no transaction promise | Local screenshots; hosted H24 at all 3 widths and H-K09 |

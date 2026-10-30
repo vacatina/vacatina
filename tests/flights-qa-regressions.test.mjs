@@ -35,6 +35,19 @@ test('booking-failure preview never claims captured funds or automatic refunds',
   assert.match(text,/No payment hold, release or refund is performed by this preview/);
   assert.match(text,/id="booking-retry"/);
 });
+test('controllable loading state exposes an advance control while held',()=> {
+  const src=fs.readFileSync(new URL('../src/features/flights/ui/flights-search-view.ts',import.meta.url),'utf8');
+  assert.match(src,/qaHoldLoading/);
+  assert.match(src,/btn-advance-loading/);
+  assert.match(src,/showAdvanceLoading/);
+});
+test('fare-rules-changed simulation exists in fixtures and adapter',()=> {
+  const fixtures=fs.readFileSync(new URL('../src/features/flights/data/supplier-fixtures.ts',import.meta.url),'utf8');
+  const adapter=fs.readFileSync(new URL('../src/features/flights/adapters/supplier-api-flight.adapter.ts',import.meta.url),'utf8');
+  assert.match(fixtures,/sup-flt-fare-rules-changed-sim/);
+  assert.match(adapter,/sup-flt-fare-rules-changed-sim/);
+  assert.match(adapter,/Fare rules changed/);
+});
 test('manual-request stage is escaped once rather than displaying an HTML entity',()=>{
   assert.match(source('flights-manual-request.ts'),/review: 'Step 1 of 4 · Review & submit'/);
   assert.doesNotMatch(source('flights-manual-request.ts'),/Review &amp; submit/);

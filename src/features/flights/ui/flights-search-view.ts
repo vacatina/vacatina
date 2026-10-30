@@ -59,12 +59,14 @@ export class FlightsSearchView {
   private currentSort: FlightSortOption = 'recommended';
   private currentFilters: FlightFilterCriteria = {};
   private isLoading = false;
-  private errorMessage: string | null = null;
+  private holdLoading = false;
+  private showAdvanceLoading = false;  private errorMessage: string | null = null;
   private validationErrors: Record<string, string> = {};
   private isModifyOpen = false;
   private sandboxStatus: SandboxStatus | null = null;
 
   public async loadFromQuery(query: URLSearchParams, container: HTMLElement): Promise<void> {
+    this.holdLoading = query.get('qaHoldLoading') === '1';
     const parsed = parseFlightSearchQuery(query);
     this.currentRequest = parsed.request;
     this.currentResponse = null;
@@ -98,6 +100,21 @@ export class FlightsSearchView {
       return;
     }
 
+    if (this.holdLoading) {
+      this.holdLoading = false;
+      this.showAdvanceLoading = true;
+      this.isLoading = true;
+      this.errorMessage = null;
+      this.currentResponse = null;
+      this.render(container);
+      const advance = container.querySelector('#btn-advance-loading');
+      advance?.addEventListener('click', () => {
+        this.showAdvanceLoading = false;
+        this.executeSearch(container);
+      });
+      return;
+    }
+    this.showAdvanceLoading = false;
     rememberFlightSearchQuery(buildFlightSearchQuery(this.currentRequest));
     flightTripBucketService.rememberSearchContext(this.currentRequest);
     this.isLoading = true;
@@ -405,6 +422,11 @@ export class FlightsSearchView {
                     <div class="h-8 bg-gray-100 rounded-md w-3/4"></div>
                     <div class="h-4 bg-gray-200 rounded-md w-1/2"></div>
                   </div>
+                  ${
+                    this.showAdvanceLoading
+                      ? `<div class="pt-2"><button type="button" id="btn-advance-loading" class="px-5 py-2 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-opacity-95">Advance search (simulated loading)</button><p class="text-[11px] text-brand-muted mt-2">Simulated loading state. No search has run yet; advance to load results.</p></div>`
+                      : ''
+                  }
                 </div>
               `
                   : ''

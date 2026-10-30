@@ -3,8 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 const dir=path.resolve('docs/flights-evidence/gap-qa');
 const load=f=>JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'));
-const files=['results.json','fix-validation/results.json','route-state-followup/results.json','fare-route-followup/results.json'];
-const latest=new Map();
+const files=['results.json','fix-validation/results.json','route-state-followup/results.json','fare-route-followup/results.json','new-state-followup/results.json'];const latest=new Map();
 for(const f of files){const run=load(f);for(const r of run.results)if(r.width)latest.set(`${r.screen}-${r.width}`,{...r,evidence:f});}
 const samples=[...latest.values()];
 const unique=[...new Set(samples.map(r=>r.screen))];
@@ -19,7 +18,7 @@ const summary={
   evidenceOnlyCommit:'e1724c0824e360ca1ef7d972e1710d5eb074f2f6',
   changedApplicationSha:'3ce16d45f8be9e4dcfe3762e043db8f4d85e7b74',
   hostedChanged:{applicationSha:hosted.applicationSha,deployment:hosted.deployment,base:hosted.base,counts:hosted.rows.reduce((a,r)=>(a[r.status]=(a[r.status]||0)+1,a),{}),total:hosted.rows.length},
-  localFixtureScreens:{measured:unique.length,total:64,percent:100*unique.length/64,missing:['06','07','13','16','21']},
+  localFixtureScreens:{measured:unique.length,total:64,percent:100*unique.length/64,missing:Array.from({length:64},(_,i)=>String(i+1).padStart(2,'0')).filter(id=>!unique.includes(id))},
   responsiveMeasurements:{fit:samples.filter(r=>r.overflow<=1).length,total:samples.length,widths:[390,768,1440],limit:'Combined multi-revision snapshot measurements, not full usability acceptance'},
   reflowApproximation:{fit:reflows.filter(r=>r.reflow.overflow<=1).length,total:reflows.length,cssWidth:320,limit:'Not a true desktop zoom audit; horizontally scrollable data tables need manual usability review'},
   latestComponentAxe:{zeroViolations:scans.filter(r=>r.axe.violations.length===0).length,total:scans.length,version:'4.10.3',limit:'Component-scoped automated checks at 1440px; not full WCAG compliance'},

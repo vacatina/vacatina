@@ -74,3 +74,14 @@ The primary working tree was fingerprinted before editing. All unrelated tracked
 A diagnostic source-contract run against the dirty primary workspace failed two expectations because its unshipped button/review variants differ from the release. Those failures are not claimed as release PASS and were not "fixed" by overwriting WIP. The same 11 tests pass against the actual committed application snapshot.
 
 Every browser process used a unique generated profile and ephemeral debugging port. Cleanup terminated only that launched process. No user browser/profile, secrets, auth gates, homepage/header/footer/SCC layout or approved Trip Bucket design was changed. No backend expansion, main merge or production deployment occurred.
+
+## Update — additional local fixture states (this pass)
+
+New tested application changes in this pass (pending commit at time of writing):
+- `src/features/flights/ui/flights-search-view.ts` — controllable loading state (`qaHoldLoading=1` + `#btn-advance-loading`).
+- `src/features/flights/data/supplier-fixtures.ts` — `sup-flt-fare-rules-changed-sim`.
+- `src/features/flights/adapters/supplier-api-flight.adapter.ts` — fare-rules-changed revalidation (`RECHECK_REQUIRED`).
+
+Validation: typecheck PASS, build PASS (121 modules), npm test 366/366, Batch E 44/44, Batch C 53/53.
+
+Updated local coverage: 62/64 screens (96.875%) have supplemental measurements; only Screens 07 and 13 remain without a usable fixture. Full visual acceptance 0/64, full WCAG audit 0/64, hosted 24 PASS / 0 FAIL / 1 BLOCKED (unchanged — no new hosted run in this pass).

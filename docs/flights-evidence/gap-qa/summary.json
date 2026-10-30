@@ -20,20 +20,17 @@
     "total": 25
   },
   "localFixtureScreens": {
-    "measured": 59,
+    "measured": 62,
     "total": 64,
-    "percent": 92.1875,
+    "percent": 96.875,
     "missing": [
-      "06",
       "07",
-      "13",
-      "16",
-      "21"
+      "13"
     ]
   },
   "responsiveMeasurements": {
-    "fit": 177,
-    "total": 177,
+    "fit": 186,
+    "total": 186,
     "widths": [
       390,
       768,
@@ -42,20 +39,20 @@
     "limit": "Combined multi-revision snapshot measurements, not full usability acceptance"
   },
   "reflowApproximation": {
-    "fit": 59,
-    "total": 59,
+    "fit": 62,
+    "total": 62,
     "cssWidth": 320,
     "limit": "Not a true desktop zoom audit; horizontally scrollable data tables need manual usability review"
   },
   "latestComponentAxe": {
-    "zeroViolations": 59,
-    "total": 59,
+    "zeroViolations": 62,
+    "total": 62,
     "version": "4.10.3",
     "limit": "Component-scoped automated checks at 1440px; not full WCAG compliance"
   },
   "reducedMotionControlSamples": {
-    "collapsed": 51,
-    "total": 51,
+    "collapsed": 54,
+    "total": 54,
     "limit": "Sampled controls only; complete animated-state audit NOT VERIFIED"
   },
   "focusedLocal": {
