@@ -68,10 +68,10 @@
       "name": "Baggage & Ancillaries",
       "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
-      "visual": "NOT VERIFIED: screenshots not visually reviewed",
+      "visual": "PARTIAL: Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
       "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
       "a11y": "axe 4.10.3: 0 rule violations; 1 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
-      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "gaps": "Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "07",
@@ -80,10 +80,10 @@
       "name": "Seat Selection",
       "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
-      "visual": "NOT VERIFIED: screenshots not visually reviewed",
+      "visual": "PARTIAL: Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
       "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
       "a11y": "axe 4.10.3: 0 rule violations; 1 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
-      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "gaps": "Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "08",
@@ -152,10 +152,10 @@
       "name": "Payment Authorization",
       "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
-      "visual": "NOT VERIFIED: screenshots not visually reviewed",
+      "visual": "PARTIAL: Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
       "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
       "a11y": "axe 4.10.3: 0 rule violations; 0 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
-      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "gaps": "Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "14",
@@ -188,10 +188,10 @@
       "name": "Search Loading / Partial",
       "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
-      "visual": "NOT VERIFIED: screenshots not visually reviewed",
+      "visual": "PARTIAL: Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
       "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
       "a11y": "axe 4.10.3: 0 rule violations; 0 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
-      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "gaps": "Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "17",
@@ -248,10 +248,10 @@
       "name": "Fare Rules Changed",
       "local": "New local fixture QA: 390/768/1440px (not hosted/authenticated)",
       "hosted": "NOT VERIFIED in accepted deployed run",
-      "visual": "NOT VERIFIED: screenshots not visually reviewed",
+      "visual": "PARTIAL: Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
       "responsive": "3/3 fit checks at 390/768/1440; 320px reflow fits; full usability NOT VERIFIED",
       "a11y": "axe 4.10.3: 0 rule violations; 1 manual-review rules; Tab focus + AX sample. Full screen-reader audit NOT VERIFIED",
-      "gaps": "Visual review NOT VERIFIED; Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
+      "gaps": "Full keyboard/error/announcement, contrast manual exclusions, true zoom and AT audit NOT VERIFIED"
     },
     {
       "id": "22",

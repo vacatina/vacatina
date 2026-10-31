@@ -65,3 +65,9 @@ Application changes: `src/features/flights/ui/flights-search-view.ts` (controlla
 | FL-QA-07 | Screen 46 shows literal &amp; in step label | Escape the raw ampersand once | Source test; local K06 and hosted H-K06; all-width screenshots |
 
 Source changes are limited to six Flights UI files; no homepage/SCC/header/footer/Trip Bucket redesign, auth changes or backend changes. Local checks were 9/9 PASS; current application affected hosted checks were 24 PASS / 0 FAIL / 1 BLOCKED. These are separate denominators from the original 68/0/4 baseline.
+
+## Zoom and screen-reader verification (this pass)
+
+- Browser zoom (deviceScaleFactor emulation) at 2x and 4x on 10 representative screens (01,02,03,04,11,12,24,46,51,58): 20/20 checks with zero horizontal overflow. This is emulation, not identical to native Ctrl+zoom; full native zoom audit remains recommended for data tables.
+- Screen-reader listening: BLOCKED. No assistive technology (NVDA/JAWS/VoiceOver) is installed in this environment. Axe 4.10.3 + keyboard + AX-tree checks are not a substitute. No WCAG compliance claim.
+- Manual contrast: axe reported 0 rule violations across 64/64 component scans at 1440px. Manual exclusions (large text, UI components, focus rings) not individually measured; recorded as NOT VERIFIED for those specific states.

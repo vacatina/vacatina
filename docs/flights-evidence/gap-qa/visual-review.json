@@ -32,6 +32,17 @@
     "contactSheet": "contact-03.png",
     "sha256": "2825bc23e5363c7e68519477c0a1f657789af1a496ae8750ae8abd4661aafb7e"
   },
+  "13": {
+    "status": "PARTIAL",
+    "widths": [
+      390,
+      768,
+      1440
+    ],
+    "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
+    "contactSheet": "final-state-followup/contact-01.png",
+    "sha256": "7d2761028668c7125a820a00bd5428c4a298aa5f53adf4e217c46813ed80ef3b"
+  },
   "14": {
     "status": "PARTIAL",
     "widths": [
@@ -53,6 +64,17 @@
     "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
     "contactSheet": "contact-04.png",
     "sha256": "ae2b97b59ebdf2c84db2c6da629322fc2e52aaf8d1f13a2942e7930c3fe2f142"
+  },
+  "16": {
+    "status": "PARTIAL",
+    "widths": [
+      390,
+      768,
+      1440
+    ],
+    "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
+    "contactSheet": "new-state-followup/contact-01.png",
+    "sha256": "7939440373ebd6cee2689c22fa13a6210d0785f563e84b4c9dd9a6836580046c"
   },
   "17": {
     "status": "PARTIAL",
@@ -97,6 +119,17 @@
     "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
     "contactSheet": "contact-05.png",
     "sha256": "2169b52665ee6a7da1add137bc2e847e23bd78d522e29a45a7ece81c42bb32b9"
+  },
+  "21": {
+    "status": "PARTIAL",
+    "widths": [
+      390,
+      768,
+      1440
+    ],
+    "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
+    "contactSheet": "new-state-followup/contact-01.png",
+    "sha256": "7939440373ebd6cee2689c22fa13a6210d0785f563e84b4c9dd9a6836580046c"
   },
   "22": {
     "status": "PARTIAL",
@@ -647,5 +680,27 @@
     "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
     "contactSheet": "fix-validation/contact-01.png",
     "sha256": "a522b1b0a72d91543421bc0155ffee6c4d4a147c53572d4ab57f280aa4b78512"
+  },
+  "06": {
+    "status": "PARTIAL",
+    "widths": [
+      390,
+      768,
+      1440
+    ],
+    "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
+    "contactSheet": "new-state-followup/contact-01.png",
+    "sha256": "7939440373ebd6cee2689c22fa13a6210d0785f563e84b4c9dd9a6836580046c"
+  },
+  "07": {
+    "status": "PARTIAL",
+    "widths": [
+      390,
+      768,
+      1440
+    ],
+    "notes": "Macro layout reviewed against DESIGN.md and existing light-surface/brand/type patterns; full-size/all-state visual acceptance NOT VERIFIED",
+    "contactSheet": "final-state-followup/contact-01.png",
+    "sha256": "7d2761028668c7125a820a00bd5428c4a298aa5f53adf4e217c46813ed80ef3b"
   }
 }
