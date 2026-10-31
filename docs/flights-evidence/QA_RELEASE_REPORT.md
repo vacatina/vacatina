@@ -96,3 +96,15 @@ New application changes:
 
 Validation: typecheck PASS, build PASS (121 modules), npm test 366/366, evidence tests 13/13, Batch E 44/44, Batch C 53/53.
 Local coverage now 64/64 screens (100%). Full visual acceptance 0/64, full WCAG audit 0/64 (NOT VERIFIED). Hosted 24 PASS / 0 FAIL / 1 BLOCKED unchanged.
+
+## Update - Flights Screen Gallery (this pass)
+
+New application changes:
+- src/features/flights/ui/flights-screen-gallery.ts - gallery view (64 entries).
+- src/features/flights/ui/flights-hub-view.ts - visible 'Flights Screen Gallery (64 screens)' link.
+- src/lib/services/router.service.ts - /flights/gallery route.
+- src/features/flights/data/flights-screen-gallery.data.ts - gallery data.
+
+Local verification: 64/64 gallery entries render the correct screen/state (0 failures). Hosted verification: 37/64 PASS in public-demo build; 27/64 BLOCKED (auth-gated: booking dossier D4, post-booking D7, admin D8) - expected and documented. Gallery itself renders (74 links).
+
+Tested application SHA: 0c820f68afefbbb2ad733b06466e4161485add89. Preview: dpl_3cYoVN2u9DbmYmgT7LcQujE7hghG READY https://vacatina-3u9iawlfb-vacatinas-projects.vercel.app
