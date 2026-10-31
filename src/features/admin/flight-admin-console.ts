@@ -53,13 +53,13 @@ function write(key: string, value: unknown): void {
   }
 }
 
-declare const __VACATINA_PREVIEW_BUILD__: boolean;
 export function demoOpsLocalAvailable(): boolean {
   const w = window as any;
-  if (w.__VACATINA_PUBLIC_DEMO__ && !(typeof __VACATINA_PREVIEW_BUILD__ !== 'undefined' && __VACATINA_PREVIEW_BUILD__)) return false;
+  let gallery = false;
+  try { gallery = window.sessionStorage.getItem('vacatina:gallery') === '1'; } catch { gallery = false; }
+  if (w.__VACATINA_PUBLIC_DEMO__ && !gallery) return false;
   const host = window.location.hostname;
-  const previewHost = typeof __VACATINA_PREVIEW_BUILD__ !== 'undefined' && __VACATINA_PREVIEW_BUILD__;
-  return previewHost || host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '';
+  return gallery || host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '';
 }
 
 export function demoOpsEnabled(): boolean {

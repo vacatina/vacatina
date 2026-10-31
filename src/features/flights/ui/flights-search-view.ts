@@ -68,8 +68,10 @@ private holdLoading = false;
   private sandboxStatus: SandboxStatus | null = null;
 
   public async loadFromQuery(query: URLSearchParams, container: HTMLElement): Promise<void> {
-    this.holdLoading = !__VACATINA_PUBLIC_DEMO_BUILD__ && query.get('qaHoldLoading') === '1';    const parsed = parseFlightSearchQuery(query);
-    this.currentRequest = parsed.request;
+    const previewBuild = typeof __VACATINA_PREVIEW_BUILD__ !== 'undefined' && __VACATINA_PREVIEW_BUILD__;
+    const galleryFlag = (() => { try { return sessionStorage.getItem('vacatina:gallery') === '1'; } catch { return false; } })();
+    this.holdLoading = (!__VACATINA_PUBLIC_DEMO_BUILD__ || previewBuild || galleryFlag) && query.get('qaHoldLoading') === '1';
+    const parsed = parseFlightSearchQuery(query);
     this.currentResponse = null;
     this.currentSort = 'recommended';
     this.currentFilters = {};

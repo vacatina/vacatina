@@ -123,13 +123,13 @@ export function maskPassport(value: string): string {
   return `${raw.slice(0, 2)}•••${raw.slice(-2)}`;
 }
 
-declare const __VACATINA_PREVIEW_BUILD__: boolean;
 function isLocalDemoHost(): boolean {
   const w = window as any;
-  const previewBuild = typeof __VACATINA_PREVIEW_BUILD__ !== 'undefined' && __VACATINA_PREVIEW_BUILD__;
-  if (w.__VACATINA_PUBLIC_DEMO__ && !previewBuild) return false;
+  let gallery = false;
+  try { gallery = window.sessionStorage.getItem('vacatina:gallery') === '1'; } catch { gallery = false; }
+  if (w.__VACATINA_PUBLIC_DEMO__ && !gallery) return false;
   const host = window.location.hostname;
-  return previewBuild || host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '';
+  return gallery || host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '';
 }
 
 /** Demo account surfaces are only available on a local, non-public-demo build. */
