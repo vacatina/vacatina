@@ -142,7 +142,7 @@ export class FlightsHubView {
       <div id="flights-hub-page" class="w-full bg-white text-brand-black pb-16 animate-fade-in">
         <!-- Hero Header -->
         <section class="bg-brand-primary text-white pt-10 pb-16 px-4 sm:px-6 lg:px-8">
-          <div class="max-w-6xl mx-auto">
+          <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
               <div>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/90 mb-3 border border-white/15">
@@ -152,7 +152,7 @@ export class FlightsHubView {
                   Flights · Request-to-book preview
                 </span>
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-display animate-slide-up">
-                  Find &amp; Configure Your Ideal Flight
+                  Find &amp; Compare Flight Offers Across Global Networks
                 </h1>
                 <p class="mt-2 text-sm sm:text-base text-white/80 max-w-2xl font-sans">
                   Compare available flight schedules and request-to-book options with clear baggage and fare conditions. Live airline supplier inventory is activated when connected.
@@ -269,7 +269,7 @@ export class FlightsHubView {
         </section>
 
         <!-- Popular Routes from Colombo Discovery -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 animate-slide-up">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 animate-slide-up">
           <div class="flex items-center justify-between mb-6">
             <div>
               <h2 class="text-xl sm:text-2xl font-bold font-display text-brand-black">Popular routes from Colombo</h2>
@@ -368,7 +368,7 @@ export class FlightsHubView {
         </section>
 
         <!-- Inventory Truth & Guidance Module -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 animate-slide-up">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 animate-slide-up">
           <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-200">
             <h3 class="text-lg font-bold font-display text-brand-black mb-1">How this build handles flight inventory</h3>
             <p class="text-xs text-brand-muted mb-4">No live supplier, seat hold, payment or ticketing is activated in this phase.</p>
