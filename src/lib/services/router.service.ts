@@ -400,6 +400,17 @@ export class CanonicalRouterService {
       return;
     }
 
+    if (path === '/flights/gallery') {
+      const mount = showFlightsView();
+      mount.innerHTML = '';
+      import('../../features/flights/ui/flights-screen-gallery.ts').then(({ FlightsScreenGalleryView }) => {
+        const view = new FlightsScreenGalleryView();
+        view.render(mount);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (path === '/flights/search') {
       const mount = showFlightsView();
       flightsSearchView.loadFromQuery(query, mount);

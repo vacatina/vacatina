@@ -157,6 +157,9 @@ export class FlightsHubView {
                 <p class="mt-2 text-sm sm:text-base text-white/80 max-w-2xl font-sans">
                   Compare available flight schedules and request-to-book options with clear baggage and fare conditions. Live airline supplier inventory is activated when connected.
                 </p>
+                  <p class="mt-3">
+                    <a href="/flights/gallery" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/15 text-white text-xs font-semibold hover:bg-white/25 transition-colors border border-white/20">Flights Screen Gallery (64 screens)</a>
+                  </p>
                 <p class="mt-3 inline-flex items-start gap-2 text-xs text-white/75 max-w-2xl">
                   <span class="mt-0.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-200/20 text-amber-100 border border-amber-200/40 shrink-0">Disclosure</span>
                   <span>Available flight options are shown for planning purposes. Request-to-book options remain on request until the Vacatina flight desk confirms carrier, schedule, baggage and fare. No seat hold or ticketing is created by searching or staging.</span>
