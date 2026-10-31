@@ -1,4 +1,5 @@
 declare const __VACATINA_PUBLIC_DEMO_BUILD__: boolean;
+declare const __VACATINA_PREVIEW_BUILD__: boolean;
 /* ============================================================================
  * Vacatina Canonical Flight Search Results View (/flights/search)
  * Authority: VACATINA FLIGHTS — FULL FUNCTIONAL BUILD MASTER WORKLOAD (§14–§19, §31–§33, §38)

@@ -40,7 +40,7 @@ export function assertBrowserModuleBoundary(inputs) {
 export function buildProject() {
   const startMs = Date.now();
   const publicDemo = process.env.VACATINA_PUBLIC_DEMO === '1' || Boolean(process.env.VERCEL);
-  // Rebuild generated output from scratch; never publish stale server modules.
+  const previewBuild = process.env.VERCEL_ENV === 'preview' || process.env.VACATINA_PREVIEW === '1';  // Rebuild generated output from scratch; never publish stale server modules.
   if (path.dirname(DIST_DIR) !== ROOT_DIR || path.basename(DIST_DIR) !== 'dist') throw new Error('Invalid build output directory');
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
   fs.mkdirSync(DIST_DIR, { recursive: true });
@@ -80,7 +80,7 @@ export function buildProject() {
   const browserBuild = buildSync({ entryPoints: [path.join(SRC_DIR, 'app', 'main.ts')],
     bundle: true, platform: 'browser', format: 'iife', target: ['es2022'],
     write: false, outfile: bundleOutPath, metafile: true, legalComments: 'none',
-    define: { __VACATINA_PUBLIC_DEMO_BUILD__: publicDemo ? 'true' : 'false' },
+    define: { __VACATINA_PUBLIC_DEMO_BUILD__: publicDemo ? 'true' : 'false', __VACATINA_PREVIEW_BUILD__: previewBuild ? 'true' : 'false' },
     minifySyntax: publicDemo, logLevel: 'warning' });
   assertBrowserModuleBoundary(Object.keys(browserBuild.metafile.inputs));
   const bundleJs = browserBuild.outputFiles[0].text;

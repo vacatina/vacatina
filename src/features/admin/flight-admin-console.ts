@@ -53,11 +53,13 @@ function write(key: string, value: unknown): void {
   }
 }
 
+declare const __VACATINA_PREVIEW_BUILD__: boolean;
 export function demoOpsLocalAvailable(): boolean {
   const w = window as any;
-  if (w.__VACATINA_PUBLIC_DEMO__) return false;
+  if (w.__VACATINA_PUBLIC_DEMO__ && !(typeof __VACATINA_PREVIEW_BUILD__ !== 'undefined' && __VACATINA_PREVIEW_BUILD__)) return false;
   const host = window.location.hostname;
-  return host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '';
+  const previewHost = typeof __VACATINA_PREVIEW_BUILD__ !== 'undefined' && __VACATINA_PREVIEW_BUILD__;
+  return previewHost || host === '127.0.0.1' || host === 'localhost' || host === '::1' || host === '';
 }
 
 export function demoOpsEnabled(): boolean {
