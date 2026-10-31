@@ -72,6 +72,7 @@ private holdLoading = false;
     const galleryFlag = (() => { try { return sessionStorage.getItem('vacatina:gallery') === '1'; } catch { return false; } })();
     this.holdLoading = (!__VACATINA_PUBLIC_DEMO_BUILD__ || previewBuild || galleryFlag) && query.get('qaHoldLoading') === '1';
     const parsed = parseFlightSearchQuery(query);
+    this.currentRequest = parsed.request;
     this.currentResponse = null;
     this.currentSort = 'recommended';
     this.currentFilters = {};
